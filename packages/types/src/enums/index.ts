@@ -1,0 +1,181 @@
+// ========================================
+// User & Access Enums
+// ========================================
+
+export enum UserRole {
+  OWNER = 'owner',
+  ADMIN = 'admin',
+  KASIR = 'kasir',
+  GUDANG = 'gudang',
+}
+
+export enum AuditAction {
+  LOGIN = 'login',
+  LOGOUT = 'logout',
+  CREATE = 'create',
+  READ = 'read',
+  UPDATE = 'update',
+  DELETE = 'delete',
+}
+
+export enum Module {
+  DASHBOARD = 'dashboard',
+  POS = 'pos',
+  PRODUCTS = 'products',
+  SALES = 'sales',
+  PURCHASES = 'purchases',
+  INVENTORY = 'inventory',
+  FINANCE = 'finance',
+  REPORTS = 'reports',
+  SETTINGS = 'settings',
+  USERS = 'users',
+}
+
+export enum PermissionAction {
+  CREATE = 'create',
+  READ = 'read',
+  UPDATE = 'update',
+  DELETE = 'delete',
+}
+
+// ========================================
+// Product & Inventory Enums
+// ========================================
+
+export enum StockMovementType {
+  IN = 'in',
+  OUT = 'out',
+  ADJUSTMENT = 'adjustment',
+  TRANSFER = 'transfer',
+}
+
+export enum StockReferenceType {
+  SALES_ORDER = 'sales_order',
+  PURCHASE_ORDER = 'purchase_order',
+  ADJUSTMENT = 'adjustment',
+  TRANSFER = 'transfer',
+  OPNAME = 'opname',
+}
+
+export enum StockAdjustmentType {
+  INCREASE = 'increase',
+  DECREASE = 'decrease',
+  CORRECTION = 'correction',
+}
+
+export enum StockAdjustmentReason {
+  DAMAGED = 'damaged',
+  EXPIRED = 'expired',
+  LOST = 'lost',
+  THEFT = 'theft',
+  CORRECTION = 'correction',
+  OTHER = 'other',
+}
+
+// ========================================
+// Order & Transaction Enums
+// ========================================
+
+export enum OrderStatus {
+  DRAFT = 'draft',
+  CONFIRMED = 'confirmed',
+  PROCESSING = 'processing',
+  DELIVERED = 'delivered',
+  COMPLETED = 'completed',
+  CANCELLED = 'cancelled',
+}
+
+export enum PaymentStatus {
+  UNPAID = 'unpaid',
+  PARTIAL = 'partial',
+  PAID = 'paid',
+  REFUNDED = 'refunded',
+}
+
+export enum PaymentMethod {
+  CASH = 'cash',
+  QRIS = 'qris',
+  TRANSFER = 'transfer',
+  CREDIT = 'credit',
+  DEBIT = 'debit',
+  SPLIT = 'split',
+}
+
+export enum ReturnStatus {
+  PENDING = 'pending',
+  APPROVED = 'approved',
+  REJECTED = 'rejected',
+}
+
+export enum RefundMethod {
+  CASH = 'cash',
+  CREDIT = 'credit',
+  TRANSFER = 'transfer',
+}
+
+// ========================================
+// Purchase Enums
+// ========================================
+
+export enum PurchaseOrderStatus {
+  DRAFT = 'draft',
+  CONFIRMED = 'confirmed',
+  PARTIAL = 'partial',
+  COMPLETED = 'completed',
+  CANCELLED = 'cancelled',
+}
+
+export enum GoodsReceiveStatus {
+  PENDING = 'pending',
+  RECEIVED = 'received',
+  PARTIAL = 'partial',
+}
+
+// ========================================
+// Inventory Operations Enums
+// ========================================
+
+export enum StockTransferStatus {
+  DRAFT = 'draft',
+  SENT = 'sent',
+  RECEIVED = 'received',
+  CANCELLED = 'cancelled',
+}
+
+export enum StockOpnameStatus {
+  IN_PROGRESS = 'in_progress',
+  FINALIZED = 'finalized',
+  CANCELLED = 'cancelled',
+}
+
+export enum ApprovalStatus {
+  DRAFT = 'draft',
+  PENDING = 'pending',
+  APPROVED = 'approved',
+  REJECTED = 'rejected',
+  CANCELLED = 'cancelled',
+}
+
+// ========================================
+// Finance Enums
+// ========================================
+
+export enum AccountType {
+  CASH = 'cash',
+  BANK = 'bank',
+  RECEIVABLE = 'receivable',
+  PAYABLE = 'payable',
+}
+
+export enum TransactionType {
+  INCOME = 'income',
+  EXPENSE = 'expense',
+  TRANSFER = 'transfer',
+}
+
+export enum FinanceReferenceType {
+  SALES_ORDER = 'sales_order',
+  PURCHASE_ORDER = 'purchase_order',
+  PAYMENT = 'payment',
+  REFUND = 'refund',
+}

@@ -1,0 +1,16 @@
+{
+  "name": "desktop",
+  "version": "1.0.0",
+  "description": "Desktop App for Start Server BE and FE",
+  "license": "MIT",
+  "author": "Bagus Uswanto",
+  "type": "commonjs",
+  "main": "src/main/index.ts",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "electron": "^39.2.7"
+  }
+}

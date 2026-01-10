@@ -11,7 +11,20 @@
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "lint": {},
-    "test": {},
-    "test:e2e": {}
+    "test": {
+      "dependsOn": ["^build"],
+      "inputs": ["src/**", "tests/**", "*.test.ts", "*.spec.ts"]
+    },
+    "test:unit": {
+      "dependsOn": ["^build"],
+      "inputs": ["src/**", "tests/**", "*.test.ts", "*.spec.ts"]
+    },
+    "test:e2e": {
+      "dependsOn": ["build"],
+      "cache": false
+    },
+    "typecheck": {
+      "dependsOn": ["^build"]
+    }
   }
 }

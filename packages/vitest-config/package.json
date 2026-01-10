@@ -1,0 +1,26 @@
+{
+  "name": "@repo/vitest-config",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Shared Vitest configuration for BizFlow",
+  "main": "./base.ts",
+  "exports": {
+    "./base": "./base.ts",
+    "./react": "./react.ts",
+    "./node": "./node.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@testing-library/jest-dom": "^6.6.0",
+    "@testing-library/react": "^16.0.0",
+    "happy-dom": "^15.0.0",
+    "vitest": "^2.1.0"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^22.15.3",
+    "typescript": "^5.3.3"
+  }
+}

@@ -11,7 +11,7 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "@repo/ui": "workspace:*",
+    "@bizflow/ui": "workspace:*",
     "next": "16.0.10",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"

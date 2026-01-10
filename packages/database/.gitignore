@@ -1,0 +1,11 @@
+# Database files
+*.db
+*.db-journal
+
+# Environment
+.env
+.env.local
+
+# Generated
+node_modules/
+dist/

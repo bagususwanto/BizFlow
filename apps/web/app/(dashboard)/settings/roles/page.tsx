@@ -17,6 +17,7 @@ import { useAuthStore } from '@/stores/auth.store';
 import { rolesService } from '@/services/roles.service';
 import { RolesTable } from '@/components/roles/roles-table';
 import { ErrorState } from '@/components/common/error-state';
+import { LoadingState } from '@/components/common/loading-state';
 
 export default function RolesPage() {
   const token = useAuthStore((state) => state.accessToken);
@@ -50,11 +51,7 @@ export default function RolesPage() {
   });
 
   if (isLoading) {
-    return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (isError) {

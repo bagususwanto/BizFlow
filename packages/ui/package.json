@@ -43,6 +43,46 @@
       "import": "./dist/components/badge.mjs",
       "require": "./dist/components/badge.js"
     },
+    "./accordion": {
+      "types": "./dist/components/accordion.d.ts",
+      "import": "./dist/components/accordion.mjs",
+      "require": "./dist/components/accordion.js"
+    },
+    "./checkbox": {
+      "types": "./dist/components/checkbox.d.ts",
+      "import": "./dist/components/checkbox.mjs",
+      "require": "./dist/components/checkbox.js"
+    },
+    "./label": {
+      "types": "./dist/components/label.d.ts",
+      "import": "./dist/components/label.mjs",
+      "require": "./dist/components/label.js"
+    },
+    "./form": {
+      "types": "./dist/components/form.d.ts",
+      "import": "./dist/components/form.mjs",
+      "require": "./dist/components/form.js"
+    },
+    "./dropdown-menu": {
+      "types": "./dist/components/dropdown-menu.d.ts",
+      "import": "./dist/components/dropdown-menu.mjs",
+      "require": "./dist/components/dropdown-menu.js"
+    },
+    "./alert-dialog": {
+      "types": "./dist/components/alert-dialog.d.ts",
+      "import": "./dist/components/alert-dialog.mjs",
+      "require": "./dist/components/alert-dialog.js"
+    },
+    "./sheet": {
+      "types": "./dist/components/sheet.d.ts",
+      "import": "./dist/components/sheet.mjs",
+      "require": "./dist/components/sheet.js"
+    },
+    "./avatar": {
+      "types": "./dist/components/avatar.d.ts",
+      "import": "./dist/components/avatar.mjs",
+      "require": "./dist/components/avatar.js"
+    },
     "./utils": {
       "types": "./dist/lib/utils.d.ts",
       "import": "./dist/lib/utils.mjs",

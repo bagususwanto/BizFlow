@@ -1,5 +1,10 @@
-import { Sidebar, MobileSidebar } from '@/components/layout/sidebar';
-import { UserNav } from '@/components/layout/user-nav';
+import { AppSidebar } from '@/components/layout/app-sidebar';
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+  Separator,
+} from '@bizflow/ui';
 
 export default function DashboardLayout({
   children,
@@ -7,20 +12,22 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-background flex">
-      {/* Sidebar for desktop */}
-      <div className="hidden border-r bg-muted/40 lg:block lg:w-60 lg:fixed lg:inset-y-0 text-zinc-950 dark:text-zinc-50">
-        <Sidebar className="h-full" />
-      </div>
-
-      <div className="flex flex-col flex-1 lg:pl-60">
-        <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-6 lg:h-[60px]">
-          <MobileSidebar />
-          <div className="w-full flex-1">{/* Search or breadcrumbs */}</div>
-          <UserNav />
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 border-b px-4">
+          <div className="flex items-center gap-2 px-4">
+            <SidebarTrigger className="-ml-1" />
+            <Separator orientation="vertical" className="mr-2 h-4" />
+            {/* Breadcrumb could go here */}
+          </div>
         </header>
-        <main className="flex-1 p-6">{children}</main>
-      </div>
-    </div>
+        <main className="flex flex-1 flex-col gap-4 p-4 pt-0">
+          <div className="min-h-[100vh] flex-1 rounded-xl md:min-h-min p-4">
+            {children}
+          </div>
+        </main>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

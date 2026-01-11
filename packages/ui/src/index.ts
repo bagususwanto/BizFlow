@@ -2,12 +2,8 @@
 // Core Components (Custom)
 // ========================================
 export { Button, buttonVariants, type ButtonProps } from './components/button';
-export {
-  Input,
-  Textarea,
-  type InputProps,
-  type TextareaProps,
-} from './components/input';
+export { Input, type InputProps } from './components/input';
+export { Textarea, type TextareaProps } from './components/textarea';
 export {
   Card,
   CardHeader,
@@ -216,6 +212,9 @@ export {
   TooltipContent,
   TooltipProvider,
 } from './components/tooltip';
+
+export * from './components/collapsible';
+export * from './components/sidebar';
 
 // ========================================
 // Utilities

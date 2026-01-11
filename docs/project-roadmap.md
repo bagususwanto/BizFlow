@@ -81,14 +81,14 @@ gantt
 
 Referensi: [02-user-management.md](file:///Users/bagus/Project/personal/BizFlow/docs/user-flow/02-user-management.md)
 
-| Task                                     | Status  | Priority |
-| ---------------------------------------- | ------- | -------- |
-| Login/logout dengan PIN & password       | ⬜ TODO | High     |
-| Role-based access (Owner, Admin, Kasir)  | ⬜ TODO | High     |
-| CRUD User dengan multi-outlet assignment | ⬜ TODO | High     |
-| Permission management granular           | ⬜ TODO | Medium   |
-| Audit log aktivitas user                 | ⬜ TODO | Medium   |
-| Password reset & PIN management          | ⬜ TODO | Medium   |
+| Task                                     | Status     | Priority |
+| ---------------------------------------- | ---------- | -------- |
+| Login/logout dengan PIN & password       | ⬜ TODO    | High     |
+| Role-based access (Owner, Admin, Kasir)  | 🔄 BACKEND | High     |
+| CRUD User dengan multi-outlet assignment | ⬜ TODO    | High     |
+| Permission management granular           | 🔄 BACKEND | Medium   |
+| Audit log aktivitas user                 | ⬜ TODO    | Medium   |
+| Password reset & PIN management          | ⬜ TODO    | Medium   |
 
 **API Endpoints**: `/api/v1/auth/*`, `/api/v1/users/*`, `/api/v1/roles/*`
 

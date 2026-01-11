@@ -9,6 +9,10 @@ export enum UserRole {
   GUDANG = 'gudang',
 }
 
+// System roles that cannot be deleted
+export const SYSTEM_ROLES = Object.values(UserRole);
+export type SystemRole = UserRole;
+
 export enum AuditAction {
   LOGIN = 'login',
   LOGOUT = 'logout',
@@ -31,12 +35,18 @@ export enum Module {
   USERS = 'users',
 }
 
+// Helper array for available modules
+export const AVAILABLE_MODULES = Object.values(Module);
+
 export enum PermissionAction {
   CREATE = 'create',
   READ = 'read',
   UPDATE = 'update',
   DELETE = 'delete',
 }
+
+// Helper array for available actions
+export const AVAILABLE_ACTIONS = Object.values(PermissionAction);
 
 // ========================================
 // Product & Inventory Enums

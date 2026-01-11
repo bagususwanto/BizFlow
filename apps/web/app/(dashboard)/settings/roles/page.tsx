@@ -16,6 +16,7 @@ import {
 import { useAuthStore } from '@/stores/auth.store';
 import { rolesService } from '@/services/roles.service';
 import { RolesTable } from '@/components/roles/roles-table';
+import { ErrorState } from '@/components/common/error-state';
 
 export default function RolesPage() {
   const token = useAuthStore((state) => state.accessToken);
@@ -58,19 +59,10 @@ export default function RolesPage() {
 
   if (isError) {
     return (
-      <div className="flex h-[50vh] flex-col items-center justify-center gap-4 text-center">
-        <h3 className="text-lg font-semibold text-destructive">
-          Gagal memuat data role
-        </h3>
-        <p className="text-muted-foreground">
-          Terjadi kesalahan saat mengambil data dari server.
-        </p>
-        <Button
-          onClick={() => queryClient.invalidateQueries({ queryKey: ['roles'] })}
-        >
-          Coba Lagi
-        </Button>
-      </div>
+      <ErrorState
+        title="Gagal memuat data role"
+        onRetry={() => queryClient.invalidateQueries({ queryKey: ['roles'] })}
+      />
     );
   }
 

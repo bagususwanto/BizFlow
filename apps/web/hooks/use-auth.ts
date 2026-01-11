@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { authService } from '@/services/auth.service';
@@ -65,23 +65,6 @@ export function useAuth() {
       router.push('/login');
     }
   }, [accessToken, storeLogout, router]);
-
-  // Auto refresh token before expiry
-  useEffect(() => {
-    if (!isAuthenticated || !expiresAt) return;
-
-    const timeUntilExpiry = expiresAt - Date.now() - 60000; // 1 minute before expiry
-    if (timeUntilExpiry <= 0) {
-      refreshSession();
-      return;
-    }
-
-    const timeoutId = setTimeout(() => {
-      refreshSession();
-    }, timeUntilExpiry);
-
-    return () => clearTimeout(timeoutId);
-  }, [isAuthenticated, expiresAt, refreshSession]);
 
   // Require authentication - redirect to login if not authenticated
   const requireAuth = useCallback(() => {

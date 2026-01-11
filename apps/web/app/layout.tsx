@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import '@bizflow/ui/styles.css';
 import { ReactQueryProvider } from '@/providers/query-provider';
+import { AuthProvider } from '@/providers/auth-provider';
 import { Toaster } from '@bizflow/ui';
 
 const geistSans = localFont({
@@ -27,8 +28,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ReactQueryProvider>
-          {children}
-          <Toaster />
+          <AuthProvider>
+            {children}
+            <Toaster />
+          </AuthProvider>
         </ReactQueryProvider>
       </body>
     </html>

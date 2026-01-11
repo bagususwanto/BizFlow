@@ -29,6 +29,7 @@ interface AuthState {
   logout: () => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
+  setUser: (user: AuthUser) => void;
   hasPermission: (permission: string) => boolean;
 }
 
@@ -79,6 +80,10 @@ export const useAuthStore = create<AuthState>()(
 
       setError: (error) => {
         set({ error });
+      },
+
+      setUser: (user) => {
+        set({ user });
       },
 
       hasPermission: (permission: string) => {

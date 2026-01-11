@@ -4,9 +4,7 @@ import {
   CreateRoleValues,
   UpdateRoleValues,
 } from '@bizflow/types';
-
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1';
+import { apiClient } from '@/lib/fetch-client';
 
 export interface Role {
   id: string;
@@ -35,99 +33,32 @@ export interface PermissionData {
 }
 
 class RolesService {
-  private baseUrl: string;
-
-  constructor() {
-    this.baseUrl = `${API_BASE_URL}/roles`;
+  async getAll(token?: string): Promise<Role[]> {
+    return apiClient.get<Role[]>('/roles');
   }
 
-  private async handleResponse<T>(response: Response): Promise<T> {
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({
-        message: 'Terjadi kesalahan pada server',
-        statusCode: response.status,
-      }));
-      throw new Error(error.message);
-    }
-    return response.json();
+  async getPermissions(token?: string): Promise<PermissionData> {
+    return apiClient.get<PermissionData>('/roles/permissions');
   }
 
-  async getAll(token: string): Promise<Role[]> {
-    const response = await fetch(this.baseUrl, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    return this.handleResponse<Role[]>(response);
+  async getById(id: string, token?: string): Promise<Role> {
+    return apiClient.get<Role>(`/roles/${id}`);
   }
 
-  async getPermissions(token: string): Promise<PermissionData> {
-    const response = await fetch(`${this.baseUrl}/permissions`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    return this.handleResponse<PermissionData>(response);
-  }
-
-  async getById(id: string, token: string): Promise<Role> {
-    const response = await fetch(`${this.baseUrl}/${id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    return this.handleResponse<Role>(response);
-  }
-
-  async create(data: CreateRoleValues, token: string): Promise<Role> {
-    const response = await fetch(this.baseUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(data),
-    });
-
-    return this.handleResponse<Role>(response);
+  async create(data: CreateRoleValues, token?: string): Promise<Role> {
+    return apiClient.post<Role>('/roles', data);
   }
 
   async update(
     id: string,
     data: UpdateRoleValues,
-    token: string,
+    token?: string,
   ): Promise<Role> {
-    const response = await fetch(`${this.baseUrl}/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(data),
-    });
-
-    return this.handleResponse<Role>(response);
+    return apiClient.patch<Role>(`/roles/${id}`, data);
   }
 
-  async delete(id: string, token: string): Promise<void> {
-    const response = await fetch(`${this.baseUrl}/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    return this.handleResponse<void>(response);
+  async delete(id: string, token?: string): Promise<void> {
+    return apiClient.delete<void>(`/roles/${id}`);
   }
 }
 

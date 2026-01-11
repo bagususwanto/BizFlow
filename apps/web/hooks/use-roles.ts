@@ -10,16 +10,15 @@ export function useRoles() {
   const query = useQuery({
     queryKey: ['roles'],
     queryFn: () => {
-      if (!token) throw new Error('Unauthorized');
-      return rolesService.getAll(token);
+      // FetchClient handles token automatically
+      return rolesService.getAll();
     },
-    enabled: !!token,
+    enabled: !!token, // Keep enabled check if we want to wait for auth
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => {
-      if (!token) throw new Error('Unauthorized');
-      return rolesService.delete(id, token);
+      return rolesService.delete(id);
     },
     onSuccess: () => {
       toast.success('Role berhasil dihapus');

@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 export const loginSchema = z.object({
-  email: z.string().email({
-    message: 'Silakan masukkan email yang valid.',
+  username: z.string().min(1, {
+    message: 'Username wajib diisi.',
   }),
   password: z.string().min(6, {
     message: 'Password minimal 6 karakter.',

@@ -74,7 +74,7 @@ export interface ListQueryParams extends SearchParams, DateRangeParams {
 // ========================================
 
 export interface LoginRequest {
-  email: string;
+  username: string;
   password: string;
 }
 

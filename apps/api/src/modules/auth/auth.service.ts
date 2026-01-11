@@ -37,14 +37,14 @@ export class AuthService {
    * Login with email and password
    */
   async login(dto: LoginDto, ipAddress?: string, userAgent?: string) {
-    const { email, password } = dto;
+    const { username, password } = dto;
 
     // Check if account is locked
-    this.checkAccountLock(email);
+    this.checkAccountLock(username);
 
     // Find user with role and permissions
     const user = await this.prisma.user.findUnique({
-      where: { email },
+      where: { username },
       include: {
         role: {
           include: {
@@ -60,8 +60,8 @@ export class AuthService {
     });
 
     if (!user) {
-      this.recordFailedAttempt(email);
-      throw new UnauthorizedException('Email atau password tidak valid');
+      this.recordFailedAttempt(username);
+      throw new UnauthorizedException('Username atau password tidak valid');
     }
 
     if (!user.isActive) {
@@ -73,12 +73,12 @@ export class AuthService {
     // Verify password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      this.recordFailedAttempt(email);
-      throw new UnauthorizedException('Email atau password tidak valid');
+      this.recordFailedAttempt(username);
+      throw new UnauthorizedException('Username atau password tidak valid');
     }
 
     // Clear failed attempts on successful login
-    this.clearFailedAttempts(email);
+    this.clearFailedAttempts(username);
 
     // Generate tokens
     const tokens = await this.generateTokens(user);
@@ -98,7 +98,7 @@ export class AuthService {
       userAgent,
     });
 
-    this.logger.log(`User ${user.email} logged in successfully`);
+    this.logger.log(`User ${user.username} logged in successfully`);
 
     return {
       ...tokens,

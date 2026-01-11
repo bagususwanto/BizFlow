@@ -1,9 +1,7 @@
 'use client';
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import { toast } from 'sonner';
 
 import {
   Button,
@@ -13,42 +11,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@bizflow/ui';
-import { useAuthStore } from '@/stores/auth.store';
-import { rolesService } from '@/services/roles.service';
 import { RolesTable } from '@/components/roles/roles-table';
 import { ErrorState } from '@/components/common/error-state';
 import { LoadingState } from '@/components/common/loading-state';
+import { useRoles } from '@/hooks/use-roles';
 
 export default function RolesPage() {
-  const token = useAuthStore((state) => state.accessToken);
-  const queryClient = useQueryClient();
-
-  const {
-    data: roles,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['roles'],
-    queryFn: () => {
-      if (!token) throw new Error('Unauthorized');
-      return rolesService.getAll(token);
-    },
-    enabled: !!token,
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => {
-      if (!token) throw new Error('Unauthorized');
-      return rolesService.delete(id, token);
-    },
-    onSuccess: () => {
-      toast.success('Role berhasil dihapus');
-      queryClient.invalidateQueries({ queryKey: ['roles'] });
-    },
-    onError: (error: Error) => {
-      toast.error(error.message);
-    },
-  });
+  const { roles, isLoading, isError, deleteRole, isDeleting, refetch } =
+    useRoles();
 
   if (isLoading) {
     return <LoadingState />;
@@ -56,10 +26,7 @@ export default function RolesPage() {
 
   if (isError) {
     return (
-      <ErrorState
-        title="Gagal memuat data role"
-        onRetry={() => queryClient.invalidateQueries({ queryKey: ['roles'] })}
-      />
+      <ErrorState title="Gagal memuat data role" onRetry={() => refetch()} />
     );
   }
 
@@ -92,8 +59,8 @@ export default function RolesPage() {
         <CardContent>
           <RolesTable
             data={roles || []}
-            onDelete={(id) => deleteMutation.mutate(id)}
-            isDeleting={deleteMutation.isPending}
+            onDelete={(id) => deleteRole(id)}
+            isDeleting={isDeleting}
           />
         </CardContent>
       </Card>

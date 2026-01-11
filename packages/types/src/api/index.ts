@@ -105,6 +105,7 @@ export interface TokenPayload {
   sub: string;
   username: string;
   role: string;
+  permissions: string[];
   outlets: string[];
   iat: number;
   exp: number;

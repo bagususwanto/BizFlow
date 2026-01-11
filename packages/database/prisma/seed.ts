@@ -1,11 +1,16 @@
 import { PrismaClient } from '@prisma/client';
-import { hash } from 'crypto';
+import * as bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
-// Simple password hash (use bcrypt in production)
+// Hash password using bcrypt
 function hashPassword(password: string): string {
-  return hash('sha256', password);
+  return bcrypt.hashSync(password, 12);
+}
+
+// Hash PIN using bcrypt
+function hashPin(pin: string): string {
+  return bcrypt.hashSync(pin, 12);
 }
 
 async function main() {
@@ -157,7 +162,7 @@ async function main() {
       username: 'admin',
       email: 'admin@bizflow.local',
       password: hashPassword('admin123'),
-      pin: '1234',
+      pin: hashPin('1234'),
       name: 'Administrator',
       roleId: ownerRole.id,
       isActive: true,

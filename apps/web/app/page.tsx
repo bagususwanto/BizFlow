@@ -1,147 +1,348 @@
-import type { Link } from '@repo/api';
-import { Button } from '@repo/ui/button';
-import Image, { type ImageProps } from 'next/image';
+'use client';
 
-import styles from './page.module.css';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-type Props = Omit<ImageProps, 'src'> & {
-  srcLight: string;
-  srcDark: string;
-};
+import { useAuth } from '@/hooks/use-auth';
 
-const ThemeImage = (props: Props) => {
-  const { srcLight, srcDark, ...rest } = props;
+export default function DashboardPage() {
+  const router = useRouter();
+  const { user, isAuthenticated, logout, isLoading } = useAuth();
 
-  return (
-    <>
-      <Image {...rest} src={srcLight} className="imgLight" />
-      <Image {...rest} src={srcDark} className="imgDark" />
-    </>
-  );
-};
-
-async function getLinks(): Promise<Link[]> {
-  try {
-    const res = await fetch('http://localhost:3000/links', {
-      cache: 'no-store',
-    });
-
-    if (!res.ok) {
-      throw new Error('Failed to fetch links');
+  useEffect(() => {
+    if (!isAuthenticated && !isLoading) {
+      router.push('/login');
     }
+  }, [isAuthenticated, isLoading, router]);
 
-    return res.json();
-  } catch (error) {
-    console.error('Error fetching links:', error);
-    return [];
+  if (!isAuthenticated || isLoading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner" />
+        <p>Memuat...</p>
+        <style jsx>{`
+          .loading-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            background: #0f172a;
+            color: #94a3b8;
+          }
+          .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid #1e293b;
+            border-top-color: #4f46e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+          }
+          @keyframes spin {
+            to {
+              transform: rotate(360deg);
+            }
+          }
+        `}</style>
+      </div>
+    );
   }
-}
-
-export default async function Home() {
-  const links = await getLinks();
 
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <ThemeImage
-          className={styles.logo}
-          srcLight="turborepo-dark.svg"
-          srcDark="turborepo-light.svg"
-          alt="Turborepo logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>apps/web/app/page.tsx</code>
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new/clone?demo-description=Learn+to+implement+a+monorepo+with+a+two+Next.js+sites+that+has+installed+three+local+packages.&demo-image=%2F%2Fimages.ctfassets.net%2Fe5382hct74si%2F4K8ZISWAzJ8X1504ca0zmC%2F0b21a1c6246add355e55816278ef54bc%2FBasic.png&demo-title=Monorepo+with+Turborepo&demo-url=https%3A%2F%2Fexamples-basic-web.vercel.sh%2F&from=templates&project-name=Monorepo+with+Turborepo&repository-name=monorepo-turborepo&repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fturborepo%2Ftree%2Fmain%2Fexamples%2Fbasic&root-directory=apps%2Fdocs&skippable-integrations=1&teamSlug=vercel&utm_source=create-turbo"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="dashboard">
+      <header className="dashboard__header">
+        <div className="dashboard__brand">
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 48 48"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://turborepo.com/docs?utm_source"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-
-        <Button appName="web" className={styles.secondary}>
-          Open alert
-        </Button>
-
-        {links.length > 0 ? (
-          <div className={styles.ctas}>
-            {links.map((link) => (
-              <a
-                key={link.id}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                title={link.description}
-                className={styles.secondary}
+            <rect width="48" height="48" rx="12" fill="url(#logo-gradient)" />
+            <path d="M14 16h20v4H18v6h12v4H18v6h16v4H14V16z" fill="white" />
+            <defs>
+              <linearGradient
+                id="logo-gradient"
+                x1="0"
+                y1="0"
+                x2="48"
+                y2="48"
+                gradientUnits="userSpaceOnUse"
               >
-                {link.title}
-              </a>
-            ))}
+                <stop stopColor="#4F46E5" />
+                <stop offset="1" stopColor="#7C3AED" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <h1>BizFlow</h1>
+        </div>
+        <div className="dashboard__user">
+          <div className="dashboard__user-info">
+            <span className="dashboard__user-name">{user?.name}</span>
+            <span className="dashboard__user-role">{user?.role}</span>
           </div>
-        ) : (
-          <div style={{ color: '#666' }}>
-            No links available. Make sure the NestJS API is running on port
-            3000.
+          <button onClick={logout} className="dashboard__logout">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path
+                d="M7.5 17.5H4.167A1.667 1.667 0 012.5 15.833V4.167A1.667 1.667 0 014.167 2.5H7.5M13.333 14.167L17.5 10l-4.167-4.167M17.5 10H7.5"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            Logout
+          </button>
+        </div>
+      </header>
+
+      <main className="dashboard__main">
+        <h2>Dashboard</h2>
+        <p className="dashboard__welcome">
+          Selamat datang kembali, <strong>{user?.name}</strong>!
+        </p>
+
+        <div className="dashboard__cards">
+          <div className="dashboard__card">
+            <div className="dashboard__card-icon dashboard__card-icon--blue">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M9 22V12h6v10"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <h3>Point of Sale</h3>
+            <p>Kelola transaksi penjualan</p>
           </div>
-        )}
+
+          <div className="dashboard__card">
+            <div className="dashboard__card-icon dashboard__card-icon--green">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <h3>Produk</h3>
+            <p>Kelola katalog produk</p>
+          </div>
+
+          <div className="dashboard__card">
+            <div className="dashboard__card-icon dashboard__card-icon--purple">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M22 12h-4l-3 9L9 3l-3 9H2"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <h3>Laporan</h3>
+            <p>Lihat laporan penjualan</p>
+          </div>
+
+          <div className="dashboard__card">
+            <div className="dashboard__card-icon dashboard__card-icon--orange">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="3"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+                <path
+                  d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+              </svg>
+            </div>
+            <h3>Pengaturan</h3>
+            <p>Konfigurasi sistem</p>
+          </div>
+        </div>
       </main>
 
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com/templates?search=turborepo&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://turborepo.com?utm_source=create-turbo"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to turborepo.com →
-        </a>
-      </footer>
+      <style jsx>{`
+        .dashboard {
+          min-height: 100vh;
+          background: #0f172a;
+          color: #e2e8f0;
+        }
+
+        .dashboard__header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 1rem 2rem;
+          background: rgba(30, 41, 59, 0.8);
+          border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+          backdrop-filter: blur(12px);
+        }
+
+        .dashboard__brand {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+        }
+
+        .dashboard__brand h1 {
+          font-size: 1.25rem;
+          font-weight: 600;
+          margin: 0;
+          color: white;
+        }
+
+        .dashboard__user {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+        }
+
+        .dashboard__user-info {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+        }
+
+        .dashboard__user-name {
+          font-weight: 500;
+          color: white;
+        }
+
+        .dashboard__user-role {
+          font-size: 0.75rem;
+          color: #94a3b8;
+          text-transform: capitalize;
+        }
+
+        .dashboard__logout {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.5rem 1rem;
+          background: rgba(239, 68, 68, 0.1);
+          border: 1px solid rgba(239, 68, 68, 0.2);
+          border-radius: 0.5rem;
+          color: #f87171;
+          font-size: 0.875rem;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+
+        .dashboard__logout:hover {
+          background: rgba(239, 68, 68, 0.2);
+        }
+
+        .dashboard__main {
+          padding: 2rem;
+          max-width: 1200px;
+          margin: 0 auto;
+        }
+
+        .dashboard__main h2 {
+          font-size: 1.75rem;
+          font-weight: 600;
+          margin: 0 0 0.5rem;
+          color: white;
+        }
+
+        .dashboard__welcome {
+          color: #94a3b8;
+          margin: 0 0 2rem;
+        }
+
+        .dashboard__cards {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+          gap: 1.5rem;
+        }
+
+        .dashboard__card {
+          padding: 1.5rem;
+          background: rgba(30, 41, 59, 0.6);
+          border: 1px solid rgba(148, 163, 184, 0.1);
+          border-radius: 1rem;
+          cursor: pointer;
+          transition:
+            transform 0.2s,
+            border-color 0.2s;
+        }
+
+        .dashboard__card:hover {
+          transform: translateY(-2px);
+          border-color: rgba(79, 70, 229, 0.3);
+        }
+
+        .dashboard__card h3 {
+          margin: 1rem 0 0.5rem;
+          font-size: 1.125rem;
+          font-weight: 600;
+          color: white;
+        }
+
+        .dashboard__card p {
+          margin: 0;
+          color: #94a3b8;
+          font-size: 0.875rem;
+        }
+
+        .dashboard__card-icon {
+          width: 48px;
+          height: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 0.75rem;
+        }
+
+        .dashboard__card-icon--blue {
+          background: rgba(59, 130, 246, 0.15);
+          color: #60a5fa;
+        }
+
+        .dashboard__card-icon--green {
+          background: rgba(34, 197, 94, 0.15);
+          color: #4ade80;
+        }
+
+        .dashboard__card-icon--purple {
+          background: rgba(168, 85, 247, 0.15);
+          color: #c084fc;
+        }
+
+        .dashboard__card-icon--orange {
+          background: rgba(249, 115, 22, 0.15);
+          color: #fb923c;
+        }
+      `}</style>
     </div>
   );
 }

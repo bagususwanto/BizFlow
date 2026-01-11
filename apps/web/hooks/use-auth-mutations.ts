@@ -30,7 +30,7 @@ export function useLogoutMutation() {
   return useMutation({
     mutationFn: async () => {
       if (accessToken) {
-        await authService.logout(accessToken);
+        await authService.logout();
       }
     },
     onSuccess: () => {

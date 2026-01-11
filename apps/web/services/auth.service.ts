@@ -4,9 +4,7 @@ import type {
   LoginResponse,
   RefreshTokenRequest,
 } from '@bizflow/types';
-
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1';
+import { apiClient } from '@/lib/fetch-client';
 
 // Re-export types for convenience
 export type {
@@ -27,90 +25,28 @@ export interface UserForPin {
 export type RefreshResponse = Omit<LoginResponse, 'user'>;
 
 class AuthService {
-  private baseUrl: string;
-
-  constructor() {
-    this.baseUrl = `${API_BASE_URL}/auth`;
-  }
-
-  private async handleResponse<T>(response: Response): Promise<T> {
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({
-        message: 'Terjadi kesalahan pada server',
-        statusCode: response.status,
-      }));
-      throw new Error(error.message);
-    }
-    return response.json();
-  }
-
   async login(data: LoginRequest): Promise<LoginResponse> {
-    const response = await fetch(`${this.baseUrl}/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-
-    return this.handleResponse<LoginResponse>(response);
+    return apiClient.post<LoginResponse>('/auth/login', data);
   }
 
   async pinLogin(data: LoginWithPinRequest): Promise<LoginResponse> {
-    const response = await fetch(`${this.baseUrl}/pin-login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-
-    return this.handleResponse<LoginResponse>(response);
+    return apiClient.post<LoginResponse>('/auth/pin-login', data);
   }
 
   async refresh(refreshToken: string): Promise<RefreshResponse> {
-    const response = await fetch(`${this.baseUrl}/refresh`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ refreshToken } satisfies RefreshTokenRequest),
-    });
-
-    return this.handleResponse<RefreshResponse>(response);
+    return apiClient.post<RefreshResponse>('/auth/refresh', { refreshToken });
   }
 
-  async logout(accessToken: string): Promise<void> {
-    await fetch(`${this.baseUrl}/logout`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+  async logout(): Promise<void> {
+    return apiClient.post<void>('/auth/logout', {});
   }
 
   async getUsersForPin(): Promise<UserForPin[]> {
-    const response = await fetch(`${this.baseUrl}/users-for-pin`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    return this.handleResponse<UserForPin[]>(response);
+    return apiClient.get<UserForPin[]>('/auth/users-for-pin');
   }
 
-  async getMe(accessToken: string): Promise<LoginResponse['user']> {
-    const response = await fetch(`${this.baseUrl}/me`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    return this.handleResponse<LoginResponse['user']>(response);
+  async getMe(): Promise<LoginResponse['user']> {
+    return apiClient.get<LoginResponse['user']>('/auth/me');
   }
 }
 

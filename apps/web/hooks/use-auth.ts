@@ -56,7 +56,7 @@ export function useAuth() {
   const logout = useCallback(async () => {
     try {
       if (accessToken) {
-        await authService.logout(accessToken);
+        await authService.logout();
       }
     } catch {
       // Ignore logout errors

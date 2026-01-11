@@ -11,6 +11,7 @@ import * as bcrypt from 'bcryptjs';
 import { PrismaService } from '../../prisma';
 import { LoginDto, PinLoginDto } from './dto';
 import type { JwtPayload } from './strategies/jwt.strategy';
+import { AuditLogService } from '../audit-log';
 
 interface LoginAttempt {
   count: number;
@@ -31,11 +32,9 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly auditLogService: AuditLogService,
   ) {}
 
-  /**
-   * Login with email and password
-   */
   async login(dto: LoginDto, ipAddress?: string, userAgent?: string) {
     const { username, password } = dto;
 
@@ -90,7 +89,7 @@ export class AuthService {
     });
 
     // Create audit log
-    await this.createAuditLog({
+    await this.auditLogService.create({
       userId: user.id,
       action: 'login',
       module: 'auth',
@@ -116,9 +115,6 @@ export class AuthService {
     };
   }
 
-  /**
-   * Login with PIN (quick login)
-   */
   async pinLogin(dto: PinLoginDto, ipAddress?: string, userAgent?: string) {
     const { userId, pin } = dto;
 
@@ -168,7 +164,7 @@ export class AuthService {
     });
 
     // Create audit log
-    await this.createAuditLog({
+    await this.auditLogService.create({
       userId: user.id,
       action: 'login',
       module: 'auth',
@@ -194,9 +190,6 @@ export class AuthService {
     };
   }
 
-  /**
-   * Refresh access token
-   */
   async refreshTokens(userId: string, refreshToken: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -224,15 +217,12 @@ export class AuthService {
     return this.generateTokens(user);
   }
 
-  /**
-   * Logout user
-   */
   async logout(userId: string, ipAddress?: string, userAgent?: string) {
     // In a production environment, you would invalidate the refresh token
     // by removing it from the database or adding it to a blacklist
 
     // Create audit log
-    await this.createAuditLog({
+    await this.auditLogService.create({
       userId,
       action: 'logout',
       module: 'auth',
@@ -245,9 +235,6 @@ export class AuthService {
     return { message: 'Logout berhasil' };
   }
 
-  /**
-   * Get list of users for PIN login selection
-   */
   async getUsersForPinLogin() {
     const users = await this.prisma.user.findMany({
       where: {
@@ -265,9 +252,6 @@ export class AuthService {
     return users;
   }
 
-  /**
-   * Generate access and refresh tokens
-   */
   private async generateTokens(user: {
     id: string;
     username: string;
@@ -306,42 +290,6 @@ export class AuthService {
     };
   }
 
-  /**
-   * Create audit log entry
-   */
-  private async createAuditLog(data: {
-    userId: string;
-    action: string;
-    module: string;
-    entityId?: string;
-    entityType?: string;
-    oldValue?: string;
-    newValue?: string;
-    ipAddress?: string;
-    userAgent?: string;
-  }) {
-    try {
-      await this.prisma.auditLog.create({
-        data: {
-          userId: data.userId,
-          action: data.action,
-          module: data.module,
-          entityId: data.entityId,
-          entityType: data.entityType,
-          oldValue: data.oldValue,
-          newValue: data.newValue,
-          ipAddress: data.ipAddress,
-          userAgent: data.userAgent,
-        },
-      });
-    } catch (error) {
-      this.logger.error('Failed to create audit log', error);
-    }
-  }
-
-  /**
-   * Check if account is locked due to too many failed attempts
-   */
   private checkAccountLock(username: string) {
     const attempt = loginAttempts.get(username);
     if (attempt?.lockedUntil && new Date() < attempt.lockedUntil) {
@@ -354,9 +302,6 @@ export class AuthService {
     }
   }
 
-  /**
-   * Record a failed login attempt
-   */
   private recordFailedAttempt(username: string) {
     const attempt = loginAttempts.get(username) || {
       count: 0,
@@ -376,9 +321,6 @@ export class AuthService {
     loginAttempts.set(username, attempt);
   }
 
-  /**
-   * Clear failed login attempts
-   */
   private clearFailedAttempts(username: string) {
     loginAttempts.delete(username);
   }

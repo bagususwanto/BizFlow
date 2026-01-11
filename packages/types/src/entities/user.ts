@@ -56,6 +56,18 @@ export interface AuditLog {
   user?: User;
 }
 
+export interface CreateAuditLogInput {
+  userId: string;
+  action: string;
+  module: string;
+  entityId?: string;
+  entityType?: string;
+  oldValue?: string;
+  newValue?: string;
+  ipAddress?: string;
+  userAgent?: string;
+}
+
 // ========================================
 // Outlet Entity
 // ========================================

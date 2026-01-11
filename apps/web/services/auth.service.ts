@@ -3,6 +3,7 @@ import type {
   LoginWithPinRequest,
   LoginResponse,
   RefreshTokenRequest,
+  UserForPin,
 } from '@bizflow/types';
 import { apiClient } from '@/lib/fetch-client';
 
@@ -13,13 +14,6 @@ export type {
   LoginResponse,
   RefreshTokenRequest,
 };
-
-// Extended type for user in PIN login selection
-export interface UserForPin {
-  id: string;
-  username: string;
-  name: string;
-}
 
 // Type for refresh response (tokens only)
 export type RefreshResponse = Omit<LoginResponse, 'user'>;

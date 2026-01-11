@@ -112,6 +112,12 @@ export interface TokenPayload {
   exp: number;
 }
 
+export interface UserForPin {
+  id: string;
+  username: string;
+  name: string;
+}
+
 // ========================================
 // Error Codes
 // ========================================

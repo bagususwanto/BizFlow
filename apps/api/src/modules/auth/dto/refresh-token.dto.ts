@@ -1,7 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { createZodDto } from 'nestjs-zod';
+import { refreshTokenSchema } from '@bizflow/types/schemas';
 
-export class RefreshTokenDto {
-  @IsString()
-  @IsNotEmpty({ message: 'Refresh token wajib diisi' })
-  refreshToken: string;
-}
+export class RefreshTokenDto extends createZodDto(refreshTokenSchema) {}

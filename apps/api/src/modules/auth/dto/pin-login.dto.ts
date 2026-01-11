@@ -1,12 +1,4 @@
-import { IsNotEmpty, IsString, Length } from 'class-validator';
+import { createZodDto } from 'nestjs-zod';
+import { pinLoginSchema } from '@bizflow/types/schemas';
 
-export class PinLoginDto {
-  @IsString()
-  @IsNotEmpty({ message: 'User ID wajib diisi' })
-  userId: string;
-
-  @IsString()
-  @IsNotEmpty({ message: 'PIN wajib diisi' })
-  @Length(4, 6, { message: 'PIN harus 4-6 digit' })
-  pin: string;
-}
+export class PinLoginDto extends createZodDto(pinLoginSchema) {}

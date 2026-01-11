@@ -8,7 +8,7 @@ import {
   Get,
   Req,
 } from '@nestjs/common';
-import { Request } from 'express';
+import type { Request } from 'express';
 
 import { CurrentUser } from '../../common/decorators';
 import { JwtAuthGuard, JwtRefreshGuard } from '../../common/guards';

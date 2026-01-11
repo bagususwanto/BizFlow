@@ -26,6 +26,11 @@
       "types": "./dist/enums/index.d.ts",
       "import": "./dist/enums/index.mjs",
       "require": "./dist/enums/index.js"
+    },
+    "./schemas": {
+      "types": "./dist/schemas/index.d.ts",
+      "import": "./dist/schemas/index.mjs",
+      "require": "./dist/schemas/index.js"
     }
   },
   "scripts": {
@@ -42,5 +47,8 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "dependencies": {
+    "zod": "^4.3.5"
+  }
 }

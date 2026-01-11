@@ -6,6 +6,7 @@ export default defineConfig({
     'entities/index': 'src/entities/index.ts',
     'api/index': 'src/api/index.ts',
     'enums/index': 'src/enums/index.ts',
+    'schemas/index': 'src/schemas/index.ts',
   },
   format: ['cjs', 'esm'],
   dts: true,

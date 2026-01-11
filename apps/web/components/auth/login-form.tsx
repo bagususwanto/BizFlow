@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 import {
   Button,
@@ -24,10 +25,12 @@ import {
 } from '@bizflow/ui';
 
 import { loginSchema, type LoginValues } from '@bizflow/types/schemas';
+import { useLoginMutation } from '@/hooks/use-auth-mutations';
 
 export function LoginForm() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const { mutate: login, isPending } = useLoginMutation();
 
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
@@ -37,15 +40,14 @@ export function LoginForm() {
     },
   });
 
-  async function onSubmit(values: LoginValues) {
-    setIsLoading(true);
-    // TODO: Implement login logic
-    console.log(values);
-
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
+  function onSubmit(values: LoginValues) {
+    login(values, {
+      onError: (error) => {
+        form.setError('root', {
+          message: error.message || 'Login failed',
+        });
+      },
+    });
   }
 
   return (
@@ -108,8 +110,15 @@ export function LoginForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+
+            {form.formState.errors.root && (
+              <div className="text-sm font-medium text-destructive">
+                {form.formState.errors.root.message}
+              </div>
+            )}
+
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Masuk
             </Button>
           </form>

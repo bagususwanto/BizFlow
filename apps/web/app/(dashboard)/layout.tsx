@@ -5,6 +5,7 @@ import {
   SidebarTrigger,
   Separator,
 } from '@bizflow/ui';
+import { DynamicBreadcrumb } from '@/components/layout/dynamic-breadcrumb';
 
 export default function DashboardLayout({
   children,
@@ -19,7 +20,7 @@ export default function DashboardLayout({
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
-            {/* Breadcrumb could go here */}
+            <DynamicBreadcrumb />
           </div>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 pt-0">

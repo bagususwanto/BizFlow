@@ -23,11 +23,6 @@ import {
 
 // BizFlow Navigation Data
 const data = {
-  user: {
-    name: 'User',
-    email: 'user@example.com',
-    avatar: '/avatars/01.png',
-  },
   navMain: [
     {
       title: 'Dashboard',
@@ -79,7 +74,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

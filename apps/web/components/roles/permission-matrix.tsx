@@ -2,13 +2,13 @@ import {
   Accordion,
   AccordionContent,
   AccordionItem,
-  AccordionTrigger,
+  AccordionPrimitive,
   Checkbox,
   Label,
-  Badge,
 } from '@bizflow/ui';
-import type { PermissionData, PermissionNode } from '@/services/roles.service';
-import { AVAILABLE_ACTIONS } from '@bizflow/types';
+import type { PermissionData } from '@/services/roles.service';
+import { ChevronDown } from 'lucide-react';
+import { cn } from '@bizflow/ui/utils';
 
 interface PermissionMatrixProps {
   data: PermissionData;
@@ -80,21 +80,6 @@ export function PermissionMatrix({
     }
   };
 
-  const getActionColor = (action: string) => {
-    switch (action) {
-      case 'create':
-        return 'bg-green-100 text-green-800 hover:bg-green-100/80';
-      case 'read':
-        return 'bg-blue-100 text-blue-800 hover:bg-blue-100/80';
-      case 'update':
-        return 'bg-orange-100 text-orange-800 hover:bg-orange-100/80';
-      case 'delete':
-        return 'bg-red-100 text-red-800 hover:bg-red-100/80';
-      default:
-        return 'bg-gray-100 text-gray-800 hover:bg-gray-100/80';
-    }
-  };
-
   return (
     <div className="space-y-4 border rounded-lg p-4 bg-muted/10">
       <div className="flex items-center justify-between mb-4">
@@ -109,40 +94,44 @@ export function PermissionMatrix({
       <Accordion type="multiple" className="w-full">
         {modules.map((module) => (
           <AccordionItem value={module} key={module}>
-            <AccordionTrigger className="hover:no-underline px-4 bg-card hover:bg-accent/50 rounded-lg mb-2 border">
-              <div className="flex items-center gap-4 w-full">
-                <div
-                  className="flex items-center gap-2"
-                  onClick={(e) => e.stopPropagation()}
+            <AccordionPrimitive.Header className="flex items-center justify-between py-4 font-medium transition-all [&[data-state=open]>button>svg]:rotate-180 hover:no-underline px-4 bg-card hover:bg-accent/50 rounded-lg mb-2 border">
+              <div
+                className="flex items-center gap-2"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Checkbox
+                  id={`module-${module}`}
+                  checked={
+                    isModuleSelected(module) ||
+                    (isModuleIndeterminate(module) ? 'indeterminate' : false)
+                  }
+                  onCheckedChange={() => handleModuleToggle(module)}
+                  disabled={disabled}
+                />
+                <Label
+                  htmlFor={`module-${module}`}
+                  className="cursor-pointer font-semibold capitalize"
                 >
-                  <Checkbox
-                    id={`module-${module}`}
-                    checked={isModuleSelected(module) || 'indeterminate'}
-                    // @ts-ignore - Indeterminate state fix for some checkbox implementations
-                    // But actually Shadcn UI checkbox might not support 'indeterminate' string directly in props if not forwarding ref correctly?
-                    // Let's assume standard behavior or just checked/unchecked for now if it breaks.
-                    // Actually Shadcn Checkbox uses Radix UI which supports 'indeterminate'.
-                    // However, in React checked prop is boolean | 'indeterminate' sometimes.
-                    // Let's safe cast.
-                    onCheckedChange={() => handleModuleToggle(module)}
-                    disabled={disabled}
-                  />
-                  <Label
-                    htmlFor={`module-${module}`}
-                    className="cursor-pointer font-semibold capitalize"
-                  >
-                    {module}
-                  </Label>
-                </div>
-                <div className="text-xs text-muted-foreground ml-auto mr-4">
-                  {
-                    selectedPermissions.filter((p) => p.module === module)
-                      .length
-                  }{' '}
-                  / {actions.length} akses
-                </div>
+                  {module}
+                </Label>
               </div>
-            </AccordionTrigger>
+              <AccordionPrimitive.Trigger
+                className={cn(
+                  'flex flex-1 items-center justify-end py-2 font-medium transition-all [&[data-state=open]>svg]:rotate-180',
+                )}
+              >
+                <div className="flex items-center gap-4 mr-2">
+                  <div className="text-xs text-muted-foreground no-underline">
+                    {
+                      selectedPermissions.filter((p) => p.module === module)
+                        .length
+                    }{' '}
+                    / {actions.length} akses
+                  </div>
+                  <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+                </div>
+              </AccordionPrimitive.Trigger>
+            </AccordionPrimitive.Header>
             <AccordionContent className="pt-2 pb-4 px-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {actions.map((action) => (

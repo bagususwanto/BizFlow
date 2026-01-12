@@ -44,6 +44,7 @@ export {
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
+  AccordionPrimitive,
 } from './components/accordion';
 export { Alert, AlertTitle, AlertDescription } from './components/alert';
 export {

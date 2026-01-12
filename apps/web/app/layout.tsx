@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
-import '@bizflow/ui/styles.css';
+import './globals.css';
 import { ReactQueryProvider } from '@/providers/query-provider';
 import { AuthProvider } from '@/providers/auth-provider';
 import { Toaster } from '@bizflow/ui';

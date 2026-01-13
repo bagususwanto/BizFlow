@@ -21,7 +21,14 @@ import {
   AlertDialogTitle,
   Badge,
 } from '@bizflow/ui';
-import { MoreHorizontal, Pencil, Trash2, Users } from 'lucide-react';
+import {
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+  Users,
+  ArrowUp,
+  ArrowDown,
+} from 'lucide-react';
 import { useState } from 'react';
 import Link from 'next/link';
 
@@ -31,14 +38,33 @@ interface RolesTableProps {
   data: Role[];
   onDelete: (id: string) => void;
   isDeleting?: boolean;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc';
+  onSortChange: (field: string) => void;
 }
 
 export function RolesTable({
   data,
   onDelete,
   isDeleting = false,
+  sortBy,
+  sortOrder,
+  onSortChange,
 }: RolesTableProps) {
   const [roleToDelete, setRoleToDelete] = useState<Role | null>(null);
+
+  const SortIcon = ({ field }: { field: string }) => {
+    if (sortBy !== field) return null;
+    return sortOrder === 'asc' ? (
+      <ArrowUp className="ml-1 h-3 w-3" />
+    ) : (
+      <ArrowDown className="ml-1 h-3 w-3" />
+    );
+  };
+
+  const handleSort = (field: string) => {
+    onSortChange(field);
+  };
 
   return (
     <>
@@ -46,10 +72,34 @@ export function RolesTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Nama Role</TableHead>
-              <TableHead>Deskripsi</TableHead>
+              <TableHead
+                className="cursor-pointer"
+                onClick={() => handleSort('name')}
+              >
+                <div className="flex items-center">
+                  Nama Role
+                  <SortIcon field="name" />
+                </div>
+              </TableHead>
+              <TableHead
+                className="cursor-pointer"
+                onClick={() => handleSort('description')}
+              >
+                <div className="flex items-center">
+                  Deskripsi
+                  <SortIcon field="description" />
+                </div>
+              </TableHead>
               <TableHead>Pengguna</TableHead>
-              <TableHead>Update Terakhir</TableHead>
+              <TableHead
+                className="cursor-pointer"
+                onClick={() => handleSort('updatedAt')}
+              >
+                <div className="flex items-center">
+                  Update Terakhir
+                  <SortIcon field="updatedAt" />
+                </div>
+              </TableHead>
               <TableHead className="w-[70px]"></TableHead>
             </TableRow>
           </TableHeader>

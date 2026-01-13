@@ -86,7 +86,7 @@ export function NavMain({
                             </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
-                      );
+                      ); 
                     })}
                   </SidebarMenuSub>
                 </CollapsibleContent>

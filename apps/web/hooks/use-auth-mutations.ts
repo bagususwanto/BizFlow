@@ -17,7 +17,7 @@ export function useLoginMutation() {
         refreshToken: response.refreshToken,
         expiresIn: response.expiresIn,
       });
-      router.push('/');
+      router.push('/dashboard');
     },
   });
 }

@@ -22,7 +22,7 @@ export type RefreshResponse = Omit<LoginResponse, 'user'>;
 class AuthService {
   async login(data: LoginRequest): Promise<LoginResponse> {
     const res = await apiClient.post<ApiResponse<LoginResponse>>(
-      '/auth/login',
+      '/core/auth/login',
       data,
     );
     return res.data!;
@@ -30,7 +30,7 @@ class AuthService {
 
   async pinLogin(data: LoginWithPinRequest): Promise<LoginResponse> {
     const res = await apiClient.post<ApiResponse<LoginResponse>>(
-      '/auth/pin-login',
+      '/core/auth/pin-login',
       data,
     );
     return res.data!;
@@ -38,7 +38,7 @@ class AuthService {
 
   async refresh(refreshToken: string): Promise<RefreshResponse> {
     const res = await apiClient.post<ApiResponse<RefreshResponse>>(
-      '/auth/refresh',
+      '/core/auth/refresh',
       {
         refreshToken,
       },
@@ -47,19 +47,19 @@ class AuthService {
   }
 
   async logout(): Promise<void> {
-    await apiClient.post<ApiResponse<void>>('/auth/logout', {});
+    await apiClient.post<ApiResponse<void>>('/core/auth/logout', {});
   }
 
   async getUsersForPin(): Promise<UserForPin[]> {
     const res = await apiClient.get<ApiResponse<UserForPin[]>>(
-      '/auth/users-for-pin',
+      '/core/auth/users-for-pin',
     );
     return res.data!;
   }
 
   async getMe(): Promise<LoginResponse['user']> {
     const res =
-      await apiClient.get<ApiResponse<LoginResponse['user']>>('/auth/me');
+      await apiClient.get<ApiResponse<LoginResponse['user']>>('/core/auth/me');
     return res.data!;
   }
 }

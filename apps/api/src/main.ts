@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ZodValidationPipe } from 'nestjs-zod';
 
 import { AppModule } from './app.module';
+import { HttpExceptionFilter, AllExceptionsFilter } from './common/filters';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,6 +15,9 @@ async function bootstrap() {
     origin: process.env.CORS_ORIGIN || 'http://localhost:3001',
     credentials: true,
   });
+
+  // Global exception filters (order matters: more specific first)
+  app.useGlobalFilters(new AllExceptionsFilter(), new HttpExceptionFilter());
 
   // Global validation pipe
   app.useGlobalPipes(new ZodValidationPipe());

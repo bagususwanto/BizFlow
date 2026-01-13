@@ -1,16 +1,4 @@
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-  Button,
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -19,20 +7,13 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  Badge,
 } from '@bizflow/ui';
-import {
-  MoreHorizontal,
-  Pencil,
-  Trash2,
-  Users,
-  ArrowUp,
-  ArrowDown,
-} from 'lucide-react';
-import { useState } from 'react';
-import Link from 'next/link';
+import { useState, useMemo } from 'react';
+import { SortingState } from '@tanstack/react-table';
 
 import type { Role } from '@/services/roles.service';
+import { DataTable } from '../ui/data-table';
+import { getColumns } from './columns';
 
 interface RolesTableProps {
   data: Role[];
@@ -53,127 +34,63 @@ export function RolesTable({
 }: RolesTableProps) {
   const [roleToDelete, setRoleToDelete] = useState<Role | null>(null);
 
-  const SortIcon = ({ field }: { field: string }) => {
-    if (sortBy !== field) return null;
-    return sortOrder === 'asc' ? (
-      <ArrowUp className="ml-1 h-3 w-3" />
-    ) : (
-      <ArrowDown className="ml-1 h-3 w-3" />
-    );
-  };
+  const columns = useMemo(() => getColumns({ onDelete: setRoleToDelete }), []);
 
-  const handleSort = (field: string) => {
-    onSortChange(field);
-  };
+  const sorting: SortingState = useMemo(
+    () => [{ id: sortBy, desc: sortOrder === 'desc' }],
+    [sortBy, sortOrder],
+  );
 
   return (
     <>
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead
-                className="cursor-pointer"
-                onClick={() => handleSort('name')}
-              >
-                <div className="flex items-center">
-                  Nama Role
-                  <SortIcon field="name" />
-                </div>
-              </TableHead>
-              <TableHead
-                className="cursor-pointer"
-                onClick={() => handleSort('description')}
-              >
-                <div className="flex items-center">
-                  Deskripsi
-                  <SortIcon field="description" />
-                </div>
-              </TableHead>
-              <TableHead>Pengguna</TableHead>
-              <TableHead
-                className="cursor-pointer"
-                onClick={() => handleSort('updatedAt')}
-              >
-                <div className="flex items-center">
-                  Update Terakhir
-                  <SortIcon field="updatedAt" />
-                </div>
-              </TableHead>
-              <TableHead className="w-[70px]"></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={5}
-                  className="h-24 text-center text-muted-foreground"
-                >
-                  Belum ada role yang dibuat.
-                </TableCell>
-              </TableRow>
-            ) : (
-              data.map((role) => (
-                <TableRow key={role.id}>
-                  <TableCell className="font-medium">
-                    <div className="flex items-center gap-2">
-                      {role.name}
-                      {role.isSystemRole && (
-                        <Badge variant="secondary" className="text-xs">
-                          System
-                        </Badge>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>{role.description || '-'}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1 text-muted-foreground">
-                      <Users className="h-3 w-3" />
-                      {role.userCount}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {new Date(role.updatedAt).toLocaleDateString('id-ID', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                    })}
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Open menu</span>
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-                        <DropdownMenuItem asChild>
-                          <Link href={`/settings/roles/${role.id}`}>
-                            <Pencil className="mr-2 h-4 w-4" />
-                            Edit
-                          </Link>
-                        </DropdownMenuItem>
-                        {!role.isSystemRole && (
-                          <DropdownMenuItem
-                            className="text-red-600 focus:text-red-600"
-                            onClick={() => setRoleToDelete(role)}
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Hapus
-                          </DropdownMenuItem>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
+      <DataTable
+        columns={columns}
+        data={data}
+        sorting={sorting}
+        onSortingChange={(updaterOrValue) => {
+          const newSorting =
+            typeof updaterOrValue === 'function'
+              ? updaterOrValue(sorting)
+              : updaterOrValue;
+
+          const firstSort = newSorting[0];
+          if (firstSort) {
+            // If the same column is clicked, toggle order is handled by table state,
+            // but we need to notify parent.
+            // Note: Our parent expects just the field name to toggle, or set.
+            // However, Tanstack gives us the final state.
+            // We can just pass the ID. The parent 'toggle' logic might interfere if we don't align.
+            // Let's look at parent logic:
+            // if (sortBy === field) setSortOrder(toggle) else setSortBy(field), setSortOrder('asc')
+
+            // Tanstack `toggleSorting` does: if same -> toggle, if diff -> set new.
+            // So `firstSort.id` is the field we want.
+            // But valid check: how to communicate 'desc'?
+            // The parent `onSortChange` only takes `field`.
+            // IF the parent logic handles toggling, we just need to send the field name.
+            // BUT, if we click a new header, it sends `desc: false` (asc).
+            // If we click existing header (asc), it sends `desc: true` (desc).
+
+            // Wait, the parent `onSortChange` implementation in `page.tsx` is:
+            /*
+                onSortChange={(field) => {
+                  if (sortBy === field) {
+                    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+                  } else {
+                    setSortBy(field);
+                    setSortOrder('asc');
+                  }
+                }}
+             */
+            // So simply calling `onSortChange(firstSort.id)` is correct because:
+            // 1. If ID refers to current sort, parent toggles.
+            // 2. If ID is new, parent sets to New + Asc.
+            // This aligns perfectly with TanStack default behavior (click new -> asc, click old -> toggle).
+
+            onSortChange(firstSort.id);
+          }
+        }}
+      />
 
       <AlertDialog
         open={!!roleToDelete}

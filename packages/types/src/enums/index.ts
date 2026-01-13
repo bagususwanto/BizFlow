@@ -34,6 +34,7 @@ export enum Module {
   REPORTS = 'reports',
   SETTINGS = 'settings',
   USERS = 'users',
+  ROLES = 'roles',
 }
 
 // Helper array for available modules

@@ -67,7 +67,7 @@ export class RolesController {
   @Permissions(Permission.Users.Create as PermissionType)
   @UseInterceptors(AuditLogInterceptor)
   @AuditLog({
-    module: Module.USERS,
+    module: Module.ROLES,
     action: AuditAction.CREATE,
     entityType: 'role',
   })
@@ -83,7 +83,7 @@ export class RolesController {
   @Permissions(Permission.Users.Update)
   @UseInterceptors(AuditLogInterceptor)
   @AuditLog({
-    module: Module.USERS,
+    module: Module.ROLES,
     action: AuditAction.UPDATE,
     entityType: 'role',
   })
@@ -102,7 +102,7 @@ export class RolesController {
   @Permissions(Permission.Users.Delete as PermissionType)
   @UseInterceptors(AuditLogInterceptor)
   @AuditLog({
-    module: Module.USERS,
+    module: Module.ROLES,
     action: AuditAction.DELETE,
     entityType: 'role',
   })

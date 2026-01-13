@@ -2,18 +2,19 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { rolesService } from '@/services/roles.service';
 import { useAuthStore } from '@/stores/auth.store';
 import { toast } from 'sonner';
+import { RolesQuery } from '@bizflow/types';
 
-export function useRoles() {
+export function useRoles(params?: RolesQuery) {
   const token = useAuthStore((state) => state.accessToken);
   const queryClient = useQueryClient();
 
   const query = useQuery({
-    queryKey: ['roles'],
+    queryKey: ['roles', params],
     queryFn: () => {
-      // FetchClient handles token automatically
-      return rolesService.getAll();
+      return rolesService.getAll(params);
     },
-    enabled: !!token, // Keep enabled check if we want to wait for auth
+    enabled: !!token,
+    placeholderData: (previousData) => previousData,
   });
 
   const deleteMutation = useMutation({
@@ -30,7 +31,9 @@ export function useRoles() {
   });
 
   return {
-    roles: query.data,
+    roles: query.data?.data || [],
+    meta: query.data?.meta,
+    summary: query.data?.summary,
     isLoading: query.isLoading,
     isError: query.isError,
     deleteRole: deleteMutation.mutate,

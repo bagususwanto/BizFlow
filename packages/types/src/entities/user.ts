@@ -1,5 +1,6 @@
 import type { BaseEntity, ActiveEntity, JsonValue } from './base';
 import type { UserRole, Module, PermissionAction, AuditAction } from '../enums';
+import type { Role } from './role';
 
 // ========================================
 // User & Access Entities
@@ -18,15 +19,6 @@ export interface User extends ActiveEntity {
   // Relations
   role?: Role;
   auditLogs?: AuditLog[];
-}
-
-export interface Role extends BaseEntity {
-  name: string;
-  description?: string | null;
-
-  // Relations
-  permissions?: Permission[];
-  users?: User[];
 }
 
 export interface Permission {

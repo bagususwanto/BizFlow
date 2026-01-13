@@ -28,16 +28,16 @@ export default function CreateRolePage() {
   } = useQuery({
     queryKey: ['permissions'],
     queryFn: () => {
-      if (!token) throw new Error('Unauthorized');
-      return rolesService.getPermissions(token);
+      // Token handled by apiClient
+      return rolesService.getPermissions();
     },
     enabled: !!token,
   });
 
   const createMutation = useMutation({
     mutationFn: (values: CreateRoleValues) => {
-      if (!token) throw new Error('Unauthorized');
-      return rolesService.create(values, token);
+      // Token handled by apiClient
+      return rolesService.create(values);
     },
     onSuccess: () => {
       toast.success('Role berhasil dibuat');

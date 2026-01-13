@@ -30,8 +30,8 @@ export default function EditRolePage() {
   } = useQuery({
     queryKey: ['permissions'],
     queryFn: () => {
-      if (!token) throw new Error('Unauthorized');
-      return rolesService.getPermissions(token);
+      // Token handled by apiClient
+      return rolesService.getPermissions();
     },
     enabled: !!token,
   });
@@ -43,16 +43,16 @@ export default function EditRolePage() {
   } = useQuery({
     queryKey: ['role', id],
     queryFn: () => {
-      if (!token) throw new Error('Unauthorized');
-      return rolesService.getById(id, token);
+      // Token handled by apiClient
+      return rolesService.getById(id);
     },
     enabled: !!token && !!id,
   });
 
   const updateMutation = useMutation({
     mutationFn: (values: UpdateRoleValues) => {
-      if (!token) throw new Error('Unauthorized');
-      return rolesService.update(id, values, token);
+      // Token handled by apiClient
+      return rolesService.update(id, values);
     },
     onSuccess: () => {
       toast.success('Role berhasil diperbarui');

@@ -30,13 +30,16 @@ class FetchClient {
     };
 
     const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+    const data = await response.json().catch(() => ({}));
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({
-        message: 'Terjadi kesalahan pada server',
-        statusCode: response.status,
-      }));
-      throw new Error(errorData.message || 'Unknown error occurred');
+      // Handle ApiError struct
+      if (data?.error?.message) {
+        throw new Error(data.error.message);
+      }
+
+      // Fallback
+      throw new Error(data.message || 'Terjadi kesalahan pada server');
     }
 
     // Handle 204 No Content
@@ -44,7 +47,19 @@ class FetchClient {
       return {} as T;
     }
 
-    return response.json();
+    // If API returns standardized wrapper, validation check
+    if (
+      data &&
+      typeof data === 'object' &&
+      'success' in data &&
+      'error' in data
+    ) {
+      if (!data.success) {
+        throw new Error(data.error?.message || 'Unknown API error');
+      }
+    }
+
+    return data as T;
   }
 
   async get<T>(endpoint: string, options?: FetchOptions): Promise<T> {

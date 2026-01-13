@@ -4,6 +4,7 @@ import type {
   LoginResponse,
   RefreshTokenRequest,
   UserForPin,
+  ApiResponse,
 } from '@bizflow/types';
 import { apiClient } from '@/lib/fetch-client';
 
@@ -20,27 +21,46 @@ export type RefreshResponse = Omit<LoginResponse, 'user'>;
 
 class AuthService {
   async login(data: LoginRequest): Promise<LoginResponse> {
-    return apiClient.post<LoginResponse>('/auth/login', data);
+    const res = await apiClient.post<ApiResponse<LoginResponse>>(
+      '/auth/login',
+      data,
+    );
+    return res.data!;
   }
 
   async pinLogin(data: LoginWithPinRequest): Promise<LoginResponse> {
-    return apiClient.post<LoginResponse>('/auth/pin-login', data);
+    const res = await apiClient.post<ApiResponse<LoginResponse>>(
+      '/auth/pin-login',
+      data,
+    );
+    return res.data!;
   }
 
   async refresh(refreshToken: string): Promise<RefreshResponse> {
-    return apiClient.post<RefreshResponse>('/auth/refresh', { refreshToken });
+    const res = await apiClient.post<ApiResponse<RefreshResponse>>(
+      '/auth/refresh',
+      {
+        refreshToken,
+      },
+    );
+    return res.data!;
   }
 
   async logout(): Promise<void> {
-    return apiClient.post<void>('/auth/logout', {});
+    await apiClient.post<ApiResponse<void>>('/auth/logout', {});
   }
 
   async getUsersForPin(): Promise<UserForPin[]> {
-    return apiClient.get<UserForPin[]>('/auth/users-for-pin');
+    const res = await apiClient.get<ApiResponse<UserForPin[]>>(
+      '/auth/users-for-pin',
+    );
+    return res.data!;
   }
 
   async getMe(): Promise<LoginResponse['user']> {
-    return apiClient.get<LoginResponse['user']>('/auth/me');
+    const res =
+      await apiClient.get<ApiResponse<LoginResponse['user']>>('/auth/me');
+    return res.data!;
   }
 }
 

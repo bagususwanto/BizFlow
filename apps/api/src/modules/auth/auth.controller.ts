@@ -12,6 +12,7 @@ import type { Request } from 'express';
 
 import { CurrentUser } from '../../common/decorators';
 import { JwtAuthGuard, JwtRefreshGuard } from '../../common/guards';
+import { successResponse } from '../../common/utils';
 
 import { AuthService } from './auth.service';
 import { LoginDto, PinLoginDto, RefreshTokenDto } from './dto';
@@ -67,12 +68,12 @@ export class AuthController {
   @Get('me')
   @UseGuards(JwtAuthGuard)
   getMe(@CurrentUser() user: JwtPayload) {
-    return {
+    return successResponse({
       id: user.sub,
       username: user.username,
       role: user.role,
       permissions: user.permissions,
       outlets: user.outlets,
-    };
+    });
   }
 }

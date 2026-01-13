@@ -2,18 +2,13 @@
 
 import { useEffect, useState } from 'react';
 
-import { usePathname } from 'next/navigation';
-
 import { ChevronRight, type LucideIcon } from 'lucide-react';
 
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@bizflow/ui';
-import {
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -21,6 +16,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@bizflow/ui';
+import { usePathname } from 'next/navigation';
 
 export function NavMain({
   items,
@@ -39,19 +35,20 @@ export function NavMain({
   const pathname = usePathname();
   const [openGroups, setOpenGroups] = useState<string[]>([]);
 
-  // Sync open groups with pathname on mount and navigation
+  // Using useEffect to "latch" the open state.
+  // If an item comes in as active, we add it to our list of open groups.
+  // We do NOT remove it if it stops being active (preserving "previous" open state).
   useEffect(() => {
-    const activeItem = items.find((item) =>
-      item.items?.some(
-        (subItem) =>
-          pathname === subItem.url || pathname.startsWith(subItem.url),
-      ),
-    );
-
-    if (activeItem && !openGroups.includes(activeItem.title)) {
-      setOpenGroups((prev) => [...prev, activeItem.title]);
-    }
-  }, [pathname, items]);
+    items.forEach((item) => {
+      // If the item is marked active in config, ensure it's in our open list
+      if (item.isActive) {
+        setOpenGroups((prev) => {
+          if (prev.includes(item.title)) return prev;
+          return [...prev, item.title];
+        });
+      }
+    });
+  }, [items]);
 
   const handleOpenChange = (title: string, isOpen: boolean) => {
     setOpenGroups((prev) =>
@@ -61,26 +58,9 @@ export function NavMain({
 
   return (
     <SidebarGroup>
-      {/* <SidebarGroupLabel>Platform</SidebarGroupLabel> */}
       <SidebarMenu>
         {items.map((item) => {
-          // Helper to check if a URL matches current path
-          const isUrlActive = (url: string) =>
-            url === '/' ? pathname === '/' : pathname.startsWith(url);
-
-          // Check if main item is active
-          const isMainActive =
-            item.items && item.items.length > 0
-              ? pathname === item.url
-              : isUrlActive(item.url);
-
-          // Check if any sub-item is active
-          const isSubActive = item.items?.some(
-            (subItem) => pathname === subItem.url,
-          );
-
-          // Item is effectively active if main link matches or child is active
-          const isActive = isMainActive || isSubActive;
+          const isMainActive = item.isActive ?? false;
 
           if (!item.items?.length) {
             return (

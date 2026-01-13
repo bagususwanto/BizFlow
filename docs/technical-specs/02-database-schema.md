@@ -769,3 +769,47 @@ model Transaction {
   @@index([referenceType, referenceId])
 }
 ```
+
+---
+
+## App Settings
+
+```prisma
+model AppSettings {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  type      String   @default("string") // string, number, boolean, json
+  category  String   @default("general") // general, company, tax, receipt, display
+  label     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+}
+```
+
+### Settings Categories
+
+| Category  | Description          | Example Keys                                      |
+| --------- | -------------------- | ------------------------------------------------- |
+| `company` | Company information  | `company_name`, `company_address`, `company_logo` |
+| `tax`     | Tax settings         | `default_tax_rate`, `tax_inclusive`               |
+| `receipt` | Receipt formatting   | `receipt_header`, `receipt_footer`, `show_logo`   |
+| `display` | Display preferences  | `currency_code`, `date_format`, `timezone`        |
+| `general` | General app settings | `language`, `theme`, `session_timeout`            |
+
+### Default Settings
+
+| Key                | Value                                | Type    | Category |
+| ------------------ | ------------------------------------ | ------- | -------- |
+| `company_name`     | `""`                                 | string  | company  |
+| `company_address`  | `""`                                 | string  | company  |
+| `company_phone`    | `""`                                 | string  | company  |
+| `company_logo`     | `null`                               | string  | company  |
+| `default_tax_rate` | `11`                                 | number  | tax      |
+| `tax_inclusive`    | `false`                              | boolean | tax      |
+| `currency_code`    | `"IDR"`                              | string  | display  |
+| `date_format`      | `"DD/MM/YYYY"`                       | string  | display  |
+| `receipt_header`   | `""`                                 | string  | receipt  |
+| `receipt_footer`   | `"Terima kasih atas kunjungan Anda"` | string  | receipt  |

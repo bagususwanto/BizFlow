@@ -755,3 +755,20 @@ model License {
 
   @@index([licenseKey])
 }
+
+// ========================================
+// App Settings
+// ========================================
+
+model AppSettings {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  type      String   @default("string") // string, number, boolean, json
+  category  String   @default("general") // general, company, tax, receipt, display
+  label     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+}

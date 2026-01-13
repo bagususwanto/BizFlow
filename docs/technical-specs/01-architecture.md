@@ -45,29 +45,71 @@ graph TB
 ```
 bizflow/
 ├── apps/
-│   ├── desktop/              # Electron wrapper
+│   ├── desktop/                    # Electron wrapper
 │   │   ├── src/
-│   │   │   ├── main/         # Main process
+│   │   │   ├── main/               # Main process
 │   │   │   │   ├── index.ts
-│   │   │   │   ├── server.ts   # Server lifecycle
-│   │   │   │   ├── tray.ts     # System tray
-│   │   │   │   └── windows.ts  # Window management
+│   │   │   │   ├── server.ts       # Server lifecycle
+│   │   │   │   ├── tray.ts         # System tray
+│   │   │   │   └── windows.ts      # Window management
 │   │   │   └── preload/
 │   │   └── electron-builder.yml
 │   │
-│   ├── api/                  # NestJS backend
+│   ├── api/                        # NestJS backend
 │   │   ├── src/
 │   │   │   ├── modules/
-│   │   │   │   ├── auth/       # Authentication (login, refresh, PIN)
-│   │   │   │   ├── users/      # User & role management
-│   │   │   │   ├── products/   # Products, categories, units
-│   │   │   │   ├── pos/        # Point of Sale transactions
-│   │   │   │   ├── sales/      # Sales orders, customers, returns
-│   │   │   │   ├── purchases/  # Purchase orders, suppliers, goods receive
-│   │   │   │   ├── inventory/  # Stock, adjustments, transfers, opname, warehouses
-│   │   │   │   ├── finance/    # Accounts, transactions, AR/AP, expense categories
-│   │   │   │   ├── reports/    # Dashboard, sales, purchases, inventory, P&L reports
-│   │   │   │   └── settings/   # Company, outlets, printer, backup/restore
+│   │   │   │   │
+│   │   │   │   ├── core/           # Core System Modules
+│   │   │   │   │   ├── auth/       # Authentication (login, refresh, PIN)
+│   │   │   │   │   ├── users/      # User management
+│   │   │   │   │   ├── roles/      # Role & Permission management
+│   │   │   │   │   ├── audit-log/  # Audit logging
+│   │   │   │   │   ├── outlets/    # Outlet/Branch management
+│   │   │   │   │   └── license/    # License management
+│   │   │   │   │
+│   │   │   │   ├── master-data/    # Master Data Modules
+│   │   │   │   │   ├── products/   # Product & ProductVariant
+│   │   │   │   │   ├── categories/ # Product categories (hierarchical)
+│   │   │   │   │   ├── units/      # UnitOfMeasure
+│   │   │   │   │   ├── customers/  # Customer management
+│   │   │   │   │   ├── suppliers/  # Supplier management
+│   │   │   │   │   └── warehouses/ # Warehouse & Locations
+│   │   │   │   │
+│   │   │   │   ├── inventory/      # Inventory Management
+│   │   │   │   │   ├── stock/      # Stock & StockMovement
+│   │   │   │   │   ├── adjustments/# StockAdjustment
+│   │   │   │   │   ├── transfers/  # StockTransfer
+│   │   │   │   │   ├── opname/     # StockOpname (stock counting)
+│   │   │   │   │   └── goods-receive/ # GoodsReceive from purchases
+│   │   │   │   │
+│   │   │   │   ├── sales/          # Sales Modules
+│   │   │   │   │   ├── orders/     # SalesOrder management
+│   │   │   │   │   ├── returns/    # SalesReturn
+│   │   │   │   │   ├── payments/   # Customer Payments
+│   │   │   │   │   └── price-levels/ # PriceLevel management
+│   │   │   │   │
+│   │   │   │   ├── purchases/      # Purchase Modules
+│   │   │   │   │   ├── orders/     # PurchaseOrder management
+│   │   │   │   │   ├── returns/    # PurchaseReturn
+│   │   │   │   │   └── payments/   # SupplierPayment
+│   │   │   │   │
+│   │   │   │   ├── pos/            # Point of Sale
+│   │   │   │   │   └── transactions/ # POS transactions
+│   │   │   │   │
+│   │   │   │   ├── finance/        # Financial Modules
+│   │   │   │   │   ├── accounts/   # Account management
+│   │   │   │   │   ├── transactions/ # Financial transactions
+│   │   │   │   │   └── expenses/   # ExpenseCategory & expenses
+│   │   │   │   │
+│   │   │   │   ├── reports/        # Reporting & Analytics
+│   │   │   │   │   ├── sales/      # Sales reports
+│   │   │   │   │   ├── inventory/  # Inventory reports
+│   │   │   │   │   ├── financial/  # Financial reports (P&L, etc)
+│   │   │   │   │   └── dashboards/ # Dashboard aggregations
+│   │   │   │   │
+│   │   │   │   └── settings/       # System Settings
+│   │   │   │       └── general/    # App settings, preferences
+│   │   │   │
 │   │   │   ├── common/
 │   │   │   │   ├── guards/
 │   │   │   │   ├── interceptors/
@@ -76,52 +118,91 @@ bizflow/
 │   │   │   └── main.ts
 │   │   └── test/
 │   │
-│   └── web/                  # Next.js frontend
+│   └── web/                        # Next.js frontend
 │       ├── app/
-│       │   ├── (auth)/         # /login, /forgot-password
-│       │   ├── (dashboard)/    # Main dashboard layout
-│       │   │   ├── pos/        # /pos, /pos/transactions, /pos/returns
-│       │   │   ├── products/   # /products, /products/categories, /products/units
-│       │   │   ├── sales/      # /sales/orders, /sales/customers, /sales/returns
-│       │   │   ├── purchases/  # /purchases/orders, /purchases/suppliers, /purchases/receive
-│       │   │   ├── inventory/  # /inventory, /inventory/adjustments, /inventory/transfers, /inventory/opname, /inventory/warehouses
-│       │   │   ├── finance/    # /finance/accounts, /finance/transactions, /finance/receivables, /finance/payables
-│       │   │   ├── reports/    # /reports, /reports/sales, /reports/purchases, /reports/inventory, /reports/profit-loss
-│       │   │   └── settings/   # /settings/users, /settings/roles, /settings/outlets, /settings/company
+│       │   ├── (auth)/             # /login, /forgot-password
+│       │   ├── (dashboard)/        # Main dashboard layout
+│       │   │   ├── dashboard/      # / (homepage)
+│       │   │   │
+│       │   │   ├── pos/            # /pos (full-screen POS interface)
+│       │   │   │
+│       │   │   ├── master-data/    # Master Data Pages
+│       │   │   │   ├── products/   # /master-data/products
+│       │   │   │   ├── categories/ # /master-data/categories
+│       │   │   │   ├── customers/  # /master-data/customers
+│       │   │   │   ├── suppliers/  # /master-data/suppliers
+│       │   │   │   └── warehouses/ # /master-data/warehouses
+│       │   │   │
+│       │   │   ├── inventory/      # Inventory Pages
+│       │   │   │   ├── stock/      # /inventory/stock
+│       │   │   │   ├── adjustments/# /inventory/adjustments
+│       │   │   │   ├── transfers/  # /inventory/transfers
+│       │   │   │   └── opname/     # /inventory/opname
+│       │   │   │
+│       │   │   ├── sales/          # Sales Pages
+│       │   │   │   ├── orders/     # /sales/orders
+│       │   │   │   ├── returns/    # /sales/returns
+│       │   │   │   └── payments/   # /sales/payments
+│       │   │   │
+│       │   │   ├── purchases/      # Purchase Pages
+│       │   │   │   ├── orders/     # /purchases/orders
+│       │   │   │   ├── goods-receive/ # /purchases/goods-receive
+│       │   │   │   ├── returns/    # /purchases/returns
+│       │   │   │   └── payments/   # /purchases/payments
+│       │   │   │
+│       │   │   ├── finance/        # Finance Pages
+│       │   │   │   ├── accounts/   # /finance/accounts
+│       │   │   │   ├── transactions/ # /finance/transactions
+│       │   │   │   └── expenses/   # /finance/expenses
+│       │   │   │
+│       │   │   ├── reports/        # Report Pages
+│       │   │   │   ├── sales/      # /reports/sales
+│       │   │   │   ├── inventory/  # /reports/inventory
+│       │   │   │   └── financial/  # /reports/financial
+│       │   │   │
+│       │   │   └── settings/       # Settings Pages
+│       │   │       ├── general/    # /settings/general
+│       │   │       ├── users/      # /settings/users
+│       │   │       ├── roles/      # /settings/roles
+│       │   │       └── outlets/    # /settings/outlets
+│       │   │
 │       │   └── layout.tsx
 │       ├── components/
+│       │   ├── layout/             # Layout components (sidebar, header)
+│       │   ├── shared/             # Shared UI components
+│       │   └── [feature]/          # Feature-specific components
 │       ├── hooks/
 │       ├── services/
 │       └── stores/
 │
 ├── packages/
-│   ├── types/                # Shared TypeScript types
+│   ├── types/                      # Shared TypeScript types
 │   │   ├── src/
 │   │   │   ├── entities/
 │   │   │   ├── dto/
 │   │   │   └── enums/
 │   │   └── package.json
 │   │
-│   ├── ui/                   # Shared UI components
+│   ├── ui/                         # Shared UI components
 │   │   ├── src/
 │   │   │   ├── components/
 │   │   │   └── styles/
 │   │   └── package.json
 │   │
-│   ├── database/             # Prisma schema & migrations
+│   ├── database/                   # Prisma schema & migrations
 │   │   ├── prisma/
 │   │   │   ├── schema.prisma
 │   │   │   └── migrations/
 │   │   └── package.json
 │   │
-│   └── license/              # License validation module
+│   └── license/                    # License validation module
 │       ├── src/
-│       │   ├── generator.ts    # CLI tool (private)
-│       │   └── validator.ts    # App validator (public key)
+│       │   ├── generator.ts        # CLI tool (private)
+│       │   └── validator.ts        # App validator (public key)
 │       └── package.json
 │
 ├── tools/
-│   └── plop/                 # Code generators
+│   └── plop/                       # Code generators
 │       ├── plopfile.js
 │       └── templates/
 │
@@ -161,15 +242,54 @@ bizflow/
 
 ## Module Overview
 
-| Module        | API Endpoints                                                   | Database Models                                                              |
-| ------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| **auth**      | `/api/v1/auth/*`                                                | User, AuditLog                                                               |
-| **users**     | `/api/v1/users/*`, `/api/v1/roles/*`, `/api/v1/permissions`     | User, Role, Permission, AuditLog                                             |
-| **products**  | `/api/v1/products/*`, `/api/v1/categories/*`, `/api/v1/units/*` | Product, ProductVariant, Category, UnitOfMeasure, PriceLevel                 |
-| **pos**       | `/api/v1/pos/*`                                                 | SalesOrder, SalesOrderItem, Payment                                          |
-| **sales**     | `/api/v1/sales/*`, `/api/v1/customers/*`                        | Customer, SalesOrder, SalesOrderItem, SalesReturn, SalesReturnItem, Payment  |
-| **purchases** | `/api/v1/purchases/*`, `/api/v1/suppliers/*`                    | Supplier, PurchaseOrder, PurchaseOrderItem, GoodsReceive, PurchaseReturn     |
-| **inventory** | `/api/v1/inventory/*`, `/api/v1/warehouses/*`                   | Warehouse, Stock, StockMovement, StockAdjustment, StockTransfer, StockOpname |
-| **finance**   | `/api/v1/finance/*`                                             | Account, Transaction, ExpenseCategory, Payment, SupplierPayment              |
-| **reports**   | `/api/v1/reports/*`                                             | (Aggregates data from all modules)                                           |
-| **settings**  | `/api/v1/settings/*`                                            | Outlet, CompanySettings (config)                                             |
+### Core Modules
+
+| Module             | API Endpoints                            | Database Models    |
+| ------------------ | ---------------------------------------- | ------------------ |
+| **core/auth**      | `/api/v1/auth/*`                         | User, AuditLog     |
+| **core/users**     | `/api/v1/users/*`                        | User, UserOutlet   |
+| **core/roles**     | `/api/v1/roles/*`, `/api/v1/permissions` | Role, Permission   |
+| **core/audit-log** | `/api/v1/audit-log/*`                    | AuditLog           |
+| **core/outlets**   | `/api/v1/outlets/*`                      | Outlet, UserOutlet |
+| **core/license**   | `/api/v1/license/*`                      | License            |
+
+### Master Data Modules
+
+| Module                     | API Endpoints          | Database Models                     |
+| -------------------------- | ---------------------- | ----------------------------------- |
+| **master-data/products**   | `/api/v1/products/*`   | Product, ProductVariant, PriceLevel |
+| **master-data/categories** | `/api/v1/categories/*` | Category                            |
+| **master-data/units**      | `/api/v1/units/*`      | UnitOfMeasure                       |
+| **master-data/customers**  | `/api/v1/customers/*`  | Customer                            |
+| **master-data/suppliers**  | `/api/v1/suppliers/*`  | Supplier                            |
+| **master-data/warehouses** | `/api/v1/warehouses/*` | Warehouse                           |
+
+### Operational Modules
+
+| Module                      | API Endpoints                       | Database Models                      |
+| --------------------------- | ----------------------------------- | ------------------------------------ |
+| **inventory/stock**         | `/api/v1/inventory/stock/*`         | Stock, StockMovement                 |
+| **inventory/adjustments**   | `/api/v1/inventory/adjustments/*`   | StockAdjustment, StockAdjustmentItem |
+| **inventory/transfers**     | `/api/v1/inventory/transfers/*`     | StockTransfer, StockTransferItem     |
+| **inventory/opname**        | `/api/v1/inventory/opname/*`        | StockOpname, StockOpnameItem         |
+| **inventory/goods-receive** | `/api/v1/inventory/goods-receive/*` | GoodsReceive, GoodsReceiveItem       |
+| **sales/orders**            | `/api/v1/sales/orders/*`            | SalesOrder, SalesOrderItem           |
+| **sales/returns**           | `/api/v1/sales/returns/*`           | SalesReturn, SalesReturnItem         |
+| **sales/payments**          | `/api/v1/sales/payments/*`          | Payment                              |
+| **purchases/orders**        | `/api/v1/purchases/orders/*`        | PurchaseOrder, PurchaseOrderItem     |
+| **purchases/returns**       | `/api/v1/purchases/returns/*`       | PurchaseReturn, PurchaseReturnItem   |
+| **purchases/payments**      | `/api/v1/purchases/payments/*`      | SupplierPayment                      |
+| **pos/transactions**        | `/api/v1/pos/*`                     | SalesOrder, SalesOrderItem, Payment  |
+
+### Finance & Reporting Modules
+
+| Module                   | API Endpoints                    | Database Models                   |
+| ------------------------ | -------------------------------- | --------------------------------- |
+| **finance/accounts**     | `/api/v1/finance/accounts/*`     | Account                           |
+| **finance/transactions** | `/api/v1/finance/transactions/*` | Transaction                       |
+| **finance/expenses**     | `/api/v1/finance/expenses/*`     | ExpenseCategory                   |
+| **reports/sales**        | `/api/v1/reports/sales/*`        | (Aggregates SalesOrder, Payment)  |
+| **reports/inventory**    | `/api/v1/reports/inventory/*`    | (Aggregates Stock, StockMovement) |
+| **reports/financial**    | `/api/v1/reports/financial/*`    | (Aggregates Transaction, P&L)     |
+| **reports/dashboards**   | `/api/v1/reports/dashboard/*`    | (Aggregates all modules)          |
+| **settings/general**     | `/api/v1/settings/*`             | AppSettings (config)              |

@@ -173,8 +173,8 @@ interface ProductListQuery {
   isActive?: boolean;
   isService?: boolean;
   minStock?: boolean; // Filter products below min stock
-  sortBy?: "name" | "sku" | "createdAt" | "sellPrice" | "stock";
-  sortOrder?: "asc" | "desc";
+  sortBy?: 'name' | 'sku' | 'createdAt' | 'sellPrice' | 'stock';
+  sortOrder?: 'asc' | 'desc';
 }
 
 interface CreateProductRequest {
@@ -305,7 +305,7 @@ interface CreatePOSTransactionRequest {
   discountAmount?: number;
   taxPercent?: number;
   payments: {
-    method: "cash" | "qris" | "transfer" | "credit";
+    method: 'cash' | 'qris' | 'transfer' | 'credit';
     amount: number;
     accountId: string;
     reference?: string;
@@ -344,7 +344,7 @@ interface ReturnRequest {
     quantity: number;
     reason: string;
   }[];
-  refundMethod: "cash" | "credit";
+  refundMethod: 'cash' | 'credit';
   accountId: string;
 }
 ```
@@ -412,8 +412,8 @@ interface SalesOrderQuery {
   page?: number;
   limit?: number;
   customerId?: string;
-  status?: "draft" | "confirmed" | "delivered" | "cancelled";
-  paymentStatus?: "unpaid" | "partial" | "paid";
+  status?: 'draft' | 'confirmed' | 'delivered' | 'cancelled';
+  paymentStatus?: 'unpaid' | 'partial' | 'paid';
   startDate?: string;
   endDate?: string;
   search?: string; // Order number
@@ -562,8 +562,8 @@ interface StockQuery {
   categoryId?: string;
   search?: string;
   belowMinStock?: boolean;
-  sortBy?: "name" | "quantity" | "value";
-  sortOrder?: "asc" | "desc";
+  sortBy?: 'name' | 'quantity' | 'value';
+  sortOrder?: 'asc' | 'desc';
 }
 
 interface StockResponse {
@@ -591,7 +591,7 @@ interface StockResponse {
 ```typescript
 interface CreateAdjustmentRequest {
   warehouseId: string;
-  type: "increase" | "decrease" | "correction";
+  type: 'increase' | 'decrease' | 'correction';
   reason: string;
   items: {
     variantId: string;
@@ -678,7 +678,7 @@ interface UpdateOpnameRequest {
 interface CreateAccountRequest {
   code: string;
   name: string;
-  type: "cash" | "bank" | "receivable" | "payable";
+  type: 'cash' | 'bank' | 'receivable' | 'payable';
   bankName?: string;
   accountNumber?: string;
   initialBalance?: number;
@@ -712,7 +712,7 @@ interface TransactionQuery {
   limit?: number;
   accountId?: string;
   categoryId?: string;
-  type?: "income" | "expense" | "transfer";
+  type?: 'income' | 'expense' | 'transfer';
   startDate?: string;
   endDate?: string;
 }
@@ -767,7 +767,7 @@ interface ReceivePaymentRequest {
   customerId: string;
   accountId: string;
   amount: number;
-  paymentMethod: "cash" | "transfer" | "qris";
+  paymentMethod: 'cash' | 'transfer' | 'qris';
   orderId?: string; // Apply to specific order
   reference?: string;
   notes?: string;
@@ -810,8 +810,8 @@ interface ReportQuery {
   endDate: string;
   outletId?: string;
   warehouseId?: string;
-  groupBy?: "day" | "week" | "month";
-  format?: "json" | "xlsx" | "pdf";
+  groupBy?: 'day' | 'week' | 'month';
+  format?: 'json' | 'xlsx' | 'pdf';
 }
 
 interface DashboardResponse {
@@ -871,34 +871,49 @@ interface SalesReportResponse {
 
 ## 10. Settings & Configuration
 
-| Method | Endpoint                       | Description            |
-| ------ | ------------------------------ | ---------------------- |
-| GET    | `/api/v1/settings/company`     | Get company info       |
-| PATCH  | `/api/v1/settings/company`     | Update company info    |
-| GET    | `/api/v1/settings/outlets`     | List outlets           |
-| POST   | `/api/v1/settings/outlets`     | Create outlet          |
-| PATCH  | `/api/v1/settings/outlets/:id` | Update outlet          |
-| GET    | `/api/v1/settings/printer`     | Get printer config     |
-| PATCH  | `/api/v1/settings/printer`     | Update printer config  |
-| POST   | `/api/v1/settings/backup`      | Trigger manual backup  |
-| GET    | `/api/v1/settings/backups`     | List available backups |
-| POST   | `/api/v1/settings/restore`     | Restore from backup    |
+### App Settings (Key-Value)
+
+| Method | Endpoint                         | Description              |
+| ------ | -------------------------------- | ------------------------ |
+| GET    | `/api/v1/settings`               | Get all settings         |
+| GET    | `/api/v1/settings/:key`          | Get single setting       |
+| PUT    | `/api/v1/settings/:key`          | Update single setting    |
+| POST   | `/api/v1/settings/batch`         | Batch update settings    |
+| GET    | `/api/v1/settings/category/:cat` | Get settings by category |
 
 ```typescript
-interface CompanySettings {
-  name: string;
-  address: string;
-  phone: string;
-  email: string;
-  taxId: string;
-  logoUrl: string;
-  receiptHeader: string;
-  receiptFooter: string;
-  currency: string;
-  timezone: string;
-  defaultTaxPercent: number;
+interface AppSetting {
+  id: string;
+  key: string;
+  value: string;
+  type: 'string' | 'number' | 'boolean' | 'json';
+  category: 'general' | 'company' | 'tax' | 'receipt' | 'display';
+  label: string | null;
 }
 
+interface UpdateSettingRequest {
+  value: string;
+}
+
+interface BatchUpdateRequest {
+  settings: {
+    key: string;
+    value: string;
+  }[];
+}
+```
+
+### Outlets
+
+| Method | Endpoint              | Description   |
+| ------ | --------------------- | ------------- |
+| GET    | `/api/v1/outlets`     | List outlets  |
+| GET    | `/api/v1/outlets/:id` | Get outlet    |
+| POST   | `/api/v1/outlets`     | Create outlet |
+| PATCH  | `/api/v1/outlets/:id` | Update outlet |
+| DELETE | `/api/v1/outlets/:id` | Delete outlet |
+
+```typescript
 interface OutletRequest {
   code: string;
   name: string;
@@ -906,9 +921,18 @@ interface OutletRequest {
   phone?: string;
   isActive?: boolean;
 }
+```
 
+### Printer Configuration
+
+| Method | Endpoint          | Description           |
+| ------ | ----------------- | --------------------- |
+| GET    | `/api/v1/printer` | Get printer config    |
+| PATCH  | `/api/v1/printer` | Update printer config |
+
+```typescript
 interface PrinterConfig {
-  type: "usb" | "network" | "bluetooth";
+  type: 'usb' | 'network' | 'bluetooth';
   width: 58 | 80;
   address?: string;
   deviceId?: string;
@@ -916,6 +940,14 @@ interface PrinterConfig {
   copies: number;
 }
 ```
+
+### Backup & Restore
+
+| Method | Endpoint          | Description            |
+| ------ | ----------------- | ---------------------- |
+| POST   | `/api/v1/backup`  | Trigger manual backup  |
+| GET    | `/api/v1/backups` | List available backups |
+| POST   | `/api/v1/restore` | Restore from backup    |
 
 ---
 
@@ -937,12 +969,12 @@ interface ProblemDetails {
 }
 
 // Common error types
-("/errors/validation"); // 400 - Validation failed
-("/errors/unauthorized"); // 401 - Not authenticated
-("/errors/forbidden"); // 403 - No permission
-("/errors/not-found"); // 404 - Resource not found
-("/errors/conflict"); // 409 - Duplicate/conflict
-("/errors/internal"); // 500 - Server error
+('/errors/validation'); // 400 - Validation failed
+('/errors/unauthorized'); // 401 - Not authenticated
+('/errors/forbidden'); // 403 - No permission
+('/errors/not-found'); // 404 - Resource not found
+('/errors/conflict'); // 409 - Duplicate/conflict
+('/errors/internal'); // 500 - Server error
 ```
 
 ### Example Error Response

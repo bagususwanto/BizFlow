@@ -18,6 +18,15 @@ import type { JwtPayload } from '../auth/strategies/jwt.strategy';
 
 import { RolesService } from './roles.service';
 import { CreateRoleDto, UpdateRoleDto, QueryRolesDto } from './dto';
+import {
+  Permission,
+  type PermissionType,
+  Module,
+  AuditAction,
+} from '@bizflow/types';
+import { AuditLog } from '../../common/decorators/audit-log.decorator';
+import { AuditLogInterceptor } from '../../common/interceptors/audit-log.interceptor';
+import { UseInterceptors } from '@nestjs/common';
 
 @Controller('roles')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
@@ -28,7 +37,7 @@ export class RolesController {
    * Get all roles with pagination, filter, and summary
    */
   @Get()
-  @Permissions('users:read')
+  @Permissions(Permission.Users.Read)
   async findAll(@Query() query: QueryRolesDto) {
     return this.rolesService.findAll(query);
   }
@@ -37,7 +46,7 @@ export class RolesController {
    * Get available permissions (modules and actions)
    */
   @Get('permissions')
-  @Permissions('users:read')
+  @Permissions(Permission.Users.Read)
   getAvailablePermissions() {
     return this.rolesService.getAllPermissions();
   }
@@ -46,7 +55,7 @@ export class RolesController {
    * Get a single role by ID
    */
   @Get(':id')
-  @Permissions('users:read')
+  @Permissions(Permission.Users.Read)
   async findById(@Param('id') id: string) {
     return this.rolesService.findById(id);
   }
@@ -55,7 +64,13 @@ export class RolesController {
    * Create a new role
    */
   @Post()
-  @Permissions('users:create')
+  @Permissions(Permission.Users.Create as PermissionType)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.USERS,
+    action: AuditAction.CREATE,
+    entityType: 'role',
+  })
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: CreateRoleDto, @CurrentUser() user: JwtPayload) {
     return this.rolesService.create(dto, user.sub);
@@ -65,7 +80,13 @@ export class RolesController {
    * Update an existing role
    */
   @Patch(':id')
-  @Permissions('users:update')
+  @Permissions(Permission.Users.Update)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.USERS,
+    action: AuditAction.UPDATE,
+    entityType: 'role',
+  })
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateRoleDto,
@@ -78,7 +99,13 @@ export class RolesController {
    * Delete a role
    */
   @Delete(':id')
-  @Permissions('users:delete')
+  @Permissions(Permission.Users.Delete as PermissionType)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.USERS,
+    action: AuditAction.DELETE,
+    entityType: 'role',
+  })
   @HttpCode(HttpStatus.OK)
   async delete(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
     return this.rolesService.delete(id, user.sub);

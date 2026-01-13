@@ -18,6 +18,10 @@ import { AuthService } from './auth.service';
 import { LoginDto, PinLoginDto, RefreshTokenDto } from './dto';
 import type { JwtPayload } from './strategies/jwt.strategy';
 import type { RefreshTokenPayload } from './strategies/jwt-refresh.strategy';
+import { AuditLog } from '../../common/decorators/audit-log.decorator';
+import { AuditLogInterceptor } from '../../common/interceptors/audit-log.interceptor';
+import { UseInterceptors } from '@nestjs/common';
+import { AuditAction, Module } from '@bizflow/types';
 
 @Controller('auth')
 export class AuthController {
@@ -25,6 +29,12 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.AUTH,
+    action: AuditAction.LOGIN,
+    entityType: 'user',
+  })
   async login(@Body() dto: LoginDto, @Req() req: Request) {
     const ipAddress = req.ip || req.socket.remoteAddress;
     const userAgent = req.get('User-Agent');
@@ -34,6 +44,12 @@ export class AuthController {
 
   @Post('pin-login')
   @HttpCode(HttpStatus.OK)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.AUTH,
+    action: AuditAction.LOGIN,
+    entityType: 'user',
+  })
   async pinLogin(@Body() dto: PinLoginDto, @Req() req: Request) {
     const ipAddress = req.ip || req.socket.remoteAddress;
     const userAgent = req.get('User-Agent');
@@ -52,6 +68,12 @@ export class AuthController {
 
   @Post('logout')
   @HttpCode(HttpStatus.OK)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.AUTH,
+    action: AuditAction.LOGOUT,
+    entityType: 'user',
+  })
   @UseGuards(JwtAuthGuard)
   async logout(@CurrentUser() user: JwtPayload, @Req() req: Request) {
     const ipAddress = req.ip || req.socket.remoteAddress;

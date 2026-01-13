@@ -23,6 +23,7 @@ export enum AuditAction {
 }
 
 export enum Module {
+  AUTH = 'auth',
   DASHBOARD = 'dashboard',
   POS = 'pos',
   PRODUCTS = 'products',
@@ -37,6 +38,68 @@ export enum Module {
 
 // Helper array for available modules
 export const AVAILABLE_MODULES = Object.values(Module);
+
+export const Permission = {
+  Dashboard: {
+    Read: 'dashboard:read',
+    Update: 'dashboard:update',
+  },
+  Pos: {
+    Read: 'pos:read',
+    Create: 'pos:create',
+    Update: 'pos:update',
+    Delete: 'pos:delete',
+  },
+  Products: {
+    Read: 'products:read',
+    Create: 'products:create',
+    Update: 'products:update',
+    Delete: 'products:delete',
+  },
+  Sales: {
+    Read: 'sales:read',
+    Create: 'sales:create',
+    Update: 'sales:update',
+    Delete: 'sales:delete',
+  },
+  Purchases: {
+    Read: 'purchases:read',
+    Create: 'purchases:create',
+    Update: 'purchases:update',
+    Delete: 'purchases:delete',
+  },
+  Inventory: {
+    Read: 'inventory:read',
+    Create: 'inventory:create',
+    Update: 'inventory:update',
+    Delete: 'inventory:delete',
+  },
+  Finance: {
+    Read: 'finance:read',
+    Create: 'finance:create',
+    Update: 'finance:update',
+    Delete: 'finance:delete',
+  },
+  Reports: {
+    Read: 'reports:read',
+    Create: 'reports:create',
+    Update: 'reports:update',
+    Delete: 'reports:delete',
+  },
+  Settings: {
+    Read: 'settings:read',
+    Update: 'settings:update',
+  },
+  Users: {
+    Read: 'users:read',
+    Create: 'users:create',
+    Update: 'users:update',
+    Delete: 'users:delete',
+  },
+} as const;
+
+export type PermissionType =
+  (typeof Permission)[keyof typeof Permission][keyof (typeof Permission)[keyof typeof Permission]];
 
 export enum PermissionAction {
   CREATE = 'create',

@@ -21,7 +21,7 @@ export interface User extends ActiveEntity {
   auditLogs?: AuditLog[];
 }
 
-export interface Permission {
+export interface PermissionEntity {
   id: string;
   module: Module | string;
   action: PermissionAction | string;

@@ -89,15 +89,6 @@ export class AuthService {
       data: { lastLogin: new Date() },
     });
 
-    // Create audit log
-    await this.auditLogService.create({
-      userId: user.id,
-      action: 'login',
-      module: 'auth',
-      ipAddress,
-      userAgent,
-    });
-
     this.logger.log(`User ${user.username} logged in successfully`);
 
     return successResponse({
@@ -164,16 +155,6 @@ export class AuthService {
       data: { lastLogin: new Date() },
     });
 
-    // Create audit log
-    await this.auditLogService.create({
-      userId: user.id,
-      action: 'login',
-      module: 'auth',
-      ipAddress,
-      userAgent,
-      newValue: JSON.stringify({ method: 'pin' }),
-    });
-
     this.logger.log(`User ${user.username} logged in with PIN`);
 
     return successResponse({
@@ -222,15 +203,6 @@ export class AuthService {
   async logout(userId: string, ipAddress?: string, userAgent?: string) {
     // In a production environment, you would invalidate the refresh token
     // by removing it from the database or adding it to a blacklist
-
-    // Create audit log
-    await this.auditLogService.create({
-      userId,
-      action: 'logout',
-      module: 'auth',
-      ipAddress,
-      userAgent,
-    });
 
     this.logger.log(`User ${userId} logged out`);
 

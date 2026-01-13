@@ -229,20 +229,6 @@ export class RolesService {
       },
     });
 
-    // Create audit log
-    await this.auditLogService.create({
-      userId,
-      action: 'create',
-      module: 'users',
-      entityId: role.id,
-      entityType: 'role',
-      newValue: JSON.stringify({
-        name: role.name,
-        description: role.description,
-        permissions: role.permissions.map((p) => `${p.module}:${p.action}`),
-      }),
-    });
-
     return successResponse({
       id: role.id,
       name: role.name,
@@ -317,25 +303,6 @@ export class RolesService {
       },
     });
 
-    // Create audit log
-    await this.auditLogService.create({
-      userId,
-      action: 'update',
-      module: 'users',
-      entityId: role.id,
-      entityType: 'role',
-      oldValue: JSON.stringify({
-        name: existing.name,
-        description: existing.description,
-        permissions: existing.permissions.map((p) => `${p.module}:${p.action}`),
-      }),
-      newValue: JSON.stringify({
-        name: role.name,
-        description: role.description,
-        permissions: role.permissions.map((p) => `${p.module}:${p.action}`),
-      }),
-    });
-
     return successResponse({
       id: role.id,
       name: role.name,
@@ -385,19 +352,6 @@ export class RolesService {
     // Delete role
     await this.prisma.role.delete({
       where: { id },
-    });
-
-    // Create audit log
-    await this.auditLogService.create({
-      userId,
-      action: 'delete',
-      module: 'users',
-      entityId: id,
-      entityType: 'role',
-      oldValue: JSON.stringify({
-        name: role.name,
-        description: role.description,
-      }),
     });
 
     return successResponse({ message: `Role '${role.name}' berhasil dihapus` });

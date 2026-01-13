@@ -1,4 +1,4 @@
-'use client';
+import { useEffect, useState } from 'react';
 
 import { usePathname } from 'next/navigation';
 
@@ -35,6 +35,27 @@ export function NavMain({
   }[];
 }) {
   const pathname = usePathname();
+  const [openGroups, setOpenGroups] = useState<string[]>([]);
+
+  // Sync open groups with pathname on mount and navigation
+  useEffect(() => {
+    const activeItem = items.find((item) =>
+      item.items?.some(
+        (subItem) =>
+          pathname === subItem.url || pathname.startsWith(subItem.url),
+      ),
+    );
+
+    if (activeItem && !openGroups.includes(activeItem.title)) {
+      setOpenGroups((prev) => [...prev, activeItem.title]);
+    }
+  }, [pathname, items]);
+
+  const handleOpenChange = (title: string, isOpen: boolean) => {
+    setOpenGroups((prev) =>
+      isOpen ? [...prev, title] : prev.filter((t) => t !== title),
+    );
+  };
 
   return (
     <SidebarGroup>
@@ -46,8 +67,6 @@ export function NavMain({
             url === '/' ? pathname === '/' : pathname.startsWith(url);
 
           // Check if main item is active
-          // If item has children, it's active if specific URL matches strictly
-          // Otherwise check prefix
           const isMainActive =
             item.items && item.items.length > 0
               ? pathname === item.url
@@ -78,18 +97,21 @@ export function NavMain({
             );
           }
 
+          const isOpen = openGroups.includes(item.title);
+
           return (
             <Collapsible
               key={item.title}
               asChild
-              defaultOpen={isActive} // Keep open if active
+              open={isOpen}
+              onOpenChange={(open) => handleOpenChange(item.title, open)}
               className="group/collapsible"
             >
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton
                     tooltip={item.title}
-                    isActive={isMainActive} // Highlight main button if it matches path
+                    isActive={isMainActive}
                   >
                     {item.icon && <item.icon />}
                     <span>{item.title}</span>
@@ -102,7 +124,7 @@ export function NavMain({
                       <SidebarMenuSubItem key={subItem.title}>
                         <SidebarMenuSubButton
                           asChild
-                          isActive={pathname === subItem.url} // Highlight sub-item if exact match
+                          isActive={pathname === subItem.url}
                         >
                           <a href={subItem.url}>
                             <span>{subItem.title}</span>

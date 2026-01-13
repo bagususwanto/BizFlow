@@ -9,10 +9,10 @@ import {
   AVAILABLE_MODULES,
   AVAILABLE_ACTIONS,
   SYSTEM_ROLES,
-  RolesResponse,
 } from '@bizflow/types';
 
 import { PrismaService } from '../../prisma';
+import { successResponse, paginatedResponse } from '../../common/utils';
 import { AuditLogService } from '../audit-log';
 
 @Injectable()
@@ -32,8 +32,7 @@ export class RolesService {
     sortOrder?: 'asc' | 'desc';
     search?: string;
     isSystemRole?: boolean;
-  }): Promise<RolesResponse> {
-    // Explicit return type
+  }) {
     const page = query?.page ?? 1;
     const pageSize = query?.pageSize ?? 10;
     const sortBy = query?.sortBy ?? 'name';
@@ -134,17 +133,16 @@ export class RolesService {
       totalUsersAssigned: totalUsers,
     };
 
-    return {
-      success: true,
-      data: mappedRoles,
-      meta: {
+    return paginatedResponse(
+      mappedRoles,
+      {
         page,
         pageSize,
         totalItems,
         totalPages,
       },
       summary,
-    };
+    );
   }
 
   /**
@@ -181,7 +179,7 @@ export class RolesService {
       throw new NotFoundException('Role tidak ditemukan');
     }
 
-    return {
+    return successResponse({
       id: role.id,
       name: role.name,
       description: role.description,
@@ -197,7 +195,7 @@ export class RolesService {
       ),
       createdAt: role.createdAt,
       updatedAt: role.updatedAt,
-    };
+    });
   }
 
   /**
@@ -245,7 +243,7 @@ export class RolesService {
       }),
     });
 
-    return {
+    return successResponse({
       id: role.id,
       name: role.name,
       description: role.description,
@@ -255,7 +253,7 @@ export class RolesService {
       })),
       createdAt: role.createdAt,
       updatedAt: role.updatedAt,
-    };
+    });
   }
 
   /**
@@ -338,7 +336,7 @@ export class RolesService {
       }),
     });
 
-    return {
+    return successResponse({
       id: role.id,
       name: role.name,
       description: role.description,
@@ -347,7 +345,7 @@ export class RolesService {
         action: p.action,
       })),
       updatedAt: role.updatedAt,
-    };
+    });
   }
 
   /**
@@ -402,7 +400,7 @@ export class RolesService {
       }),
     });
 
-    return { message: `Role '${role.name}' berhasil dihapus` };
+    return successResponse({ message: `Role '${role.name}' berhasil dihapus` });
   }
 
   /**
@@ -425,10 +423,10 @@ export class RolesService {
       }
     }
 
-    return {
+    return successResponse({
       modules: AVAILABLE_MODULES,
       actions: AVAILABLE_ACTIONS,
       permissions,
-    };
+    });
   }
 }

@@ -64,7 +64,7 @@ export const queryRolesSchema = z.object({
 
   // Sorting
   sortBy: z
-    .enum(['name', 'createdAt', 'updatedAt', 'userCount'])
+    .enum(['name', 'description', 'createdAt', 'updatedAt', 'userCount'])
     .default('name'),
   sortOrder: z.enum(['asc', 'desc']).default('asc'),
 

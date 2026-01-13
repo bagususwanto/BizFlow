@@ -204,6 +204,16 @@ export default function RolesPage() {
                           </span>
                         </span>
                       </div>
+                      <Separator orientation="vertical" className="h-4" />
+                      <div className="flex items-center gap-2">
+                        <UserCog className="h-4 w-4 text-muted-foreground" />
+                        <span>
+                          Pengguna Aktif:{' '}
+                          <span className="font-medium text-foreground">
+                            {summary.totalUsersAssigned}
+                          </span>
+                        </span>
+                      </div>
                     </>
                   )}
                 </div>

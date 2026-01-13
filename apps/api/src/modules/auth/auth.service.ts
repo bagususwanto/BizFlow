@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 
 import { PrismaService } from '../../prisma';
+import { successResponse } from '../../common/utils';
 import { LoginDto, PinLoginDto } from './dto';
 import type { JwtPayload } from './strategies/jwt.strategy';
 import { AuditLogService } from '../audit-log';
@@ -99,7 +100,7 @@ export class AuthService {
 
     this.logger.log(`User ${user.username} logged in successfully`);
 
-    return {
+    return successResponse({
       ...tokens,
       user: {
         id: user.id,
@@ -112,7 +113,7 @@ export class AuthService {
         ),
         outlets: user.outlets.map((o) => o.outletId),
       },
-    };
+    });
   }
 
   async pinLogin(dto: PinLoginDto, ipAddress?: string, userAgent?: string) {
@@ -175,7 +176,7 @@ export class AuthService {
 
     this.logger.log(`User ${user.username} logged in with PIN`);
 
-    return {
+    return successResponse({
       ...tokens,
       user: {
         id: user.id,
@@ -187,7 +188,7 @@ export class AuthService {
         ),
         outlets: user.outlets.map((o) => o.outletId),
       },
-    };
+    });
   }
 
   async refreshTokens(userId: string, refreshToken: string) {
@@ -214,7 +215,8 @@ export class AuthService {
     // In a production environment, you would validate the refresh token
     // against a stored hashed version in the database
 
-    return this.generateTokens(user);
+    const tokens = await this.generateTokens(user);
+    return successResponse(tokens);
   }
 
   async logout(userId: string, ipAddress?: string, userAgent?: string) {
@@ -232,7 +234,7 @@ export class AuthService {
 
     this.logger.log(`User ${userId} logged out`);
 
-    return { message: 'Logout berhasil' };
+    return successResponse({ message: 'Logout berhasil' });
   }
 
   async getUsersForPinLogin() {
@@ -249,7 +251,7 @@ export class AuthService {
       orderBy: { name: 'asc' },
     });
 
-    return users;
+    return successResponse(users);
   }
 
   private async generateTokens(user: {

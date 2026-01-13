@@ -50,7 +50,7 @@ export default function RolesPage() {
 
   if (isError) {
     return (
-      <ErrorState title="Gagal memuat data role" onRetry={() => refetch()} />
+      <ErrorState title="Gagal memuat data peran" onRetry={() => refetch()} />
     );
   }
 
@@ -60,9 +60,7 @@ export default function RolesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">
-            Role & Permission
-          </h2>
+          <h2 className="text-2xl font-bold tracking-tight">Peran</h2>
           <p className="text-muted-foreground">
             Kelola hak akses pengguna aplikasi sesuai perannya.
           </p>
@@ -70,16 +68,16 @@ export default function RolesPage() {
         <Button asChild>
           <Link href="/settings/roles/create">
             <Plus className="mr-2 h-4 w-4" />
-            Tambah Role
+            Tambah Peran
           </Link>
         </Button>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Daftar Role</CardTitle>
+          <CardTitle>Daftar Peran</CardTitle>
           <CardDescription>
-            Menampilkan semua role yang tersedia beserta jumlah penggunanya.
+            Menampilkan semua peran yang tersedia beserta jumlah penggunanya.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">

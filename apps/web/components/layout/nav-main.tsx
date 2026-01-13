@@ -61,6 +61,23 @@ export function NavMain({
           // Item is effectively active if main link matches or child is active
           const isActive = isMainActive || isSubActive;
 
+          if (!item.items?.length) {
+            return (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton
+                  asChild
+                  tooltip={item.title}
+                  isActive={isMainActive}
+                >
+                  <a href={item.url}>
+                    {item.icon && <item.icon />}
+                    <span>{item.title}</span>
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          }
+
           return (
             <Collapsible
               key={item.title}

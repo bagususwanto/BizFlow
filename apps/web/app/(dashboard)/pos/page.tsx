@@ -1,8 +1,8 @@
-export default function PosPage() {
+export default function POSPage() {
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
-      <h1 className="text-2xl font-bold">Pos</h1>
-      <p className="text-muted-foreground">Selamat datang di BizFlow</p>
+      <h1 className="text-2xl font-bold">POS</h1>
+      <p className="text-muted-foreground">Point of Sale untuk transaksi</p>
     </div>
   );
 }

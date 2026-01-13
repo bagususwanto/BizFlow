@@ -9,6 +9,7 @@ import {
   AVAILABLE_MODULES,
   AVAILABLE_ACTIONS,
   SYSTEM_ROLES,
+  RolesResponse,
 } from '@bizflow/types';
 
 import { PrismaService } from '../../prisma';
@@ -31,7 +32,8 @@ export class RolesService {
     sortOrder?: 'asc' | 'desc';
     search?: string;
     isSystemRole?: boolean;
-  }) {
+  }): Promise<RolesResponse> {
+    // Explicit return type
     const page = query?.page ?? 1;
     const pageSize = query?.pageSize ?? 10;
     const sortBy = query?.sortBy ?? 'name';
@@ -41,31 +43,38 @@ export class RolesService {
 
     // Build where clause for filtering
     const where: {
-      name?: { contains: string; mode: 'insensitive' };
+      name?: { contains: string } | { in: string[] } | { notIn: string[] };
       OR?: Array<{
-        name?: { contains: string; mode: 'insensitive' };
-        description?: { contains: string; mode: 'insensitive' };
+        name?: { contains: string };
+        description?: { contains: string };
       }>;
     } = {};
 
     if (search) {
       where.OR = [
-        { name: { contains: search, mode: 'insensitive' } },
-        { description: { contains: search, mode: 'insensitive' } },
+        { name: { contains: search } },
+        { description: { contains: search } },
       ];
+    }
+
+    // Filter by isSystemRole at DB level
+    if (isSystemRole !== undefined) {
+      if (isSystemRole) {
+        where.name = { in: SYSTEM_ROLES as unknown as string[] };
+      } else {
+        where.name = { notIn: SYSTEM_ROLES as unknown as string[] };
+      }
     }
 
     // Build orderBy clause
     const orderBy: Record<string, 'asc' | 'desc'> = {};
     if (sortBy === 'userCount') {
-      // Special case: sort by user count
-      // Using raw query or custom logic would be needed for this
-      orderBy['name'] = sortOrder;
+      orderBy['name'] = sortOrder; // Fallback
     } else {
       orderBy[sortBy] = sortOrder;
     }
 
-    // Get total count for pagination
+    // Get total count (accurate with DB filtering)
     const totalItems = await this.prisma.role.count({ where });
     const totalPages = Math.ceil(totalItems / pageSize);
 
@@ -73,46 +82,27 @@ export class RolesService {
     const roles = await this.prisma.role.findMany({
       where,
       include: {
-        permissions: {
-          select: {
-            module: true,
-            action: true,
-          },
-        },
-        _count: {
-          select: {
-            users: true,
-          },
-        },
+        permissions: { select: { module: true, action: true } },
+        _count: { select: { users: true } },
       },
       orderBy,
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
 
-    // Map roles with system role flag
+    // Map roles
     let mappedRoles = roles.map((role) => ({
       id: role.id,
       name: role.name,
-      description: role.description,
-      permissions: role.permissions.map((p) => ({
-        module: p.module,
-        action: p.action,
-      })),
+      description: role.description || undefined,
+      permissions: role.permissions,
       userCount: role._count.users,
-      isSystemRole: SYSTEM_ROLES.includes(
-        role.name as (typeof SYSTEM_ROLES)[number],
-      ),
+      isSystemRole: SYSTEM_ROLES.includes(role.name as any),
       createdAt: role.createdAt,
       updatedAt: role.updatedAt,
     }));
 
-    // Filter by isSystemRole if provided (post-query filter)
-    if (isSystemRole !== undefined) {
-      mappedRoles = mappedRoles.filter((r) => r.isSystemRole === isSystemRole);
-    }
-
-    // Sort by userCount if requested (post-query sort)
+    // Post-sorting (still in memory if sortBy=userCount)
     if (sortBy === 'userCount') {
       mappedRoles.sort((a, b) =>
         sortOrder === 'asc'
@@ -121,27 +111,31 @@ export class RolesService {
       );
     }
 
-    // Get summary statistics
-    const allRoles = await this.prisma.role.findMany({
-      include: {
-        _count: {
-          select: { users: true },
-        },
-      },
-    });
+    // Summary
+    const [totalRoles, systemRoles, customRoles, totalUsers] =
+      await Promise.all([
+        this.prisma.role.count(),
+        this.prisma.role.count({
+          where: { name: { in: SYSTEM_ROLES as unknown as string[] } },
+        }),
+        this.prisma.role.count({
+          where: { name: { notIn: SYSTEM_ROLES as unknown as string[] } },
+        }),
+        this.prisma.user.count(),
+      ]);
+
+    // Since roleId is required in User model, totalUsers is correct for 'totalUsersAssigned'.
+    // No need to filter { role: { isNot: null } }
 
     const summary = {
-      totalRoles: allRoles.length,
-      systemRoles: allRoles.filter((r) =>
-        SYSTEM_ROLES.includes(r.name as (typeof SYSTEM_ROLES)[number]),
-      ).length,
-      customRoles: allRoles.filter(
-        (r) => !SYSTEM_ROLES.includes(r.name as (typeof SYSTEM_ROLES)[number]),
-      ).length,
-      totalUsersAssigned: allRoles.reduce((sum, r) => sum + r._count.users, 0),
+      totalRoles,
+      systemRoles,
+      customRoles,
+      totalUsersAssigned: totalUsers,
     };
 
     return {
+      success: true,
       data: mappedRoles,
       meta: {
         page,
@@ -260,6 +254,7 @@ export class RolesService {
         action: p.action,
       })),
       createdAt: role.createdAt,
+      updatedAt: role.updatedAt,
     };
   }
 

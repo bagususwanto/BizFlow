@@ -1,0 +1,8 @@
+export default function CustomersPage() {
+  return (
+    <div className="flex flex-1 flex-col gap-4 p-4">
+      <h1 className="text-2xl font-bold">Pelanggan</h1>
+      <p className="text-muted-foreground">Manajemen pelanggan</p>
+    </div>
+  );
+}

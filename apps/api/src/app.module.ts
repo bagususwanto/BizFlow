@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import { PrismaModule } from './prisma';
-import { AuthModule } from './modules/auth';
-import { AuditLogModule } from './modules/audit-log';
-import { RolesModule } from './modules/roles';
+import { AuthModule } from './modules/core/auth';
+import { AuditLogModule } from './modules/core/audit-log';
+import { RolesModule } from './modules/core/roles';
 
 import { AppService } from './app.service';
 import { AppController } from './app.controller';

@@ -9,8 +9,8 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Reflector } from '@nestjs/core';
 import type { Request } from 'express';
-import type { JwtPayload } from '../../modules/auth/strategies/jwt.strategy';
-import { AuditLogService } from '../../modules/audit-log/audit-log.service';
+import type { JwtPayload } from '../../modules/core/auth/strategies/jwt.strategy';
+import { AuditLogService } from '../../modules/core/audit-log/audit-log.service';
 import {
   AUDIT_LOG_KEY,
   AuditLogOptions,

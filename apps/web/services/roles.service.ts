@@ -8,21 +8,11 @@ import {
   ApiResponse,
 } from '@bizflow/types';
 import { apiClient } from '@/lib/fetch-client';
+import { buildSearchParams } from '@/lib/utils';
 
 class RolesService {
   async getAll(params?: RolesQuery): Promise<RolesResponse> {
-    const searchParams = new URLSearchParams();
-
-    if (params) {
-      if (params.page) searchParams.append('page', params.page.toString());
-      if (params.pageSize)
-        searchParams.append('pageSize', params.pageSize.toString());
-      if (params.sortBy) searchParams.append('sortBy', params.sortBy);
-      if (params.sortOrder) searchParams.append('sortOrder', params.sortOrder);
-      if (params.search) searchParams.append('search', params.search);
-      if (params.isSystemRole !== undefined)
-        searchParams.append('isSystemRole', String(params.isSystemRole));
-    }
+    const searchParams = buildSearchParams(params || {});
 
     return apiClient.get<RolesResponse>(`/roles?${searchParams.toString()}`);
   }

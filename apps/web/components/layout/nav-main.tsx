@@ -41,17 +41,17 @@ export function NavMain({
       {/* <SidebarGroupLabel>Platform</SidebarGroupLabel> */}
       <SidebarMenu>
         {items.map((item) => {
-          // Check if the current path matches the item's URL
-          let isMainActive = false;
+          // Helper to check if a URL matches current path
+          const isUrlActive = (url: string) =>
+            url === '/' ? pathname === '/' : pathname.startsWith(url);
 
-          if (item.items && item.items.length > 0) {
-            isMainActive = pathname === item.url;
-          } else {
-            isMainActive =
-              item.url === '/'
-                ? pathname === '/'
-                : pathname.startsWith(item.url);
-          }
+          // Check if main item is active
+          // If item has children, it's active if specific URL matches strictly
+          // Otherwise check prefix
+          const isMainActive =
+            item.items && item.items.length > 0
+              ? pathname === item.url
+              : isUrlActive(item.url);
 
           // Check if any sub-item is active
           const isSubActive = item.items?.some(
@@ -59,8 +59,6 @@ export function NavMain({
           );
 
           // Item is effectively active if main link matches or child is active
-          // Note: NavMain items with sub-items might not have a direct URL action themselves in some designs,
-          // but here we check both.
           const isActive = isMainActive || isSubActive;
 
           return (

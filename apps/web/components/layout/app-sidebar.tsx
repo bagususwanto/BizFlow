@@ -1,14 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import {
-  LayoutDashboard,
-  ShoppingCart,
-  ShoppingBag,
-  Package,
-  Wallet,
-  Settings,
-} from 'lucide-react';
 
 import { NavMain } from './nav-main';
 import { NavUser } from './nav-user';
@@ -21,47 +13,7 @@ import {
   SidebarRail,
 } from '@bizflow/ui';
 
-// BizFlow Navigation Data
-const data = {
-  navMain: [
-    {
-      title: 'Dashboard',
-      url: '/',
-      icon: LayoutDashboard,
-    },
-    {
-      title: 'Penjualan',
-      url: '/sales',
-      icon: ShoppingCart,
-    },
-    {
-      title: 'Pembelian',
-      url: '/purchases',
-      icon: ShoppingBag,
-    },
-    {
-      title: 'Inventaris',
-      url: '/inventory',
-      icon: Package,
-    },
-    {
-      title: 'Keuangan',
-      url: '/finance',
-      icon: Wallet,
-    },
-    {
-      title: 'Settings',
-      url: '/settings',
-      icon: Settings,
-      items: [
-        {
-          title: 'Role & Permission',
-          url: '/settings/roles',
-        },
-      ],
-    },
-  ],
-};
+import { navigationConfig } from '@/config/navigation';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -70,7 +22,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarBranding />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={navigationConfig.navMain} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />

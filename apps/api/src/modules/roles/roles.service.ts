@@ -13,14 +13,10 @@ import {
 
 import { PrismaService } from '../../prisma';
 import { successResponse, paginatedResponse } from '../../common/utils';
-import { AuditLogService } from '../audit-log';
 
 @Injectable()
 export class RolesService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly auditLogService: AuditLogService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   /**
    * Get all roles with pagination, filter, and summary
@@ -33,44 +29,23 @@ export class RolesService {
     search?: string;
     isSystemRole?: boolean;
   }) {
-    const page = query?.page ?? 1;
-    const pageSize = query?.pageSize ?? 10;
-    const sortBy = query?.sortBy ?? 'name';
-    const sortOrder = query?.sortOrder ?? 'asc';
-    const search = query?.search;
-    const isSystemRole = query?.isSystemRole;
+    const {
+      page = 1,
+      pageSize = 10,
+      sortBy = 'name',
+      sortOrder = 'asc',
+      search,
+      isSystemRole,
+    } = query || {};
 
-    // Build where clause for filtering
-    const where: {
-      name?: { contains: string } | { in: string[] } | { notIn: string[] };
-      OR?: Array<{
-        name?: { contains: string };
-        description?: { contains: string };
-      }>;
-    } = {};
-
-    if (search) {
-      where.OR = [
-        { name: { contains: search } },
-        { description: { contains: search } },
-      ];
-    }
-
-    // Filter by isSystemRole at DB level
-    if (isSystemRole !== undefined) {
-      if (isSystemRole) {
-        where.name = { in: SYSTEM_ROLES as unknown as string[] };
-      } else {
-        where.name = { notIn: SYSTEM_ROLES as unknown as string[] };
-      }
-    }
+    const where = this.buildWhereClause(search, isSystemRole);
 
     // Build orderBy clause
-    const orderBy: Record<string, 'asc' | 'desc'> = {};
+    let orderBy: any = {};
     if (sortBy === 'userCount') {
-      orderBy['name'] = sortOrder; // Fallback
+      orderBy = { users: { _count: sortOrder } };
     } else {
-      orderBy[sortBy] = sortOrder;
+      orderBy = { [sortBy]: sortOrder };
     }
 
     // Get total count (accurate with DB filtering)
@@ -90,7 +65,7 @@ export class RolesService {
     });
 
     // Map roles
-    let mappedRoles = roles.map((role) => ({
+    const mappedRoles = roles.map((role) => ({
       id: role.id,
       name: role.name,
       description: role.description || undefined,
@@ -101,16 +76,48 @@ export class RolesService {
       updatedAt: role.updatedAt,
     }));
 
-    // Post-sorting (still in memory if sortBy=userCount)
-    if (sortBy === 'userCount') {
-      mappedRoles.sort((a, b) =>
-        sortOrder === 'asc'
-          ? a.userCount - b.userCount
-          : b.userCount - a.userCount,
-      );
+    const summary = await this.buildSummary();
+
+    return paginatedResponse(
+      mappedRoles,
+      {
+        page,
+        pageSize,
+        totalItems,
+        totalPages,
+      },
+      summary,
+    );
+  }
+
+  private buildWhereClause(search?: string, isSystemRole?: boolean) {
+    const where: {
+      name?: { contains: string } | { in: string[] } | { notIn: string[] };
+      OR?: Array<{
+        name?: { contains: string };
+        description?: { contains: string };
+      }>;
+    } = {};
+
+    if (search) {
+      where.OR = [
+        { name: { contains: search } },
+        { description: { contains: search } },
+      ];
     }
 
-    // Summary
+    if (isSystemRole !== undefined) {
+      if (isSystemRole) {
+        where.name = { in: SYSTEM_ROLES as unknown as string[] };
+      } else {
+        where.name = { notIn: SYSTEM_ROLES as unknown as string[] };
+      }
+    }
+
+    return where;
+  }
+
+  private async buildSummary() {
     const [totalRoles, systemRoles, customRoles, totalUsers] =
       await Promise.all([
         this.prisma.role.count(),
@@ -123,26 +130,12 @@ export class RolesService {
         this.prisma.user.count(),
       ]);
 
-    // Since roleId is required in User model, totalUsers is correct for 'totalUsersAssigned'.
-    // No need to filter { role: { isNot: null } }
-
-    const summary = {
+    return {
       totalRoles,
       systemRoles,
       customRoles,
       totalUsersAssigned: totalUsers,
     };
-
-    return paginatedResponse(
-      mappedRoles,
-      {
-        page,
-        pageSize,
-        totalItems,
-        totalPages,
-      },
-      summary,
-    );
   }
 
   /**

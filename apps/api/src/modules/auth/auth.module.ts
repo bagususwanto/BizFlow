@@ -6,6 +6,8 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy, JwtRefreshStrategy } from './strategies';
+import { RATE_LIMITER } from '../../common/interfaces/rate-limiter.interface';
+import { MemoryRateLimiterService } from '../../common/services/memory-rate-limiter.service';
 
 @Module({
   imports: [
@@ -25,7 +27,15 @@ import { JwtStrategy, JwtRefreshStrategy } from './strategies';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, JwtRefreshStrategy],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    JwtRefreshStrategy,
+    {
+      provide: RATE_LIMITER,
+      useClass: MemoryRateLimiterService,
+    },
+  ],
   exports: [AuthService, JwtModule],
 })
 export class AuthModule {}

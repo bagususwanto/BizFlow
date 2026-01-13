@@ -2,6 +2,7 @@ import {
   Injectable,
   UnauthorizedException,
   ForbiddenException,
+  Inject,
   Logger,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -14,13 +15,10 @@ import { LoginDto, PinLoginDto } from './dto';
 import type { JwtPayload } from './strategies/jwt.strategy';
 import { AuditLogService } from '../audit-log';
 
-interface LoginAttempt {
-  count: number;
-  lockedUntil: Date | null;
-}
-
-// In-memory store for login attempts (could be replaced with Redis in production)
-const loginAttempts = new Map<string, LoginAttempt>();
+import {
+  RATE_LIMITER,
+  RateLimiter,
+} from '../../common/interfaces/rate-limiter.interface';
 
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCK_DURATION_MINUTES = 30;
@@ -34,13 +32,14 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly auditLogService: AuditLogService,
+    @Inject(RATE_LIMITER) private readonly rateLimiter: RateLimiter,
   ) {}
 
   async login(dto: LoginDto, ipAddress?: string, userAgent?: string) {
     const { username, password } = dto;
 
     // Check if account is locked
-    this.checkAccountLock(username);
+    await this.checkAccountLock(username);
 
     // Find user with role and permissions
     const user = await this.prisma.user.findUnique({
@@ -60,7 +59,7 @@ export class AuthService {
     });
 
     if (!user) {
-      this.recordFailedAttempt(username);
+      await this.recordFailedAttempt(username);
       throw new UnauthorizedException('Username atau password tidak valid');
     }
 
@@ -73,12 +72,12 @@ export class AuthService {
     // Verify password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      this.recordFailedAttempt(username);
+      await this.recordFailedAttempt(username);
       throw new UnauthorizedException('Username atau password tidak valid');
     }
 
     // Clear failed attempts on successful login
-    this.clearFailedAttempts(username);
+    await this.clearFailedAttempts(username);
 
     // Generate tokens
     const tokens = await this.generateTokens(user);
@@ -264,38 +263,33 @@ export class AuthService {
     };
   }
 
-  private checkAccountLock(username: string) {
-    const attempt = loginAttempts.get(username);
-    if (attempt?.lockedUntil && new Date() < attempt.lockedUntil) {
-      const remainingMinutes = Math.ceil(
-        (attempt.lockedUntil.getTime() - Date.now()) / 1000 / 60,
-      );
+  private async checkAccountLock(username: string) {
+    const key = `login_attempt:${username}`;
+    const windowMs = LOCK_DURATION_MINUTES * 60 * 1000;
+
+    // Check limit (this increments count)
+    const allowed = await this.rateLimiter.check(
+      key,
+      MAX_LOGIN_ATTEMPTS,
+      windowMs,
+    );
+
+    if (!allowed) {
       throw new ForbiddenException(
-        `Akun terkunci. Coba lagi dalam ${remainingMinutes} menit`,
+        `Akun terkunci sementara karena terlalu banyak percobaan login. Silakan coba lagi dalam ${LOCK_DURATION_MINUTES} menit.`,
       );
     }
   }
 
-  private recordFailedAttempt(username: string) {
-    const attempt = loginAttempts.get(username) || {
-      count: 0,
-      lockedUntil: null,
-    };
-    attempt.count++;
-
-    if (attempt.count >= MAX_LOGIN_ATTEMPTS) {
-      attempt.lockedUntil = new Date(
-        Date.now() + LOCK_DURATION_MINUTES * 60 * 1000,
-      );
-      this.logger.warn(
-        `Account ${username} locked due to too many failed attempts`,
-      );
-    }
-
-    loginAttempts.set(username, attempt);
+  private async recordFailedAttempt(username: string) {
+    // Basic RateLimiter check() already increments.
+    // So we don't strictly need to do anything here if we call check() on every login attempt.
+    // However, if we want to log it or if we change strategy later:
+    this.logger.warn(`Failed login attempt for ${username}`);
   }
 
-  private clearFailedAttempts(username: string) {
-    loginAttempts.delete(username);
+  private async clearFailedAttempts(username: string) {
+    const key = `login_attempt:${username}`;
+    await this.rateLimiter.reset(key);
   }
 }

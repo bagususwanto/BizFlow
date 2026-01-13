@@ -1,37 +1,31 @@
 import {
-  Archive,
   BarChart,
   Box,
   CreditCard,
   DollarSign,
-  FileText,
   Home,
   Layers,
   Settings,
   ShoppingCart,
   Truck,
-  Users,
 } from 'lucide-react';
 
-export const getNavigationConfig = (pathname: string) => ({
+export const navigationConfig = {
   navMain: [
     {
       title: 'Dashboard',
       url: '/dashboard',
       icon: Home,
-      isActive: pathname === '/dashboard',
     },
     {
       title: 'POS',
       url: '/pos',
       icon: ShoppingCart,
-      isActive: pathname.startsWith('/pos'),
     },
     {
       title: 'Master Data',
       url: '#',
       icon: Layers,
-      isActive: pathname.startsWith('/master-data'),
       items: [
         {
           title: 'Produk',
@@ -63,7 +57,6 @@ export const getNavigationConfig = (pathname: string) => ({
       title: 'Inventory',
       url: '#',
       icon: Box,
-      isActive: pathname.startsWith('/inventory'),
       items: [
         {
           title: 'Stok',
@@ -87,7 +80,6 @@ export const getNavigationConfig = (pathname: string) => ({
       title: 'Penjualan',
       url: '#',
       icon: DollarSign,
-      isActive: pathname.startsWith('/sales'),
       items: [
         {
           title: 'Pesanan',
@@ -107,7 +99,6 @@ export const getNavigationConfig = (pathname: string) => ({
       title: 'Pembelian',
       url: '#',
       icon: Truck,
-      isActive: pathname.startsWith('/purchases'),
       items: [
         {
           title: 'Pesanan',
@@ -131,7 +122,6 @@ export const getNavigationConfig = (pathname: string) => ({
       title: 'Keuangan',
       url: '#',
       icon: CreditCard,
-      isActive: pathname.startsWith('/finance'),
       items: [
         {
           title: 'Akun',
@@ -151,7 +141,6 @@ export const getNavigationConfig = (pathname: string) => ({
       title: 'Laporan',
       url: '#',
       icon: BarChart,
-      isActive: pathname.startsWith('/reports'),
       items: [
         {
           title: 'Penjualan',
@@ -171,7 +160,6 @@ export const getNavigationConfig = (pathname: string) => ({
       title: 'Pengaturan',
       url: '#',
       icon: Settings,
-      isActive: pathname.startsWith('/settings'),
       items: [
         {
           title: 'Umum',
@@ -200,4 +188,4 @@ export const getNavigationConfig = (pathname: string) => ({
       ],
     },
   ],
-});
+};

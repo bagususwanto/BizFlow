@@ -12,7 +12,6 @@ import {
   SidebarHeader,
   SidebarRail,
 } from '@bizflow/ui';
-
 import { navigationConfig } from '@/config/navigation';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {

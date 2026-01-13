@@ -1,6 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { Fragment } from 'react';
 import {
   Breadcrumb,
@@ -53,7 +54,9 @@ export function DynamicBreadcrumb() {
                 {isLast ? (
                   <BreadcrumbPage>{name}</BreadcrumbPage>
                 ) : (
-                  <BreadcrumbLink href={href}>{name}</BreadcrumbLink>
+                  <BreadcrumbLink asChild>
+                    <Link href={href}>{name}</Link>
+                  </BreadcrumbLink>
                 )}
               </BreadcrumbItem>
             </Fragment>

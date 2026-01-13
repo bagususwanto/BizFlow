@@ -6,6 +6,7 @@ import {
   Delete,
   Body,
   Param,
+  Query,
   UseGuards,
   HttpCode,
   HttpStatus,
@@ -16,7 +17,7 @@ import { CurrentUser, Permissions } from '../../common/decorators';
 import type { JwtPayload } from '../auth/strategies/jwt.strategy';
 
 import { RolesService } from './roles.service';
-import { CreateRoleDto, UpdateRoleDto } from './dto';
+import { CreateRoleDto, UpdateRoleDto, QueryRolesDto } from './dto';
 
 @Controller('roles')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
@@ -24,12 +25,12 @@ export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
   /**
-   * Get all roles
+   * Get all roles with pagination, filter, and summary
    */
   @Get()
   @Permissions('users:read')
-  async findAll() {
-    return this.rolesService.findAll();
+  async findAll(@Query() query: QueryRolesDto) {
+    return this.rolesService.findAll(query);
   }
 
   /**

@@ -22,10 +22,56 @@ export class RolesService {
   ) {}
 
   /**
-   * Get all roles with permissions and user count
+   * Get all roles with pagination, filter, and summary
    */
-  async findAll() {
+  async findAll(query?: {
+    page?: number;
+    pageSize?: number;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+    search?: string;
+    isSystemRole?: boolean;
+  }) {
+    const page = query?.page ?? 1;
+    const pageSize = query?.pageSize ?? 10;
+    const sortBy = query?.sortBy ?? 'name';
+    const sortOrder = query?.sortOrder ?? 'asc';
+    const search = query?.search;
+    const isSystemRole = query?.isSystemRole;
+
+    // Build where clause for filtering
+    const where: {
+      name?: { contains: string; mode: 'insensitive' };
+      OR?: Array<{
+        name?: { contains: string; mode: 'insensitive' };
+        description?: { contains: string; mode: 'insensitive' };
+      }>;
+    } = {};
+
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    // Build orderBy clause
+    const orderBy: Record<string, 'asc' | 'desc'> = {};
+    if (sortBy === 'userCount') {
+      // Special case: sort by user count
+      // Using raw query or custom logic would be needed for this
+      orderBy['name'] = sortOrder;
+    } else {
+      orderBy[sortBy] = sortOrder;
+    }
+
+    // Get total count for pagination
+    const totalItems = await this.prisma.role.count({ where });
+    const totalPages = Math.ceil(totalItems / pageSize);
+
+    // Get paginated roles
     const roles = await this.prisma.role.findMany({
+      where,
       include: {
         permissions: {
           select: {
@@ -39,10 +85,13 @@ export class RolesService {
           },
         },
       },
-      orderBy: { name: 'asc' },
+      orderBy,
+      skip: (page - 1) * pageSize,
+      take: pageSize,
     });
 
-    return roles.map((role) => ({
+    // Map roles with system role flag
+    let mappedRoles = roles.map((role) => ({
       id: role.id,
       name: role.name,
       description: role.description,
@@ -57,6 +106,51 @@ export class RolesService {
       createdAt: role.createdAt,
       updatedAt: role.updatedAt,
     }));
+
+    // Filter by isSystemRole if provided (post-query filter)
+    if (isSystemRole !== undefined) {
+      mappedRoles = mappedRoles.filter((r) => r.isSystemRole === isSystemRole);
+    }
+
+    // Sort by userCount if requested (post-query sort)
+    if (sortBy === 'userCount') {
+      mappedRoles.sort((a, b) =>
+        sortOrder === 'asc'
+          ? a.userCount - b.userCount
+          : b.userCount - a.userCount,
+      );
+    }
+
+    // Get summary statistics
+    const allRoles = await this.prisma.role.findMany({
+      include: {
+        _count: {
+          select: { users: true },
+        },
+      },
+    });
+
+    const summary = {
+      totalRoles: allRoles.length,
+      systemRoles: allRoles.filter((r) =>
+        SYSTEM_ROLES.includes(r.name as (typeof SYSTEM_ROLES)[number]),
+      ).length,
+      customRoles: allRoles.filter(
+        (r) => !SYSTEM_ROLES.includes(r.name as (typeof SYSTEM_ROLES)[number]),
+      ).length,
+      totalUsersAssigned: allRoles.reduce((sum, r) => sum + r._count.users, 0),
+    };
+
+    return {
+      data: mappedRoles,
+      meta: {
+        page,
+        pageSize,
+        totalItems,
+        totalPages,
+      },
+      summary,
+    };
   }
 
   /**

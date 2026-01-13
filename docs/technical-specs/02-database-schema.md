@@ -791,13 +791,37 @@ model AppSettings {
 
 ### Settings Categories
 
-| Category  | Description          | Example Keys                                      |
-| --------- | -------------------- | ------------------------------------------------- |
-| `company` | Company information  | `company_name`, `company_address`, `company_logo` |
-| `tax`     | Tax settings         | `default_tax_rate`, `tax_inclusive`               |
-| `receipt` | Receipt formatting   | `receipt_header`, `receipt_footer`, `show_logo`   |
-| `display` | Display preferences  | `currency_code`, `date_format`, `timezone`        |
-| `general` | General app settings | `language`, `theme`, `session_timeout`            |
+| Category  | Description           | Example Keys                                      |
+| --------- | --------------------- | ------------------------------------------------- |
+| `company` | Company information   | `company_name`, `company_address`, `company_logo` |
+| `tax`     | Tax settings          | `default_tax_rate`, `tax_inclusive`               |
+| `display` | Display preferences   | `currency_code`, `date_format`, `timezone`        |
+| `general` | General app settings  | `language`, `theme`, `session_timeout`            |
+| `printer` | Printer configuration | `printer_type`, `paper_size`, `print_header`      |
+| `backup`  | Backup settings       | `auto_backup_enabled`, `backup_frequency`         |
+
+---
+
+## System Maintenance
+
+### Backup History
+
+```prisma
+model BackupHistory {
+  id          String    @id @default(cuid())
+  fileName    String
+  fileSize    String    // Stored as string to handle large sizes or formatted units
+  status      String    // "success", "failed", "in_progress"
+  location    String?   // File path or S3 URL
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  createdBy   String?   // User ID who initiated the backup (nullable for auto-backups)
+  notes       String?
+
+  @@index([startedAt])
+  @@index([status])
+}
+```
 
 ### Default Settings
 

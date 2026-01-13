@@ -292,4 +292,4 @@ bizflow/
 | **reports/inventory**    | `/api/v1/reports/inventory/*`    | (Aggregates Stock, StockMovement) |
 | **reports/financial**    | `/api/v1/reports/financial/*`    | (Aggregates Transaction, P&L)     |
 | **reports/dashboards**   | `/api/v1/reports/dashboard/*`    | (Aggregates all modules)          |
-| **settings/general**     | `/api/v1/settings/*`             | AppSettings (config)              |
+| **settings/general**     | `/api/v1/settings/*`             | AppSettings, BackupHistory        |

@@ -30,7 +30,7 @@ import {
 import { AuditLogInterceptor } from '../../../common/interceptors/audit-log.interceptor';
 import { UseInterceptors } from '@nestjs/common';
 
-@Controller('roles')
+@Controller('core/roles')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}

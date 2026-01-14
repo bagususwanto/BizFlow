@@ -26,8 +26,6 @@ interface RolesToolbarProps {
   onSearchChange: (value: string) => void;
   roleType: string;
   onRoleTypeChange: (value: string) => void;
-  pageSize: number;
-  onPageSizeChange: (value: number) => void;
   columnVisibility: Record<string, boolean>;
   onColumnVisibilityChange: (value: Record<string, boolean>) => void;
 }
@@ -37,8 +35,6 @@ export function RolesToolbar({
   onSearchChange,
   roleType,
   onRoleTypeChange,
-  pageSize,
-  onPageSizeChange,
   columnVisibility,
   onColumnVisibilityChange,
 }: RolesToolbarProps) {
@@ -99,23 +95,6 @@ export function RolesToolbar({
             })}
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
-
-      <div className="flex items-center gap-2">
-        <Select
-          value={pageSize.toString()}
-          onValueChange={(value) => onPageSizeChange(Number(value))}
-        >
-          <SelectTrigger className="w-[130px]">
-            <SelectValue placeholder="Baris per halaman" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="5">5 per hal</SelectItem>
-            <SelectItem value="10">10 per hal</SelectItem>
-            <SelectItem value="20">20 per hal</SelectItem>
-            <SelectItem value="50">50 per hal</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
     </div>
   );

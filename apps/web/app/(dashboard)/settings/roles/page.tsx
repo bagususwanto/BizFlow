@@ -95,11 +95,6 @@ export default function RolesPage() {
               setIsSystemRole(value);
               setPage(1);
             }}
-            pageSize={pageSize}
-            onPageSizeChange={(value) => {
-              setPageSize(value);
-              setPage(1);
-            }}
             columnVisibility={columnVisibility}
             onColumnVisibilityChange={setColumnVisibility}
           />
@@ -134,6 +129,11 @@ export default function RolesPage() {
                 totalPages={totalPages}
                 onPageChange={setPage}
                 summary={summary}
+                pageSize={pageSize}
+                onPageSizeChange={(value) => {
+                  setPageSize(value);
+                  setPage(1);
+                }}
               />
             </>
           )}

@@ -170,7 +170,7 @@ export const navigationConfig = {
           url: '/settings/users',
         },
         {
-          title: 'Peran',
+          title: 'Peran & Akses',
           url: '/settings/roles',
         },
         {

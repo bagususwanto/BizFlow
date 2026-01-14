@@ -23,39 +23,116 @@ export enum AuditAction {
 }
 
 export enum Module {
+  // Core modules
   AUTH = 'auth',
-  DASHBOARD = 'dashboard',
-  POS = 'pos',
+  AUDIT_LOG = 'audit-log',
+  USERS = 'users',
+  ROLES = 'roles',
+  OUTLETS = 'outlets',
+  LICENSE = 'license',
+
+  // Master data modules
   PRODUCTS = 'products',
+  CATEGORIES = 'categories',
+  UNITS = 'units',
+  SUPPLIERS = 'suppliers',
+  CUSTOMERS = 'customers',
+  WAREHOUSES = 'warehouses',
+
+  // Business modules
+  POS = 'pos',
   SALES = 'sales',
   PURCHASES = 'purchases',
   INVENTORY = 'inventory',
   FINANCE = 'finance',
   REPORTS = 'reports',
   SETTINGS = 'settings',
-  USERS = 'users',
-  ROLES = 'roles',
+
+  // Frontend-only modules
+  DASHBOARD = 'dashboard',
 }
 
 // Helper array for available modules
 export const AVAILABLE_MODULES = Object.values(Module);
 
 export const Permission = {
-  Dashboard: {
-    Read: 'dashboard:read',
-    Update: 'dashboard:update',
+  // ========================================
+  // Core Permissions
+  // ========================================
+  AuditLog: {
+    Read: 'audit-log:read',
   },
-  Pos: {
-    Read: 'pos:read',
-    Create: 'pos:create',
-    Update: 'pos:update',
-    Delete: 'pos:delete',
+  Users: {
+    Read: 'users:read',
+    Create: 'users:create',
+    Update: 'users:update',
+    Delete: 'users:delete',
   },
+  Roles: {
+    Read: 'roles:read',
+    Create: 'roles:create',
+    Update: 'roles:update',
+    Delete: 'roles:delete',
+  },
+  Outlets: {
+    Read: 'outlets:read',
+    Create: 'outlets:create',
+    Update: 'outlets:update',
+    Delete: 'outlets:delete',
+  },
+  License: {
+    Read: 'license:read',
+    Update: 'license:update',
+  },
+
+  // ========================================
+  // Master Data Permissions
+  // ========================================
   Products: {
     Read: 'products:read',
     Create: 'products:create',
     Update: 'products:update',
     Delete: 'products:delete',
+  },
+  Categories: {
+    Read: 'categories:read',
+    Create: 'categories:create',
+    Update: 'categories:update',
+    Delete: 'categories:delete',
+  },
+  Units: {
+    Read: 'units:read',
+    Create: 'units:create',
+    Update: 'units:update',
+    Delete: 'units:delete',
+  },
+  Suppliers: {
+    Read: 'suppliers:read',
+    Create: 'suppliers:create',
+    Update: 'suppliers:update',
+    Delete: 'suppliers:delete',
+  },
+  Customers: {
+    Read: 'customers:read',
+    Create: 'customers:create',
+    Update: 'customers:update',
+    Delete: 'customers:delete',
+  },
+  Warehouses: {
+    Read: 'warehouses:read',
+    Create: 'warehouses:create',
+    Update: 'warehouses:update',
+    Delete: 'warehouses:delete',
+  },
+
+  // ========================================
+  // Business Permissions
+  // ========================================
+  Pos: {
+    Read: 'pos:read',
+    Create: 'pos:create',
+    Update: 'pos:update',
+    Delete: 'pos:delete',
   },
   Sales: {
     Read: 'sales:read',
@@ -91,11 +168,13 @@ export const Permission = {
     Read: 'settings:read',
     Update: 'settings:update',
   },
-  Users: {
-    Read: 'users:read',
-    Create: 'users:create',
-    Update: 'users:update',
-    Delete: 'users:delete',
+
+  // ========================================
+  // Frontend-only Permissions
+  // ========================================
+  Dashboard: {
+    Read: 'dashboard:read',
+    Update: 'dashboard:update',
   },
 } as const;
 

@@ -9,7 +9,7 @@ import {
   AlertDialogTitle,
 } from '@bizflow/ui';
 import { useState, useMemo } from 'react';
-import { SortingState } from '@tanstack/react-table';
+import { SortingState, OnChangeFn } from '@tanstack/react-table';
 
 import type { Role } from '@/services/roles.service';
 import { DataTable } from '../ui/data-table';
@@ -22,6 +22,8 @@ interface RolesTableProps {
   sortBy: string;
   sortOrder: 'asc' | 'desc';
   onSortChange: (field: string) => void;
+  columnVisibility: Record<string, boolean>;
+  onColumnVisibilityChange: OnChangeFn<Record<string, boolean>>;
 }
 
 export function RolesTable({
@@ -31,6 +33,8 @@ export function RolesTable({
   sortBy,
   sortOrder,
   onSortChange,
+  columnVisibility,
+  onColumnVisibilityChange,
 }: RolesTableProps) {
   const [roleToDelete, setRoleToDelete] = useState<Role | null>(null);
 
@@ -90,6 +94,8 @@ export function RolesTable({
             onSortChange(firstSort.id);
           }
         }}
+        columnVisibility={columnVisibility}
+        onColumnVisibilityChange={onColumnVisibilityChange}
       />
 
       <AlertDialog

@@ -25,6 +25,8 @@ interface DataTableProps<TData, TValue> {
   isLoading?: boolean;
   sorting?: SortingState;
   onSortingChange?: OnChangeFn<SortingState>;
+  columnVisibility?: Record<string, boolean>;
+  onColumnVisibilityChange?: OnChangeFn<Record<string, boolean>>;
 }
 
 export function DataTable<TData, TValue>({
@@ -33,14 +35,18 @@ export function DataTable<TData, TValue>({
   isLoading = false,
   sorting,
   onSortingChange,
+  columnVisibility,
+  onColumnVisibilityChange,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: onSortingChange,
+    onColumnVisibilityChange: onColumnVisibilityChange,
     state: {
       sorting,
+      columnVisibility,
     },
     manualSorting: true, // Server-side sorting
   });

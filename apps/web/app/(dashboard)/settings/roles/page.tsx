@@ -27,6 +27,9 @@ export default function RolesPage() {
   const [isSystemRole, setIsSystemRole] = useState<string>('all'); // all, true, false
   const [sortBy, setSortBy] = useState('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [columnVisibility, setColumnVisibility] = useState<
+    Record<string, boolean>
+  >({});
 
   const debouncedSearch = useDebounce(search, 500);
 
@@ -97,6 +100,8 @@ export default function RolesPage() {
               setPageSize(value);
               setPage(1);
             }}
+            columnVisibility={columnVisibility}
+            onColumnVisibilityChange={setColumnVisibility}
           />
 
           {isLoading ? (
@@ -119,6 +124,8 @@ export default function RolesPage() {
                     setSortOrder('asc');
                   }
                 }}
+                columnVisibility={columnVisibility}
+                onColumnVisibilityChange={setColumnVisibility}
               />
 
               <RolesPagination

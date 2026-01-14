@@ -1,8 +1,18 @@
 'use client';
 
-import { Search, SlidersHorizontal } from 'lucide-react';
+import {
+  ChevronDown,
+  Search,
+  SlidersHorizontal,
+  Settings2,
+} from 'lucide-react';
 
 import {
+  Button,
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
   Input,
   Select,
   SelectContent,
@@ -18,6 +28,8 @@ interface RolesToolbarProps {
   onRoleTypeChange: (value: string) => void;
   pageSize: number;
   onPageSizeChange: (value: number) => void;
+  columnVisibility: Record<string, boolean>;
+  onColumnVisibilityChange: (value: Record<string, boolean>) => void;
 }
 
 export function RolesToolbar({
@@ -27,7 +39,15 @@ export function RolesToolbar({
   onRoleTypeChange,
   pageSize,
   onPageSizeChange,
+  columnVisibility,
+  onColumnVisibilityChange,
 }: RolesToolbarProps) {
+  const columns = [
+    { id: 'description', label: 'Deskripsi' },
+    { id: 'userCount', label: 'Pengguna' },
+    { id: 'updatedAt', label: 'Update Terakhir' },
+  ];
+
   return (
     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div className="flex flex-1 items-center gap-2">
@@ -51,6 +71,34 @@ export function RolesToolbar({
             <SelectItem value="false">Custom Role</SelectItem>
           </SelectContent>
         </Select>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-auto">
+              <Settings2 className="mr-2 h-4 w-4" />
+              Columns
+              <ChevronDown className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {columns.map((column) => {
+              return (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  checked={columnVisibility[column.id] !== false}
+                  onCheckedChange={(value) =>
+                    onColumnVisibilityChange({
+                      ...columnVisibility,
+                      [column.id]: !!value,
+                    })
+                  }
+                >
+                  {column.label}
+                </DropdownMenuCheckboxItem>
+              );
+            })}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <div className="flex items-center gap-2">

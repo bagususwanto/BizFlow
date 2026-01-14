@@ -23,22 +23,25 @@ gantt
     axisFormat  %b %Y
 
     section Phase 0
-    Project Setup           :p0, 2026-01-12, 2w
+    Project Setup           :done, p0, 2026-01-12, 2w
 
     section Phase 1 (MVP)
-    User & Access Management    :p1a, after p0, 3w
-    Product Management          :p1b, after p1a, 3w
-    Point of Sale               :p1c, after p1b, 4w
-    Sales Management            :p1d, after p1c, 3w
-    Basic Reports & Desktop App :p1e, after p1d, 3w
+    Core Module                 :active, p1a, after p0, 3w
+    Master Data Module          :p1b, after p1a, 3w
+    POS Module                  :p1c, after p1b, 4w
+    Inventory (Basic)           :p1d, after p1c, 2w
+    Basic Reports & Dashboard   :p1e, after p1d, 2w
+    Desktop App                 :p1f, after p1e, 3w
 
     section Phase 2 (Core)
-    Purchase Management     :p2a, after p1e, 4w
-    Inventory Management    :p2b, after p2a, 4w
-    Cash & Bank Management  :p2c, after p2b, 4w
+    Purchases Module        :p2a, after p1f, 4w
+    Inventory (Advanced)    :p2b, after p2a, 3w
+    Sales Module (Extended) :p2c, after p2b, 3w
+    Finance Module          :p2d, after p2c, 4w
+    Complete Reporting      :p2e, after p2d, 2w
 
     section Phase 3 (Advanced)
-    Multi-outlet & Cloud    :p3a, after p2c, 4w
+    Multi-outlet & Cloud    :p3a, after p2e, 4w
     PWA & Offline Mode      :p3b, after p3a, 3w
     Payment Integration     :p3c, after p3b, 3w
 
@@ -55,14 +58,14 @@ gantt
 
 ### Deliverables
 
-| Task                                                                         | Status  | Owner | Est. |
-| ---------------------------------------------------------------------------- | ------- | ----- | ---- |
-| Setup Turborepo monorepo (`apps/api`, `apps/web`, `apps/desktop`)            | ⬜ TODO | -     | 2d   |
-| Setup shared packages (`packages/types`, `packages/ui`, `packages/database`) | ⬜ TODO | -     | 2d   |
-| Konfigurasi Prisma + SQLite schema                                           | ⬜ TODO | -     | 2d   |
-| Setup Vitest + Playwright untuk testing                                      | ⬜ TODO | -     | 2d   |
-| Setup CI/CD (GitHub Actions)                                                 | ⬜ TODO | -     | 1d   |
-| Implementasi offline license system                                          | ⬜ TODO | -     | 3d   |
+| Task                                                                         | Status | Owner | Est. |
+| ---------------------------------------------------------------------------- | ------ | ----- | ---- |
+| Setup Turborepo monorepo (`apps/api`, `apps/web`, `apps/desktop`)            | [x]    | -     | 2d   |
+| Setup shared packages (`packages/types`, `packages/ui`, `packages/database`) | [x]    | -     | 2d   |
+| Konfigurasi Prisma + SQLite schema                                           | [x]    | -     | 2d   |
+| Setup Vitest + Playwright untuk testing                                      | [x]    | -     | 2d   |
+| Setup CI/CD (GitHub Actions)                                                 | [x]    | -     | 1d   |
+| Implementasi offline license system                                          | [-]    | -     | 3d   |
 
 ### Technical Requirements
 
@@ -77,200 +80,239 @@ gantt
 
 **Goal**: Sistem kasir fungsional dengan manajemen produk, penjualan, dan laporan dasar.
 
-### 1.1 User & Access Management
+### 1.1 Core Module
+
+> Modul inti sistem: autentikasi, user management, role & permission, audit log.
 
 Referensi: [02-user-management.md](file:///Users/bagus/Project/personal/BizFlow/docs/user-flow/02-user-management.md)
 
-| Task                                     | Status     | Priority |
-| ---------------------------------------- | ---------- | -------- |
-| Login/logout dengan PIN & password       | ⬜ TODO    | High     |
-| Role-based access (Owner, Admin, Kasir)  | 🔄 BACKEND | High     |
-| CRUD User dengan multi-outlet assignment | ⬜ TODO    | High     |
-| Permission management granular           | 🔄 BACKEND | Medium   |
-| Audit log aktivitas user                 | ⬜ TODO    | Medium   |
-| Password reset & PIN management          | ⬜ TODO    | Medium   |
+| Task                                         | Status | Priority |
+| -------------------------------------------- | ------ | -------- |
+| **Auth** - Login/logout dengan password      | [x]    | High     |
+| **Auth** - Login dengan PIN (quick access)   | [ ]    | Medium   |
+| **Auth** - Refresh token mechanism           | [x]    | High     |
+| **Auth** - Password reset flow               | [ ]    | Medium   |
+| **Users** - CRUD User                        | [ ]    | High     |
+| **Users** - Multi-outlet assignment          | [ ]    | Medium   |
+| **Roles** - CRUD Role                        | [x]    | High     |
+| **Roles** - Permission management (granular) | [x]    | High     |
+| **Outlets** - CRUD Outlet                    | [ ]    | Medium   |
+| **Audit Log** - Log aktivitas user           | [ ]    | Medium   |
+| **Settings** - App settings management       | [ ]    | Medium   |
 
-**API Endpoints**: `/api/v1/auth/*`, `/api/v1/users/*`, `/api/v1/roles/*`
+**API Endpoints**: `/api/v1/core/auth/*`, `/api/v1/core/users/*`, `/api/v1/core/roles/*`, `/api/v1/core/outlets/*`, `/api/v1/core/audit-log/*`
 
 ---
 
-### 1.2 Product Management (Basic)
+### 1.2 Master Data Module
+
+> Data master: produk, kategori, satuan, pelanggan, gudang.
 
 Referensi: [03-product-management.md](file:///Users/bagus/Project/personal/BizFlow/docs/user-flow/03-product-management.md)
 
-| Task                                  | Status  | Priority |
-| ------------------------------------- | ------- | -------- |
-| CRUD Kategori & Sub-kategori          | ⬜ TODO | High     |
-| CRUD Produk dengan barcode/SKU        | ⬜ TODO | High     |
-| Unit of Measure (satuan)              | ⬜ TODO | High     |
-| Konversi satuan (1 box = 12 pcs)      | ⬜ TODO | Medium   |
-| Product Image upload                  | ⬜ TODO | Low      |
-| Product Variants (warna, ukuran)      | ⬜ TODO | Medium   |
-| Price Levels (grosir, retail, member) | ⬜ TODO | Medium   |
-| Stock alert / minimum stock           | ⬜ TODO | High     |
+| Task                                   | Status | Priority |
+| -------------------------------------- | ------ | -------- |
+| **Categories** - CRUD Kategori         | [ ]    | High     |
+| **Categories** - Hierarchical (nested) | [ ]    | Medium   |
+| **Products** - CRUD Produk             | [ ]    | High     |
+| **Products** - Barcode/SKU support     | [ ]    | High     |
+| **Products** - Product image upload    | [ ]    | Low      |
+| **Products** - Product variants        | [ ]    | Medium   |
+| **Products** - Price levels            | [ ]    | Medium   |
+| **Products** - Stock alert (min stock) | [ ]    | High     |
+| **Units** - CRUD Unit of Measure       | [ ]    | High     |
+| **Units** - Konversi satuan            | [ ]    | Medium   |
+| **Customers** - CRUD Customer          | [ ]    | High     |
+| **Customers** - Credit limit           | [ ]    | Medium   |
+| **Warehouses** - CRUD Warehouse        | [ ]    | High     |
 
-**API Endpoints**: `/api/v1/products/*`, `/api/v1/categories/*`, `/api/v1/units/*`
+**API Endpoints**: `/api/v1/master-data/products/*`, `/api/v1/master-data/categories/*`, `/api/v1/master-data/units/*`, `/api/v1/master-data/customers/*`, `/api/v1/master-data/warehouses/*`
 
 ---
 
-### 1.3 Point of Sale (POS)
+### 1.3 POS Module
+
+> Point of Sale: transaksi kasir, pembayaran, struk.
 
 Referensi: [01-pos.md](file:///Users/bagus/Project/personal/BizFlow/docs/user-flow/01-pos.md)
 
-| Task                                           | Status  | Priority |
-| ---------------------------------------------- | ------- | -------- |
-| Quick sale dengan barcode scanner              | ⬜ TODO | High     |
-| Product search (nama/SKU)                      | ⬜ TODO | High     |
-| Cart management (add, edit qty, remove)        | ⬜ TODO | High     |
-| Multiple payment (cash, QRIS, transfer, split) | ⬜ TODO | High     |
-| Customer selection untuk loyalty               | ⬜ TODO | Medium   |
-| Hold transaction (simpan sementara)            | ⬜ TODO | Medium   |
-| Discount (item, transaksi, promo)              | ⬜ TODO | Medium   |
-| Print struk (thermal 58mm, 80mm)               | ⬜ TODO | High     |
-| Keyboard shortcuts                             | ⬜ TODO | Medium   |
-| Return/Refund processing                       | ⬜ TODO | Medium   |
+| Task                                           | Status | Priority |
+| ---------------------------------------------- | ------ | -------- |
+| Quick sale dengan barcode scanner              | [ ]    | High     |
+| Product search (nama/SKU)                      | [ ]    | High     |
+| Cart management (add, edit qty, remove)        | [ ]    | High     |
+| Multiple payment (cash, QRIS, transfer, split) | [ ]    | High     |
+| Customer selection untuk loyalty               | [ ]    | Medium   |
+| Hold transaction (simpan sementara)            | [ ]    | Medium   |
+| Discount (item, transaksi, promo)              | [ ]    | Medium   |
+| Print struk (thermal 58mm, 80mm)               | [ ]    | High     |
+| Keyboard shortcuts                             | [ ]    | Medium   |
+| Return/Refund processing                       | [ ]    | Medium   |
 
 **API Endpoints**: `/api/v1/pos/*`
 
 ---
 
-### 1.4 Sales Management
+### 1.4 Inventory Module (Basic)
 
-Referensi: [04-sales-management.md](file:///Users/bagus/Project/personal/BizFlow/docs/user-flow/04-sales-management.md)
+> Stok dasar untuk mendukung POS: tracking stok, mutasi otomatis dari penjualan.
 
-| Task                         | Status  | Priority |
-| ---------------------------- | ------- | -------- |
-| Customer database (CRUD)     | ⬜ TODO | High     |
-| Sales Order creation         | ⬜ TODO | High     |
-| Sales Invoice generation     | ⬜ TODO | High     |
-| Credit limit per customer    | ⬜ TODO | Medium   |
-| Sales Return processing      | ⬜ TODO | Medium   |
-| Delivery Order (Surat Jalan) | ⬜ TODO | Medium   |
-| Sales history per customer   | ⬜ TODO | High     |
-| Quotation (penawaran harga)  | ⬜ TODO | Low      |
+Referensi: [06-inventory-management.md](file:///Users/bagus/Project/personal/BizFlow/docs/user-flow/06-inventory-management.md)
 
-**API Endpoints**: `/api/v1/sales/*`, `/api/v1/customers/*`
+| Task                             | Status | Priority |
+| -------------------------------- | ------ | -------- |
+| Stock overview per produk/lokasi | [ ]    | High     |
+| Auto deduct stock on sale        | [ ]    | High     |
+| Stock movement tracking (in/out) | [ ]    | High     |
+| Low stock alert                  | [ ]    | Medium   |
+
+**API Endpoints**: `/api/v1/inventory/stock/*`
 
 ---
 
-### 1.5 Basic Reports
+### 1.5 Basic Reports & Dashboard
+
+> Laporan dasar dan dashboard untuk monitoring bisnis.
 
 Referensi: [08-reporting-analytics.md](file:///Users/bagus/Project/personal/BizFlow/docs/user-flow/08-reporting-analytics.md)
 
-| Task                                        | Status  | Priority |
-| ------------------------------------------- | ------- | -------- |
-| Dashboard ringkasan bisnis                  | ⬜ TODO | High     |
-| Laporan penjualan (harian/mingguan/bulanan) | ⬜ TODO | High     |
-| Laporan stok                                | ⬜ TODO | High     |
-| Export PDF/Excel                            | ⬜ TODO | High     |
+| Task                                        | Status | Priority |
+| ------------------------------------------- | ------ | -------- |
+| Dashboard ringkasan bisnis                  | [ ]    | High     |
+| Laporan penjualan (harian/mingguan/bulanan) | [ ]    | High     |
+| Laporan stok                                | [ ]    | High     |
+| Export PDF/Excel                            | [ ]    | High     |
 
-**API Endpoints**: `/api/v1/reports/*`
+**API Endpoints**: `/api/v1/reports/dashboard/*`, `/api/v1/reports/sales/*`, `/api/v1/reports/inventory/*`
 
 ---
 
-### 1.6 Desktop App (Option A)
+### 1.6 Desktop App
+
+> Electron wrapper untuk deployment on-premise.
 
 Referensi: [09-desktop-app.md](file:///Users/bagus/Project/personal/BizFlow/docs/user-flow/09-desktop-app.md)
 
-| Task                                    | Status  | Priority |
-| --------------------------------------- | ------- | -------- |
-| Electron wrapper dengan embedded server | ⬜ TODO | High     |
-| System tray integration                 | ⬜ TODO | High     |
-| Server lifecycle management             | ⬜ TODO | High     |
-| Logs viewer (filter, export)            | ⬜ TODO | Medium   |
-| Backup/Restore functionality            | ⬜ TODO | High     |
-| License activation flow                 | ⬜ TODO | High     |
-| One-click installer (Windows/Mac/Linux) | ⬜ TODO | High     |
-| Auto-update checker                     | ⬜ TODO | Medium   |
+| Task                                    | Status | Priority |
+| --------------------------------------- | ------ | -------- |
+| Electron wrapper dengan embedded server | [ ]    | High     |
+| System tray integration                 | [ ]    | High     |
+| Server lifecycle management             | [ ]    | High     |
+| Logs viewer (filter, export)            | [ ]    | Medium   |
+| Backup/Restore functionality            | [ ]    | High     |
+| License activation flow                 | [ ]    | High     |
+| One-click installer (Windows/Mac/Linux) | [ ]    | High     |
+| Auto-update checker                     | [ ]    | Medium   |
 
 **Build Output**: `BizFlow-Setup-1.0.0.exe` (~150MB)
 
 ---
 
-## 🔧 Phase 2 - Core Features (2-3 Bulan)
+## 🔧 Phase 2 - Core Features (3-4 Bulan)
 
 **Goal**: Complete core ERP modules untuk operasional bisnis sehari-hari.
 
-### 2.1 Purchase Management
+### 2.1 Purchases Module
+
+> Pembelian: supplier, purchase order, penerimaan barang, retur.
 
 Referensi: [05-purchase-management.md](file:///Users/bagus/Project/personal/BizFlow/docs/user-flow/05-purchase-management.md)
 
-| Task                              | Status  | Priority |
-| --------------------------------- | ------- | -------- |
-| Supplier database (CRUD)          | ⬜ TODO | High     |
-| Purchase Order creation           | ⬜ TODO | High     |
-| Purchase Invoice recording        | ⬜ TODO | High     |
-| Goods Receive (penerimaan barang) | ⬜ TODO | High     |
-| Purchase Return processing        | ⬜ TODO | Medium   |
-| Payment terms management          | ⬜ TODO | Medium   |
-| Purchase history per supplier     | ⬜ TODO | High     |
-| Auto-reorder (stok minimum)       | ⬜ TODO | Low      |
+| Task                            | Status | Priority |
+| ------------------------------- | ------ | -------- |
+| **Suppliers** - CRUD Supplier   | [ ]    | High     |
+| **Orders** - Purchase Order     | [ ]    | High     |
+| **Orders** - PO status workflow | [ ]    | High     |
+| **Goods Receive** - Penerimaan  | [ ]    | High     |
+| **Returns** - Purchase Return   | [ ]    | Medium   |
+| **Payments** - Supplier Payment | [ ]    | High     |
+| Payment terms management        | [ ]    | Medium   |
+| Purchase history per supplier   | [ ]    | High     |
+| Auto-reorder (stok minimum)     | [ ]    | Low      |
 
-**API Endpoints**: `/api/v1/purchases/*`, `/api/v1/suppliers/*`
-
----
-
-### 2.2 Inventory Management
-
-Referensi: [06-inventory-management.md](file:///Users/bagus/Project/personal/BizFlow/docs/user-flow/06-inventory-management.md)
-
-| Task                                      | Status  | Priority |
-| ----------------------------------------- | ------- | -------- |
-| Stock overview per produk/lokasi          | ⬜ TODO | High     |
-| Stock adjustment (koreksi, rusak, hilang) | ⬜ TODO | High     |
-| Stock transfer antar gudang/outlet        | ⬜ TODO | Medium   |
-| Stock opname (inventarisasi fisik)        | ⬜ TODO | High     |
-| Multi-warehouse/outlet support            | ⬜ TODO | Medium   |
-| Batch/Lot tracking                        | ⬜ TODO | Low      |
-| Expiry date tracking                      | ⬜ TODO | Medium   |
-| Stock valuation (HPP)                     | ⬜ TODO | High     |
-| Stock mutation report                     | ⬜ TODO | High     |
-
-**API Endpoints**: `/api/v1/inventory/*`, `/api/v1/warehouses/*`
+**API Endpoints**: `/api/v1/master-data/suppliers/*`, `/api/v1/purchases/orders/*`, `/api/v1/purchases/goods-receive/*`, `/api/v1/purchases/returns/*`, `/api/v1/purchases/payments/*`
 
 ---
 
-### 2.3 Cash & Bank Management
+### 2.2 Inventory Module (Advanced)
+
+> Inventory lanjutan: adjustment, transfer, stock opname.
+
+| Task                                     | Status | Priority |
+| ---------------------------------------- | ------ | -------- |
+| **Adjustments** - Stock correction       | [ ]    | High     |
+| **Adjustments** - Approval workflow      | [ ]    | Medium   |
+| **Transfers** - Inter-warehouse transfer | [ ]    | Medium   |
+| **Transfers** - Transfer status workflow | [ ]    | Medium   |
+| **Opname** - Stock counting              | [ ]    | High     |
+| **Opname** - Finalization & adjustment   | [ ]    | High     |
+| Batch/Lot tracking                       | [ ]    | Low      |
+| Expiry date tracking                     | [ ]    | Medium   |
+| Stock valuation (HPP)                    | [ ]    | High     |
+
+**API Endpoints**: `/api/v1/inventory/adjustments/*`, `/api/v1/inventory/transfers/*`, `/api/v1/inventory/opname/*`
+
+---
+
+### 2.3 Sales Module (Extended)
+
+> Sales order, delivery, retur, kredit pelanggan.
+
+Referensi: [04-sales-management.md](file:///Users/bagus/Project/personal/BizFlow/docs/user-flow/04-sales-management.md)
+
+| Task                            | Status | Priority |
+| ------------------------------- | ------ | -------- |
+| **Orders** - Sales Order        | [ ]    | High     |
+| **Orders** - Invoice            | [ ]    | High     |
+| **Orders** - Delivery Order     | [ ]    | Medium   |
+| **Returns** - Sales Return      | [ ]    | Medium   |
+| **Payments** - Customer Payment | [ ]    | High     |
+| Quotation (penawaran harga)     | [ ]    | Low      |
+| Sales history per customer      | [ ]    | High     |
+
+**API Endpoints**: `/api/v1/sales/orders/*`, `/api/v1/sales/returns/*`, `/api/v1/sales/payments/*`
+
+---
+
+### 2.4 Finance Module
+
+> Keuangan: kas, bank, transaksi, pengeluaran.
 
 Referensi: [07-cash-bank-management.md](file:///Users/bagus/Project/personal/BizFlow/docs/user-flow/07-cash-bank-management.md)
 
-| Task                               | Status  | Priority |
-| ---------------------------------- | ------- | -------- |
-| Multi rekening bank                | ⬜ TODO | High     |
-| Kas kecil / petty cash             | ⬜ TODO | High     |
-| Payment In (terima pembayaran)     | ⬜ TODO | High     |
-| Payment Out (bayar supplier/biaya) | ⬜ TODO | High     |
-| Bank transfer antar rekening       | ⬜ TODO | Medium   |
-| Bank reconciliation                | ⬜ TODO | Medium   |
-| Expense category management        | ⬜ TODO | High     |
-| Receipt/Payment voucher            | ⬜ TODO | Medium   |
+| Task                               | Status | Priority |
+| ---------------------------------- | ------ | -------- |
+| **Accounts** - Multi rekening bank | [ ]    | High     |
+| **Accounts** - Kas kecil           | [ ]    | High     |
+| **Transactions** - Payment In      | [ ]    | High     |
+| **Transactions** - Payment Out     | [ ]    | High     |
+| **Transactions** - Bank transfer   | [ ]    | Medium   |
+| **Expenses** - Expense categories  | [ ]    | High     |
+| Bank reconciliation                | [ ]    | Medium   |
+| Receipt/Payment voucher            | [ ]    | Medium   |
+| AR/AP - Piutang pelanggan          | [ ]    | High     |
+| AR/AP - Hutang supplier            | [ ]    | High     |
+| AR/AP - Aging report               | [ ]    | Medium   |
 
-**API Endpoints**: `/api/v1/finance/*`
-
----
-
-### 2.4 AR/AP Management
-
-| Task                                    | Status  | Priority |
-| --------------------------------------- | ------- | -------- |
-| Piutang pelanggan (Accounts Receivable) | ⬜ TODO | High     |
-| Hutang supplier (Accounts Payable)      | ⬜ TODO | High     |
-| Aging report (umur piutang/hutang)      | ⬜ TODO | Medium   |
-| Payment reminder                        | ⬜ TODO | Low      |
+**API Endpoints**: `/api/v1/finance/accounts/*`, `/api/v1/finance/transactions/*`, `/api/v1/finance/expenses/*`
 
 ---
 
 ### 2.5 Complete Reporting
 
-| Task                           | Status  | Priority |
-| ------------------------------ | ------- | -------- |
-| Laporan pembelian              | ⬜ TODO | High     |
-| Laporan inventory & mutasi     | ⬜ TODO | High     |
-| Laporan laba rugi (P&L)        | ⬜ TODO | High     |
-| Laporan arus kas (Cash Flow)   | ⬜ TODO | High     |
-| Laporan AR/AP                  | ⬜ TODO | High     |
-| Product analysis (best seller) | ⬜ TODO | Medium   |
-| Customer analysis              | ⬜ TODO | Medium   |
+> Laporan lengkap: pembelian, inventory, keuangan.
+
+| Task                           | Status | Priority |
+| ------------------------------ | ------ | -------- |
+| Laporan pembelian              | [ ]    | High     |
+| Laporan inventory & mutasi     | [ ]    | High     |
+| Laporan laba rugi (P&L)        | [ ]    | High     |
+| Laporan arus kas (Cash Flow)   | [ ]    | High     |
+| Laporan AR/AP                  | [ ]    | High     |
+| Product analysis (best seller) | [ ]    | Medium   |
+| Customer analysis              | [ ]    | Medium   |
+
+**API Endpoints**: `/api/v1/reports/purchases/*`, `/api/v1/reports/financial/*`
 
 ---
 
@@ -280,34 +322,34 @@ Referensi: [07-cash-bank-management.md](file:///Users/bagus/Project/personal/Biz
 
 ### 3.1 Multi-outlet (Option B/C)
 
-| Task                             | Status  | Priority |
-| -------------------------------- | ------- | -------- |
-| Docker deployment setup          | ⬜ TODO | High     |
-| PostgreSQL migration dari SQLite | ⬜ TODO | High     |
-| Central management dashboard     | ⬜ TODO | High     |
-| Per-outlet access control        | ⬜ TODO | High     |
-| Inter-outlet stock transfer      | ⬜ TODO | Medium   |
+| Task                             | Status | Priority |
+| -------------------------------- | ------ | -------- |
+| Docker deployment setup          | [ ]    | High     |
+| PostgreSQL migration dari SQLite | [ ]    | High     |
+| Central management dashboard     | [ ]    | High     |
+| Per-outlet access control        | [ ]    | High     |
+| Inter-outlet stock transfer      | [ ]    | Medium   |
 
 ---
 
 ### 3.2 PWA & Offline Mode
 
-| Task                          | Status  | Priority |
-| ----------------------------- | ------- | -------- |
-| Service Worker implementation | ⬜ TODO | High     |
-| Offline-first architecture    | ⬜ TODO | High     |
-| Background sync               | ⬜ TODO | High     |
-| IndexedDB local storage       | ⬜ TODO | Medium   |
+| Task                          | Status | Priority |
+| ----------------------------- | ------ | -------- |
+| Service Worker implementation | [ ]    | High     |
+| Offline-first architecture    | [ ]    | High     |
+| Background sync               | [ ]    | High     |
+| IndexedDB local storage       | [ ]    | Medium   |
 
 ---
 
 ### 3.3 Payment Integration
 
-| Task                               | Status  | Priority |
-| ---------------------------------- | ------- | -------- |
-| QRIS integration (Midtrans/Xendit) | ⬜ TODO | High     |
-| Virtual Account support            | ⬜ TODO | Medium   |
-| Split payment enhancement          | ⬜ TODO | Medium   |
+| Task                               | Status | Priority |
+| ---------------------------------- | ------ | -------- |
+| QRIS integration (Midtrans/Xendit) | [ ]    | High     |
+| Virtual Account support            | [ ]    | Medium   |
+| Split payment enhancement          | [ ]    | Medium   |
 
 ---
 
@@ -317,32 +359,32 @@ Referensi: [07-cash-bank-management.md](file:///Users/bagus/Project/personal/Biz
 
 ### 4.1 E-Commerce Integration
 
-| Task                       | Status  | Priority |
-| -------------------------- | ------- | -------- |
-| Tokopedia marketplace sync | ⬜ TODO | Medium   |
-| Shopee marketplace sync    | ⬜ TODO | Medium   |
-| TikTok Shop integration    | ⬜ TODO | Low      |
-| Unified order management   | ⬜ TODO | Medium   |
+| Task                       | Status | Priority |
+| -------------------------- | ------ | -------- |
+| Tokopedia marketplace sync | [ ]    | Medium   |
+| Shopee marketplace sync    | [ ]    | Medium   |
+| TikTok Shop integration    | [ ]    | Low      |
+| Unified order management   | [ ]    | Medium   |
 
 ---
 
 ### 4.2 Advanced Analytics
 
-| Task                         | Status  | Priority |
-| ---------------------------- | ------- | -------- |
-| Advanced business dashboard  | ⬜ TODO | Medium   |
-| Trend analysis & forecasting | ⬜ TODO | Low      |
-| Custom report builder        | ⬜ TODO | Low      |
+| Task                         | Status | Priority |
+| ---------------------------- | ------ | -------- |
+| Advanced business dashboard  | [ ]    | Medium   |
+| Trend analysis & forecasting | [ ]    | Low      |
+| Custom report builder        | [ ]    | Low      |
 
 ---
 
 ### 4.3 API & Extensibility
 
-| Task                       | Status  | Priority |
-| -------------------------- | ------- | -------- |
-| Public API for third-party | ⬜ TODO | Low      |
-| Webhook support            | ⬜ TODO | Low      |
-| Plugin architecture        | ⬜ TODO | Low      |
+| Task                       | Status | Priority |
+| -------------------------- | ------ | -------- |
+| Public API for third-party | [ ]    | Low      |
+| Webhook support            | [ ]    | Low      |
+| Plugin architecture        | [ ]    | Low      |
 
 ---
 
@@ -391,14 +433,14 @@ Referensi: [07-cash-bank-management.md](file:///Users/bagus/Project/personal/Biz
 
 ## ✅ Status Legend
 
-| Icon | Status                          |
-| ---- | ------------------------------- |
-| ⬜   | TODO - Belum dimulai            |
-| 🔄   | IN PROGRESS - Sedang dikerjakan |
-| ✅   | DONE - Selesai                  |
-| ⏸️   | ON HOLD - Ditunda               |
-| ❌   | CANCELLED - Dibatalkan          |
+| Status | Description                     |
+| ------ | ------------------------------- |
+| `[ ]`  | TODO - Belum dimulai            |
+| `[/]`  | IN PROGRESS - Sedang dikerjakan |
+| `[x]`  | DONE - Selesai                  |
+| `[-]`  | ON HOLD - Ditunda               |
+| `[~]`  | CANCELLED - Dibatalkan          |
 
 ---
 
-_Last updated: 2026-01-08_
+_Last updated: 2026-01-14_

@@ -112,4 +112,23 @@ export class RolesController {
   async delete(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
     return this.rolesService.delete(id, user.sub);
   }
+
+  /**
+   * Bulk delete roles
+   */
+  @Post('bulk-delete')
+  @Permissions(Permission.Users.Delete as PermissionType)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.ROLES,
+    action: AuditAction.DELETE,
+    entityType: 'role (bulk)',
+  })
+  @HttpCode(HttpStatus.OK)
+  async bulkDelete(
+    @Body() body: { ids: string[] },
+    @CurrentUser() user: JwtPayload,
+  ) {
+    return this.rolesService.bulkDelete(body.ids, user.sub);
+  }
 }

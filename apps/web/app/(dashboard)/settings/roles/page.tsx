@@ -126,6 +126,7 @@ export default function RolesPage() {
                 }}
                 columnVisibility={columnVisibility}
                 onColumnVisibilityChange={setColumnVisibility}
+                onRefresh={refetch}
               />
 
               <RolesPagination

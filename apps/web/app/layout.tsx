@@ -30,7 +30,7 @@ export default function RootLayout({
         <ReactQueryProvider>
           <AuthProvider>
             {children}
-            <Toaster />
+            <Toaster richColors />
           </AuthProvider>
         </ReactQueryProvider>
       </body>

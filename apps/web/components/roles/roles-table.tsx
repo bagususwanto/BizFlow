@@ -9,9 +9,16 @@ import {
   AlertDialogTitle,
 } from '@bizflow/ui';
 import { useState, useMemo } from 'react';
-import { SortingState, OnChangeFn } from '@tanstack/react-table';
+import {
+  SortingState,
+  OnChangeFn,
+  RowSelectionState,
+} from '@tanstack/react-table';
+import { Button } from '@bizflow/ui';
+import { Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 
-import type { Role } from '@/services/roles.service';
+import { Role, rolesService } from '@/services/roles.service';
 import { DataTable } from '../ui/data-table';
 import { getColumns } from './columns';
 
@@ -24,6 +31,7 @@ interface RolesTableProps {
   onSortChange: (field: string) => void;
   columnVisibility: Record<string, boolean>;
   onColumnVisibilityChange: OnChangeFn<Record<string, boolean>>;
+  onRefresh: () => void;
 }
 
 export function RolesTable({
@@ -35,8 +43,12 @@ export function RolesTable({
   onSortChange,
   columnVisibility,
   onColumnVisibilityChange,
+  onRefresh,
 }: RolesTableProps) {
   const [roleToDelete, setRoleToDelete] = useState<Role | null>(null);
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+  const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
 
   const columns = useMemo(() => getColumns({ onDelete: setRoleToDelete }), []);
 
@@ -45,8 +57,45 @@ export function RolesTable({
     [sortBy, sortOrder],
   );
 
+  const selectedCount = Object.keys(rowSelection).length;
+
+  const handleBulkDelete = async () => {
+    try {
+      setIsBulkDeleting(true);
+      const ids = Object.keys(rowSelection);
+      await rolesService.bulkDelete(ids);
+      toast.success(`${ids.length} role berhasil dihapus`);
+      setRowSelection({});
+      setShowBulkDeleteDialog(false);
+      onRefresh();
+    } catch (error: any) {
+      toast.error(
+        error instanceof Error ? error.message : 'Gagal menghapus role',
+      );
+    } finally {
+      setIsBulkDeleting(false);
+    }
+  };
+
   return (
-    <>
+    <div className="space-y-4">
+      {selectedCount > 0 && (
+        <div className="flex items-center gap-2 rounded-md bg-muted px-4 py-2">
+          <span className="text-sm font-medium">
+            {selectedCount} role dipilih
+          </span>
+          <Button
+            variant="destructive"
+            size="sm"
+            className="ml-auto h-8"
+            onClick={() => setShowBulkDeleteDialog(true)}
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            Hapus Terpilih
+          </Button>
+        </div>
+      )}
+
       <DataTable
         columns={columns}
         data={data}
@@ -59,45 +108,18 @@ export function RolesTable({
 
           const firstSort = newSorting[0];
           if (firstSort) {
-            // If the same column is clicked, toggle order is handled by table state,
-            // but we need to notify parent.
-            // Note: Our parent expects just the field name to toggle, or set.
-            // However, Tanstack gives us the final state.
-            // We can just pass the ID. The parent 'toggle' logic might interfere if we don't align.
-            // Let's look at parent logic:
-            // if (sortBy === field) setSortOrder(toggle) else setSortBy(field), setSortOrder('asc')
-
-            // Tanstack `toggleSorting` does: if same -> toggle, if diff -> set new.
-            // So `firstSort.id` is the field we want.
-            // But valid check: how to communicate 'desc'?
-            // The parent `onSortChange` only takes `field`.
-            // IF the parent logic handles toggling, we just need to send the field name.
-            // BUT, if we click a new header, it sends `desc: false` (asc).
-            // If we click existing header (asc), it sends `desc: true` (desc).
-
-            // Wait, the parent `onSortChange` implementation in `page.tsx` is:
-            /*
-                onSortChange={(field) => {
-                  if (sortBy === field) {
-                    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-                  } else {
-                    setSortBy(field);
-                    setSortOrder('asc');
-                  }
-                }}
-             */
-            // So simply calling `onSortChange(firstSort.id)` is correct because:
-            // 1. If ID refers to current sort, parent toggles.
-            // 2. If ID is new, parent sets to New + Asc.
-            // This aligns perfectly with TanStack default behavior (click new -> asc, click old -> toggle).
-
             onSortChange(firstSort.id);
           }
         }}
         columnVisibility={columnVisibility}
         onColumnVisibilityChange={onColumnVisibilityChange}
+        enableRowSelection={true}
+        rowSelection={rowSelection}
+        onRowSelectionChange={setRowSelection}
+        getRowId={(row) => row.id}
       />
 
+      {/* Single Delete Dialog */}
       <AlertDialog
         open={!!roleToDelete}
         onOpenChange={(open) => !open && setRoleToDelete(null)}
@@ -131,6 +153,38 @@ export function RolesTable({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </>
+
+      {/* Bulk Delete Dialog */}
+      <AlertDialog
+        open={showBulkDeleteDialog}
+        onOpenChange={(open) => !open && setShowBulkDeleteDialog(false)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Hapus {selectedCount} role?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tindakan ini tidak dapat dibatalkan. Role yang dipilih akan
+              dihapus secara permanen. Role sistem atau role dengan pengguna
+              aktif tidak akan dihapus.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isBulkDeleting}>
+              Batal
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+              onClick={(e) => {
+                e.preventDefault();
+                handleBulkDelete();
+              }}
+              disabled={isBulkDeleting}
+            >
+              {isBulkDeleting ? 'Menghapus...' : 'Hapus'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
   );
 }

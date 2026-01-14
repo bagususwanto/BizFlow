@@ -30,6 +30,29 @@ export const getColumns = ({
   onDelete,
 }: RolesColumnsProps): ColumnDef<Role>[] => [
   {
+    id: 'select',
+    header: ({ table }) => (
+      <input
+        type="checkbox"
+        checked={table.getIsAllPageRowsSelected()}
+        onChange={(e) => table.toggleAllPageRowsSelected(!!e.target.checked)}
+        aria-label="Select all"
+        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+      />
+    ),
+    cell: ({ row }) => (
+      <input
+        type="checkbox"
+        checked={row.getIsSelected()}
+        onChange={(e) => row.toggleSelected(!!e.target.checked)}
+        aria-label="Select row"
+        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
     accessorKey: 'name',
     header: ({ column }) => {
       return (

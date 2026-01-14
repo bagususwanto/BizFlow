@@ -7,6 +7,7 @@ import {
   useReactTable,
   SortingState,
   OnChangeFn,
+  RowSelectionState,
 } from '@tanstack/react-table';
 
 import {
@@ -27,6 +28,11 @@ interface DataTableProps<TData, TValue> {
   onSortingChange?: OnChangeFn<SortingState>;
   columnVisibility?: Record<string, boolean>;
   onColumnVisibilityChange?: OnChangeFn<Record<string, boolean>>;
+  // Row selection
+  enableRowSelection?: boolean;
+  rowSelection?: RowSelectionState;
+  onRowSelectionChange?: OnChangeFn<RowSelectionState>;
+  getRowId?: (originalRow: TData, index: number, parent?: any) => string;
 }
 
 export function DataTable<TData, TValue>({
@@ -37,6 +43,10 @@ export function DataTable<TData, TValue>({
   onSortingChange,
   columnVisibility,
   onColumnVisibilityChange,
+  enableRowSelection = false,
+  rowSelection,
+  onRowSelectionChange,
+  getRowId,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -44,9 +54,13 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: onSortingChange,
     onColumnVisibilityChange: onColumnVisibilityChange,
+    enableRowSelection,
+    onRowSelectionChange: onRowSelectionChange,
+    getRowId,
     state: {
       sorting,
       columnVisibility,
+      rowSelection,
     },
     manualSorting: true, // Server-side sorting
   });

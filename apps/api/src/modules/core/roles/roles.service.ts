@@ -351,6 +351,52 @@ export class RolesService {
   }
 
   /**
+   * Delete multiple roles
+   */
+  async bulkDelete(ids: string[], userId: string) {
+    // 1. Validate all roles exist
+    const roles = await this.prisma.role.findMany({
+      where: { id: { in: ids } },
+      include: {
+        _count: {
+          select: { users: true },
+        },
+      },
+    });
+
+    if (roles.length !== ids.length) {
+      throw new NotFoundException('Beberapa role tidak ditemukan');
+    }
+
+    // 2. Validate interactions
+    const systemRoleNames = SYSTEM_ROLES as unknown as string[];
+    const invalidRoles = roles.filter(
+      (role) => systemRoleNames.includes(role.name) || role._count.users > 0,
+    );
+
+    if (invalidRoles.length > 0) {
+      const names = invalidRoles.map((r) => r.name).join(', ');
+      throw new BadRequestException(
+        `Role berikut tidak dapat dihapus (System role atau sedang digunakan): ${names}`,
+      );
+    }
+
+    // 3. Delete permissions
+    await this.prisma.permission.deleteMany({
+      where: { roleId: { in: ids } },
+    });
+
+    // 4. Delete roles
+    const result = await this.prisma.role.deleteMany({
+      where: { id: { in: ids } },
+    });
+
+    return successResponse({
+      message: `${result.count} role berhasil dihapus`,
+    });
+  }
+
+  /**
    * Get all available permissions (modules and actions)
    */
   getAllPermissions() {

@@ -47,6 +47,10 @@ class RolesService {
   async delete(id: string): Promise<void> {
     await apiClient.delete<ApiResponse<void>>(`/core/roles/${id}`);
   }
+
+  async bulkDelete(ids: string[]): Promise<void> {
+    await apiClient.post<ApiResponse<void>>('/core/roles/bulk-delete', { ids });
+  }
 }
 
 export const rolesService = new RolesService();

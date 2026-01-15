@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 import {
   Button,
@@ -131,9 +132,12 @@ export function LoginForm({ onSwitchToPin }: LoginFormProps) {
         <Button variant="link" className="px-0" onClick={onSwitchToPin}>
           Login dengan PIN (Quick Access)
         </Button>
-        <Button variant="link" className="px-0 text-xs text-muted-foreground">
+        <Link
+          href="/forgot-password"
+          className="px-0 text-xs text-muted-foreground hover:underline text-center"
+        >
           Lupa password?
-        </Button>
+        </Link>
       </CardFooter>
     </Card>
   );

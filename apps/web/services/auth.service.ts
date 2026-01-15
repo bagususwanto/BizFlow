@@ -57,6 +57,34 @@ class AuthService {
     return res.data!;
   }
 
+  async forgotPassword(
+    email: string,
+  ): Promise<{ message: string; resetToken?: string }> {
+    const res = await apiClient.post<
+      ApiResponse<{ message: string; resetToken?: string }>
+    >('/core/auth/forgot-password', { email });
+    return res.data!;
+  }
+
+  async verifyResetToken(
+    token: string,
+  ): Promise<{ valid: boolean; user: { username: string; name: string } }> {
+    const res = await apiClient.get<
+      ApiResponse<{ valid: boolean; user: { username: string; name: string } }>
+    >(`/core/auth/verify-reset-token/${token}`);
+    return res.data!;
+  }
+
+  async resetPassword(
+    data: any, // Using any here to avoid importing specific DTO in frontend service, but structured payload is expected
+  ): Promise<{ message: string }> {
+    const res = await apiClient.post<ApiResponse<{ message: string }>>(
+      '/core/auth/reset-password',
+      data,
+    );
+    return res.data!;
+  }
+
   async getMe(): Promise<LoginResponse['user']> {
     const res =
       await apiClient.get<ApiResponse<LoginResponse['user']>>('/core/auth/me');

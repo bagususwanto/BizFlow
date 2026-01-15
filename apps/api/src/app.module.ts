@@ -5,6 +5,7 @@ import { PrismaModule } from './prisma';
 import { AuthModule } from './modules/core/auth';
 import { AuditLogModule } from './modules/core/audit-log';
 import { RolesModule } from './modules/core/roles';
+import { UsersModule } from './modules/core/users';
 
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
@@ -19,6 +20,7 @@ import { AppController } from './app.controller';
     AuditLogModule,
     AuthModule,
     RolesModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

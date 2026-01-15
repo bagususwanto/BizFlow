@@ -48,13 +48,28 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  role        Role         @relation(fields: [roleId], references: [id])
-  outlets     UserOutlet[]
-  auditLogs   AuditLog[]
-  salesOrders SalesOrder[]
+  role                Role                 @relation(fields: [roleId], references: [id])
+  outlets             UserOutlet[]
+  auditLogs           AuditLog[]
+  salesOrders         SalesOrder[]
+  passwordResetTokens PasswordResetToken[]
 
   @@index([username])
   @@index([roleId])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  userId    String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
 }
 
 model UserOutlet {

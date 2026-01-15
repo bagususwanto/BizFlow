@@ -7,6 +7,7 @@ import {
   UseGuards,
   Get,
   Req,
+  Param,
 } from '@nestjs/common';
 import type { Request } from 'express';
 
@@ -19,7 +20,13 @@ import { UseInterceptors } from '@nestjs/common';
 import { AuditAction, Module } from '@bizflow/types';
 
 import { AuthService } from './auth.service';
-import { LoginDto, PinLoginDto, RefreshTokenDto } from './dto';
+import {
+  LoginDto,
+  PinLoginDto,
+  RefreshTokenDto,
+  ForgotPasswordDto,
+  ResetPasswordDto,
+} from './dto';
 import type { JwtPayload } from './strategies/jwt.strategy';
 import type { RefreshTokenPayload } from './strategies/jwt-refresh.strategy';
 
@@ -97,5 +104,30 @@ export class AuthController {
       permissions: user.permissions,
       outlets: user.outlets,
     });
+  }
+
+  // Password Reset Endpoints
+
+  @Post('forgot-password')
+  @HttpCode(HttpStatus.OK)
+  async forgotPassword(@Body() dto: ForgotPasswordDto) {
+    return this.authService.requestPasswordReset(dto.email);
+  }
+
+  @Get('verify-reset-token/:token')
+  async verifyResetToken(@Param('token') token: string) {
+    return this.authService.verifyResetToken(token);
+  }
+
+  @Post('reset-password')
+  @HttpCode(HttpStatus.OK)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.AUTH,
+    action: AuditAction.UPDATE,
+    entityType: 'user',
+  })
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto.token, dto.password);
   }
 }

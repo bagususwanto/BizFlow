@@ -8,6 +8,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
+import { randomBytes } from 'crypto';
 
 import { PrismaService } from '../../../prisma';
 import { successResponse } from '../../../common/utils';
@@ -22,6 +23,7 @@ import {
 
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCK_DURATION_MINUTES = 30;
+const RESET_TOKEN_EXPIRY_HOURS = 1;
 
 @Injectable()
 export class AuthService {
@@ -223,6 +225,156 @@ export class AuthService {
     });
 
     return successResponse(users);
+  }
+
+  /**
+   * Request password reset - generates a token and returns it
+   * In a production environment with SMTP, this would send an email
+   */
+  async requestPasswordReset(email: string) {
+    // Find user by email
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    // Always return success to prevent email enumeration
+    if (!user) {
+      this.logger.log(
+        `Password reset requested for non-existent email: ${email}`,
+      );
+      return successResponse({
+        message: 'Jika email terdaftar, instruksi reset password akan dikirim.',
+      });
+    }
+
+    if (!user.isActive) {
+      this.logger.log(
+        `Password reset requested for inactive user: ${user.username}`,
+      );
+      return successResponse({
+        message: 'Jika email terdaftar, instruksi reset password akan dikirim.',
+      });
+    }
+
+    // Invalidate existing tokens for this user
+    await this.prisma.passwordResetToken.updateMany({
+      where: {
+        userId: user.id,
+        usedAt: null,
+      },
+      data: { usedAt: new Date() },
+    });
+
+    // Generate secure token
+    const token = randomBytes(32).toString('hex');
+    const expiresAt = new Date(
+      Date.now() + RESET_TOKEN_EXPIRY_HOURS * 60 * 60 * 1000,
+    );
+
+    // Save token
+    await this.prisma.passwordResetToken.create({
+      data: {
+        token,
+        userId: user.id,
+        expiresAt,
+      },
+    });
+
+    this.logger.log(
+      `Password reset token generated for user: ${user.username}`,
+    );
+
+    // TODO: Send email if SMTP is configured
+    // For now, return token for display (on-premise mode)
+    return successResponse({
+      message: 'Instruksi reset password telah dikirim.',
+      resetToken: token, // For on-premise mode without SMTP
+      expiresAt,
+    });
+  }
+
+  /**
+   * Verify if a reset token is valid
+   */
+  async verifyResetToken(token: string) {
+    const resetToken = await this.prisma.passwordResetToken.findUnique({
+      where: { token },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    if (!resetToken) {
+      throw new UnauthorizedException('Token tidak valid');
+    }
+
+    if (resetToken.usedAt) {
+      throw new UnauthorizedException('Token sudah digunakan');
+    }
+
+    if (new Date() > resetToken.expiresAt) {
+      throw new UnauthorizedException('Token sudah kadaluarsa');
+    }
+
+    return successResponse({
+      valid: true,
+      user: {
+        username: resetToken.user.username,
+        name: resetToken.user.name,
+      },
+    });
+  }
+
+  /**
+   * Reset password using a valid token
+   */
+  async resetPassword(token: string, newPassword: string) {
+    const resetToken = await this.prisma.passwordResetToken.findUnique({
+      where: { token },
+      include: { user: true },
+    });
+
+    if (!resetToken) {
+      throw new UnauthorizedException('Token tidak valid');
+    }
+
+    if (resetToken.usedAt) {
+      throw new UnauthorizedException('Token sudah digunakan');
+    }
+
+    if (new Date() > resetToken.expiresAt) {
+      throw new UnauthorizedException('Token sudah kadaluarsa');
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+    // Update password and mark token as used in a transaction
+    await this.prisma.$transaction([
+      this.prisma.user.update({
+        where: { id: resetToken.userId },
+        data: { password: hashedPassword },
+      }),
+      this.prisma.passwordResetToken.update({
+        where: { id: resetToken.id },
+        data: { usedAt: new Date() },
+      }),
+    ]);
+
+    this.logger.log(
+      `Password reset completed for user: ${resetToken.user.username}`,
+    );
+
+    return successResponse({
+      message: 'Password berhasil direset. Silakan login dengan password baru.',
+    });
   }
 
   private async generateTokens(user: {

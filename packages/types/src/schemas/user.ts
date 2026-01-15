@@ -41,17 +41,26 @@ const emailSchema = z
 
 export const createUserSchema = z.object({
   username: usernameSchema,
-  email: emailSchema.optional(),
+  email: z.preprocess(
+    (val) => (val === '' ? undefined : val),
+    emailSchema.optional(),
+  ),
   password: passwordSchema,
-  pin: pinSchema.optional(),
+  pin: z.preprocess(
+    (val) => (val === '' ? undefined : val),
+    pinSchema.optional(),
+  ),
   name: z
     .string()
     .min(1, { message: 'Nama wajib diisi' })
     .max(100, { message: 'Nama maksimal 100 karakter' }),
-  phoneNumber: z
-    .string()
-    .max(20, { message: 'No. Telepon maksimal 20 karakter' })
-    .optional(),
+  phoneNumber: z.preprocess(
+    (val) => (val === '' ? undefined : val),
+    z
+      .string()
+      .max(20, { message: 'No. Telepon maksimal 20 karakter' })
+      .optional(),
+  ),
   roleId: z.string().min(1, { message: 'Role wajib dipilih' }),
   outletIds: z.array(z.string()).optional(),
   isActive: z.boolean().default(true),
@@ -64,17 +73,23 @@ export type CreateUserValues = z.infer<typeof createUserSchema>;
 // ========================================
 
 export const updateUserSchema = z.object({
-  email: emailSchema.optional().nullable(),
+  email: z.preprocess(
+    (val) => (val === '' ? undefined : val),
+    emailSchema.optional().nullable(),
+  ),
   name: z
     .string()
     .min(1, { message: 'Nama wajib diisi' })
     .max(100, { message: 'Nama maksimal 100 karakter' })
     .optional(),
-  phoneNumber: z
-    .string()
-    .max(20, { message: 'No. Telepon maksimal 20 karakter' })
-    .optional()
-    .nullable(),
+  phoneNumber: z.preprocess(
+    (val) => (val === '' ? undefined : val),
+    z
+      .string()
+      .max(20, { message: 'No. Telepon maksimal 20 karakter' })
+      .optional()
+      .nullable(),
+  ),
   roleId: z.string().min(1, { message: 'Role wajib dipilih' }).optional(),
   outletIds: z.array(z.string()).optional(),
   isActive: z.boolean().optional(),

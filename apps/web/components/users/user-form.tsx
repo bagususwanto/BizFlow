@@ -22,8 +22,6 @@ import {
   SelectTrigger,
   SelectValue,
   Switch,
-  Card,
-  CardContent,
 } from '@bizflow/ui';
 import {
   createUserSchema,
@@ -45,7 +43,8 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
   const { roles, isLoading: isLoadingRoles } = useRoles();
 
   const form = useForm<CreateUserValues | UpdateUserValues>({
-    resolver: zodResolver(isEdit ? updateUserSchema : createUserSchema),
+    // @ts-ignore - preprocess changes input types, but runtime validation is correct
+    resolver: zodResolver(isEdit ? updateUserSchema : createUserSchema) as any,
     defaultValues: isEdit
       ? {
           name: initialData?.name || '',

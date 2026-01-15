@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
+    "seed": "ts-node --transpile-only packages/database/prisma/seed.ts",
     "test": "turbo run test",
     "test:unit": "vitest run",
     "test:unit:watch": "vitest",
@@ -23,6 +24,7 @@
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "prettier": "^3.2.5",
+    "ts-node": "^10.9.2",
     "turbo": "^2.7.3",
     "vitest": "^2.1.0"
   },

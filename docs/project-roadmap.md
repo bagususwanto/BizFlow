@@ -89,7 +89,7 @@ Referensi: [02-user-management.md](file:///Users/bagus/Project/personal/BizFlow/
 | Task                                         | Status | Priority |
 | -------------------------------------------- | ------ | -------- |
 | **Auth** - Login/logout dengan password      | [x]    | High     |
-| **Auth** - Login dengan PIN (quick access)   | [ ]    | Medium   |
+| **Auth** - Login dengan PIN (quick access)   | [x]    | Medium   |
 | **Auth** - Refresh token mechanism           | [x]    | High     |
 | **Auth** - Password reset flow               | [ ]    | Medium   |
 | **Users** - CRUD User                        | [ ]    | High     |

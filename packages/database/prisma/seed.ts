@@ -157,12 +157,14 @@ async function main() {
   // Create default admin user
   const adminUser = await prisma.user.upsert({
     where: { username: 'admin' },
-    update: {},
+    update: {
+      pin: hashPin('123456'),
+    },
     create: {
       username: 'admin',
       email: 'admin@bizflow.local',
       password: hashPassword('admin123'),
-      pin: hashPin('1234'),
+      pin: hashPin('123456'),
       name: 'Administrator',
       roleId: ownerRole.id,
       isActive: true,
@@ -379,7 +381,7 @@ async function main() {
   console.log('\n📋 Default credentials:');
   console.log('   Username: admin');
   console.log('   Password: admin123');
-  console.log('   PIN: 1234');
+  console.log('   PIN: 123456');
 }
 
 main()

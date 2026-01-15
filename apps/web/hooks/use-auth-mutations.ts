@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { authService } from '@/services/auth.service';
 import { useAuthStore } from '@/stores/auth.store';
@@ -45,5 +45,12 @@ export function useLogoutMutation() {
       queryClient.clear();
       router.push('/login');
     },
+  });
+}
+
+export function useUsersForPinQuery() {
+  return useQuery({
+    queryKey: ['users-for-pin'],
+    queryFn: () => authService.getUsersForPin(),
   });
 }

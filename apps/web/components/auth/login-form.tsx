@@ -26,7 +26,11 @@ import {
 import { loginSchema, type LoginValues } from '@bizflow/types/schemas';
 import { useLoginMutation } from '@/hooks/use-auth-mutations';
 
-export function LoginForm() {
+interface LoginFormProps {
+  onSwitchToPin?: () => void;
+}
+
+export function LoginForm({ onSwitchToPin }: LoginFormProps) {
   const router = useRouter();
   const [showPassword, setShowPassword] = React.useState(false);
   const { mutate: login, isPending } = useLoginMutation();
@@ -123,7 +127,10 @@ export function LoginForm() {
           </form>
         </Form>
       </CardContent>
-      <CardFooter className="flex justify-center">
+      <CardFooter className="flex flex-col gap-2">
+        <Button variant="link" className="px-0" onClick={onSwitchToPin}>
+          Login dengan PIN (Quick Access)
+        </Button>
         <Button variant="link" className="px-0 text-xs text-muted-foreground">
           Lupa password?
         </Button>

@@ -18,7 +18,6 @@ import type { JwtPayload } from '../auth/strategies/jwt.strategy';
 
 import { RolesService } from './roles.service';
 import { CreateRoleDto, UpdateRoleDto, QueryRolesDto } from './dto';
-import { successResponse } from '../../../common/utils';
 import { Permissions } from '../../../common/decorators/permissions.decorator';
 import { AuditLog } from '../../../common/decorators/audit-log.decorator';
 import {
@@ -82,7 +81,7 @@ export class RolesController {
    * Update an existing role
    */
   @Patch(':id')
-  @Permissions(Permission.Users.Update)
+  @Permissions(Permission.Users.Update as PermissionType)
   @UseInterceptors(AuditLogInterceptor)
   @AuditLog({
     module: Module.ROLES,

@@ -87,11 +87,11 @@ gantt
 Referensi: [02-user-management.md](file:///Users/bagus/Project/personal/BizFlow/docs/user-flow/02-user-management.md)
 
 | Task                                         | Status | Priority |
-| -------------------------------------------- | ------ | -------- |
+| -------------------------------------------- | ------ | -------- | -------------- |
 | **Auth** - Login/logout dengan password      | [x]    | High     |
 | **Auth** - Login dengan PIN (quick access)   | [x]    | Medium   |
 | **Auth** - Refresh token mechanism           | [x]    | High     |
-| **Auth** - Password reset flow               | [ ]    | Medium   |
+| **Auth** - Password reset flow               | [/]    | Medium   | (Backend Done) |
 | **Users** - CRUD User                        | [ ]    | High     |
 | **Users** - Multi-outlet assignment          | [ ]    | Medium   |
 | **Roles** - CRUD Role                        | [x]    | High     |

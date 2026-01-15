@@ -57,7 +57,7 @@ interface RefreshResponse {
 // Response: 204 No Content
 ```
 
-### POST `/api/v1/auth/pin-login`
+### POST `/api/v1/core/auth/pin-login`
 
 ```typescript
 interface PinLoginRequest {
@@ -65,6 +65,50 @@ interface PinLoginRequest {
   pin: string;
 }
 // Response: same as LoginResponse
+```
+
+### POST `/api/v1/core/auth/forgot-password`
+
+```typescript
+// Request
+interface ForgotPasswordRequest {
+  email: string;
+}
+
+// Response
+interface ForgotPasswordResponse {
+  message: string;
+  resetToken?: string; // Returned in on-premise/dev mode
+}
+```
+
+### GET `/api/v1/core/auth/verify-reset-token/:token`
+
+```typescript
+// Response
+interface VerifyResetTokenResponse {
+  valid: boolean;
+  user: {
+    username: string;
+    name: string;
+  };
+}
+```
+
+### POST `/api/v1/core/auth/reset-password`
+
+```typescript
+// Request
+interface ResetPasswordRequest {
+  token: string;
+  password: string;
+  confirmPassword: string;
+}
+
+// Response
+interface ResetPasswordResponse {
+  message: string;
+}
 ```
 
 ---

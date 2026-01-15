@@ -18,44 +18,44 @@ interface JWTPayload {
 const tokenConfig = {
   accessToken: {
     secret: process.env.JWT_ACCESS_SECRET,
-    expiresIn: "15m",
+    expiresIn: '15m',
   },
   refreshToken: {
     secret: process.env.JWT_REFRESH_SECRET,
-    expiresIn: "7d",
+    expiresIn: '7d',
   },
 };
 
 // Permission structure
 type Permission = `${Module}:${Action}`;
 type Module =
-  | "pos"
-  | "products"
-  | "sales"
-  | "purchases"
-  | "inventory"
-  | "finance"
-  | "reports"
-  | "settings";
-type Action = "create" | "read" | "update" | "delete" | "export";
+  | 'pos'
+  | 'products'
+  | 'sales'
+  | 'purchases'
+  | 'inventory'
+  | 'finance'
+  | 'reports'
+  | 'settings';
+type Action = 'create' | 'read' | 'update' | 'delete' | 'export';
 
 // Example permissions
 const ownerPermissions: Permission[] = [
-  "pos:*",
-  "products:*",
-  "sales:*",
-  "purchases:*",
-  "inventory:*",
-  "finance:*",
-  "reports:*",
-  "settings:*",
+  'pos:*',
+  'products:*',
+  'sales:*',
+  'purchases:*',
+  'inventory:*',
+  'finance:*',
+  'reports:*',
+  'settings:*',
 ];
 
 const kasirPermissions: Permission[] = [
-  "pos:create",
-  "pos:read",
-  "products:read",
-  "sales:read",
+  'pos:create',
+  'pos:read',
+  'products:read',
+  'sales:read',
 ];
 ```
 
@@ -74,15 +74,28 @@ const kasirPermissions: Permission[] = [
 
 ---
 
+## Password Management
+
+| Feature                   | Security Measure                                     |
+| ------------------------- | ---------------------------------------------------- |
+| **Reset Token**           | 32-byte cryptographically secure random string       |
+| **Token Expiry**          | 1 hour                                               |
+| **Token Usage**           | Single-use (marked `usedAt` upon reset)              |
+| **Invalidation**          | Old tokens invalidated when new one requested        |
+| **Email Enumeration**     | Generic success message regardless of user existence |
+| **On-Premise Mode (Dev)** | Token returned in API response for easy reset        |
+
+---
+
 ## License Validation
 
 ```typescript
 // packages/license/src/validator.ts
-import { createVerify } from "crypto";
+import { createVerify } from 'crypto';
 
 interface LicenseData {
   machineId: string;
-  package: "starter" | "business" | "enterprise";
+  package: 'starter' | 'business' | 'enterprise';
   features: string[];
   maxUsers: number;
   maxOutlets: number;
@@ -98,24 +111,24 @@ class LicenseValidator {
   }
 
   validate(licenseKey: string, machineId: string): LicenseData {
-    const [header, payload, signature] = licenseKey.split(".");
+    const [header, payload, signature] = licenseKey.split('.');
 
     // Verify signature using public key
-    const verifier = createVerify("RSA-SHA256");
+    const verifier = createVerify('RSA-SHA256');
     verifier.update(`${header}.${payload}`);
 
-    if (!verifier.verify(this.publicKey, signature, "base64url")) {
-      throw new Error("Invalid license signature");
+    if (!verifier.verify(this.publicKey, signature, 'base64url')) {
+      throw new Error('Invalid license signature');
     }
 
     // Decode and validate payload
     const data = JSON.parse(
-      Buffer.from(payload, "base64url").toString()
+      Buffer.from(payload, 'base64url').toString(),
     ) as LicenseData;
 
     // Check machine ID
     if (data.machineId !== machineId) {
-      throw new Error("License not valid for this machine");
+      throw new Error('License not valid for this machine');
     }
 
     return data;

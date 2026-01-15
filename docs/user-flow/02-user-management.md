@@ -831,6 +831,103 @@ Dokumentasi alur pengguna untuk modul Manajemen User & Akses BizFlow.
            [END]
 ```
 
+### 7.3 Forgot Password (by User)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      FORGOT PASSWORD FLOW (User)                            │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  [START] User klik link "Lupa Password?" di halaman Login
+              │
+              ▼
+  ┌───────────────────────┐
+  │  Tampilkan halaman    │
+  │  Forgot Password      │
+  └───────────┬───────────┘
+              │
+              ▼
+  ┌───────────────────────┐
+  │  Input alamat Email   │
+  └───────────┬───────────┘
+              │
+              ▼
+  ┌───────────────────────┐
+  │  Klik tombol Kirim    │
+  └───────────┬───────────┘
+              │
+              ▼
+  ┌───────────────────────┐
+  │  Tampilkan pesan      │
+  │  sukses (generic)     │
+  └───────────┬───────────┘
+              │
+              ▼
+  ┌───────────────────────┐     Tidak
+  │  Apakah Email valid?  │─────────────────────┐
+  └───────────┬───────────┘                     │
+              │ Ya                              │
+              ▼                                 │
+  ┌───────────────────────┐                     │
+  │  Generate Secure      │                     │
+  │  Reset Token          │                     │
+  └───────────┬───────────┘                     │
+              │                                 │
+              ▼                                 │
+  ┌───────────────────────┐                     │
+  │  Kirim email dengan   │                     │
+  │  link reset password  │                     │
+  └───────────┬───────────┘                     │
+              │                                 │
+              ▼                                 │
+  ┌───────────────────────┐                     │
+  │  User klik link di    │                     ▼
+  │  email (dengan token) │                  [END]
+  └───────────┬───────────┘
+              │
+              ▼
+  ┌───────────────────────┐     Tidak Valid
+  │  Validasi Token       │─────────────────────┐
+  └───────────┬───────────┘                     │
+              │ Valid                           ▼
+              ▼                       ┌───────────────────────┐
+  ┌───────────────────────┐           │  Tampilkan error:     │
+  │  Tampilkan form       │           │  "Token tidak valid"  │
+  │  Reset Password       │           └───────────────────────┘
+  └───────────┬───────────┘
+              │
+              ▼
+  ┌───────────────────────┐
+  │  Input Password Baru  │
+  │  + Konfirmasi         │
+  └───────────┬───────────┘
+              │
+              ▼
+  ┌───────────────────────┐
+  │  Klik Reset Password  │
+  └───────────┬───────────┘
+              │
+              ▼
+  ┌───────────────────────┐
+  │  Hash & Update        │
+  │  Password Baru        │
+  └───────────┬───────────┘
+              │
+              ▼
+  ┌───────────────────────┐
+  │  Invalidasi Token     │
+  └───────────┬───────────┘
+              │
+              ▼
+  ┌───────────────────────┐
+  │  Redirect ke Login    │
+  │  + Pesan Sukses       │
+  └───────────────────────┘
+              │
+              ▼
+            [END]
+```
+
 ---
 
 ## 8. Session Management

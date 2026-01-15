@@ -9,6 +9,7 @@ erDiagram
     User }o--|| Role : has
     Role ||--o{ Permission : contains
     Outlet ||--o{ User : employs
+    User ||--o{ PasswordResetToken : has
 
     %% Business Entities
     Customer ||--o{ SalesOrder : places
@@ -74,7 +75,7 @@ model Outlet {
 
 ## Users & Access
 
-```prisma
+````prisma
 model User {
   id            String    @id @default(cuid())
   username      String    @unique
@@ -89,9 +90,10 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  role          Role      @relation(fields: [roleId], references: [id])
-  auditLogs     AuditLog[]
-  salesOrders   SalesOrder[]
+  role                Role                 @relation(fields: [roleId], references: [id])
+  auditLogs           AuditLog[]
+  salesOrders         SalesOrder[]
+  passwordResetTokens PasswordResetToken[]
 
   @@index([username])
   @@index([roleId])
@@ -137,7 +139,26 @@ model AuditLog {
   @@index([module])
   @@index([createdAt])
 }
-```
+
+### PasswordResetToken
+
+```prisma
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  userId    String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+}
+````
+
+````
 
 ---
 
@@ -291,7 +312,7 @@ model StockMovement {
   @@index([createdAt])
   @@index([referenceType, referenceId])
 }
-```
+````
 
 ---
 

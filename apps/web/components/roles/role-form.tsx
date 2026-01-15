@@ -15,7 +15,6 @@ import {
 } from '@bizflow/ui';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 import { PermissionMatrix } from './permission-matrix';
 import type { PermissionData, Role } from '@/services/roles.service';

@@ -71,7 +71,7 @@ export function RolesToolbar({
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
               <Settings2 className="mr-2 h-4 w-4" />
-              Columns
+              Kolom
               <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>

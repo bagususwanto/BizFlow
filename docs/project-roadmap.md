@@ -97,7 +97,7 @@ Referensi: [02-user-management.md](file:///Users/bagus/Project/personal/BizFlow/
 | **Users** - Multi-outlet assignment          | [ ]    | Medium   |
 | **Roles** - CRUD Role                        | [x]    | High     |
 | **Roles** - Permission management (granular) | [x]    | High     |
-| **Outlets** - CRUD Outlet                    | [ ]    | Medium   |
+| **Outlets** - CRUD Outlet                    | [x]    | Medium   |
 | **Audit Log** - Log aktivitas user           | [ ]    | Medium   |
 | **Settings** - App settings management       | [ ]    | Medium   |
 

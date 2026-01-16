@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma';
 import { AuthModule } from './modules/core/auth';
 import { AuditLogModule } from './modules/core/audit-log';
+import { OutletsModule } from './modules/core/outlets';
 import { RolesModule } from './modules/core/roles';
 import { UsersModule } from './modules/core/users';
 
@@ -19,6 +20,7 @@ import { AppController } from './app.controller';
     PrismaModule,
     AuditLogModule,
     AuthModule,
+    OutletsModule,
     RolesModule,
     UsersModule,
   ],

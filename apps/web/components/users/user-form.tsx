@@ -49,7 +49,7 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
       ? {
           name: initialData?.name || '',
           email: initialData?.email || '',
-          roleId: initialData?.roleId || '',
+          roleId: initialData?.roleId || initialData?.role?.id || '',
           isActive: initialData?.isActive ?? true,
           outletIds: initialData?.outletIds || [],
           // phone number not in User entity but in schema? ignoring for now if not in entity

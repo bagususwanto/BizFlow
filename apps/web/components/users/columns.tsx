@@ -27,11 +27,13 @@ import type { User } from '@bizflow/types';
 interface UsersColumnsProps {
   onDelete: (user: User) => void;
   onResetPassword: (user: User) => void;
+  onChangePin: (user: User) => void;
 }
 
 export const getColumns = ({
   onDelete,
   onResetPassword,
+  onChangePin,
 }: UsersColumnsProps): ColumnDef<User>[] => [
   {
     id: 'select',
@@ -179,6 +181,10 @@ export const getColumns = ({
             <DropdownMenuItem onClick={() => onResetPassword(user)}>
               <RotateCcw className="mr-2 h-4 w-4" />
               Reset Password
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onChangePin(user)}>
+              <Lock className="mr-2 h-4 w-4" />
+              Ganti PIN
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             {user.isActive ? (

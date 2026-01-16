@@ -13,15 +13,17 @@ export default function CreateUserPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Tambah User</h1>
+        <h1 className="text-2xl font-bold tracking-tight">
+          Buat Pengguna Baru
+        </h1>
         <p className="text-muted-foreground">
-          Buat user baru untuk mengakses sistem.
+          Buat pengguna baru untuk mengakses sistem.
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Form User</CardTitle>
+          <CardTitle>Form Pengguna</CardTitle>
           <CardDescription>
             Isi detail pengguna baru di bawah ini.
           </CardDescription>

@@ -68,17 +68,17 @@ export default function CreateRolePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Buat Role Baru</h2>
+        <h2 className="text-2xl font-bold tracking-tight">Buat Peran Baru</h2>
         <p className="text-muted-foreground">
-          Buat role baru dan tentukan hak aksesnya.
+          Buat peran baru dan tentukan hak aksesnya.
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Form Role</CardTitle>
+          <CardTitle>Form Peran</CardTitle>
           <CardDescription>
-            Isi detail role dan pilih hak akses yang sesuai.
+            Isi detail peran dan pilih hak akses yang sesuai.
           </CardDescription>
         </CardHeader>
         <CardContent>

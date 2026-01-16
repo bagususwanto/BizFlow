@@ -90,6 +90,14 @@ class AuthService {
       await apiClient.get<ApiResponse<LoginResponse['user']>>('/core/auth/me');
     return res.data!;
   }
+
+  async changePassword(data: any): Promise<{ message: string }> {
+    const res = await apiClient.post<ApiResponse<{ message: string }>>(
+      '/core/auth/change-password',
+      data,
+    );
+    return res.data!;
+  }
 }
 
 export const authService = new AuthService();

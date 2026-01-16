@@ -26,6 +26,7 @@ import {
   RefreshTokenDto,
   ForgotPasswordDto,
   ResetPasswordDto,
+  ChangePasswordDto,
 } from './dto';
 import type { JwtPayload } from './strategies/jwt.strategy';
 import type { RefreshTokenPayload } from './strategies/jwt-refresh.strategy';
@@ -104,6 +105,22 @@ export class AuthController {
       permissions: user.permissions,
       outlets: user.outlets,
     });
+  }
+
+  @Post('change-password')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.AUTH,
+    action: AuditAction.UPDATE,
+    entityType: 'user_password',
+  })
+  async changePassword(
+    @CurrentUser() user: JwtPayload,
+    @Body() dto: ChangePasswordDto,
+  ) {
+    return this.authService.changePassword(user.sub, dto);
   }
 
   // Password Reset Endpoints

@@ -12,7 +12,7 @@ import { randomBytes } from 'crypto';
 
 import { PrismaService } from '../../../prisma';
 import { successResponse } from '../../../common/utils';
-import { LoginDto, PinLoginDto } from './dto';
+import { LoginDto, PinLoginDto, ChangePasswordDto } from './dto';
 import type { JwtPayload } from './strategies/jwt.strategy';
 import { AuditLogService } from '../audit-log';
 
@@ -225,6 +225,43 @@ export class AuthService {
     });
 
     return successResponse(users);
+  }
+
+  /**
+   * Change password for logged in user
+   */
+  async changePassword(userId: string, dto: ChangePasswordDto) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User tidak ditemukan');
+    }
+
+    // Verify current password
+    const isPasswordValid = await bcrypt.compare(
+      dto.currentPassword,
+      user.password,
+    );
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Password saat ini tidak valid');
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(dto.newPassword, 12);
+
+    // Update password
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { password: hashedPassword },
+    });
+
+    this.logger.log(`Password changed for user: ${user.username}`);
+
+    return successResponse({
+      message: 'Password berhasil diubah',
+    });
   }
 
   /**

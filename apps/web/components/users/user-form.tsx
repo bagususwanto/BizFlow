@@ -32,6 +32,8 @@ import {
 } from '@bizflow/types';
 import { usersService } from '@/services/users.service';
 import { useRoles } from '@/hooks/use-roles';
+import { useActiveOutlets } from '@/hooks/use-outlets';
+import { MultiSelect } from '@/components/common/multi-select';
 
 interface UserFormProps {
   initialData?: User;
@@ -41,9 +43,10 @@ interface UserFormProps {
 export function UserForm({ initialData, isEdit = false }: UserFormProps) {
   const router = useRouter();
   const { roles, isLoading: isLoadingRoles } = useRoles();
+  const { data: outlets = [], isLoading: isLoadingOutlets } =
+    useActiveOutlets();
 
   const form = useForm<CreateUserValues | UpdateUserValues>({
-    // @ts-ignore - preprocess changes input types, but runtime validation is correct
     resolver: zodResolver(isEdit ? updateUserSchema : createUserSchema) as any,
     defaultValues: isEdit
       ? {
@@ -52,7 +55,6 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
           roleId: initialData?.roleId || initialData?.role?.id || '',
           isActive: initialData?.isActive ?? true,
           outletIds: initialData?.outletIds || [],
-          // phone number not in User entity but in schema? ignoring for now if not in entity
         }
       : {
           username: '',
@@ -67,6 +69,11 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
   });
 
   const { isSubmitting } = form.formState;
+
+  const outletOptions = outlets.map((outlet) => ({
+    label: outlet.name,
+    value: outlet.id,
+  }));
 
   const onSubmit = async (data: CreateUserValues | UpdateUserValues) => {
     try {
@@ -88,6 +95,7 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="grid gap-6 md:grid-cols-2">
+          {/* ... existing fields ... */}
           <FormField
             control={form.control}
             name="username"
@@ -174,6 +182,30 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
                     ))}
                   </SelectContent>
                 </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="outletIds"
+            render={({ field }) => (
+              <FormItem className="col-span-2">
+                <FormLabel>Assign ke Outlet</FormLabel>
+                <FormControl>
+                  <MultiSelect
+                    selected={field.value as string[]}
+                    options={outletOptions}
+                    onChange={field.onChange}
+                    placeholder="Pilih Outlet..."
+                  />
+                </FormControl>
+                <FormDescription>
+                  User akan memiliki akses ke outlet yang dipilih. Kosongkan
+                  jika user (misal Owner) memiliki akses global (future
+                  improvement). Saat ini wajib pilih minimal 1 jika ingin akses.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}

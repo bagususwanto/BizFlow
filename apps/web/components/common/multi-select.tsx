@@ -43,7 +43,10 @@ export function MultiSelect({
       if (input) {
         if (e.key === 'Delete' || e.key === 'Backspace') {
           if (input.value === '' && selected.length > 0) {
-            handleUnselect(selected[selected.length - 1]);
+            const lastItem = selected[selected.length - 1];
+            if (lastItem) {
+              handleUnselect(lastItem);
+            }
           }
         }
         // This is not a default behaviour of the <input /> field

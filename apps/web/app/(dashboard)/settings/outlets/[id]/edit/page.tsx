@@ -1,5 +1,6 @@
 'use client';
 
+import { use } from 'react';
 import {
   Card,
   CardContent,
@@ -11,8 +12,13 @@ import { Loader2 } from 'lucide-react';
 import { useOutlet } from '@/hooks/use-outlets';
 import { OutletForm } from '@/components/outlets/outlet-form';
 
-export default function EditOutletPage({ params }: { params: { id: string } }) {
-  const { data: outlet, isLoading, isError } = useOutlet(params.id);
+export default function EditOutletPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
+  const { data: outlet, isLoading, isError } = useOutlet(id);
 
   if (isLoading) {
     return (

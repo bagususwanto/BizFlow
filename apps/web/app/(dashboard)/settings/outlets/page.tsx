@@ -75,7 +75,7 @@ export default function OutletsPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Outlets</h2>
+          <h2 className="text-3xl font-bold tracking-tight">Outlet</h2>
           <p className="text-muted-foreground">
             Kelola data outlet dan cabang perusahaan.
           </p>

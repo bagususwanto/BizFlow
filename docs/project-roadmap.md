@@ -94,7 +94,7 @@ Referensi: [02-user-management.md](file:///Users/bagus/Project/personal/BizFlow/
 | **Auth** - Password reset flow               | [x]    | Medium   |
 | **Users** - CRUD User                        | [x]    | High     |
 | **Users** - Profile management               | [x]    | High     |
-| **Users** - Multi-outlet assignment          | [ ]    | Medium   |
+| **Users** - Multi-outlet assignment          | [x]    | Medium   |
 | **Roles** - CRUD Role                        | [x]    | High     |
 | **Roles** - Permission management (granular) | [x]    | High     |
 | **Outlets** - CRUD Outlet                    | [x]    | Medium   |

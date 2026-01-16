@@ -3,6 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -35,6 +36,7 @@ interface OutletFormProps {
 
 export function OutletForm({ initialData, isEdit = false }: OutletFormProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const form = useForm<CreateOutletValues | UpdateOutletValues>({
     resolver: zodResolver(
@@ -60,8 +62,9 @@ export function OutletForm({ initialData, isEdit = false }: OutletFormProps) {
         await outletsService.create(data as CreateOutletValues);
         toast.success('Outlet berhasil dibuat');
       }
+      // Invalidate outlets queries so the list refreshes automatically
+      await queryClient.invalidateQueries({ queryKey: ['outlets'] });
       router.push('/settings/outlets');
-      router.refresh();
     } catch (error: any) {
       toast.error(error instanceof Error ? error.message : 'Terjadi kesalahan');
     }

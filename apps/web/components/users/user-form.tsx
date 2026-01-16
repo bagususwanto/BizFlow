@@ -201,11 +201,6 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
                     placeholder="Pilih Outlet..."
                   />
                 </FormControl>
-                <FormDescription>
-                  User akan memiliki akses ke outlet yang dipilih. Kosongkan
-                  jika user (misal Owner) memiliki akses global (future
-                  improvement). Saat ini wajib pilih minimal 1 jika ingin akses.
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}

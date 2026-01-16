@@ -177,14 +177,14 @@ export const navigationConfig = {
           title: 'Outlet',
           url: '/settings/outlets',
         },
-        {
-          title: 'Printer',
-          url: '/settings/printer',
-        },
-        {
-          title: 'Backup',
-          url: '/settings/backup',
-        },
+        // {
+        //   title: 'Printer',
+        //   url: '/settings/printer',
+        // },
+        // {
+        //   title: 'Backup',
+        //   url: '/settings/backup',
+        // },
       ],
     },
   ],

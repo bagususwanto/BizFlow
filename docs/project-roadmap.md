@@ -92,7 +92,8 @@ Referensi: [02-user-management.md](file:///Users/bagus/Project/personal/BizFlow/
 | **Auth** - Login dengan PIN (quick access)   | [x]    | Medium   |
 | **Auth** - Refresh token mechanism           | [x]    | High     |
 | **Auth** - Password reset flow               | [x]    | Medium   |
-| **Users** - CRUD User                        | [ ]    | High     |
+| **Users** - CRUD User                        | [x]    | High     |
+| **Users** - Profile management               | [x]    | High     |
 | **Users** - Multi-outlet assignment          | [ ]    | Medium   |
 | **Roles** - CRUD Role                        | [x]    | High     |
 | **Roles** - Permission management (granular) | [x]    | High     |

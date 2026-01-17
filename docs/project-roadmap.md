@@ -99,7 +99,7 @@ Referensi: [02-user-management.md](file:///Users/bagus/Project/personal/BizFlow/
 | **Roles** - Permission management (granular) | [x]    | High     |
 | **Outlets** - CRUD Outlet                    | [x]    | Medium   |
 | **Audit Log** - Log aktivitas user           | [x]    | Medium   |
-| **Settings** - App settings management       | [ ]    | Medium   |
+| **Settings** - App settings management       | [x]    | Medium   |
 
 **API Endpoints**: `/api/v1/core/auth/*`, `/api/v1/core/users/*`, `/api/v1/core/roles/*`, `/api/v1/core/outlets/*`, `/api/v1/core/audit-log/*`
 

@@ -157,7 +157,13 @@ export const queryUsersSchema = z.object({
   // Filters
   search: z.string().optional(),
   roleId: z.string().optional(),
-  isActive: z.coerce.boolean().optional(),
+  isActive: z.preprocess((val) => {
+    if (typeof val === 'string') {
+      if (val === 'true') return true;
+      if (val === 'false') return false;
+    }
+    return val;
+  }, z.boolean().optional()),
 });
 
 export type QueryUsersValues = z.infer<typeof queryUsersSchema>;

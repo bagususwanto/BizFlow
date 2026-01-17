@@ -164,7 +164,7 @@ async function main() {
     create: {
       username: 'admin',
       email: 'admin@bizflow.local',
-      password: hashPassword('admin123'),
+      password: hashPassword('Admin123'),
       pin: hashPin('123456'),
       name: 'Administrator',
       roleId: ownerRole.id,

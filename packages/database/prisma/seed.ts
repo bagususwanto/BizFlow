@@ -59,6 +59,7 @@ async function main() {
           { module: 'users', action: 'read' },
           { module: 'users', action: 'update' },
           { module: 'users', action: 'delete' },
+          { module: 'audit-log', action: 'read' },
         ],
       },
     },

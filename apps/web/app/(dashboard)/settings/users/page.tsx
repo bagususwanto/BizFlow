@@ -77,6 +77,13 @@ export default function UsersPage() {
     }
   };
 
+  const handleReset = () => {
+    setSearch('');
+    setRoleId('all');
+    setStatus('all');
+    setPage(1);
+  };
+
   if (isError) {
     return (
       <ErrorState
@@ -120,6 +127,7 @@ export default function UsersPage() {
             onStatusFilterChange={handleStatusFilterChange}
             columnVisibility={columnVisibility}
             onColumnVisibilityChange={setColumnVisibility}
+            onReset={handleReset}
           />
 
           {isLoading ? (

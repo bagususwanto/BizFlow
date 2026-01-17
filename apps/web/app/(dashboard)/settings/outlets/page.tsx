@@ -71,6 +71,12 @@ export default function OutletsPage() {
     setPage(1);
   };
 
+  const handleReset = () => {
+    setSearch('');
+    setStatus('all');
+    setPage(1);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -103,6 +109,7 @@ export default function OutletsPage() {
             onStatusFilterChange={handleStatusFilterChange}
             columnVisibility={columnVisibility}
             onColumnVisibilityChange={setColumnVisibility}
+            onReset={handleReset}
           />
 
           {isLoading ? (

@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronDown, Search, Settings2 } from 'lucide-react';
+import { ChevronDown, Search, Settings2, X } from 'lucide-react';
 
 import {
   Button,
@@ -23,6 +23,7 @@ interface OutletsToolbarProps {
   onStatusFilterChange: (value: string) => void;
   columnVisibility: Record<string, boolean>;
   onColumnVisibilityChange: (value: Record<string, boolean>) => void;
+  onReset: () => void;
 }
 
 export function OutletsToolbar({
@@ -32,7 +33,10 @@ export function OutletsToolbar({
   onStatusFilterChange,
   columnVisibility,
   onColumnVisibilityChange,
+  onReset,
 }: OutletsToolbarProps) {
+  const isFiltered = search !== '' || status !== 'all';
+
   const columns = [
     { id: 'code', label: 'Kode Outlet' },
     { id: 'name', label: 'Nama Outlet' },
@@ -97,6 +101,17 @@ export function OutletsToolbar({
               })}
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {isFiltered && (
+            <Button
+              variant="ghost"
+              onClick={onReset}
+              className="h-8 px-2 lg:px-3"
+            >
+              Reset
+              <X className="ml-2 h-4 w-4" />
+            </Button>
+          )}
         </div>
       </div>
     </div>

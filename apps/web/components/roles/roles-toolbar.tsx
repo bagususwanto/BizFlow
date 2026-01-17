@@ -5,6 +5,7 @@ import {
   Search,
   SlidersHorizontal,
   Settings2,
+  X,
 } from 'lucide-react';
 
 import {
@@ -28,6 +29,7 @@ interface RolesToolbarProps {
   onRoleTypeChange: (value: string) => void;
   columnVisibility: Record<string, boolean>;
   onColumnVisibilityChange: (value: Record<string, boolean>) => void;
+  onReset: () => void;
 }
 
 export function RolesToolbar({
@@ -37,7 +39,10 @@ export function RolesToolbar({
   onRoleTypeChange,
   columnVisibility,
   onColumnVisibilityChange,
+  onReset,
 }: RolesToolbarProps) {
+  const isFiltered = search !== '' || roleType !== 'all';
+
   const columns = [
     { id: 'description', label: 'Deskripsi' },
     { id: 'userCount', label: 'Pengguna' },
@@ -95,6 +100,16 @@ export function RolesToolbar({
             })}
           </DropdownMenuContent>
         </DropdownMenu>
+        {isFiltered && (
+          <Button
+            variant="ghost"
+            onClick={onReset}
+            className="h-8 px-2 lg:px-3"
+          >
+            Reset
+            <X className="ml-2 h-4 w-4" />
+          </Button>
+        )}
       </div>
     </div>
   );

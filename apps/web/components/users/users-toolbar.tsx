@@ -5,6 +5,7 @@ import {
   Search,
   SlidersHorizontal,
   Settings2,
+  X,
 } from 'lucide-react';
 
 import {
@@ -31,6 +32,7 @@ interface UsersToolbarProps {
   onStatusFilterChange: (value: string) => void;
   columnVisibility: Record<string, boolean>;
   onColumnVisibilityChange: (value: Record<string, boolean>) => void;
+  onReset: () => void;
 }
 
 export function UsersToolbar({
@@ -42,8 +44,11 @@ export function UsersToolbar({
   onStatusFilterChange,
   columnVisibility,
   onColumnVisibilityChange,
+  onReset,
 }: UsersToolbarProps) {
   const { roles } = useRoles(); // Fetch roles for filter
+
+  const isFiltered = search !== '' || roleId !== 'all' || status !== 'all';
 
   const columns = [
     { id: 'username', label: 'Username' },
@@ -124,6 +129,17 @@ export function UsersToolbar({
               })}
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {isFiltered && (
+            <Button
+              variant="ghost"
+              onClick={onReset}
+              className="h-8 px-2 lg:px-3"
+            >
+              Reset
+              <X className="ml-2 h-4 w-4" />
+            </Button>
+          )}
         </div>
       </div>
     </div>

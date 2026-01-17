@@ -59,6 +59,12 @@ export default function RolesPage() {
 
   const totalPages = meta?.totalPages || 1;
 
+  const handleReset = () => {
+    setSearch('');
+    setIsSystemRole('all');
+    setPage(1);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -97,6 +103,7 @@ export default function RolesPage() {
             }}
             columnVisibility={columnVisibility}
             onColumnVisibilityChange={setColumnVisibility}
+            onReset={handleReset}
           />
 
           {isLoading ? (

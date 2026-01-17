@@ -69,19 +69,30 @@ export function AuditLogDetailSheet({
                 </div>
                 <div>
                   <span className="text-muted-foreground">Module</span>
-                  <p>
+                  <div>
                     <Badge variant="outline" className="capitalize">
                       {log.module}
                     </Badge>
-                  </p>
+                  </div>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Aksi</span>
-                  <p>
-                    <Badge variant="outline" className="capitalize">
+                  <div>
+                    <Badge
+                      variant={
+                        log.action === 'create'
+                          ? 'default' // Primary/Black for create (solid)
+                          : log.action === 'update'
+                            ? 'secondary' // Secondary/Gray for update
+                            : log.action === 'delete'
+                              ? 'destructive' // Red for delete
+                              : 'outline' // Outline for read/others
+                      }
+                      className="capitalize"
+                    >
                       {log.action}
                     </Badge>
-                  </p>
+                  </div>
                 </div>
               </div>
             </div>

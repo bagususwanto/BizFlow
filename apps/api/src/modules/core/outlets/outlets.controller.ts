@@ -32,7 +32,9 @@ import { CreateOutletDto, UpdateOutletDto, QueryOutletsDto } from './dto';
 @Controller('core/outlets')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class OutletsController {
-  constructor(private readonly outletsService: OutletsService) {}
+  constructor(private readonly outletsService: OutletsService) {
+    // Inject service
+  }
 
   /**
    * Get all outlets with pagination, filter, and summary

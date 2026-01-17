@@ -23,8 +23,8 @@ export default function UsersPage() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [search, setSearch] = useState('');
-  const [roleId, setRoleId] = useState('');
-  const [status, setStatus] = useState('');
+  const [roleId, setRoleId] = useState('all');
+  const [status, setStatus] = useState('all');
   const [sortBy, setSortBy] = useState<
     'username' | 'name' | 'email' | 'createdAt' | 'updatedAt' | 'lastLogin'
   >('updatedAt');

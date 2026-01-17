@@ -100,6 +100,17 @@ export function UsersToolbar({
           </SelectContent>
         </Select>
 
+        {isFiltered && (
+          <Button
+            variant="ghost"
+            onClick={onReset}
+            className="h-8 px-2 lg:px-3"
+          >
+            Reset
+            <X className="ml-2 h-4 w-4" />
+          </Button>
+        )}
+
         <div className="ml-auto flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -129,17 +140,6 @@ export function UsersToolbar({
               })}
             </DropdownMenuContent>
           </DropdownMenu>
-
-          {isFiltered && (
-            <Button
-              variant="ghost"
-              onClick={onReset}
-              className="h-8 px-2 lg:px-3"
-            >
-              Reset
-              <X className="ml-2 h-4 w-4" />
-            </Button>
-          )}
         </div>
       </div>
     </div>

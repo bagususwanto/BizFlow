@@ -6,6 +6,7 @@ import { AuthModule } from './modules/core/auth';
 import { AuditLogModule } from './modules/core/audit-log';
 import { OutletsModule } from './modules/core/outlets';
 import { RolesModule } from './modules/core/roles';
+import { SettingsModule } from './modules/core/settings';
 import { UsersModule } from './modules/core/users';
 
 import { AppService } from './app.service';
@@ -22,6 +23,7 @@ import { AppController } from './app.controller';
     AuthModule,
     OutletsModule,
     RolesModule,
+    SettingsModule,
     UsersModule,
   ],
   controllers: [AppController],

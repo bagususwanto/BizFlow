@@ -177,6 +177,10 @@ export const navigationConfig = {
           title: 'Outlet',
           url: '/settings/outlets',
         },
+        {
+          title: 'Audit Log',
+          url: '/settings/audit-logs',
+        },
         // {
         //   title: 'Printer',
         //   url: '/settings/printer',

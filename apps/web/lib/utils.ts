@@ -1,3 +1,10 @@
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
 export function buildSearchParams(
   params: Record<string, any>,
 ): URLSearchParams {

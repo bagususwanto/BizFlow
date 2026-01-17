@@ -64,7 +64,9 @@ export function OutletForm({ initialData, isEdit = false }: OutletFormProps) {
       }
       // Invalidate outlets queries so the list refreshes automatically
       await queryClient.invalidateQueries({ queryKey: ['outlets'] });
-      router.push('/settings/outlets');
+
+      router.back();
+      router.refresh();
     } catch (error: any) {
       toast.error(error instanceof Error ? error.message : 'Terjadi kesalahan');
     }

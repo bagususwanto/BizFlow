@@ -3,6 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -42,6 +43,7 @@ interface UserFormProps {
 
 export function UserForm({ initialData, isEdit = false }: UserFormProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { roles, isLoading: isLoadingRoles } = useRoles();
   const { data: outlets = [], isLoading: isLoadingOutlets } =
     useActiveOutlets();
@@ -84,7 +86,11 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
         await usersService.create(data as CreateUserValues);
         toast.success('User berhasil dibuat');
       }
-      router.push('/settings/users');
+
+      // Invalidate users query to refresh data on the list page
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+
+      router.back();
       router.refresh();
     } catch (error: any) {
       toast.error(error instanceof Error ? error.message : 'Terjadi kesalahan');

@@ -1,5 +1,6 @@
 'use client';
 
+import { useCallback, useState } from 'react';
 import {
   Button,
   Card,
@@ -10,7 +11,7 @@ import {
 } from '@bizflow/ui';
 import { Plus, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { useOutlets } from '@/hooks/use-outlets';
 import { OutletsTable } from '@/components/outlets/outlets-table';
@@ -18,14 +19,25 @@ import { OutletsToolbar } from '@/components/outlets/outlets-toolbar';
 import { OutletsPagination } from '@/components/outlets/outlets-pagination';
 
 export default function OutletsPage() {
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState<
-    'code' | 'name' | 'createdAt' | 'updatedAt' | 'userCount'
-  >('name');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  const [status, setStatus] = useState<string>('all');
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // Get state from URL params
+  const page = Number(searchParams.get('page')) || 1;
+  const pageSize = Number(searchParams.get('pageSize')) || 10;
+  const search = searchParams.get('search') || '';
+  const status = searchParams.get('status') || 'all';
+  const sortBy =
+    (searchParams.get('sortBy') as
+      | 'code'
+      | 'name'
+      | 'createdAt'
+      | 'updatedAt'
+      | 'userCount') || 'name';
+  const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'asc';
+
+  // Local state for column visibility
   const [columnVisibility, setColumnVisibility] = useState<
     Record<string, boolean>
   >({
@@ -52,29 +64,54 @@ export default function OutletsPage() {
     sortOrder,
   });
 
+  const createQueryString = useCallback(
+    (params: Record<string, string | number | null>) => {
+      const newSearchParams = new URLSearchParams(searchParams.toString());
+
+      for (const [key, value] of Object.entries(params)) {
+        if (value === null || value === '' || value === 'all') {
+          newSearchParams.delete(key);
+        } else {
+          newSearchParams.set(key, String(value));
+        }
+      }
+
+      return newSearchParams.toString();
+    },
+    [searchParams],
+  );
+
+  const updateUrl = (params: Record<string, string | number | null>) => {
+    const queryString = createQueryString(params);
+    router.push(`${pathname}?${queryString}`);
+  };
+
   const handleSortChange = (field: string) => {
     if (field === sortBy) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+      updateUrl({ sortOrder: sortOrder === 'asc' ? 'desc' : 'asc' });
     } else {
-      setSortBy(field as any);
-      setSortOrder('asc');
+      updateUrl({ sortBy: field, sortOrder: 'asc' });
     }
   };
 
   const handleSearchChange = (value: string) => {
-    setSearch(value);
-    setPage(1); // Reset to first page
+    updateUrl({ search: value, page: 1 });
   };
 
   const handleStatusFilterChange = (value: string) => {
-    setStatus(value);
-    setPage(1);
+    updateUrl({ status: value, page: 1 });
+  };
+
+  const handlePageChange = (newPage: number) => {
+    updateUrl({ page: newPage });
+  };
+
+  const handlePageSizeChange = (newSize: number) => {
+    updateUrl({ pageSize: newSize, page: 1 });
   };
 
   const handleReset = () => {
-    setSearch('');
-    setStatus('all');
-    setPage(1);
+    router.push(pathname);
   };
 
   return (
@@ -133,13 +170,10 @@ export default function OutletsPage() {
               <OutletsPagination
                 page={page}
                 totalPages={meta?.totalPages || 1}
-                onPageChange={setPage}
+                onPageChange={handlePageChange}
                 summary={summary}
                 pageSize={pageSize}
-                onPageSizeChange={(size) => {
-                  setPageSize(size);
-                  setPage(1);
-                }}
+                onPageSizeChange={handlePageSizeChange}
               />
             </>
           )}

@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
   Button,
   Card,
@@ -21,17 +22,26 @@ import { AuditLog } from '@/services/audit-logs.service';
 import { Download } from 'lucide-react';
 
 export default function AuditLogsPage() {
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const [search, setSearch] = useState('');
-  const [moduleFilter, setModuleFilter] = useState('all');
-  const [actionFilter, setActionFilter] = useState('all');
-  const [startDate, setStartDate] = useState<Date | undefined>();
-  const [endDate, setEndDate] = useState<Date | undefined>();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // Get state from URL params
+  const page = Number(searchParams.get('page')) || 1;
+  const pageSize = Number(searchParams.get('pageSize')) || 10;
+  const search = searchParams.get('search') || '';
+  const moduleFilter = searchParams.get('module') || 'all';
+  const actionFilter = searchParams.get('action') || 'all';
+  const startDateStr = searchParams.get('startDate');
+  const endDateStr = searchParams.get('endDate');
+
+  const startDate = startDateStr ? new Date(startDateStr) : undefined;
+  const endDate = endDateStr ? new Date(endDateStr) : undefined;
 
   const [selectedLog, setSelectedLog] = useState<AuditLog | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
+  // Local state for column visibility
   const [columnVisibility, setColumnVisibility] = useState<
     Record<string, boolean>
   >({
@@ -56,21 +66,58 @@ export default function AuditLogsPage() {
       endDate: endDate?.toISOString(),
     });
 
-  if (isError) {
-    return (
-      <ErrorState title="Gagal memuat audit logs" onRetry={() => refetch()} />
-    );
-  }
+  const createQueryString = useCallback(
+    (params: Record<string, string | number | null>) => {
+      const newSearchParams = new URLSearchParams(searchParams.toString());
 
-  const totalPages = meta?.totalPages || 1;
+      for (const [key, value] of Object.entries(params)) {
+        if (value === null || value === '' || value === 'all') {
+          newSearchParams.delete(key);
+        } else {
+          newSearchParams.set(key, String(value));
+        }
+      }
+
+      return newSearchParams.toString();
+    },
+    [searchParams],
+  );
+
+  const updateUrl = (params: Record<string, string | number | null>) => {
+    const queryString = createQueryString(params);
+    router.push(`${pathname}?${queryString}`);
+  };
+
+  const handleSearchChange = (value: string) => {
+    updateUrl({ search: value, page: 1 });
+  };
+
+  const handleModuleFilterChange = (value: string) => {
+    updateUrl({ module: value, page: 1 });
+  };
+
+  const handleActionFilterChange = (value: string) => {
+    updateUrl({ action: value, page: 1 });
+  };
+
+  const handleDateRangeChange = (start?: Date, end?: Date) => {
+    updateUrl({
+      startDate: start ? start.toISOString() : null,
+      endDate: end ? end.toISOString() : null,
+      page: 1,
+    });
+  };
+
+  const handlePageChange = (newPage: number) => {
+    updateUrl({ page: newPage });
+  };
+
+  const handlePageSizeChange = (newSize: number) => {
+    updateUrl({ pageSize: newSize, page: 1 });
+  };
 
   const handleReset = () => {
-    setSearch('');
-    setModuleFilter('all');
-    setActionFilter('all');
-    setStartDate(undefined);
-    setEndDate(undefined);
-    setPage(1);
+    router.push(pathname);
     setColumnVisibility({
       time: true,
       user: true,
@@ -80,6 +127,14 @@ export default function AuditLogsPage() {
       ipAddress: true,
     });
   };
+
+  if (isError) {
+    return (
+      <ErrorState title="Gagal memuat audit logs" onRetry={() => refetch()} />
+    );
+  }
+
+  const totalPages = meta?.totalPages || 1;
 
   return (
     <div className="space-y-6">
@@ -106,27 +161,14 @@ export default function AuditLogsPage() {
         <CardContent className="space-y-6">
           <AuditLogsToolbar
             search={search}
-            onSearchChange={(val) => {
-              setSearch(val);
-              setPage(1);
-            }}
+            onSearchChange={handleSearchChange}
             moduleFilter={moduleFilter}
-            onModuleFilterChange={(val) => {
-              setModuleFilter(val);
-              setPage(1);
-            }}
+            onModuleFilterChange={handleModuleFilterChange}
             actionFilter={actionFilter}
-            onActionFilterChange={(val) => {
-              setActionFilter(val);
-              setPage(1);
-            }}
+            onActionFilterChange={handleActionFilterChange}
             startDate={startDate}
             endDate={endDate}
-            onDateRangeChange={(start, end) => {
-              setStartDate(start);
-              setEndDate(end);
-              setPage(1);
-            }}
+            onDateRangeChange={handleDateRangeChange}
             onReset={handleReset}
             columnVisibility={columnVisibility}
             onColumnVisibilityChange={setColumnVisibility}
@@ -150,13 +192,10 @@ export default function AuditLogsPage() {
               <AuditLogsPagination
                 page={page}
                 totalPages={totalPages}
-                onPageChange={setPage}
+                onPageChange={handlePageChange}
                 summary={summary}
                 pageSize={pageSize}
-                onPageSizeChange={(val) => {
-                  setPageSize(val);
-                  setPage(1);
-                }}
+                onPageSizeChange={handlePageSizeChange}
               />
             </>
           )}

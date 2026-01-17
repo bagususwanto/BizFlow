@@ -42,7 +42,8 @@ export default function CreateRolePage() {
     onSuccess: () => {
       toast.success('Role berhasil dibuat');
       queryClient.invalidateQueries({ queryKey: ['roles'] });
-      router.push('/settings/roles');
+      router.back();
+      router.refresh();
     },
     onError: (error: Error) => {
       toast.error(error.message);

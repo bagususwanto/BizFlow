@@ -58,7 +58,8 @@ export default function EditRolePage() {
       toast.success('Role berhasil diperbarui');
       queryClient.invalidateQueries({ queryKey: ['roles'] });
       queryClient.invalidateQueries({ queryKey: ['role', id] });
-      router.push('/settings/roles');
+      router.back();
+      router.refresh();
     },
     onError: (error: Error) => {
       toast.error(error.message);

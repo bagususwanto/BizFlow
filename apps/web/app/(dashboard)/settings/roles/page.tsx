@@ -1,8 +1,9 @@
 'use client';
 
+import { useCallback, useState } from 'react';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import {
   Button,
@@ -21,12 +22,19 @@ import { useRoles } from '@/hooks/use-roles';
 import { useDebounce } from '@/hooks/use-debounce';
 
 export default function RolesPage() {
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const [search, setSearch] = useState('');
-  const [isSystemRole, setIsSystemRole] = useState<string>('all'); // all, true, false
-  const [sortBy, setSortBy] = useState('name');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // Get state from URL params
+  const page = Number(searchParams.get('page')) || 1;
+  const pageSize = Number(searchParams.get('pageSize')) || 10;
+  const search = searchParams.get('search') || '';
+  const isSystemRole = searchParams.get('isSystemRole') || 'all';
+  const sortBy = searchParams.get('sortBy') || 'name';
+  const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'asc';
+
+  // Local state for column visibility
   const [columnVisibility, setColumnVisibility] = useState<
     Record<string, boolean>
   >({});
@@ -51,6 +59,56 @@ export default function RolesPage() {
     sortOrder,
   });
 
+  const createQueryString = useCallback(
+    (params: Record<string, string | number | null>) => {
+      const newSearchParams = new URLSearchParams(searchParams.toString());
+
+      for (const [key, value] of Object.entries(params)) {
+        if (value === null || value === '' || value === 'all') {
+          newSearchParams.delete(key);
+        } else {
+          newSearchParams.set(key, String(value));
+        }
+      }
+
+      return newSearchParams.toString();
+    },
+    [searchParams],
+  );
+
+  const updateUrl = (params: Record<string, string | number | null>) => {
+    const queryString = createQueryString(params);
+    router.push(`${pathname}?${queryString}`);
+  };
+
+  const handleSearchChange = (value: string) => {
+    updateUrl({ search: value, page: 1 });
+  };
+
+  const handleRoleTypeChange = (value: string) => {
+    updateUrl({ isSystemRole: value, page: 1 });
+  };
+
+  const handleSortChange = (field: string) => {
+    if (sortBy === field) {
+      updateUrl({ sortOrder: sortOrder === 'asc' ? 'desc' : 'asc' });
+    } else {
+      updateUrl({ sortBy: field, sortOrder: 'asc' });
+    }
+  };
+
+  const handlePageChange = (newPage: number) => {
+    updateUrl({ page: newPage });
+  };
+
+  const handlePageSizeChange = (newSize: number) => {
+    updateUrl({ pageSize: newSize, page: 1 });
+  };
+
+  const handleReset = () => {
+    router.push(pathname);
+  };
+
   if (isError) {
     return (
       <ErrorState title="Gagal memuat data peran" onRetry={() => refetch()} />
@@ -58,12 +116,6 @@ export default function RolesPage() {
   }
 
   const totalPages = meta?.totalPages || 1;
-
-  const handleReset = () => {
-    setSearch('');
-    setIsSystemRole('all');
-    setPage(1);
-  };
 
   return (
     <div className="space-y-6">
@@ -92,15 +144,9 @@ export default function RolesPage() {
         <CardContent className="space-y-6">
           <RolesToolbar
             search={search}
-            onSearchChange={(value) => {
-              setSearch(value);
-              setPage(1);
-            }}
+            onSearchChange={handleSearchChange}
             roleType={isSystemRole}
-            onRoleTypeChange={(value) => {
-              setIsSystemRole(value);
-              setPage(1);
-            }}
+            onRoleTypeChange={handleRoleTypeChange}
             columnVisibility={columnVisibility}
             onColumnVisibilityChange={setColumnVisibility}
             onReset={handleReset}
@@ -118,14 +164,7 @@ export default function RolesPage() {
                 isDeleting={isDeleting}
                 sortBy={sortBy}
                 sortOrder={sortOrder}
-                onSortChange={(field) => {
-                  if (sortBy === field) {
-                    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-                  } else {
-                    setSortBy(field);
-                    setSortOrder('asc');
-                  }
-                }}
+                onSortChange={handleSortChange}
                 columnVisibility={columnVisibility}
                 onColumnVisibilityChange={setColumnVisibility}
                 onRefresh={refetch}
@@ -134,13 +173,10 @@ export default function RolesPage() {
               <RolesPagination
                 page={page}
                 totalPages={totalPages}
-                onPageChange={setPage}
+                onPageChange={handlePageChange}
                 summary={summary}
                 pageSize={pageSize}
-                onPageSizeChange={(value) => {
-                  setPageSize(value);
-                  setPage(1);
-                }}
+                onPageSizeChange={handlePageSizeChange}
               />
             </>
           )}

@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import Link from 'next/link';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Plus } from 'lucide-react';
 import {
   Button,
@@ -20,15 +21,27 @@ import { ErrorState } from '@/components/common/error-state';
 import { useUsers } from '@/hooks/use-users';
 
 export default function UsersPage() {
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const [search, setSearch] = useState('');
-  const [roleId, setRoleId] = useState('all');
-  const [status, setStatus] = useState('all');
-  const [sortBy, setSortBy] = useState<
-    'username' | 'name' | 'email' | 'createdAt' | 'updatedAt' | 'lastLogin'
-  >('updatedAt');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // Get state from URL params
+  const page = Number(searchParams.get('page')) || 1;
+  const pageSize = Number(searchParams.get('pageSize')) || 10;
+  const search = searchParams.get('search') || '';
+  const roleId = searchParams.get('roleId') || 'all';
+  const status = searchParams.get('status') || 'all';
+  const sortBy =
+    (searchParams.get('sortBy') as
+      | 'username'
+      | 'name'
+      | 'email'
+      | 'createdAt'
+      | 'updatedAt'
+      | 'lastLogin') || 'updatedAt';
+  const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc';
+
+  // Local state for column visibility (doesn't need to be in URL)
   const [columnVisibility, setColumnVisibility] = useState<
     Record<string, boolean>
   >({});
@@ -53,35 +66,58 @@ export default function UsersPage() {
     sortOrder,
   });
 
+  const createQueryString = useCallback(
+    (params: Record<string, string | number | null>) => {
+      const newSearchParams = new URLSearchParams(searchParams.toString());
+
+      for (const [key, value] of Object.entries(params)) {
+        if (value === null || value === '' || value === 'all') {
+          newSearchParams.delete(key);
+        } else {
+          newSearchParams.set(key, String(value));
+        }
+      }
+
+      return newSearchParams.toString();
+    },
+    [searchParams],
+  );
+
+  const updateUrl = (params: Record<string, string | number | null>) => {
+    const queryString = createQueryString(params);
+    router.push(`${pathname}?${queryString}`);
+  };
+
   const handleSearchChange = (value: string) => {
-    setSearch(value);
-    setPage(1);
+    updateUrl({ search: value, page: 1 });
   };
 
   const handleRoleFilterChange = (value: string) => {
-    setRoleId(value);
-    setPage(1);
+    updateUrl({ roleId: value, page: 1 });
   };
 
   const handleStatusFilterChange = (value: string) => {
-    setStatus(value);
-    setPage(1);
+    updateUrl({ status: value, page: 1 });
   };
 
   const handleSortChange = (field: string) => {
     if (sortBy === field) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+      updateUrl({ sortOrder: sortOrder === 'asc' ? 'desc' : 'asc' });
     } else {
-      setSortBy(field as any);
-      setSortOrder('asc'); // Default to asc when changing sort field
+      updateUrl({ sortBy: field, sortOrder: 'asc' });
     }
   };
 
+  const handlePageChange = (newPage: number) => {
+    updateUrl({ page: newPage });
+  };
+
+  const handlePageSizeChange = (newSize: number) => {
+    updateUrl({ pageSize: newSize, page: 1 });
+  };
+
   const handleReset = () => {
-    setSearch('');
-    setRoleId('all');
-    setStatus('all');
-    setPage(1);
+    router.push(pathname);
   };
 
   if (isError) {
@@ -151,13 +187,10 @@ export default function UsersPage() {
               <UsersPagination
                 page={page}
                 totalPages={meta?.totalPages || 1}
-                onPageChange={setPage}
+                onPageChange={handlePageChange}
                 summary={summary}
                 pageSize={pageSize}
-                onPageSizeChange={(size) => {
-                  setPageSize(size);
-                  setPage(1);
-                }}
+                onPageSizeChange={handlePageSizeChange}
               />
             </>
           )}

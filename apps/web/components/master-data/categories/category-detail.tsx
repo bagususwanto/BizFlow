@@ -27,6 +27,15 @@ import {
   Separator,
   Badge,
   Skeleton,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from '@bizflow/ui';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
@@ -113,14 +122,32 @@ export function CategoryDetail({
             </Button>
           )}
           {onDelete && (
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => onDelete(category.id)}
-            >
-              <Trash2 className="mr-2 h-4 w-4" />
-              Hapus
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" size="sm">
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Hapus
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Apakah anda yakin?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Tindakan ini tidak dapat dibatalkan. Kategori ini akan
+                    dihapus secara permanen dari sistem.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Batal</AlertDialogCancel>
+                  <AlertDialogAction
+                    className="bg-destructive text-white"
+                    onClick={() => onDelete(category.id)}
+                  >
+                    Hapus
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           )}
 
           <DropdownMenu>

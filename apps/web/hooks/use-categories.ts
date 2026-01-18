@@ -110,3 +110,25 @@ export function useBulkDeleteCategories() {
     },
   });
 }
+
+export function useReorderCategory() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      parentId,
+      index,
+    }: {
+      id: string;
+      parentId: string | null;
+      index: number;
+    }) => categoriesService.reorder(id, parentId, index),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+}

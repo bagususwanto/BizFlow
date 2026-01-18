@@ -128,9 +128,6 @@ export class CategoriesController {
     return this.categoriesService.delete(id, user.sub);
   }
 
-  /**
-   * Bulk delete categories
-   */
   @Post('bulk-delete')
   @Permissions(Permission.Categories.Delete as PermissionType)
   @UseInterceptors(AuditLogInterceptor)
@@ -145,5 +142,24 @@ export class CategoriesController {
     @CurrentUser() user: JwtPayload,
   ) {
     return this.categoriesService.bulkDelete(body.ids, user.sub);
+  }
+
+  /**
+   * Reorder category (change parent and/or index)
+   */
+  @Patch(':id/reorder')
+  @Permissions(Permission.Categories.Update as PermissionType)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.CATEGORIES,
+    action: AuditAction.UPDATE,
+    entityType: 'category (reorder)',
+  })
+  async reorder(
+    @Param('id') id: string,
+    @Body() body: { parentId: string | null; index: number },
+    @CurrentUser() user: JwtPayload,
+  ) {
+    return this.categoriesService.reorder(id, body.parentId, body.index);
   }
 }

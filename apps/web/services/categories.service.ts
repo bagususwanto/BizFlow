@@ -83,6 +83,20 @@ class CategoriesService {
       },
     );
   }
+
+  async reorder(
+    id: string,
+    parentId: string | null,
+    index: number,
+  ): Promise<void> {
+    await apiClient.patch<ApiResponse<void>>(
+      `/master-data/categories/${id}/reorder`,
+      {
+        parentId,
+        index,
+      },
+    );
+  }
 }
 
 export const categoriesService = new CategoriesService();

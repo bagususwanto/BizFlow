@@ -10,6 +10,7 @@ import {
   useCategoryTree,
   useCategory,
   useDeleteCategory,
+  useReorderCategory,
 } from '@/hooks/use-categories';
 import {
   CategoriesTree,
@@ -34,6 +35,9 @@ function CategoriesContent() {
 
   // Delete hook
   const { mutate: deleteCategory } = useDeleteCategory();
+
+  // Reorder hook
+  const { mutate: reorderCategory } = useReorderCategory();
 
   // Filter tree data based on search
   const filteredTreeData = (() => {
@@ -137,13 +141,12 @@ function CategoriesContent() {
                 data={filteredTreeData}
                 selectedId={selectedId || undefined}
                 onSelect={handleSelectCategory}
+                onReorder={(id, parentId, index) =>
+                  reorderCategory({ id, parentId, index })
+                }
                 className="p-2"
               />
             )}
-          </div>
-
-          <div className="p-3 border-t bg-muted/20 text-xs text-muted-foreground text-center">
-            💡 Drag & drop untuk mengubah urutan (Coming Soon)
           </div>
         </div>
 

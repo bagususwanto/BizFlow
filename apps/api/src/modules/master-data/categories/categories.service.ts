@@ -174,7 +174,7 @@ export class CategoriesService {
             name: true,
             isActive: true,
           },
-          orderBy: { name: 'asc' },
+          orderBy: [{ index: 'asc' }, { name: 'asc' }],
         },
         _count: {
           select: { products: true, children: true },
@@ -213,7 +213,7 @@ export class CategoriesService {
           select: { products: true },
         },
       },
-      orderBy: { name: 'asc' },
+      orderBy: [{ index: 'asc' }, { name: 'asc' }],
     });
 
     // Build tree structure
@@ -256,7 +256,7 @@ export class CategoriesService {
         name: true,
         parentId: true,
       },
-      orderBy: { name: 'asc' },
+      orderBy: [{ index: 'asc' }, { name: 'asc' }],
     });
 
     return successResponse(categories);
@@ -484,5 +484,110 @@ export class CategoriesService {
     return successResponse({
       message: `${result.count} kategori berhasil dinonaktifkan`,
     });
+  }
+
+  /**
+   * Reorder category position
+   */
+  async reorder(id: string, newParentId: string | null, newIndex: number) {
+    const category = await this.prisma.category.findUnique({
+      where: { id },
+    });
+
+    if (!category) {
+      throw new NotFoundException('Kategori tidak ditemukan');
+    }
+
+    const oldParentId = category.parentId;
+    const oldIndex = category.index;
+
+    // No change
+    if (oldParentId === newParentId && oldIndex === newIndex) {
+      return successResponse({ message: 'Posisi kategori tidak berubah' });
+    }
+
+    // Check circular reference if parent changed
+    if (newParentId && newParentId !== oldParentId) {
+      if (newParentId === id) {
+        throw new BadRequestException(
+          'Kategori tidak dapat menjadi parent dari dirinya sendiri',
+        );
+      }
+
+      const isCircular = await this.checkCircularReference(id, newParentId);
+      if (isCircular) {
+        throw new BadRequestException(
+          'Tidak dapat memindahkan kategori ke sub-kategori dari dirinya sendiri',
+        );
+      }
+
+      const parent = await this.prisma.category.findUnique({
+        where: { id: newParentId },
+      });
+
+      if (!parent) {
+        throw new NotFoundException('Kategori parent tidak ditemukan');
+      }
+    }
+
+    await this.prisma.$transaction(async (tx) => {
+      // Default new index if not provided (append to end)
+      // Note: Implementation assumes valid newIndex is passed,
+      // but for robustness we could fetch count if newIndex is excessively large.
+      // For now, trusting the input.
+
+      if (oldParentId === newParentId) {
+        // Same parent reordering
+        if (newIndex > oldIndex) {
+          // Moved down: Shift items between oldIndex+1 and newIndex UP (decrement index)
+          await tx.category.updateMany({
+            where: {
+              parentId: oldParentId,
+              index: { gt: oldIndex, lte: newIndex },
+            },
+            data: { index: { decrement: 1 } },
+          });
+        } else {
+          // Moved up: Shift items between newIndex and oldIndex-1 DOWN (increment index)
+          await tx.category.updateMany({
+            where: {
+              parentId: oldParentId,
+              index: { gte: newIndex, lt: oldIndex },
+            },
+            data: { index: { increment: 1 } },
+          });
+        }
+      } else {
+        // Different parent
+        // 1. Close gap in old parent (shift > oldIndex down/decrement to fill gap)
+        await tx.category.updateMany({
+          where: {
+            parentId: oldParentId,
+            index: { gt: oldIndex },
+          },
+          data: { index: { decrement: 1 } },
+        });
+
+        // 2. Open gap in new parent (shift >= newIndex up/increment to make room)
+        await tx.category.updateMany({
+          where: {
+            parentId: newParentId,
+            index: { gte: newIndex },
+          },
+          data: { index: { increment: 1 } },
+        });
+      }
+
+      // 3. Update item
+      await tx.category.update({
+        where: { id },
+        data: {
+          parentId: newParentId,
+          index: newIndex,
+        },
+      });
+    });
+
+    return successResponse({ message: 'Urutan kategori berhasil diperbarui' });
   }
 }

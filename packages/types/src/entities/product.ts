@@ -15,6 +15,20 @@ export interface Category extends ActiveEntity {
   products?: Product[];
 }
 
+export interface CategoryWithRelations extends Category {
+  productCount?: number;
+  childrenCount?: number;
+}
+
+export interface CategoryTreeNode {
+  id: string;
+  name: string;
+  description: string | null;
+  isActive: boolean;
+  productCount: number;
+  children: CategoryTreeNode[];
+}
+
 export interface UnitOfMeasure {
   id: string;
   name: string;

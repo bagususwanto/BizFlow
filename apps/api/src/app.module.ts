@@ -9,6 +9,8 @@ import { RolesModule } from './modules/core/roles';
 import { SettingsModule } from './modules/core/settings';
 import { UsersModule } from './modules/core/users';
 
+import { CategoriesModule } from './modules/master-data/categories';
+
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
 
@@ -25,6 +27,8 @@ import { AppController } from './app.controller';
     RolesModule,
     SettingsModule,
     UsersModule,
+    // Master Data modules
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -66,7 +66,7 @@ export function RolesToolbar({
             <SlidersHorizontal className="mr-2 h-4 w-4" />
             <SelectValue placeholder="Tipe Role" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="max-h-[300px] overflow-y-auto">
             <SelectItem value="all">Semua Role</SelectItem>
             <SelectItem value="true">System Role</SelectItem>
             <SelectItem value="false">Custom Role</SelectItem>

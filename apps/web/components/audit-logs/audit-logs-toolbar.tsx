@@ -77,7 +77,7 @@ export function AuditLogsToolbar({
           <SelectTrigger className="w-[150px]">
             <SelectValue placeholder="Module" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="max-h-[300px] overflow-y-auto">
             <SelectItem value="all">Semua Module</SelectItem>
             {AVAILABLE_MODULES.map((module) => (
               <SelectItem key={module} value={module} className="capitalize">
@@ -91,7 +91,7 @@ export function AuditLogsToolbar({
           <SelectTrigger className="w-[150px]">
             <SelectValue placeholder="Aksi" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="max-h-[300px] overflow-y-auto">
             <SelectItem value="all">Semua Aksi</SelectItem>
             {AVAILABLE_ACTIONS.map((action) => (
               <SelectItem key={action} value={action} className="capitalize">

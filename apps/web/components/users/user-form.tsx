@@ -180,7 +180,7 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
                       <SelectValue placeholder="Pilih Role" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent>
+                  <SelectContent className="max-h-[300px] overflow-y-auto">
                     {roles.map((role) => (
                       <SelectItem key={role.id} value={role.id}>
                         {role.name}

@@ -95,7 +95,7 @@ export function GeneralSettingsForm({ settings }: GeneralSettingsFormProps) {
                         <SelectValue placeholder="Pilih bahasa" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="max-h-[300px] overflow-y-auto">
                       <SelectItem value="id">Bahasa Indonesia</SelectItem>
                       <SelectItem value="en">English (US)</SelectItem>
                     </SelectContent>

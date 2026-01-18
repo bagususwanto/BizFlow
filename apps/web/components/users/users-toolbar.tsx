@@ -76,7 +76,7 @@ export function UsersToolbar({
             <SlidersHorizontal className="mr-2 h-4 w-4" />
             <SelectValue placeholder="Filter Role" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="max-h-[300px] overflow-y-auto">
             <SelectItem value="all">Semua Role</SelectItem>
             {roles.map((role) => (
               <SelectItem key={role.id} value={role.id}>
@@ -93,7 +93,7 @@ export function UsersToolbar({
               <SelectValue />
             </div>
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="max-h-[300px] overflow-y-auto">
             <SelectItem value="all">Semua</SelectItem>
             <SelectItem value="active">Aktif</SelectItem>
             <SelectItem value="inactive">Nonaktif</SelectItem>

@@ -124,7 +124,7 @@ export function DisplaySettingsForm({ settings }: DisplaySettingsFormProps) {
                         <SelectValue placeholder="Pilih format tanggal" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="max-h-[300px] overflow-y-auto">
                       <SelectItem value="DD/MM/YYYY">
                         DD/MM/YYYY (31/12/2024)
                       </SelectItem>
@@ -153,7 +153,7 @@ export function DisplaySettingsForm({ settings }: DisplaySettingsFormProps) {
                         <SelectValue placeholder="Pilih zona waktu" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="max-h-[300px] overflow-y-auto">
                       <SelectItem value="Asia/Jakarta">
                         WIB (Asia/Jakarta)
                       </SelectItem>

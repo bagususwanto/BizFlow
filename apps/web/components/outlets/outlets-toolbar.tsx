@@ -65,7 +65,7 @@ export function OutletsToolbar({
               <SelectValue />
             </div>
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="max-h-[300px] overflow-y-auto">
             <SelectItem value="all">Semua</SelectItem>
             <SelectItem value="active">Aktif</SelectItem>
             <SelectItem value="inactive">Nonaktif</SelectItem>

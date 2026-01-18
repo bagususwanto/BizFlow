@@ -9,7 +9,12 @@ import {
 } from '@bizflow/ui';
 import { CategoryForm } from '@/components/master-data/categories/category-form';
 
+import { useSearchParams } from 'next/navigation';
+
 export default function CreateCategoryPage() {
+  const searchParams = useSearchParams();
+  const parentId = searchParams.get('parentId');
+
   return (
     <div className="space-y-6">
       <div>
@@ -29,7 +34,9 @@ export default function CreateCategoryPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <CategoryForm />
+          <CategoryForm
+            initialData={parentId ? ({ parentId } as any) : undefined}
+          />
         </CardContent>
       </Card>
     </div>

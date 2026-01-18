@@ -87,8 +87,8 @@ export function CategoryDetail({
             </Badge>
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span className="font-mono text-xs">
-              {category.id.slice(0, 8)}...
+            <span className="font-mono text-xs text-muted-foreground/70">
+              #{category.id}
             </span>
             {category.parent && (
               <>

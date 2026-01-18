@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { Suspense, useCallback, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
   Button,
@@ -21,7 +21,7 @@ import { useDebounce } from '@/hooks/use-debounce';
 import { AuditLog } from '@/services/audit-logs.service';
 import { Download } from 'lucide-react';
 
-export default function AuditLogsPage() {
+function AuditLogsContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -208,5 +208,13 @@ export default function AuditLogsPage() {
         onOpenChange={setIsDetailOpen}
       />
     </div>
+  );
+}
+
+export default function AuditLogsPage() {
+  return (
+    <Suspense fallback={<LoadingState />}>
+      <AuditLogsContent />
+    </Suspense>
   );
 }

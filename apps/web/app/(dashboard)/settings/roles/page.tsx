@@ -1,7 +1,7 @@
 'use client';
 
-import { useCallback, useState } from 'react';
-import { Plus } from 'lucide-react';
+import { Suspense, useCallback, useState } from 'react';
+import { Plus, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
@@ -21,7 +21,7 @@ import { LoadingState } from '@/components/common/loading-state';
 import { useRoles } from '@/hooks/use-roles';
 import { useDebounce } from '@/hooks/use-debounce';
 
-export default function RolesPage() {
+function RolesContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -183,5 +183,19 @@ export default function RolesPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function RolesPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex justify-center p-8">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      }
+    >
+      <RolesContent />
+    </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { Suspense, useCallback, useState } from 'react';
 import {
   Button,
   Card,
@@ -18,7 +18,7 @@ import { OutletsTable } from '@/components/outlets/outlets-table';
 import { OutletsToolbar } from '@/components/outlets/outlets-toolbar';
 import { OutletsPagination } from '@/components/outlets/outlets-pagination';
 
-export default function OutletsPage() {
+function OutletsContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -180,5 +180,19 @@ export default function OutletsPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function OutletsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex justify-center p-8">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      }
+    >
+      <OutletsContent />
+    </Suspense>
   );
 }

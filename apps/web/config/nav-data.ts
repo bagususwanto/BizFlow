@@ -9,6 +9,8 @@ import {
   ShoppingCart,
   Truck,
   Building2,
+  Database,
+  FolderTree,
 } from 'lucide-react';
 
 export const navData = [
@@ -17,6 +19,19 @@ export const navData = [
     href: '/dashboard',
     icon: LayoutDashboard,
     permission: 'dashboard:read',
+  },
+  {
+    title: 'Master Data',
+    href: '/master-data',
+    icon: Database,
+    submenu: [
+      {
+        title: 'Kategori',
+        href: '/master-data/categories',
+        icon: FolderTree,
+        permission: 'categories:read',
+      },
+    ],
   },
   {
     title: 'Settings',

@@ -1,125 +1,106 @@
 'use client';
 
 import { Suspense, useCallback, useState } from 'react';
-import {
-  Button,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@bizflow/ui';
-import { Plus, Loader2 } from 'lucide-react';
+import { Button, Input } from '@bizflow/ui';
+import { Plus, Loader2, Search } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 
-import { useCategories, useDeleteCategory } from '@/hooks/use-categories';
 import {
-  CategoriesTable,
-  CategoriesToolbar,
-  CategoriesPagination,
+  useCategoryTree,
+  useCategory,
+  useDeleteCategory,
+} from '@/hooks/use-categories';
+import {
+  CategoriesTree,
+  CategoryDetail,
 } from '@/components/master-data/categories';
 
 function CategoriesContent() {
   const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   // Get state from URL params
-  const page = Number(searchParams.get('page')) || 1;
-  const pageSize = Number(searchParams.get('pageSize')) || 10;
   const search = searchParams.get('search') || '';
-  const status = searchParams.get('status') || 'all';
-  const sortBy = searchParams.get('sortBy') || 'name';
-  const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'asc';
+  const selectedId = searchParams.get('id');
 
-  // Local state for column visibility
-  const [columnVisibility, setColumnVisibility] = useState<
-    Record<string, boolean>
-  >({
-    description: true,
-    productCount: true,
-  });
+  // Load Tree Data
+  const { data: treeData = [], isLoading: isTreeLoading } = useCategoryTree();
 
-  const {
-    data: categoriesResponse,
-    isLoading,
-    refetch,
-  } = useCategories({
-    page,
-    pageSize,
-    search,
-    isActive:
-      status === 'active' ? true : status === 'inactive' ? false : undefined,
-    sortBy: sortBy as 'name' | 'productCount' | 'createdAt' | 'updatedAt',
-    sortOrder,
-  });
-
-  // Extract data from response structure
-  const categories = categoriesResponse?.data || [];
-  const meta = categoriesResponse?.meta;
-  const summary = categoriesResponse?.summary;
-
-  // Delete hook
-  const { mutate: deleteCategory, isPending: isDeleting } = useDeleteCategory();
-
-  const createQueryString = useCallback(
-    (params: Record<string, string | number | null>) => {
-      const newSearchParams = new URLSearchParams(searchParams.toString());
-
-      for (const [key, value] of Object.entries(params)) {
-        if (value === null || value === '' || value === 'all') {
-          newSearchParams.delete(key);
-        } else {
-          newSearchParams.set(key, String(value));
-        }
-      }
-
-      return newSearchParams.toString();
-    },
-    [searchParams],
+  // Load Detail Data (only if selected)
+  const { data: selectedCategory, isLoading: isDetailLoading } = useCategory(
+    selectedId || '',
   );
 
-  const updateUrl = (params: Record<string, string | number | null>) => {
-    const queryString = createQueryString(params);
-    router.push(`${pathname}?${queryString}`);
-  };
+  // Delete hook
+  const { mutate: deleteCategory } = useDeleteCategory();
 
-  const handleSortChange = (field: string) => {
-    if (field === sortBy) {
-      updateUrl({ sortOrder: sortOrder === 'asc' ? 'desc' : 'asc' });
-    } else {
-      updateUrl({ sortBy: field, sortOrder: 'asc' });
-    }
+  // Filter tree data based on search
+  const filteredTreeData = (() => {
+    if (!search) return treeData;
+
+    const filterNodes = (nodes: typeof treeData): typeof treeData => {
+      return nodes
+        .map((node) => {
+          const matches = node.name
+            .toLowerCase()
+            .includes(search.toLowerCase());
+          const filteredChildren = filterNodes(node.children || []);
+
+          if (matches || filteredChildren.length > 0) {
+            return {
+              ...node,
+              children: filteredChildren,
+            };
+          }
+          return null;
+        })
+        .filter((node): node is NonNullable<typeof node> => node !== null);
+    };
+
+    return filterNodes(treeData);
+  })();
+
+  const handleSelectCategory = (id: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('id', id);
+    router.push(`/master-data/categories?${params.toString()}`);
   };
 
   const handleSearchChange = (value: string) => {
-    updateUrl({ search: value, page: 1 });
+    const params = new URLSearchParams(searchParams.toString());
+    if (value) {
+      params.set('search', value);
+    } else {
+      params.delete('search');
+    }
+    router.replace(`/master-data/categories?${params.toString()}`);
   };
 
-  const handleStatusFilterChange = (value: string) => {
-    updateUrl({ status: value, page: 1 });
+  const handleEdit = (id: string) => {
+    router.push(`/master-data/categories/${id}/edit`);
   };
 
-  const handlePageChange = (newPage: number) => {
-    updateUrl({ page: newPage });
-  };
-
-  const handlePageSizeChange = (newSize: number) => {
-    updateUrl({ pageSize: newSize, page: 1 });
-  };
-
-  const handleReset = () => {
-    router.push(pathname);
+  const handleDelete = (id: string) => {
+    if (confirm('Apakah Anda yakin ingin menghapus kategori ini?')) {
+      deleteCategory(id, {
+        onSuccess: () => {
+          // Clear selection if deleted
+          const params = new URLSearchParams(searchParams.toString());
+          params.delete('id');
+          router.replace(`/master-data/categories?${params.toString()}`);
+        },
+      });
+    }
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <div className="flex h-[calc(100vh-6rem)] flex-col gap-4">
+      <div className="flex items-center justify-between px-2">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Kategori</h2>
-          <p className="text-muted-foreground">
-            Kelola kategori produk dan hierarkinya.
+          <h2 className="text-2xl font-bold tracking-tight">Kategori Produk</h2>
+          <p className="text-sm text-muted-foreground">
+            Kelola struktur kategori produk Anda.
           </p>
         </div>
         <Button asChild>
@@ -130,54 +111,52 @@ function CategoriesContent() {
         </Button>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Daftar Kategori</CardTitle>
-          <CardDescription>
-            Menampilkan semua kategori produk yang terdaftar dalam sistem.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <CategoriesToolbar
-            search={search}
-            onSearchChange={handleSearchChange}
-            status={status}
-            onStatusFilterChange={handleStatusFilterChange}
-            columnVisibility={columnVisibility}
-            onColumnVisibilityChange={setColumnVisibility}
-            onReset={handleReset}
-          />
-
-          {isLoading ? (
-            <div className="flex justify-center p-8">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      <div className="flex flex-1 gap-4 overflow-hidden rounded-lg border bg-background shadow-sm">
+        {/* Left Panel: Tree View */}
+        <div className="flex w-1/3 min-w-[300px] flex-col border-r bg-muted/5">
+          <div className="p-4 border-b">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Cari kategori..."
+                className="w-full bg-background pl-9"
+                value={search}
+                onChange={(e) => handleSearchChange(e.target.value)}
+              />
             </div>
-          ) : (
-            <>
-              <CategoriesTable
-                data={categories}
-                onDelete={deleteCategory}
-                isDeleting={isDeleting}
-                sortBy={sortBy}
-                sortOrder={sortOrder}
-                onSortChange={handleSortChange}
-                columnVisibility={columnVisibility}
-                onColumnVisibilityChange={setColumnVisibility}
-                onRefresh={refetch}
-              />
+          </div>
 
-              <CategoriesPagination
-                page={page}
-                totalPages={meta?.totalPages || 1}
-                onPageChange={handlePageChange}
-                summary={summary}
-                pageSize={pageSize}
-                onPageSizeChange={handlePageSizeChange}
+          <div className="flex-1 overflow-hidden">
+            {isTreeLoading ? (
+              <div className="flex h-full items-center justify-center">
+                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+              </div>
+            ) : (
+              <CategoriesTree
+                data={filteredTreeData}
+                selectedId={selectedId || undefined}
+                onSelect={handleSelectCategory}
+                className="p-2"
               />
-            </>
-          )}
-        </CardContent>
-      </Card>
+            )}
+          </div>
+
+          <div className="p-3 border-t bg-muted/20 text-xs text-muted-foreground text-center">
+            💡 Drag & drop untuk mengubah urutan (Coming Soon)
+          </div>
+        </div>
+
+        {/* Right Panel: Detail View */}
+        <div className="flex-1 overflow-hidden bg-background">
+          <CategoryDetail
+            category={selectedCategory}
+            isLoading={isDetailLoading}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        </div>
+      </div>
     </div>
   );
 }

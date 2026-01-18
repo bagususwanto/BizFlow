@@ -17,22 +17,16 @@ test.describe('Categories Management', () => {
 
   test('should display categories list', async ({ page }) => {
     await expect(
-      page.getByRole('heading', { name: 'Kategori', exact: true }),
+      page.getByRole('heading', { name: 'Kategori Produk', exact: true }),
     ).toBeVisible();
     await expect(
       page.getByRole('link', { name: 'Tambah Kategori' }),
     ).toBeVisible();
     // Verify seeded categories exist
+    await expect(page.getByText('Umum', { exact: true })).toBeVisible();
+    await expect(page.getByText('Elektronik', { exact: true })).toBeVisible();
     await expect(
-      page.locator('span.font-medium').getByText('Umum', { exact: true }),
-    ).toBeVisible();
-    await expect(
-      page.locator('span.font-medium').getByText('Elektronik', { exact: true }),
-    ).toBeVisible();
-    await expect(
-      page
-        .locator('span.font-medium')
-        .getByText('Makanan & Minuman', { exact: true }),
+      page.getByText('Makanan & Minuman', { exact: true }),
     ).toBeVisible();
   });
 
@@ -62,9 +56,12 @@ test.describe('Categories Management', () => {
     await page.fill('input[name="name"]', uniqueName);
 
     // Open parent dropdown
-    await page.click('button[role="combobox"]'); // Assuming Select component uses this
+    await page.click('button[role="combobox"]');
     // Select 'Umum' as parent
-    await page.click('div[role="option"]:has-text("Umum")');
+    const umumOption = page.getByRole('option', { name: 'Umum' });
+    await expect(umumOption).toBeVisible();
+    await umumOption.scrollIntoViewIfNeeded();
+    await umumOption.click({ force: true });
 
     await page.click('button[type="submit"]');
 
@@ -79,10 +76,13 @@ test.describe('Categories Management', () => {
   });
 
   test('should update a category', async ({ page }) => {
-    // Target the 'Umum' category
-    const row = page.getByRole('row').filter({ hasText: 'Umum' });
-    await row.getByRole('button', { name: 'Open menu' }).click();
-    await page.getByRole('menuitem', { name: 'Edit' }).click();
+    // Select the category from tree
+    await page.getByText('Umum', { exact: true }).click();
+
+    // Check detail view is visible (Edit button should be there)
+    const editButton = page.getByRole('button', { name: 'Edit' });
+    await expect(editButton).toBeVisible();
+    await editButton.click();
 
     await expect(page.url()).toContain('/edit');
 
@@ -92,9 +92,6 @@ test.describe('Categories Management', () => {
 
     await page.waitForURL('/master-data/categories');
     await expect(page.getByText('Kategori berhasil diperbarui')).toBeVisible();
-
-    // Verify description updated (might need to expand row or check detail)
-    // For now just success toast is good indication
   });
 
   test('should delete a category', async ({ page }) => {
@@ -105,18 +102,24 @@ test.describe('Categories Management', () => {
     await page.click('button[type="submit"]');
     await page.waitForURL('/master-data/categories');
 
-    // Find and delete it
+    // Find and select it in the tree
+    // We might need to filter or scroll, but for now assuming it's visible or searchable
     await page.fill('input[placeholder*="Cari"]', tempName);
     await page.waitForTimeout(500); // Wait for debounce
 
-    const row = page.getByRole('row').filter({ hasText: tempName });
-    await row.getByRole('button', { name: 'Open menu' }).click();
+    await page.getByText(tempName).click();
 
-    // Make sure to handle potential confirmation dialog
+    // Click delete in detail view
+    const deleteButton = page.getByRole('button', { name: 'Hapus' });
+    await expect(deleteButton).toBeVisible();
+
+    // Setup dialog handler
     page.once('dialog', (dialog) => dialog.accept());
-    await page.getByRole('menuitem', { name: 'Hapus' }).click();
+    await deleteButton.click();
 
-    await expect(page.getByText('Kategori berhasil dihapus')).toBeVisible();
+    await expect(
+      page.getByText('Kategori berhasil dihapus/dinonaktifkan'),
+    ).toBeVisible();
     await expect(page.getByText(tempName)).not.toBeVisible();
   });
 });

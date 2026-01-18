@@ -19,7 +19,52 @@ async function main() {
   // Create default roles
   const ownerRole = await prisma.role.upsert({
     where: { name: 'owner' },
-    update: {},
+    update: {
+      permissions: {
+        deleteMany: {},
+        create: [
+          { module: 'dashboard', action: 'read' },
+          { module: 'pos', action: 'create' },
+          { module: 'pos', action: 'read' },
+          { module: 'pos', action: 'update' },
+          { module: 'pos', action: 'delete' },
+          { module: 'products', action: 'create' },
+          { module: 'products', action: 'read' },
+          { module: 'products', action: 'update' },
+          { module: 'products', action: 'delete' },
+          { module: 'sales', action: 'create' },
+          { module: 'sales', action: 'read' },
+          { module: 'sales', action: 'update' },
+          { module: 'sales', action: 'delete' },
+          { module: 'purchases', action: 'create' },
+          { module: 'purchases', action: 'read' },
+          { module: 'purchases', action: 'update' },
+          { module: 'purchases', action: 'delete' },
+          { module: 'inventory', action: 'create' },
+          { module: 'inventory', action: 'read' },
+          { module: 'inventory', action: 'update' },
+          { module: 'inventory', action: 'delete' },
+          { module: 'finance', action: 'create' },
+          { module: 'finance', action: 'read' },
+          { module: 'finance', action: 'update' },
+          { module: 'finance', action: 'delete' },
+          { module: 'reports', action: 'read' },
+          { module: 'settings', action: 'create' },
+          { module: 'settings', action: 'read' },
+          { module: 'settings', action: 'update' },
+          { module: 'settings', action: 'delete' },
+          { module: 'users', action: 'create' },
+          { module: 'users', action: 'read' },
+          { module: 'users', action: 'update' },
+          { module: 'users', action: 'delete' },
+          { module: 'categories', action: 'create' },
+          { module: 'categories', action: 'read' },
+          { module: 'categories', action: 'update' },
+          { module: 'categories', action: 'delete' },
+          { module: 'audit-log', action: 'read' },
+        ],
+      },
+    },
     create: {
       name: 'owner',
       description: 'Pemilik bisnis dengan akses penuh',
@@ -59,6 +104,10 @@ async function main() {
           { module: 'users', action: 'read' },
           { module: 'users', action: 'update' },
           { module: 'users', action: 'delete' },
+          { module: 'categories', action: 'create' },
+          { module: 'categories', action: 'read' },
+          { module: 'categories', action: 'update' },
+          { module: 'categories', action: 'delete' },
           { module: 'audit-log', action: 'read' },
         ],
       },
@@ -67,7 +116,52 @@ async function main() {
 
   const adminRole = await prisma.role.upsert({
     where: { name: 'admin' },
-    update: {},
+    update: {
+      permissions: {
+        deleteMany: {},
+        create: [
+          { module: 'dashboard', action: 'read' },
+          { module: 'pos', action: 'create' },
+          { module: 'pos', action: 'read' },
+          { module: 'pos', action: 'update' },
+          { module: 'pos', action: 'delete' },
+          { module: 'products', action: 'create' },
+          { module: 'products', action: 'read' },
+          { module: 'products', action: 'update' },
+          { module: 'products', action: 'delete' },
+          { module: 'sales', action: 'create' },
+          { module: 'sales', action: 'read' },
+          { module: 'sales', action: 'update' },
+          { module: 'sales', action: 'delete' },
+          { module: 'purchases', action: 'create' },
+          { module: 'purchases', action: 'read' },
+          { module: 'purchases', action: 'update' },
+          { module: 'purchases', action: 'delete' },
+          { module: 'inventory', action: 'create' },
+          { module: 'inventory', action: 'read' },
+          { module: 'inventory', action: 'update' },
+          { module: 'inventory', action: 'delete' },
+          { module: 'finance', action: 'create' },
+          { module: 'finance', action: 'read' },
+          { module: 'finance', action: 'update' },
+          { module: 'finance', action: 'delete' },
+          { module: 'reports', action: 'read' },
+          { module: 'settings', action: 'create' },
+          { module: 'settings', action: 'read' },
+          { module: 'settings', action: 'update' },
+          { module: 'settings', action: 'delete' },
+          { module: 'users', action: 'create' },
+          { module: 'users', action: 'read' },
+          { module: 'users', action: 'update' },
+          { module: 'users', action: 'delete' },
+          { module: 'categories', action: 'create' },
+          { module: 'categories', action: 'read' },
+          { module: 'categories', action: 'update' },
+          { module: 'categories', action: 'delete' },
+          { module: 'audit-log', action: 'read' },
+        ],
+      },
+    },
     create: {
       name: 'admin',
       description: 'Administrator dengan akses manajemen',
@@ -77,20 +171,41 @@ async function main() {
           { module: 'pos', action: 'create' },
           { module: 'pos', action: 'read' },
           { module: 'pos', action: 'update' },
+          { module: 'pos', action: 'delete' },
           { module: 'products', action: 'create' },
           { module: 'products', action: 'read' },
           { module: 'products', action: 'update' },
+          { module: 'products', action: 'delete' },
           { module: 'sales', action: 'create' },
           { module: 'sales', action: 'read' },
           { module: 'sales', action: 'update' },
+          { module: 'sales', action: 'delete' },
           { module: 'purchases', action: 'create' },
           { module: 'purchases', action: 'read' },
           { module: 'purchases', action: 'update' },
+          { module: 'purchases', action: 'delete' },
           { module: 'inventory', action: 'create' },
           { module: 'inventory', action: 'read' },
           { module: 'inventory', action: 'update' },
+          { module: 'inventory', action: 'delete' },
+          { module: 'finance', action: 'create' },
+          { module: 'finance', action: 'read' },
+          { module: 'finance', action: 'update' },
+          { module: 'finance', action: 'delete' },
           { module: 'reports', action: 'read' },
+          { module: 'settings', action: 'create' },
+          { module: 'settings', action: 'read' },
+          { module: 'settings', action: 'update' },
+          { module: 'settings', action: 'delete' },
+          { module: 'users', action: 'create' },
           { module: 'users', action: 'read' },
+          { module: 'users', action: 'update' },
+          { module: 'users', action: 'delete' },
+          { module: 'categories', action: 'create' },
+          { module: 'categories', action: 'read' },
+          { module: 'categories', action: 'update' },
+          { module: 'categories', action: 'delete' },
+          { module: 'audit-log', action: 'read' },
         ],
       },
     },
@@ -98,7 +213,19 @@ async function main() {
 
   const kasirRole = await prisma.role.upsert({
     where: { name: 'kasir' },
-    update: {},
+    update: {
+      permissions: {
+        deleteMany: {},
+        create: [
+          { module: 'dashboard', action: 'read' },
+          { module: 'pos', action: 'create' },
+          { module: 'pos', action: 'read' },
+          { module: 'products', action: 'read' },
+          { module: 'categories', action: 'read' },
+          { module: 'sales', action: 'read' },
+        ],
+      },
+    },
     create: {
       name: 'kasir',
       description: 'Kasir dengan akses POS',
@@ -108,6 +235,7 @@ async function main() {
           { module: 'pos', action: 'create' },
           { module: 'pos', action: 'read' },
           { module: 'products', action: 'read' },
+          { module: 'categories', action: 'read' },
           { module: 'sales', action: 'read' },
         ],
       },
@@ -116,7 +244,20 @@ async function main() {
 
   const gudangRole = await prisma.role.upsert({
     where: { name: 'gudang' },
-    update: {},
+    update: {
+      permissions: {
+        deleteMany: {},
+        create: [
+          { module: 'dashboard', action: 'read' },
+          { module: 'products', action: 'read' },
+          { module: 'categories', action: 'read' },
+          { module: 'inventory', action: 'create' },
+          { module: 'inventory', action: 'read' },
+          { module: 'inventory', action: 'update' },
+          { module: 'purchases', action: 'read' },
+        ],
+      },
+    },
     create: {
       name: 'gudang',
       description: 'Staff gudang dengan akses inventory',
@@ -124,6 +265,7 @@ async function main() {
         create: [
           { module: 'dashboard', action: 'read' },
           { module: 'products', action: 'read' },
+          { module: 'categories', action: 'read' },
           { module: 'inventory', action: 'create' },
           { module: 'inventory', action: 'read' },
           { module: 'inventory', action: 'update' },
@@ -222,7 +364,7 @@ async function main() {
 
   console.log('✅ Unit of measure created:', pcsUnit.name);
 
-  // Create default category
+  // Create categories (Hierarchical)
   const generalCategory = await prisma.category.upsert({
     where: { id: 'general' },
     update: {},
@@ -234,7 +376,77 @@ async function main() {
     },
   });
 
-  console.log('✅ Category created:', generalCategory.name);
+  const electronicsCategory = await prisma.category.upsert({
+    where: { id: 'electronics' },
+    update: {},
+    create: {
+      id: 'electronics',
+      name: 'Elektronik',
+      description: 'Barang elektronik dan gadget',
+      isActive: true,
+    },
+  });
+
+  const computersCategory = await prisma.category.upsert({
+    where: { id: 'computers' },
+    update: {},
+    create: {
+      id: 'computers',
+      name: 'Komputer & Laptop',
+      parentId: electronicsCategory.id,
+      isActive: true,
+    },
+  });
+
+  const phonesCategory = await prisma.category.upsert({
+    where: { id: 'phones' },
+    update: {},
+    create: {
+      id: 'phones',
+      name: 'Handphone & Tablet',
+      parentId: electronicsCategory.id,
+      isActive: true,
+    },
+  });
+
+  const foodCategory = await prisma.category.upsert({
+    where: { id: 'food-beverage' },
+    update: {},
+    create: {
+      id: 'food-beverage',
+      name: 'Makanan & Minuman',
+      isActive: true,
+    },
+  });
+
+  const snacksCategory = await prisma.category.upsert({
+    where: { id: 'snacks' },
+    update: {},
+    create: {
+      id: 'snacks',
+      name: 'Makanan Ringan',
+      parentId: foodCategory.id,
+      isActive: true,
+    },
+  });
+
+  const drinksCategory = await prisma.category.upsert({
+    where: { id: 'drinks' },
+    update: {},
+    create: {
+      id: 'drinks',
+      name: 'Minuman',
+      parentId: foodCategory.id,
+      isActive: true,
+    },
+  });
+
+  console.log('✅ Categories created:', {
+    general: generalCategory.name,
+    electronics: electronicsCategory.name,
+    computers: computersCategory.name,
+    food: foodCategory.name,
+  });
 
   // Create default app settings
   const defaultSettings = [

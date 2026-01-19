@@ -17,12 +17,8 @@ import {
   FormLabel,
   FormMessage,
   Input,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
   Switch,
+  Combobox,
 } from '@bizflow/ui';
 import {
   createUserSchema,
@@ -169,25 +165,17 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Role</FormLabel>
-                <Select
-                  disabled={isLoadingRoles}
-                  onValueChange={field.onChange}
-                  defaultValue={field.value as string}
+                <Combobox
+                  options={roles.map((role) => ({
+                    label: role.name,
+                    value: role.id,
+                  }))}
                   value={field.value as string}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Pilih Role" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent className="max-h-[300px] overflow-y-auto">
-                    {roles.map((role) => (
-                      <SelectItem key={role.id} value={role.id}>
-                        {role.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  onChange={field.onChange}
+                  placeholder="Pilih Role"
+                  searchPlaceholder="Cari Role..."
+                  emptyMessage="Role tidak ditemukan."
+                />
                 <FormMessage />
               </FormItem>
             )}

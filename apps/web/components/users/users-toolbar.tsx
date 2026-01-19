@@ -20,6 +20,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  Combobox,
 } from '@bizflow/ui';
 import { useRoles } from '@/hooks/use-roles';
 
@@ -71,20 +72,20 @@ export function UsersToolbar({
           />
         </div>
 
-        <Select value={roleId} onValueChange={onRoleFilterChange}>
-          <SelectTrigger className="w-full md:w-[180px]">
-            <SlidersHorizontal className="mr-2 h-4 w-4" />
-            <SelectValue placeholder="Filter Role" />
-          </SelectTrigger>
-          <SelectContent className="max-h-[300px] overflow-y-auto">
-            <SelectItem value="all">Semua Role</SelectItem>
-            {roles.map((role) => (
-              <SelectItem key={role.id} value={role.id}>
-                {role.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <Combobox
+          value={roleId}
+          onChange={(val) => onRoleFilterChange(val || 'all')}
+          options={[
+            { value: 'all', label: 'Semua Role' },
+            ...roles.map((role) => ({
+              value: role.id,
+              label: role.name,
+            })),
+          ]}
+          placeholder="Filter Role"
+          searchPlaceholder="Cari Role..."
+          className="w-full md:w-[180px]"
+        />
 
         <Select value={status} onValueChange={onStatusFilterChange}>
           <SelectTrigger className="w-full md:w-[150px]">

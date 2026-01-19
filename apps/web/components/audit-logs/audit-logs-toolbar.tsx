@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
   Button,
+  Combobox,
 } from '@bizflow/ui';
 import { Search, X, Calendar as CalendarIcon } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@bizflow/ui';
@@ -73,19 +74,20 @@ export function AuditLogsToolbar({
           />
         </div>
 
-        <Select value={moduleFilter} onValueChange={onModuleFilterChange}>
-          <SelectTrigger className="w-[150px]">
-            <SelectValue placeholder="Module" />
-          </SelectTrigger>
-          <SelectContent className="max-h-[300px] overflow-y-auto">
-            <SelectItem value="all">Semua Module</SelectItem>
-            {AVAILABLE_MODULES.map((module) => (
-              <SelectItem key={module} value={module} className="capitalize">
-                {module}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <Combobox
+          value={moduleFilter}
+          onChange={(val) => onModuleFilterChange(val || 'all')}
+          options={[
+            { value: 'all', label: 'Semua Module' },
+            ...AVAILABLE_MODULES.map((module) => ({
+              value: module,
+              label: module.charAt(0).toUpperCase() + module.slice(1),
+            })),
+          ]}
+          placeholder="Module"
+          searchPlaceholder="Cari Module..."
+          className="w-[150px]"
+        />
 
         <Select value={actionFilter} onValueChange={onActionFilterChange}>
           <SelectTrigger className="w-[150px]">

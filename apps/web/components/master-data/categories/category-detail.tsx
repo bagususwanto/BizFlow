@@ -140,7 +140,7 @@ export function CategoryDetail({
                 <AlertDialogFooter>
                   <AlertDialogCancel>Batal</AlertDialogCancel>
                   <AlertDialogAction
-                    className="bg-destructive text-white"
+                    className="bg-destructive text-white hover:bg-destructive/80"
                     onClick={() => onDelete(category.id)}
                   >
                     Hapus

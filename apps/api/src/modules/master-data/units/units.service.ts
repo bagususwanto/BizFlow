@@ -30,14 +30,18 @@ export class UnitsService {
       baseUnitId,
     } = query;
 
+    const pageNum = Number(page) || 1;
+    const sizeNum = Number(pageSize) || 10;
+    const skip = (pageNum - 1) * sizeNum;
+
     const where = this.buildWhereClause(search, baseUnitId);
 
     const [total, data] = await Promise.all([
       this.prisma.unitOfMeasure.count({ where }),
       this.prisma.unitOfMeasure.findMany({
         where,
-        take: pageSize,
-        skip: (page - 1) * pageSize,
+        take: sizeNum,
+        skip,
         orderBy: { [sortBy]: sortOrder },
         include: {
           baseUnit: true,

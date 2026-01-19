@@ -63,8 +63,8 @@ export function AuditLogsToolbar({
 
   return (
     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-      <div className="flex flex-1 items-center gap-2">
-        <div className="relative w-full md:w-[300px]">
+      <div className="flex flex-1 flex-col gap-2 md:flex-row md:items-center md:flex-wrap lg:flex-nowrap">
+        <div className="relative w-full md:w-auto md:flex-1 md:min-w-[200px] lg:w-[180px] lg:flex-none">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Cari ID Entity..."
@@ -86,11 +86,11 @@ export function AuditLogsToolbar({
           ]}
           placeholder="Module"
           searchPlaceholder="Cari Module..."
-          className="w-[150px]"
+          className="w-full md:w-auto md:flex-1 md:min-w-[140px] lg:w-[130px] lg:flex-none"
         />
 
         <Select value={actionFilter} onValueChange={onActionFilterChange}>
-          <SelectTrigger className="w-[150px]">
+          <SelectTrigger className="w-full md:w-auto md:flex-1 md:min-w-[140px] lg:w-[130px] lg:flex-none">
             <SelectValue placeholder="Aksi" />
           </SelectTrigger>
           <SelectContent className="max-h-[300px] overflow-y-auto">
@@ -108,7 +108,7 @@ export function AuditLogsToolbar({
             <Button
               variant={'outline'}
               className={cn(
-                'w-[240px] justify-start text-left font-normal',
+                'w-full md:w-auto md:flex-1 md:min-w-[220px] lg:w-[210px] lg:flex-none justify-start text-left font-normal',
                 !startDate && 'text-muted-foreground',
               )}
             >

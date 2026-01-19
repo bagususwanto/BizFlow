@@ -62,7 +62,7 @@ export function UsersToolbar({
   return (
     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div className="flex flex-1 flex-col gap-2 md:flex-row md:items-center">
-        <div className="relative w-full md:w-[300px]">
+        <div className="relative w-full md:w-[200px] lg:w-[300px]">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Cari user..."
@@ -84,11 +84,11 @@ export function UsersToolbar({
           ]}
           placeholder="Filter Role"
           searchPlaceholder="Cari Role..."
-          className="w-full md:w-[180px]"
+          className="w-full md:w-[150px] lg:w-[180px]"
         />
 
         <Select value={status} onValueChange={onStatusFilterChange}>
-          <SelectTrigger className="w-full md:w-[150px]">
+          <SelectTrigger className="w-full md:w-[120px] lg:w-[150px]">
             <div className="flex items-center">
               <span className="mr-2">Status:</span>
               <SelectValue />

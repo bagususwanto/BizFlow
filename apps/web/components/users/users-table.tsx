@@ -233,7 +233,7 @@ export function UsersTable({
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isDeleting}>Batal</AlertDialogCancel>
             <AlertDialogAction
-              className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+              className="bg-destructive hover:bg-destructive/80 "
               onClick={(e) => {
                 e.preventDefault();
                 if (userToDelete) {
@@ -270,7 +270,7 @@ export function UsersTable({
               Batal
             </AlertDialogCancel>
             <AlertDialogAction
-              className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+              className="bg-destructive hover:bg-destructive/80 "
               onClick={(e) => {
                 e.preventDefault();
                 handleBulkDelete();

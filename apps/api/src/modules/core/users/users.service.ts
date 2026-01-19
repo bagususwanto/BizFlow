@@ -47,7 +47,19 @@ export class UsersService {
     const where = this.buildWhereClause(search, roleId, isActive);
 
     // Build orderBy clause
-    const orderBy = { [sortBy]: sortOrder };
+    let orderBy: any = { [sortBy]: sortOrder };
+
+    if (sortBy === 'role.name') {
+      orderBy = {
+        role: {
+          name: sortOrder,
+        },
+      };
+    } else if (sortBy === 'status') {
+      orderBy = {
+        isActive: sortOrder,
+      };
+    }
 
     // Get total count
     const totalItems = await this.prisma.user.count({ where });

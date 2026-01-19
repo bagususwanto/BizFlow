@@ -150,7 +150,16 @@ export const queryUsersSchema = z.object({
 
   // Sorting
   sortBy: z
-    .enum(['username', 'name', 'email', 'createdAt', 'updatedAt', 'lastLogin'])
+    .enum([
+      'username',
+      'name',
+      'email',
+      'createdAt',
+      'updatedAt',
+      'lastLogin',
+      'role.name',
+      'status',
+    ])
     .default('name'),
   sortOrder: z.enum(['asc', 'desc']).default('asc'),
 

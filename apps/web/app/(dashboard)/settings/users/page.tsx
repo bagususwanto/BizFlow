@@ -38,8 +38,10 @@ function UsersContent() {
       | 'email'
       | 'createdAt'
       | 'updatedAt'
-      | 'lastLogin') || 'updatedAt';
-  const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc';
+      | 'lastLogin'
+      | 'role.name'
+      | 'status') || 'name';
+  const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'asc';
 
   // Local state for column visibility (doesn't need to be in URL)
   const [columnVisibility, setColumnVisibility] = useState<

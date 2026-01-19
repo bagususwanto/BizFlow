@@ -8,13 +8,20 @@ import {
   CardTitle,
 } from '@bizflow/ui';
 import { CategoryForm } from '@/components/master-data/categories/category-form';
-
 import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
+import { Loader2 } from 'lucide-react';
 
-export default function CreateCategoryPage() {
+function CreateCategoryContent() {
   const searchParams = useSearchParams();
   const parentId = searchParams.get('parentId');
 
+  return (
+    <CategoryForm initialData={parentId ? ({ parentId } as any) : undefined} />
+  );
+}
+
+export default function CreateCategoryPage() {
   return (
     <div className="space-y-6">
       <div>
@@ -34,9 +41,15 @@ export default function CreateCategoryPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <CategoryForm
-            initialData={parentId ? ({ parentId } as any) : undefined}
-          />
+          <Suspense
+            fallback={
+              <div className="flex justify-center p-8">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              </div>
+            }
+          >
+            <CreateCategoryContent />
+          </Suspense>
         </CardContent>
       </Card>
     </div>

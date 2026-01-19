@@ -106,7 +106,22 @@ export const getColumns = ({
   },
   {
     accessorKey: 'role.name',
-    header: 'Role',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className="-ml-4"
+        >
+          Role
+          {column.getIsSorted() === 'asc' ? (
+            <ArrowUp className="ml-2 h-4 w-4" />
+          ) : column.getIsSorted() === 'desc' ? (
+            <ArrowDown className="ml-2 h-4 w-4" />
+          ) : null}
+        </Button>
+      );
+    },
     cell: ({ row }) => (
       <Badge variant="outline" className="capitalize">
         {row.original.role?.name || '-'}
@@ -115,7 +130,22 @@ export const getColumns = ({
   },
   {
     accessorKey: 'isActive',
-    header: 'Status',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className="-ml-4"
+        >
+          Status
+          {column.getIsSorted() === 'asc' ? (
+            <ArrowUp className="ml-2 h-4 w-4" />
+          ) : column.getIsSorted() === 'desc' ? (
+            <ArrowDown className="ml-2 h-4 w-4" />
+          ) : null}
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       const isActive = row.original.isActive;
       return (

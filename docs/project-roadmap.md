@@ -113,14 +113,14 @@ Referensi: [03-product-management.md](file:///Users/bagus/Project/personal/BizFl
 
 | Task                                   | Status | Priority |
 | -------------------------------------- | ------ | -------- |
-| **Categories** - CRUD Kategori         | [ ]    | High     |
-| **Categories** - Hierarchical (nested) | [ ]    | Medium   |
-| **Products** - CRUD Produk             | [ ]    | High     |
-| **Products** - Barcode/SKU support     | [ ]    | High     |
-| **Products** - Product image upload    | [ ]    | Low      |
-| **Products** - Product variants        | [ ]    | Medium   |
-| **Products** - Price levels            | [ ]    | Medium   |
-| **Products** - Stock alert (min stock) | [ ]    | High     |
+| **Categories** - CRUD Kategori         | [x]    | High     |
+| **Categories** - Hierarchical (nested) | [x]    | Medium   |
+| **Products** - CRUD Produk             | [-]    | High     |
+| **Products** - Barcode/SKU support     | [-]    | High     |
+| **Products** - Product image upload    | [-]    | Low      |
+| **Products** - Product variants        | [-]    | Medium   |
+| **Products** - Price levels            | [-]    | Medium   |
+| **Products** - Stock alert (min stock) | [-]    | High     |
 | **Units** - CRUD Unit of Measure       | [ ]    | High     |
 | **Units** - Konversi satuan            | [ ]    | Medium   |
 | **Customers** - CRUD Customer          | [ ]    | High     |

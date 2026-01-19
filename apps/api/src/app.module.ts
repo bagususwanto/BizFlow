@@ -10,6 +10,7 @@ import { SettingsModule } from './modules/core/settings';
 import { UsersModule } from './modules/core/users';
 
 import { CategoriesModule } from './modules/master-data/categories';
+import { UnitsModule } from './modules/master-data/units';
 
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
@@ -29,6 +30,7 @@ import { AppController } from './app.controller';
     UsersModule,
     // Master Data modules
     CategoriesModule,
+    UnitsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

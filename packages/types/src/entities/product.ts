@@ -1,4 +1,5 @@
 import type { BaseEntity, ActiveEntity, Decimal, JsonValue } from './base';
+import type { UnitOfMeasure } from './unit.entity';
 
 // ========================================
 // Category & Unit Entities
@@ -29,18 +30,7 @@ export interface CategoryTreeNode {
   children: CategoryTreeNode[];
 }
 
-export interface UnitOfMeasure {
-  id: string;
-  name: string;
-  symbol: string;
-  baseUnitId?: string | null;
-  conversionRate?: number | null;
-  createdAt: Date;
-
-  // Relations
-  baseUnit?: UnitOfMeasure | null;
-  derivedUnits?: UnitOfMeasure[];
-}
+// UnitOfMeasure moved to ./unit.entity.ts
 
 // ========================================
 // Product Entities

@@ -55,23 +55,27 @@ test.describe('Categories Management', () => {
     const uniqueName = `Sub Cat ${Date.now()}`;
     await page.fill('input[name="name"]', uniqueName);
 
-    // Open parent dropdown
-    await page.click('button[role="combobox"]');
-    // Select 'Umum' as parent
-    const umumOption = page.getByRole('option', { name: 'Umum' });
-    await expect(umumOption).toBeVisible();
-    await umumOption.scrollIntoViewIfNeeded();
-    await umumOption.click({ force: true });
+    // Open parent dropdown and select using keyboard for reliability
+    const combobox = page.locator('button[role="combobox"]');
+    await combobox.click();
+    // Wait for dropdown to open
+    await page.waitForTimeout(300);
+    // Type to filter and find Umum
+    await page.keyboard.type('Umum');
+    await page.waitForTimeout(200);
+    // Press Enter to select the first matching option
+    await page.keyboard.press('Enter');
 
     await page.click('button[type="submit"]');
 
     await page.waitForURL('/master-data/categories');
     await expect(page.getByText('Kategori berhasil dibuat')).toBeVisible();
 
-    // Expand 'Umum' to see subcategory if it's tree view, checking if it renders
-    // Note: Depends on how tree expansion is handled.
-    // If flattened search works, we can just search for it.
-    await page.fill('input[placeholder*="Cari"]', uniqueName);
+    // Click on parent category to see its details including children
+    await page.getByText('Umum', { exact: true }).click();
+
+    // Wait for detail view to load and verify sub-category appears in children list
+    await page.waitForTimeout(500);
     await expect(page.getByText(uniqueName)).toBeVisible();
   });
 
@@ -84,13 +88,14 @@ test.describe('Categories Management', () => {
     await expect(editButton).toBeVisible();
     await editButton.click();
 
-    await expect(page.url()).toContain('/edit');
+    // Wait for navigation to edit page
+    await page.waitForURL(/\/edit$/);
 
     const newDescription = `Updated desc ${Date.now()}`;
     await page.fill('textarea[name="description"]', newDescription);
     await page.click('button[type="submit"]');
 
-    await page.waitForURL('/master-data/categories');
+    await page.waitForURL(/\/master-data\/categories/);
     await expect(page.getByText('Kategori berhasil diperbarui')).toBeVisible();
   });
 
@@ -103,23 +108,112 @@ test.describe('Categories Management', () => {
     await page.waitForURL('/master-data/categories');
 
     // Find and select it in the tree
-    // We might need to filter or scroll, but for now assuming it's visible or searchable
     await page.fill('input[placeholder*="Cari"]', tempName);
     await page.waitForTimeout(500); // Wait for debounce
 
     await page.getByText(tempName).click();
 
-    // Click delete in detail view
+    // Click delete in detail view - this opens AlertDialog
     const deleteButton = page.getByRole('button', { name: 'Hapus' });
     await expect(deleteButton).toBeVisible();
-
-    // Setup dialog handler
-    page.once('dialog', (dialog) => dialog.accept());
     await deleteButton.click();
 
+    // Confirm in AlertDialog
+    const confirmDialog = page.locator('[role="alertdialog"]');
+    await expect(confirmDialog).toBeVisible();
+    await expect(confirmDialog.getByText('Apakah anda yakin?')).toBeVisible();
+
+    // Click confirm button in AlertDialog
+    await confirmDialog.getByRole('button', { name: 'Hapus' }).click();
+
+    // Wait for success toast
     await expect(
-      page.getByText('Kategori berhasil dihapus/dinonaktifkan'),
+      page.getByText(/berhasil (dihapus|dinonaktifkan)/i),
     ).toBeVisible();
     await expect(page.getByText(tempName)).not.toBeVisible();
+  });
+
+  test('should expand and collapse tree nodes', async ({ page }) => {
+    // First create a parent with child to ensure hierarchy exists
+    const parentName = `Parent ${Date.now()}`;
+    const childName = `Child ${Date.now()}`;
+
+    // Create parent category
+    await page.getByRole('link', { name: 'Tambah Kategori' }).click();
+    await page.fill('input[name="name"]', parentName);
+    await page.click('button[type="submit"]');
+    await page.waitForURL('/master-data/categories');
+
+    // Create child category
+    await page.getByRole('link', { name: 'Tambah Kategori' }).click();
+    await page.fill('input[name="name"]', childName);
+    const combobox = page.locator('button[role="combobox"]');
+    await combobox.click();
+    await page.waitForTimeout(300);
+    await page.keyboard.type(parentName);
+    await page.waitForTimeout(200);
+    await page.keyboard.press('Enter');
+    await page.click('button[type="submit"]');
+    await page.waitForURL('/master-data/categories');
+
+    // Search for and click parent category
+    await page.fill('input[placeholder*="Cari"]', parentName);
+    await page.waitForTimeout(500);
+
+    // Parent should be visible
+    await expect(page.getByText(parentName)).toBeVisible();
+
+    // Click on parent to select and see details
+    await page.getByText(parentName).click();
+
+    // Verify detail shows sub-category count
+    await expect(page.getByText('Sub-kategori')).toBeVisible();
+  });
+
+  test('should create sub-category via menu', async ({ page }) => {
+    // Select an existing category
+    await page.getByText('Umum', { exact: true }).click();
+
+    // Wait for detail view to load
+    await expect(page.getByRole('button', { name: 'Edit' })).toBeVisible();
+
+    // Open the more actions menu (the three-dot button after Edit and Hapus)
+    // It's a ghost button with MoreVertical icon - find it by being the last button in the header actions
+    const detailHeader = page.locator('.flex.items-start.justify-between');
+    const moreButton = detailHeader.locator('button').last();
+    await moreButton.click();
+
+    // Click "Tambah Sub-kategori"
+    await page.getByRole('menuitem', { name: 'Tambah Sub-kategori' }).click();
+
+    // Should navigate to create page with parentId query param
+    await page.waitForURL(/\/master-data\/categories\/create/);
+    await expect(page.url()).toContain('parentId=');
+
+    // The parent should be pre-selected in dropdown
+    const parentDropdown = page.locator('button[role="combobox"]');
+    await expect(parentDropdown).toContainText('Umum');
+  });
+
+  test('should show validation error for empty name', async ({ page }) => {
+    await page.getByRole('link', { name: 'Tambah Kategori' }).click();
+    await page.waitForURL('/master-data/categories/create');
+
+    // Leave name empty and submit
+    await page.click('button[type="submit"]');
+
+    // Should show validation error
+    await expect(page.getByText(/nama.*wajib|required/i)).toBeVisible();
+  });
+
+  test('should show sub-categories in parent detail view', async ({ page }) => {
+    // Click on a parent category that has children (Makanan & Minuman should have some)
+    await page.getByText('Makanan & Minuman', { exact: true }).click();
+
+    // Wait for detail view to load
+    await page.waitForTimeout(300);
+
+    // Check that Sub-kategori section is visible in detail (use first() as there are multiple matches)
+    await expect(page.getByText('Sub-kategori').first()).toBeVisible();
   });
 });

@@ -86,16 +86,14 @@ function CategoriesContent() {
   };
 
   const handleDelete = (id: string) => {
-    if (confirm('Apakah Anda yakin ingin menghapus kategori ini?')) {
-      deleteCategory(id, {
-        onSuccess: () => {
-          // Clear selection if deleted
-          const params = new URLSearchParams(searchParams.toString());
-          params.delete('id');
-          router.replace(`/master-data/categories?${params.toString()}`);
-        },
-      });
-    }
+    deleteCategory(id, {
+      onSuccess: () => {
+        // Clear selection if deleted
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete('id');
+        router.replace(`/master-data/categories?${params.toString()}`);
+      },
+    });
   };
 
   return (

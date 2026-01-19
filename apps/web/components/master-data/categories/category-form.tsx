@@ -16,11 +16,6 @@ import {
   FormLabel,
   FormMessage,
   Input,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
   Switch,
   Textarea,
 } from '@bizflow/ui';
@@ -38,6 +33,7 @@ import {
   useUpdateCategory,
 } from '@/hooks/use-categories';
 import { useRouter } from 'next/navigation';
+import { Combobox } from '@bizflow/ui';
 
 interface CategoryFormProps {
   initialData?: CategoryWithRelations;
@@ -113,29 +109,23 @@ export function CategoryForm({
             control={form.control}
             name="parentId"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="flex flex-col">
                 <FormLabel>Induk Kategori (Opsional)</FormLabel>
-                <Select
-                  onValueChange={(value) =>
-                    field.onChange(value === 'root' ? null : value)
-                  }
-                  value={field.value || 'root'}
-                  disabled={parentOptions.length === 0 && !field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Pilih induk kategori" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="root">-- Tidak Ada (Root) --</SelectItem>
-                    {parentOptions.map((option) => (
-                      <SelectItem key={option.id} value={option.id}>
-                        {option.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  <Combobox
+                    options={parentOptions.map((cat) => ({
+                      value: cat.id,
+                      label: cat.name,
+                    }))}
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder="Pilih induk kategori"
+                    searchPlaceholder="Cari kategori..."
+                    emptyMessage="Kategori tidak ditemukan."
+                    allowClear
+                    clearLabel="-- Tidak Ada (Root) --"
+                  />
+                </FormControl>
                 <FormDescription>
                   Kategori root adalah kategori utama tanpa induk.
                 </FormDescription>

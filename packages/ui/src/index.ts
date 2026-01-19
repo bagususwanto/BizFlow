@@ -214,6 +214,8 @@ export {
   TooltipProvider,
 } from './components/tooltip';
 
+export * from './components/combobox';
+
 export * from './components/collapsible';
 export * from './components/sidebar';
 

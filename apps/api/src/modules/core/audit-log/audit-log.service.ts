@@ -46,6 +46,8 @@ export class AuditLogService {
       endDate,
       page = 1,
       limit = 20,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
     } = query;
 
     const where = this.buildWhereClause({
@@ -57,10 +59,20 @@ export class AuditLogService {
       endDate,
     });
 
+    // Build orderBy clause
+    let orderBy: any = { [sortBy]: sortOrder };
+    if (sortBy === 'user.name') {
+      orderBy = {
+        user: {
+          name: sortOrder,
+        },
+      };
+    }
+
     const [data, totalItems] = await Promise.all([
       this.prisma.auditLog.findMany({
         where,
-        orderBy: { createdAt: 'desc' },
+        orderBy,
         skip: (page - 1) * limit,
         take: limit,
         include: {

@@ -13,21 +13,48 @@ import {
 import { AuditLog } from '@/services/audit-logs.service';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
-import { Eye } from 'lucide-react';
+import { Eye, ArrowUp, ArrowDown } from 'lucide-react';
 
 interface AuditLogsTableProps {
   data: AuditLog[];
   onViewDetail: (log: AuditLog) => void;
   isLoading?: boolean;
   columnVisibility?: Record<string, boolean>;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+  onSortChange?: (field: string) => void;
 }
 
 export function AuditLogsTable({
   data,
   onViewDetail,
   columnVisibility = {},
+  sortBy,
+  sortOrder,
+  onSortChange,
 }: AuditLogsTableProps) {
   const isVisible = (columnId: string) => columnVisibility[columnId] !== false;
+
+  const renderSortButton = (label: string, field: string) => {
+    if (!onSortChange) return label;
+
+    return (
+      <Button
+        variant="ghost"
+        onClick={() => onSortChange(field)}
+        className="-ml-4 h-8 data-[state=open]:bg-accent"
+      >
+        <span>{label}</span>
+        {sortBy === field ? (
+          sortOrder === 'asc' ? (
+            <ArrowUp className="ml-2 h-4 w-4" />
+          ) : (
+            <ArrowDown className="ml-2 h-4 w-4" />
+          )
+        ) : null}
+      </Button>
+    );
+  };
   if (data.length === 0) {
     return (
       <div className="flex min-h-[400px] flex-col items-center justify-center rounded-md border border-dashed p-8 text-center animate-in fade-in-50">
@@ -47,10 +74,18 @@ export function AuditLogsTable({
       <Table>
         <TableHeader>
           <TableRow>
-            {isVisible('time') && <TableHead>Waktu</TableHead>}
-            {isVisible('user') && <TableHead>User</TableHead>}
-            {isVisible('module') && <TableHead>Module</TableHead>}
-            {isVisible('action') && <TableHead>Aksi</TableHead>}
+            {isVisible('time') && (
+              <TableHead>{renderSortButton('Waktu', 'createdAt')}</TableHead>
+            )}
+            {isVisible('user') && (
+              <TableHead>{renderSortButton('User', 'user.name')}</TableHead>
+            )}
+            {isVisible('module') && (
+              <TableHead>{renderSortButton('Module', 'module')}</TableHead>
+            )}
+            {isVisible('action') && (
+              <TableHead>{renderSortButton('Aksi', 'action')}</TableHead>
+            )}
             {isVisible('entity') && <TableHead>Entity</TableHead>}
             {isVisible('ipAddress') && <TableHead>IP Address</TableHead>}
             <TableHead className="w-[50px]"></TableHead>

@@ -106,7 +106,22 @@ export const getColumns = ({
   },
   {
     accessorKey: 'userCount',
-    header: 'Pengguna',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className="-ml-4"
+        >
+          Pengguna
+          {column.getIsSorted() === 'asc' ? (
+            <ArrowUp className="ml-2 h-4 w-4" />
+          ) : column.getIsSorted() === 'desc' ? (
+            <ArrowDown className="ml-2 h-4 w-4" />
+          ) : null}
+        </Button>
+      );
+    },
     cell: ({ row }) => (
       <div className="flex items-center gap-1 text-muted-foreground">
         <Users className="h-3 w-3" />

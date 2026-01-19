@@ -34,6 +34,13 @@ function AuditLogsContent() {
   const actionFilter = searchParams.get('action') || 'all';
   const startDateStr = searchParams.get('startDate');
   const endDateStr = searchParams.get('endDate');
+  const sortBy =
+    (searchParams.get('sortBy') as
+      | 'createdAt'
+      | 'action'
+      | 'module'
+      | 'user.name') || 'createdAt';
+  const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc';
 
   const startDate = startDateStr ? new Date(startDateStr) : undefined;
   const endDate = endDateStr ? new Date(endDateStr) : undefined;
@@ -64,6 +71,8 @@ function AuditLogsContent() {
       action: actionFilter === 'all' ? undefined : actionFilter,
       startDate: startDate?.toISOString(),
       endDate: endDate?.toISOString(),
+      sortBy,
+      sortOrder,
     });
 
   const createQueryString = useCallback(
@@ -106,6 +115,14 @@ function AuditLogsContent() {
       endDate: end ? end.toISOString() : null,
       page: 1,
     });
+  };
+
+  const handleSortChange = (field: string) => {
+    if (sortBy === field) {
+      updateUrl({ sortOrder: sortOrder === 'asc' ? 'desc' : 'asc' });
+    } else {
+      updateUrl({ sortBy: field, sortOrder: 'asc' });
+    }
   };
 
   const handlePageChange = (newPage: number) => {
@@ -187,6 +204,9 @@ function AuditLogsContent() {
                   setIsDetailOpen(true);
                 }}
                 columnVisibility={columnVisibility}
+                sortBy={sortBy}
+                sortOrder={sortOrder}
+                onSortChange={handleSortChange}
               />
 
               <AuditLogsPagination

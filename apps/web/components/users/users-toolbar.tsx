@@ -84,11 +84,11 @@ export function UsersToolbar({
           ]}
           placeholder="Filter Role"
           searchPlaceholder="Cari Role..."
-          className="w-full md:w-[150px] lg:w-[180px]"
+          className="w-full md:w-[200px] lg:w-[250px]"
         />
 
         <Select value={status} onValueChange={onStatusFilterChange}>
-          <SelectTrigger className="w-full md:w-[120px] lg:w-[150px]">
+          <SelectTrigger className="w-full md:w-[180px] lg:w-[200px]">
             <div className="flex items-center">
               <span className="mr-2">Status:</span>
               <SelectValue />

@@ -59,3 +59,36 @@ export function useUnit(id: string) {
     enabled: !!token && !!id,
   });
 }
+
+export function useCreateUnit() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: Parameters<typeof unitsService.create>[0]) =>
+      unitsService.create(data),
+    onSuccess: () => {
+      toast.success('Satuan berhasil ditambahkan');
+      queryClient.invalidateQueries({ queryKey: ['units'] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+}
+
+export function useUpdateUnit(id: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: Parameters<typeof unitsService.update>[1]) =>
+      unitsService.update(id, data),
+    onSuccess: () => {
+      toast.success('Satuan berhasil diperbarui');
+      queryClient.invalidateQueries({ queryKey: ['units'] });
+      queryClient.invalidateQueries({ queryKey: ['unit', id] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+}

@@ -153,7 +153,7 @@ export const getColumns = ({
             <DropdownMenuSeparator />
             {category.isActive ? (
               <DropdownMenuItem
-                className="text-red-600 focus:text-red-600"
+                className="text-destructive focus:text-destructive"
                 onClick={() => onDelete(category)}
               >
                 <Trash2 className="mr-2 h-4 w-4" />

@@ -97,7 +97,7 @@ export function CompanySettingsForm({ settings }: CompanySettingsFormProps) {
               name="company_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nama Perusahaan</FormLabel>
+                  <FormLabel required>Nama Perusahaan</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Contoh: PT BizFlow Indonesia"
@@ -115,7 +115,7 @@ export function CompanySettingsForm({ settings }: CompanySettingsFormProps) {
                 name="company_email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel optional>Email</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="email@perusahaan.com"
@@ -132,7 +132,7 @@ export function CompanySettingsForm({ settings }: CompanySettingsFormProps) {
                 name="company_phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nomor Telepon</FormLabel>
+                    <FormLabel optional>Nomor Telepon</FormLabel>
                     <FormControl>
                       <Input placeholder="021-xxxxxxx" {...field} />
                     </FormControl>
@@ -147,7 +147,7 @@ export function CompanySettingsForm({ settings }: CompanySettingsFormProps) {
               name="company_address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Alamat</FormLabel>
+                  <FormLabel optional>Alamat</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Alamat lengkap perusahaan"
@@ -165,7 +165,7 @@ export function CompanySettingsForm({ settings }: CompanySettingsFormProps) {
               name="company_tax_id"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>NPWP</FormLabel>
+                  <FormLabel optional>NPWP</FormLabel>
                   <FormControl>
                     <Input placeholder="Nomor Pokok Wajib Pajak" {...field} />
                   </FormControl>
@@ -179,7 +179,7 @@ export function CompanySettingsForm({ settings }: CompanySettingsFormProps) {
               name="company_logo"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>URL Logo</FormLabel>
+                  <FormLabel optional>URL Logo</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="https://example.com/logo.png"

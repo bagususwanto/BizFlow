@@ -74,7 +74,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nama Lengkap</FormLabel>
+                  <FormLabel required>Nama Lengkap</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Nama Lengkap"
@@ -100,7 +100,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel optional>Email</FormLabel>
                   <FormControl>
                     <Input
                       type="email"

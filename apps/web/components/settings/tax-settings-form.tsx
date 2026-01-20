@@ -83,7 +83,7 @@ export function TaxSettingsForm({ settings }: TaxSettingsFormProps) {
               name="default_tax_rate"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tarif Pajak Default (%)</FormLabel>
+                  <FormLabel required>Tarif Pajak Default (%)</FormLabel>
                   <FormControl>
                     <Input
                       type="number"

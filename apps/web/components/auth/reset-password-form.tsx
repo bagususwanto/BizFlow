@@ -109,7 +109,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password Baru</FormLabel>
+                  <FormLabel required>Password Baru</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
@@ -142,7 +142,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Konfirmasi Password</FormLabel>
+                  <FormLabel required>Konfirmasi Password</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input

@@ -88,7 +88,7 @@ export function GeneralSettingsForm({ settings }: GeneralSettingsFormProps) {
               name="language"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Bahasa</FormLabel>
+                  <FormLabel required>Bahasa</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
@@ -110,7 +110,7 @@ export function GeneralSettingsForm({ settings }: GeneralSettingsFormProps) {
               name="session_timeout"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Session Timeout (Menit)</FormLabel>
+                  <FormLabel required>Session Timeout (Menit)</FormLabel>
                   <FormControl>
                     <Input
                       type="number"

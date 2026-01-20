@@ -106,7 +106,7 @@ export function ReceiptSettingsForm({ settings }: ReceiptSettingsFormProps) {
               name="receipt_header"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Header Struk</FormLabel>
+                  <FormLabel optional>Header Struk</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Teks selamat datang atau informasi tambahan di atas struk"
@@ -124,7 +124,7 @@ export function ReceiptSettingsForm({ settings }: ReceiptSettingsFormProps) {
               name="receipt_footer"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Footer Struk</FormLabel>
+                  <FormLabel optional>Footer Struk</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Ucapan terima kasih atau informasi layanan pelanggan"

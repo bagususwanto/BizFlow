@@ -92,7 +92,7 @@ export function CategoryForm({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nama Kategori</FormLabel>
+                <FormLabel required>Nama Kategori</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Contoh: Makanan Berat"
@@ -110,7 +110,7 @@ export function CategoryForm({
             name="parentId"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Induk Kategori (Opsional)</FormLabel>
+                <FormLabel optional>Induk Kategori</FormLabel>
                 <FormControl>
                   <Combobox
                     options={parentOptions.map((cat) => ({
@@ -140,7 +140,7 @@ export function CategoryForm({
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Deskripsi (Opsional)</FormLabel>
+              <FormLabel optional>Deskripsi</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Deskripsi singkat tentang kategori ini..."

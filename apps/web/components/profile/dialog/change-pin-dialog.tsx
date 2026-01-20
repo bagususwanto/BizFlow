@@ -83,7 +83,10 @@ export function ChangePinDialog({
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="currentPin" className="text-right">
-                PIN Lama
+                PIN Lama{' '}
+                <span className="text-xs font-normal text-muted-foreground ml-1">
+                  (Opsional)
+                </span>
               </Label>
               <Input
                 id="currentPin"
@@ -100,7 +103,8 @@ export function ChangePinDialog({
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="newPin" className="text-right">
-                PIN Baru
+                PIN Baru{' '}
+                <span className="text-destructive font-bold ml-1">*</span>
               </Label>
               <Input
                 id="newPin"

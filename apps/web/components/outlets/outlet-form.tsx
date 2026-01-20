@@ -81,7 +81,7 @@ export function OutletForm({ initialData, isEdit = false }: OutletFormProps) {
             name="code"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Kode Outlet</FormLabel>
+                <FormLabel required>Kode Outlet</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="OUT001"
@@ -104,7 +104,7 @@ export function OutletForm({ initialData, isEdit = false }: OutletFormProps) {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nama Outlet</FormLabel>
+                <FormLabel required>Nama Outlet</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Outlet Pusat"
@@ -122,7 +122,7 @@ export function OutletForm({ initialData, isEdit = false }: OutletFormProps) {
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>No. Telepon (Opsional)</FormLabel>
+                <FormLabel optional>No. Telepon</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="021-1234567"
@@ -141,7 +141,7 @@ export function OutletForm({ initialData, isEdit = false }: OutletFormProps) {
           name="address"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Alamat (Opsional)</FormLabel>
+              <FormLabel optional>Alamat</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Jl. Contoh No. 123, Jakarta Selatan"

@@ -102,7 +102,7 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
             name="username"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Username</FormLabel>
+                <FormLabel required>Username</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="johndoe"
@@ -126,7 +126,7 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nama Lengkap</FormLabel>
+                <FormLabel required>Nama Lengkap</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="John Doe"
@@ -144,7 +144,7 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email (Opsional)</FormLabel>
+                <FormLabel optional>Email</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
@@ -163,7 +163,7 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
             name="roleId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Role</FormLabel>
+                <FormLabel required>Role</FormLabel>
                 <Combobox
                   options={roles.map((role) => ({
                     label: role.name,
@@ -185,7 +185,7 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
             name="outletIds"
             render={({ field }) => (
               <FormItem className="col-span-2">
-                <FormLabel>Assign ke Outlet (Opsional)</FormLabel>
+                <FormLabel optional>Assign ke Outlet</FormLabel>
                 <FormControl>
                   <MultiSelect
                     selected={field.value as string[]}
@@ -206,7 +206,7 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel required>Password</FormLabel>
                     <FormControl>
                       <Input
                         type="password"
@@ -225,7 +225,7 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
                 name="pin"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>PIN (Opsional)</FormLabel>
+                    <FormLabel optional>PIN</FormLabel>
                     <FormControl>
                       <Input
                         type="password"

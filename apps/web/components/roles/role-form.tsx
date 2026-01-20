@@ -65,7 +65,7 @@ export function RoleForm({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nama Role</FormLabel>
+                <FormLabel required>Nama Role</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="misal: staff_gudang"
@@ -89,7 +89,7 @@ export function RoleForm({
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Deskripsi</FormLabel>
+                <FormLabel optional>Deskripsi</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Deskripsi singkat role ini"
@@ -109,7 +109,7 @@ export function RoleForm({
           name="permissions"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Permissions</FormLabel>
+              <FormLabel required>Permissions</FormLabel>
               <FormControl>
                 <PermissionMatrix
                   data={permissionData}

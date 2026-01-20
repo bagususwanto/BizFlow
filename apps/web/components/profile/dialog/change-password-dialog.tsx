@@ -77,7 +77,7 @@ export function ChangePasswordDialog({
               name="currentPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password Lama</FormLabel>
+                  <FormLabel required>Password Lama</FormLabel>
                   <FormControl>
                     <Input type="password" placeholder="********" {...field} />
                   </FormControl>
@@ -90,7 +90,7 @@ export function ChangePasswordDialog({
               name="newPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password Baru</FormLabel>
+                  <FormLabel required>Password Baru</FormLabel>
                   <FormControl>
                     <Input type="password" placeholder="********" {...field} />
                   </FormControl>
@@ -106,7 +106,7 @@ export function ChangePasswordDialog({
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Konfirmasi Password</FormLabel>
+                  <FormLabel required>Konfirmasi Password</FormLabel>
                   <FormControl>
                     <Input type="password" placeholder="********" {...field} />
                   </FormControl>

@@ -94,7 +94,7 @@ export function UnitForm({ initialData, isEdit = false }: UnitFormProps) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Nama Satuan</FormLabel>
+              <FormLabel required>Nama Satuan</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Contoh: Kilogram"
@@ -112,7 +112,7 @@ export function UnitForm({ initialData, isEdit = false }: UnitFormProps) {
           name="symbol"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Simbol</FormLabel>
+              <FormLabel required>Simbol</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Contoh: kg"
@@ -131,7 +131,7 @@ export function UnitForm({ initialData, isEdit = false }: UnitFormProps) {
             name="baseUnitId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Base Unit (Opsional)</FormLabel>
+                <FormLabel optional>Base Unit</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -167,7 +167,7 @@ export function UnitForm({ initialData, isEdit = false }: UnitFormProps) {
               name="conversionRate"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nilai Konversi</FormLabel>
+                  <FormLabel required>Nilai Konversi</FormLabel>
                   <FormControl>
                     <Input
                       type="number"

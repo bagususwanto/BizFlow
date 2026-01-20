@@ -89,7 +89,7 @@ export function DisplaySettingsForm({ settings }: DisplaySettingsFormProps) {
                 name="currency_code"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Kode Mata Uang</FormLabel>
+                    <FormLabel required>Kode Mata Uang</FormLabel>
                     <FormControl>
                       <Input placeholder="IDR" {...field} />
                     </FormControl>
@@ -102,7 +102,7 @@ export function DisplaySettingsForm({ settings }: DisplaySettingsFormProps) {
                 name="currency_symbol"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Simbol Mata Uang</FormLabel>
+                    <FormLabel required>Simbol Mata Uang</FormLabel>
                     <FormControl>
                       <Input placeholder="Rp" {...field} />
                     </FormControl>
@@ -117,7 +117,7 @@ export function DisplaySettingsForm({ settings }: DisplaySettingsFormProps) {
               name="date_format"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Format Tanggal</FormLabel>
+                  <FormLabel required>Format Tanggal</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
@@ -146,7 +146,7 @@ export function DisplaySettingsForm({ settings }: DisplaySettingsFormProps) {
               name="timezone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Zona Waktu</FormLabel>
+                  <FormLabel required>Zona Waktu</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>

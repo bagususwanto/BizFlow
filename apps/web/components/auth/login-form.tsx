@@ -70,7 +70,7 @@ export function LoginForm({ onSwitchToPin }: LoginFormProps) {
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel required>Username</FormLabel>
                   <FormControl>
                     <Input placeholder="username" {...field} />
                   </FormControl>
@@ -83,7 +83,7 @@ export function LoginForm({ onSwitchToPin }: LoginFormProps) {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel required>Password</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input

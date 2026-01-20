@@ -207,7 +207,6 @@ export class CategoriesService {
   async findTree() {
     // Get all categories with product count
     const categories = await this.prisma.category.findMany({
-      where: { isActive: true },
       include: {
         _count: {
           select: { products: true },

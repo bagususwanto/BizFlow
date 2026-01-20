@@ -1,7 +1,15 @@
 'use client';
 
 import { Suspense, useCallback, useState } from 'react';
-import { Button, Input } from '@bizflow/ui';
+import {
+  Button,
+  Input,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@bizflow/ui';
 import { Plus, Loader2, Search } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -23,6 +31,7 @@ function CategoriesContent() {
 
   // Get state from URL params
   const search = searchParams.get('search') || '';
+  const status = searchParams.get('status') || 'all';
   const selectedId = searchParams.get('id');
 
   // Load Tree Data
@@ -39,16 +48,25 @@ function CategoriesContent() {
   // Reorder hook
   const { mutate: reorderCategory } = useReorderCategory();
 
-  // Filter tree data based on search
+  // Filter tree data based on search and status
   const filteredTreeData = (() => {
-    if (!search) return treeData;
+    if (!search && status === 'all') return treeData;
 
     const filterNodes = (nodes: typeof treeData): typeof treeData => {
       return nodes
         .map((node) => {
-          const matches = node.name
+          const matchesSearch = node.name
             .toLowerCase()
             .includes(search.toLowerCase());
+
+          const matchesStatus =
+            status === 'all'
+              ? true
+              : status === 'active'
+                ? node.isActive
+                : !node.isActive;
+
+          const matches = matchesSearch && matchesStatus;
           const filteredChildren = filterNodes(node.children || []);
 
           if (matches || filteredChildren.length > 0) {
@@ -69,6 +87,16 @@ function CategoriesContent() {
     const params = new URLSearchParams(searchParams.toString());
     params.set('id', id);
     router.push(`/master-data/categories?${params.toString()}`);
+  };
+
+  const handleStatusChange = (value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value && value !== 'all') {
+      params.set('status', value);
+    } else {
+      params.delete('status');
+    }
+    router.replace(`/master-data/categories?${params.toString()}`);
   };
 
   const handleSearchChange = (value: string) => {
@@ -126,6 +154,19 @@ function CategoriesContent() {
                 value={search}
                 onChange={(e) => handleSearchChange(e.target.value)}
               />
+            </div>
+
+            <div className="mt-2 text-right">
+              <Select value={status} onValueChange={handleStatusChange}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Filter Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Semua Status</SelectItem>
+                  <SelectItem value="active">Aktif</SelectItem>
+                  <SelectItem value="inactive">Nonaktif</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 

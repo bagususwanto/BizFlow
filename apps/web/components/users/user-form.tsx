@@ -185,7 +185,7 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
             name="outletIds"
             render={({ field }) => (
               <FormItem className="col-span-2">
-                <FormLabel>Assign ke Outlet</FormLabel>
+                <FormLabel>Assign ke Outlet (Opsional)</FormLabel>
                 <FormControl>
                   <MultiSelect
                     selected={field.value as string[]}

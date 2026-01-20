@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from '@bizflow/ui';
 import { Loader2 } from 'lucide-react';
-import { useOutlet } from '@/hooks/use-outlets';
+import { useOutlet } from '@/hooks';
 import { OutletForm } from '@/components/outlets/outlet-form';
 
 export default function EditOutletPage({

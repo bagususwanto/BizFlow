@@ -18,8 +18,7 @@ import { RolesToolbar } from '@/components/roles/roles-toolbar';
 import { RolesPagination } from '@/components/roles/roles-pagination';
 import { ErrorState } from '@/components/common/error-state';
 import { LoadingState } from '@/components/common/loading-state';
-import { useRoles } from '@/hooks/use-roles';
-import { useDebounce } from '@/hooks/use-debounce';
+import { useRoles, useDebounce } from '@/hooks';
 
 function RolesContent() {
   const router = useRouter();

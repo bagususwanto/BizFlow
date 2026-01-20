@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from '@bizflow/ui';
 import { Loader2 } from 'lucide-react';
-import { useCategory } from '@/hooks/use-categories';
+import { useCategory } from '@/hooks';
 import { CategoryForm } from '@/components/master-data/categories/category-form';
 
 export default function EditCategoryPage({

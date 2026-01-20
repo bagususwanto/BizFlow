@@ -24,7 +24,7 @@ import {
   FormDescription,
 } from '@bizflow/ui';
 import { AppSetting } from '@bizflow/types';
-import { useUpdateSettings } from '@/hooks/use-settings';
+import { useUpdateSettings } from '@/hooks';
 
 const generalSettingsSchema = z.object({
   language: z.string().min(1, 'Bahasa wajib dipilih'),

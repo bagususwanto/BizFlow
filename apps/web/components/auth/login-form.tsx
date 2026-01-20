@@ -25,7 +25,7 @@ import {
 } from '@bizflow/ui';
 
 import { loginSchema, type LoginValues } from '@bizflow/types/schemas';
-import { useLoginMutation } from '@/hooks/use-auth-mutations';
+import { useLoginMutation } from '@/hooks';
 
 interface LoginFormProps {
   onSwitchToPin?: () => void;

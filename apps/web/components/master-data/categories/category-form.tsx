@@ -31,7 +31,7 @@ import {
   useActiveCategories,
   useCreateCategory,
   useUpdateCategory,
-} from '@/hooks/use-categories';
+} from '@/hooks';
 import { useRouter } from 'next/navigation';
 import { Combobox } from '@bizflow/ui';
 

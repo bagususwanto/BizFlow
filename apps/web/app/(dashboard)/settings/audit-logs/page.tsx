@@ -16,8 +16,7 @@ import { AuditLogsPagination } from '@/components/audit-logs/audit-logs-paginati
 import { AuditLogDetailSheet } from '@/components/audit-logs/audit-log-detail-sheet';
 import { ErrorState } from '@/components/common/error-state';
 import { LoadingState } from '@/components/common/loading-state';
-import { useAuditLogs } from '@/hooks/use-audit-logs';
-import { useDebounce } from '@/hooks/use-debounce';
+import { useAuditLogs, useDebounce } from '@/hooks';
 import { AuditLog } from '@/services/audit-logs.service';
 import { Download } from 'lucide-react';
 

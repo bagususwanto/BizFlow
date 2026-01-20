@@ -8,7 +8,7 @@ import {
   DisplaySettingsForm,
   GeneralSettingsForm,
 } from '@/components/settings';
-import { useGroupedSettings } from '@/hooks/use-settings';
+import { useGroupedSettings } from '@/hooks';
 import { LoadingState } from '@/components/common/loading-state';
 import { ErrorState } from '@/components/common/error-state';
 

@@ -13,7 +13,7 @@ import { Plus, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-import { useOutlets } from '@/hooks/use-outlets';
+import { useOutlets } from '@/hooks';
 import { OutletsTable } from '@/components/outlets/outlets-table';
 import { OutletsToolbar } from '@/components/outlets/outlets-toolbar';
 import { OutletsPagination } from '@/components/outlets/outlets-pagination';

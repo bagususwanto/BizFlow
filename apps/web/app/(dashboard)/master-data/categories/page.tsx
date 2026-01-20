@@ -19,7 +19,7 @@ import {
   useCategory,
   useDeleteCategory,
   useReorderCategory,
-} from '@/hooks/use-categories';
+} from '@/hooks';
 import {
   CategoriesTree,
   CategoryDetail,

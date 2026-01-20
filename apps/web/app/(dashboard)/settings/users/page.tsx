@@ -18,7 +18,7 @@ import { UsersToolbar } from '@/components/users/users-toolbar';
 import { UsersPagination } from '@/components/users/users-pagination';
 import { LoadingState } from '@/components/common/loading-state';
 import { ErrorState } from '@/components/common/error-state';
-import { useUsers } from '@/hooks/use-users';
+import { useUsers } from '@/hooks';
 
 function UsersContent() {
   const router = useRouter();

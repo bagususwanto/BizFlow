@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from '@bizflow/ui';
 import { UserForm } from '@/components/users/user-form';
-import { useUser } from '@/hooks/use-users';
+import { useUser } from '@/hooks';
 
 export default function EditUserPage() {
   const params = useParams();

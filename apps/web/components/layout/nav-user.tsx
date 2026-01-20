@@ -26,7 +26,7 @@ import {
   useSidebar,
 } from '@bizflow/ui';
 import { useAuthStore } from '@/stores/auth.store';
-import { useLogoutMutation } from '@/hooks/use-auth-mutations';
+import { useLogoutMutation } from '@/hooks';
 
 export function NavUser() {
   const { isMobile } = useSidebar();

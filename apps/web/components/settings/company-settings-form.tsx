@@ -19,7 +19,7 @@ import {
   Textarea,
 } from '@bizflow/ui';
 import { AppSetting } from '@bizflow/types';
-import { useUpdateSettings } from '@/hooks/use-settings';
+import { useUpdateSettings } from '@/hooks';
 
 const companySettingsSchema = z.object({
   company_name: z.string().min(1, 'Nama perusahaan wajib diisi'),

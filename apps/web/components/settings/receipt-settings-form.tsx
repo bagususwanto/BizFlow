@@ -21,7 +21,7 @@ import {
   Textarea,
 } from '@bizflow/ui';
 import { AppSetting } from '@bizflow/types';
-import { useUpdateSettings } from '@/hooks/use-settings';
+import { useUpdateSettings } from '@/hooks';
 
 const receiptSettingsSchema = z.object({
   receipt_header: z.string().optional(),

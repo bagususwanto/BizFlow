@@ -22,7 +22,7 @@ import {
   SelectValue,
   Combobox,
 } from '@bizflow/ui';
-import { useRoles } from '@/hooks/use-roles';
+import { useRoles } from '@/hooks';
 
 interface UsersToolbarProps {
   search: string;

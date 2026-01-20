@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from '@bizflow/ui';
 import { AppSetting } from '@bizflow/types';
-import { useUpdateSettings } from '@/hooks/use-settings';
+import { useUpdateSettings } from '@/hooks';
 
 const displaySettingsSchema = z.object({
   currency_code: z.string().min(1, 'Kode mata uang wajib diisi'),

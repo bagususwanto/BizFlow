@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuthStore } from '@/stores/auth.store';
-import { useUser } from '@/hooks/use-users';
+import { useUser } from '@/hooks';
 import { Loader2 } from 'lucide-react';
 import {
   Card,

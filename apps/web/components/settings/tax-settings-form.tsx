@@ -20,7 +20,7 @@ import {
   FormDescription,
 } from '@bizflow/ui';
 import { AppSetting } from '@bizflow/types';
-import { useUpdateSettings } from '@/hooks/use-settings';
+import { useUpdateSettings } from '@/hooks';
 
 const taxSettingsSchema = z.object({
   default_tax_rate: z.coerce.number().min(0, 'Pajak tidak boleh kurang dari 0'),

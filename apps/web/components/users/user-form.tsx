@@ -28,8 +28,7 @@ import {
   type User,
 } from '@bizflow/types';
 import { usersService } from '@/services/users.service';
-import { useRoles } from '@/hooks/use-roles';
-import { useActiveOutlets } from '@/hooks/use-outlets';
+import { useRoles, useActiveOutlets } from '@/hooks';
 import { MultiSelect } from '@/components/common/multi-select';
 
 interface UserFormProps {

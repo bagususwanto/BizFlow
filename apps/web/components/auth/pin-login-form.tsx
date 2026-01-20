@@ -14,8 +14,7 @@ import {
   CardFooter,
   cn,
 } from '@bizflow/ui';
-import { useUsersForPinQuery } from '@/hooks/use-auth-mutations';
-import { usePinLoginMutation } from '@/hooks/use-pin-login-mutation';
+import { useUsersForPinQuery, usePinLoginMutation } from '@/hooks';
 
 interface PinLoginFormProps {
   onSwitchToPassword: () => void;

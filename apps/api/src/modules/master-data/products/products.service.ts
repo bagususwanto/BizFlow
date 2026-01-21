@@ -306,37 +306,62 @@ export class ProductsService {
 
   /**
    * Get low stock products (stock less than minStock)
+   * Calculates total stock across all warehouses and variants
    */
   async findLowStock() {
-    // For products without variants, we need to check Stock table
-    // For now, return products where minStock > 0 that need attention
-    const products = await this.prisma.product.findMany({
-      where: {
-        isActive: true,
-        isService: false,
-        minStock: { gt: 0 },
-      },
-      include: {
-        category: {
-          select: { name: true },
-        },
-        unit: {
-          select: { symbol: true },
-        },
-      },
-      orderBy: { name: 'asc' },
-    });
+    // Determine active products that are NOT services
+    // Detailed logic:
+    // 1. Get products that are active and not services
+    // 2. Aggregate current stock from Stock table (sum quantity)
+    // 3. Compare with minStock
+    // Using Prisma raw query for performance on aggregation
 
+    const products = await this.prisma.$queryRaw<
+      {
+        id: string;
+        sku: string;
+        name: string;
+        minStock: number;
+        categoryName: string;
+        unitSymbol: string;
+        currentStock: number;
+      }[]
+    >`
+      SELECT 
+        p.id, 
+        p.sku, 
+        p.name, 
+        p.minStock,
+        c.name as categoryName,
+        u.symbol as unitSymbol,
+        COALESCE(SUM(s.quantity), 0) as currentStock
+      FROM Product p
+      LEFT JOIN Category c ON p.categoryId = c.id
+      LEFT JOIN UnitOfMeasure u ON p.unitId = u.id
+      LEFT JOIN ProductVariant pv ON pv.productId = p.id
+      LEFT JOIN Stock s ON s.variantId = pv.id
+      WHERE 
+        p.isActive = 1 
+        AND p.isService = 0 
+        AND p.minStock > 0
+      GROUP BY p.id
+      HAVING currentStock <= p.minStock
+      ORDER BY p.name ASC
+    `;
+
+    // Map BigInt/Decimal to Number if necessary (Prisma might return basic types here depending on driver but mostly numbers for counts)
+    // However, SUM(quantity) might return Decimal or BigInt. currentStock is likely Decimal/number.
+
+    // Safety map
     return successResponse(
       products.map((p) => ({
         id: p.id,
         sku: p.sku,
         name: p.name,
-        category: p.category?.name,
-        unit: p.unit?.symbol,
+        category: p.categoryName,
+        unit: p.unitSymbol,
         minStock: p.minStock,
-        // Current stock would need to be joined from Stock table
-        // This is a simplified version
+        currentStock: Number(p.currentStock || 0),
       })),
     );
   }

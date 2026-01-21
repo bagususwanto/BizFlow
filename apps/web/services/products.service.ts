@@ -65,10 +65,28 @@ class ProductsService {
   }
 
   async getLowStock(): Promise<
-    { id: string; sku: string; name: string; minStock: number }[]
+    {
+      id: string;
+      sku: string;
+      name: string;
+      category: string;
+      unit: string;
+      minStock: number;
+      currentStock: number;
+    }[]
   > {
     const res = await apiClient.get<
-      ApiResponse<{ id: string; sku: string; name: string; minStock: number }[]>
+      ApiResponse<
+        {
+          id: string;
+          sku: string;
+          name: string;
+          category: string;
+          unit: string;
+          minStock: number;
+          currentStock: number;
+        }[]
+      >
     >('/master-data/products/low-stock');
     return res.data!;
   }

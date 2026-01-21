@@ -19,6 +19,20 @@ export const navData = [
     href: '/dashboard',
     icon: LayoutDashboard,
     permission: 'dashboard:read',
+    submenu: [
+      {
+        title: 'Overview',
+        href: '/dashboard',
+        icon: LayoutDashboard,
+        permission: 'dashboard:read',
+      },
+      {
+        title: 'Stock Alerts',
+        href: '/dashboard/stock-alerts',
+        icon: Package,
+        permission: 'dashboard:read',
+      },
+    ],
   },
   {
     title: 'Master Data',

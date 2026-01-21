@@ -92,3 +92,13 @@ export function useUpdateUnit(id: string) {
     },
   });
 }
+
+export function useActiveUnits() {
+  const token = useAuthStore((state) => state.accessToken);
+
+  return useQuery({
+    queryKey: ['units', 'active'],
+    queryFn: () => unitsService.getActiveList(),
+    enabled: !!token,
+  });
+}

@@ -31,6 +31,12 @@ export const navData = [
         icon: FolderTree,
         permission: 'categories:read',
       },
+      {
+        title: 'Produk',
+        href: '/master-data/products',
+        icon: Package,
+        permission: 'products:read',
+      },
     ],
   },
   {

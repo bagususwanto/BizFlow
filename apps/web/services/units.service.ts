@@ -57,6 +57,15 @@ class UnitsService {
       ids,
     });
   }
+
+  async getActiveList(): Promise<
+    { id: string; name: string; symbol: string }[]
+  > {
+    // For now getting all units since we don't have specific active list endpoint yet
+    // filtering client side if needed, or update backend later
+    const res = await this.getAll({ pageSize: 100 });
+    return res.data!.map((u) => ({ id: u.id, name: u.name, symbol: u.symbol }));
+  }
 }
 
 export const unitsService = new UnitsService();

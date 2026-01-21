@@ -1,17 +1,12 @@
 'use client';
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-  Badge,
-  Button,
-} from '@bizflow/ui';
+import { Badge, Button } from '@bizflow/ui';
 import { ShoppingCart } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import { ColumnDef, RowSelectionState } from '@tanstack/react-table';
+import { DataTable } from '@/components/ui/data-table';
+import { toast } from 'sonner';
 
 interface StockAlertItem {
   id: string;
@@ -26,67 +21,6 @@ interface StockAlertItem {
 interface StockAlertTableProps {
   data: StockAlertItem[];
   isLoading?: boolean;
-}
-
-export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
-  const router = useRouter();
-
-  if (isLoading) {
-    return <TableSkeleton />;
-  }
-
-  return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Status</TableHead>
-            <TableHead>Produk</TableHead>
-            <TableHead>SKU</TableHead>
-            <TableHead className="text-right">Stok</TableHead>
-            <TableHead className="text-right">Min</TableHead>
-            <TableHead className="text-right">Action</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={6} className="h-24 text-center">
-                Tidak ada peringatan stok.
-              </TableCell>
-            </TableRow>
-          ) : (
-            data.map((item) => {
-              const status = getStockStatus(item.currentStock, item.minStock);
-              return (
-                <TableRow key={item.id}>
-                  <TableCell>
-                    <StatusBadge status={status} />
-                  </TableCell>
-                  <TableCell className="font-medium">{item.name}</TableCell>
-                  <TableCell>{item.sku}</TableCell>
-                  <TableCell className="text-right">
-                    {item.currentStock} {item.unit}
-                  </TableCell>
-                  <TableCell className="text-right">{item.minStock}</TableCell>
-                  <TableCell className="text-right">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => router.push('/purchases/orders/create')} // Placeholder PO link
-                    >
-                      <ShoppingCart className="mr-2 h-4 w-4" />
-                      PO
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              );
-            })
-          )}
-        </TableBody>
-      </Table>
-    </div>
-  );
 }
 
 // Helper to determine status based on logic
@@ -115,45 +49,148 @@ function StatusBadge({ status }: { status: StockStatus }) {
   }
 }
 
-function TableSkeleton() {
+export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
+  const router = useRouter();
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+
+  const columns = useMemo<ColumnDef<StockAlertItem>[]>(
+    () => [
+      {
+        id: 'select',
+        header: ({ table }) => (
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={table.getIsAllPageRowsSelected()}
+              onChange={table.getToggleAllPageRowsSelectedHandler()}
+              className="translate-y-[2px]"
+            />
+            {/* Added explicit text as per wireframe implication, standard DataTable usually just has checkbox */}
+            {/* <span className="text-sm font-medium">Pilih Semua</span> */}
+          </div>
+        ),
+        cell: ({ row }) => (
+          <input
+            type="checkbox"
+            checked={row.getIsSelected()}
+            onChange={row.getToggleSelectedHandler()}
+            className="translate-y-[2px]"
+          />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: 'status',
+        header: 'Status',
+        cell: ({ row }) => {
+          const status = getStockStatus(
+            row.original.currentStock,
+            row.original.minStock,
+          );
+          return <StatusBadge status={status} />;
+        },
+      },
+      {
+        accessorKey: 'name',
+        header: 'Produk',
+        cell: ({ row }) => (
+          <span className="font-medium">{row.original.name}</span>
+        ),
+      },
+      {
+        accessorKey: 'sku',
+        header: 'SKU',
+      },
+      {
+        accessorKey: 'currentStock',
+        header: () => <div className="text-right">Stok</div>,
+        cell: ({ row }) => (
+          <div className="text-right">
+            {row.original.currentStock} {row.original.unit}
+          </div>
+        ),
+      },
+      {
+        accessorKey: 'minStock',
+        header: () => <div className="text-right">Min</div>,
+        cell: ({ row }) => (
+          <div className="text-right">{row.original.minStock}</div>
+        ),
+      },
+      {
+        id: 'actions',
+        header: () => <div className="text-right">Action</div>,
+        cell: ({ row }) => (
+          <div className="flex justify-end">
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-8"
+              onClick={() =>
+                router.push(
+                  `/purchases/orders/create?productId=${row.original.id}`,
+                )
+              }
+            >
+              <ShoppingCart className="mr-2 h-4 w-4" />
+              PO
+            </Button>
+          </div>
+        ),
+      },
+    ],
+    [router],
+  );
+
+  const selectedCount = Object.keys(rowSelection).length;
+
+  const handleBulkPO = () => {
+    const selectedIds = Object.keys(rowSelection);
+    if (selectedIds.length === 0) return;
+
+    // TODO: Implement actual bulk PO logic or redirect with multiple IDs
+    // For now, toast and log.
+    console.log('Selected for PO:', selectedIds);
+    toast.success(
+      `Membuat PO untuk ${selectedCount} produk terpilih (Feature Coming Soon)`,
+    );
+    // router.push(`/purchases/orders/create?productIds=${selectedIds.join(',')}`);
+  };
+
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Status</TableHead>
-            <TableHead>Produk</TableHead>
-            <TableHead>SKU</TableHead>
-            <TableHead className="text-right">Stok</TableHead>
-            <TableHead className="text-right">Min</TableHead>
-            <TableHead className="text-right">Action</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {[1, 2, 3, 4, 5].map((i) => (
-            <TableRow key={i}>
-              <TableCell>
-                <div className="h-6 w-20 bg-muted rounded animate-pulse" />
-              </TableCell>
-              <TableCell>
-                <div className="h-6 w-32 bg-muted rounded animate-pulse" />
-              </TableCell>
-              <TableCell>
-                <div className="h-6 w-24 bg-muted rounded animate-pulse" />
-              </TableCell>
-              <TableCell className="text-right">
-                <div className="h-6 w-12 bg-muted rounded animate-pulse ml-auto" />
-              </TableCell>
-              <TableCell className="text-right">
-                <div className="h-6 w-12 bg-muted rounded animate-pulse ml-auto" />
-              </TableCell>
-              <TableCell className="text-right">
-                <div className="h-8 w-16 bg-muted rounded animate-pulse ml-auto" />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+    <div className="space-y-4">
+      {/* Bulk Action Bar matches: [ ☐ Pilih Semua ] [ 🛒 Buat Purchase Order untuk yang dipilih ] 
+          We use DataTable header for "Pilih Semua" (Select All) checkbox.
+          Here we show the Action Button when items are selected.
+      */}
+      {selectedCount > 0 && (
+        <div className="flex items-center gap-4 rounded-md bg-muted px-4 py-2">
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={true}
+              readOnly
+              className="translate-y-[2px]"
+            />
+            <span className="text-sm font-medium">{selectedCount} Dipilih</span>
+          </div>
+          <Button size="sm" className="ml-auto h-8" onClick={handleBulkPO}>
+            <ShoppingCart className="mr-2 h-4 w-4" />
+            Buat Purchase Order untuk yang dipilih
+          </Button>
+        </div>
+      )}
+
+      <DataTable
+        columns={columns}
+        data={data}
+        isLoading={isLoading}
+        enableRowSelection={true}
+        rowSelection={rowSelection}
+        onRowSelectionChange={setRowSelection}
+        getRowId={(row) => row.id}
+      />
     </div>
   );
 }

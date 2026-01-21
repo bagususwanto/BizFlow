@@ -53,12 +53,18 @@ export class ProductsController {
   }
 
   /**
-   * Get low stock products
+   * Get low stock products with pagination
    */
   @Get('low-stock')
   @Permissions(Permission.Products.Read)
-  async findLowStock() {
-    return this.productsService.findLowStock();
+  async findLowStock(
+    @Query('page') page?: string,
+    @Query('pageSize') pageSize?: string,
+  ) {
+    return this.productsService.findLowStock(
+      parseInt(page || '1', 10),
+      parseInt(pageSize || '10', 10),
+    );
   }
 
   /**

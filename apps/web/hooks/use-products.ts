@@ -36,12 +36,15 @@ export function useActiveProducts() {
   });
 }
 
-export function useLowStockProducts() {
+export function useLowStockProducts(params?: {
+  page?: number;
+  pageSize?: number;
+}) {
   const token = useAuthStore((state) => state.accessToken);
 
   return useQuery({
-    queryKey: ['products', 'low-stock'],
-    queryFn: () => productsService.getLowStock(),
+    queryKey: ['products', 'low-stock', params],
+    queryFn: () => productsService.getLowStock(params),
     enabled: !!token,
   });
 }

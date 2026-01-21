@@ -64,8 +64,8 @@ class ProductsService {
     return res.data!;
   }
 
-  async getLowStock(): Promise<
-    {
+  async getLowStock(params?: { page?: number; pageSize?: number }): Promise<{
+    data: {
       id: string;
       sku: string;
       name: string;
@@ -73,22 +73,22 @@ class ProductsService {
       unit: string;
       minStock: number;
       currentStock: number;
-    }[]
-  > {
-    const res = await apiClient.get<
-      ApiResponse<
-        {
-          id: string;
-          sku: string;
-          name: string;
-          category: string;
-          unit: string;
-          minStock: number;
-          currentStock: number;
-        }[]
-      >
-    >('/master-data/products/low-stock');
-    return res.data!;
+    }[];
+    meta: {
+      page: number;
+      pageSize: number;
+      totalItems: number;
+      totalPages: number;
+    };
+  }> {
+    const searchParams = new URLSearchParams();
+    if (params?.page) searchParams.set('page', String(params.page));
+    if (params?.pageSize) searchParams.set('pageSize', String(params.pageSize));
+
+    const queryString = searchParams.toString();
+    const url = `/master-data/products/low-stock${queryString ? `?${queryString}` : ''}`;
+
+    return apiClient.get(url);
   }
 
   async generateSku(categoryId?: string): Promise<string> {

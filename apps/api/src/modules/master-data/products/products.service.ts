@@ -307,34 +307,13 @@ export class ProductsService {
   /**
    * Get low stock products (stock less than minStock)
    * Calculates total stock across all warehouses and variants
+   * Uses raw SQL for efficient database-level pagination and aggregation
    */
-  async findLowStock() {
-    // Determine active products that are NOT services
-    // Detailed logic:
-    // 1. Get products that are active and not services
-    // 2. Aggregate current stock from Stock table (sum quantity)
-    // 3. Compare with minStock
-    // Using Prisma raw query for performance on aggregation
+  async findLowStock(page = 1, pageSize = 10) {
+    const skip = (page - 1) * pageSize;
 
-    const products = await this.prisma.$queryRaw<
-      {
-        id: string;
-        sku: string;
-        name: string;
-        minStock: number;
-        categoryName: string;
-        unitSymbol: string;
-        currentStock: number;
-      }[]
-    >`
-      SELECT 
-        p.id, 
-        p.sku, 
-        p.name, 
-        p.minStock,
-        c.name as categoryName,
-        u.symbol as unitSymbol,
-        COALESCE(SUM(s.quantity), 0) as currentStock
+    // Base query for low stock products with aggregation
+    const baseQuery = `
       FROM Product p
       LEFT JOIN Category c ON p.categoryId = c.id
       LEFT JOIN UnitOfMeasure u ON p.unitId = u.id
@@ -345,24 +324,59 @@ export class ProductsService {
         AND p.isService = 0 
         AND p.minStock > 0
       GROUP BY p.id
-      HAVING currentStock <= p.minStock
-      ORDER BY p.name ASC
+      HAVING COALESCE(SUM(s.quantity), 0) <= p.minStock
     `;
 
-    // Map BigInt/Decimal to Number if necessary (Prisma might return basic types here depending on driver but mostly numbers for counts)
-    // However, SUM(quantity) might return Decimal or BigInt. currentStock is likely Decimal/number.
+    // Count query for total items
+    const countResult = await this.prisma.$queryRawUnsafe<[{ total: bigint }]>(`
+      SELECT COUNT(*) as total FROM (
+        SELECT p.id ${baseQuery}
+      ) as subquery
+    `);
+    const totalItems = Number(countResult[0]?.total || 0);
+    const totalPages = Math.ceil(totalItems / pageSize);
 
-    // Safety map
+    // Data query with pagination
+    const products = await this.prisma.$queryRawUnsafe<
+      {
+        id: string;
+        sku: string;
+        name: string;
+        minStock: number;
+        categoryName: string | null;
+        unitSymbol: string | null;
+        currentStock: number;
+      }[]
+    >(`
+      SELECT 
+        p.id, 
+        p.sku, 
+        p.name, 
+        p.minStock,
+        c.name as categoryName,
+        u.symbol as unitSymbol,
+        COALESCE(SUM(s.quantity), 0) as currentStock
+      ${baseQuery}
+      ORDER BY p.name ASC
+      LIMIT ${pageSize} OFFSET ${skip}
+    `);
+
     return successResponse(
       products.map((p) => ({
         id: p.id,
         sku: p.sku,
         name: p.name,
-        category: p.categoryName,
-        unit: p.unitSymbol,
+        category: p.categoryName ?? '-',
+        unit: p.unitSymbol ?? '-',
         minStock: p.minStock,
         currentStock: Number(p.currentStock || 0),
       })),
+      {
+        page,
+        pageSize,
+        totalItems,
+        totalPages,
+      },
     );
   }
 

@@ -60,7 +60,7 @@ export function DataTable<TData, TValue>({
     state: {
       sorting,
       columnVisibility,
-      rowSelection,
+      rowSelection: rowSelection || {},
     },
     manualSorting: true, // Server-side sorting
   });

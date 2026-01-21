@@ -68,7 +68,7 @@ export function ProductsToolbar({
         </div>
 
         <Select value={categoryId} onValueChange={onCategoryFilterChange}>
-          <SelectTrigger className="w-full md:w-[200px]">
+          <SelectTrigger className="w-full md:w-[240px]">
             <div className="flex items-center">
               <span className="mr-2 hidden lg:inline-block">Kategori:</span>
               <SelectValue placeholder="Semua Kategori" />

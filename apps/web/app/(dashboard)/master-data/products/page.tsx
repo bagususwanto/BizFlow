@@ -17,11 +17,7 @@ import { ProductsToolbar } from '@/components/master-data/products/products-tool
 import { ProductsPagination } from '@/components/master-data/products/products-pagination';
 import { LoadingState } from '@/components/common/loading-state';
 import { ErrorState } from '@/components/common/error-state';
-import {
-  useProducts,
-  useDeleteProduct,
-  useBulkDeleteProducts,
-} from '@/hooks/use-products';
+import { useProducts, useDeleteProduct } from '@/hooks/use-products';
 import { QueryProductsValues } from '@bizflow/types';
 
 function ProductsContent() {
@@ -35,6 +31,8 @@ function ProductsContent() {
   const search = searchParams.get('search') || '';
   const categoryId = searchParams.get('categoryId') || 'all';
   const status = searchParams.get('status') || 'all';
+  const sortBy = searchParams.get('sortBy') || 'name';
+  const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'asc';
 
   // Local state
   const [columnVisibility, setColumnVisibility] = useState<
@@ -48,8 +46,8 @@ function ProductsContent() {
     categoryId: categoryId !== 'all' ? categoryId : undefined,
     isActive:
       status === 'active' ? true : status === 'inactive' ? false : undefined,
-    sortBy: 'name',
-    sortOrder: 'asc',
+    sortBy: sortBy as any,
+    sortOrder,
   };
 
   const {
@@ -95,6 +93,14 @@ function ProductsContent() {
     updateUrl({ status: value, page: 1 });
   };
 
+  const handleSortChange = (field: string) => {
+    if (sortBy === field) {
+      updateUrl({ sortOrder: sortOrder === 'asc' ? 'desc' : 'asc' });
+    } else {
+      updateUrl({ sortBy: field, sortOrder: 'asc' });
+    }
+  };
+
   const handlePageChange = (newPage: number) => {
     updateUrl({ page: newPage });
   };
@@ -113,17 +119,14 @@ function ProductsContent() {
     );
   }
 
-  const handleDelete = (product: any) => {
-    // In a real app we might want a confirmation dialog here
-    if (
-      confirm(`Yakin ingin menonaktifkan/menghapus produk ${product.name}?`)
-    ) {
-      deleteMutation.mutate(product.id);
-    }
+  // Delete handler passed to table (now only handles actual delete mutation, dialog is in Table)
+  const handleDelete = (id: string) => {
+    deleteMutation.mutate(id);
   };
 
   const products = productsData?.data || [];
   const meta = productsData?.meta;
+  const summary = productsData?.summary;
 
   return (
     <div className="space-y-6">
@@ -174,6 +177,11 @@ function ProductsContent() {
                 columnVisibility={columnVisibility}
                 onColumnVisibilityChange={setColumnVisibility}
                 onDelete={handleDelete}
+                isDeleting={deleteMutation.isPending}
+                sortBy={sortBy}
+                sortOrder={sortOrder}
+                onSortChange={handleSortChange}
+                onRefresh={refetch}
               />
 
               {meta && (
@@ -184,6 +192,7 @@ function ProductsContent() {
                   totalItems={meta.totalItems}
                   onPageChange={handlePageChange}
                   onPageSizeChange={handlePageSizeChange}
+                  summary={summary}
                 />
               )}
             </>

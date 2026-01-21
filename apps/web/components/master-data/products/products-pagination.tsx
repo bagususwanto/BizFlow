@@ -1,105 +1,145 @@
 'use client';
 
+import { Box, CheckCircle2, XCircle, LayoutGrid } from 'lucide-react';
+
 import {
-  Button,
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+  Separator,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from '@bizflow/ui';
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-} from 'lucide-react';
 
 interface ProductsPaginationProps {
   page: number;
-  pageSize: number;
   totalPages: number;
   totalItems: number;
   onPageChange: (page: number) => void;
+  pageSize: number;
   onPageSizeChange: (pageSize: number) => void;
-  isLoading?: boolean;
+  summary?: {
+    totalProducts: number;
+    activeProducts: number;
+    inactiveProducts: number;
+    serviceProducts: number;
+  };
 }
 
 export function ProductsPagination({
   page,
-  pageSize,
   totalPages,
   totalItems,
   onPageChange,
+  pageSize,
   onPageSizeChange,
-  isLoading,
+  summary,
 }: ProductsPaginationProps) {
   return (
-    <div className="flex items-center justify-between px-2">
-      <div className="hidden flex-1 text-sm text-muted-foreground md:block">
-        Total {totalItems} produk
+    <div className="flex flex-col gap-4 pt-4 md:flex-row md:items-center md:justify-between">
+      {/* Summary Section - Bottom Left */}
+      <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+        {summary && (
+          <>
+            <div className="flex items-center gap-2">
+              <Box className="h-4 w-4" />
+              <span>
+                Total:{' '}
+                <span className="font-medium text-foreground">
+                  {summary.totalProducts}
+                </span>
+              </span>
+            </div>
+            <Separator orientation="vertical" className="h-4" />
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-green-500" />
+              <span>
+                Aktif:{' '}
+                <span className="font-medium text-foreground">
+                  {summary.activeProducts}
+                </span>
+              </span>
+            </div>
+            <Separator orientation="vertical" className="h-4" />
+            <div className="flex items-center gap-2">
+              <LayoutGrid className="h-4 w-4 text-purple-500" />
+              <span>
+                Service:{' '}
+                <span className="font-medium text-foreground">
+                  {summary.serviceProducts}
+                </span>
+              </span>
+            </div>
+          </>
+        )}
+        {!summary && (
+          <span>
+            Total:{' '}
+            <span className="font-medium text-foreground">{totalItems}</span>
+          </span>
+        )}
       </div>
-      <div className="flex items-center space-x-6 lg:space-x-8">
-        <div className="flex items-center space-x-2">
-          <p className="text-sm font-medium">Baris per halaman</p>
+
+      <div className="flex items-center gap-6">
+        <div className="flex items-center gap-2">
+          <p className="text-sm font-medium text-muted-foreground hidden sm:block">
+            Baris per halaman
+          </p>
           <Select
-            value={`${pageSize}`}
+            value={pageSize.toString()}
             onValueChange={(value) => onPageSizeChange(Number(value))}
-            disabled={isLoading}
           >
             <SelectTrigger className="h-8 w-[70px]">
-              <SelectValue placeholder={pageSize} />
+              <SelectValue placeholder={pageSize.toString()} />
             </SelectTrigger>
             <SelectContent side="top">
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <SelectItem key={pageSize} value={`${pageSize}`}>
-                  {pageSize}
+              {[5, 10, 20, 50].map((size) => (
+                <SelectItem key={size} value={size.toString()}>
+                  {size}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
-        <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-          Halaman {page} dari {totalPages}
-        </div>
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            className="hidden h-8 w-8 p-0 lg:flex"
-            onClick={() => onPageChange(1)}
-            disabled={page === 1 || isLoading}
-          >
-            <span className="sr-only">Go to first page</span>
-            <ChevronsLeft className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            className="h-8 w-8 p-0"
-            onClick={() => onPageChange(page - 1)}
-            disabled={page <= 1 || isLoading}
-          >
-            <span className="sr-only">Go to previous page</span>
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            className="h-8 w-8 p-0"
-            onClick={() => onPageChange(page + 1)}
-            disabled={page >= totalPages || isLoading}
-          >
-            <span className="sr-only">Go to next page</span>
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            className="hidden h-8 w-8 p-0 lg:flex"
-            onClick={() => onPageChange(totalPages)}
-            disabled={page === totalPages || isLoading}
-          >
-            <span className="sr-only">Go to last page</span>
-            <ChevronsRight className="h-4 w-4" />
-          </Button>
-        </div>
+
+        {/* Pagination - Bottom Right */}
+        <Pagination className="justify-end w-auto mx-0">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (page > 1) onPageChange(page - 1);
+                }}
+                className={page <= 1 ? 'pointer-events-none opacity-50' : ''}
+              />
+            </PaginationItem>
+            <PaginationItem>
+              <span className="flex h-9 items-center justify-center px-4 text-sm">
+                Halaman {page} dari {totalPages}
+              </span>
+            </PaginationItem>
+
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (page < totalPages) onPageChange(page + 1);
+                }}
+                className={
+                  page >= totalPages ? 'pointer-events-none opacity-50' : ''
+                }
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </div>
   );

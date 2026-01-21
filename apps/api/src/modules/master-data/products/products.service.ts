@@ -601,7 +601,31 @@ export class ProductsService {
     });
 
     // Generate SKU: PREFIX-XXXX (4 digit number)
-    const sequence = String(count + 1).padStart(4, '0');
-    return `${prefix}-${sequence}`;
+    let sequenceNumber = count + 1;
+    let sku = `${prefix}-${String(sequenceNumber).padStart(4, '0')}`;
+    let isUnique = false;
+    let attempts = 0;
+
+    // Retry loop to ensure uniqueness (max 5 attempts)
+    while (!isUnique && attempts < 5) {
+      const existing = await this.prisma.product.findUnique({
+        where: { sku },
+      });
+
+      if (!existing) {
+        isUnique = true;
+      } else {
+        sequenceNumber++;
+        sku = `${prefix}-${String(sequenceNumber).padStart(4, '0')}`;
+        attempts++;
+      }
+    }
+
+    if (!isUnique) {
+      // Fallback: use timestamp if sequence fails
+      sku = `${prefix}-${Date.now().toString().slice(-6)}`;
+    }
+
+    return sku;
   }
 }

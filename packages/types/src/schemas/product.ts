@@ -17,7 +17,9 @@ export const createProductSchema = z.object({
     (val) => (val === '' ? null : val),
     z
       .string()
-      .max(50, { message: 'Barcode maksimal 50 karakter' })
+      .min(8, { message: 'Barcode minimal 8 karakter' })
+      .max(14, { message: 'Barcode maksimal 14 karakter' })
+      .regex(/^[0-9]+$/, { message: 'Barcode hanya boleh berisi angka' })
       .nullable()
       .optional(),
   ),
@@ -70,7 +72,9 @@ export const updateProductSchema = z.object({
     (val) => (val === '' ? null : val),
     z
       .string()
-      .max(50, { message: 'Barcode maksimal 50 karakter' })
+      .min(8, { message: 'Barcode minimal 8 karakter' })
+      .max(14, { message: 'Barcode maksimal 14 karakter' })
+      .regex(/^[0-9]+$/, { message: 'Barcode hanya boleh berisi angka' })
       .nullable()
       .optional(),
   ),
@@ -187,7 +191,9 @@ export const createVariantSchema = z.object({
     (val) => (val === '' ? null : val),
     z
       .string()
-      .max(50, { message: 'Barcode maksimal 50 karakter' })
+      .min(8, { message: 'Barcode minimal 8 karakter' })
+      .max(14, { message: 'Barcode maksimal 14 karakter' })
+      .regex(/^[0-9]+$/, { message: 'Barcode hanya boleh berisi angka' })
       .nullable()
       .optional(),
   ),

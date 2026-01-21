@@ -582,6 +582,112 @@ async function main() {
     food: foodCategory.name,
   });
 
+  // ============================
+  // Create dummy products
+  // ============================
+  const productMouse = await prisma.product.upsert({
+    where: { sku: 'PRD-001' },
+    update: {},
+    create: {
+      sku: 'PRD-001',
+      barcode: '899000000001',
+      name: 'Mouse Wireless Logitech M185',
+      description: 'Mouse wireless 2.4GHz',
+      categoryId: 'computers',
+      unitId: 'pcs',
+      costPrice: 85000,
+      sellPrice: 120000,
+      minStock: 5,
+      isActive: true,
+      isService: false,
+      imageUrl: null,
+    },
+  });
+
+  const productKeyboard = await prisma.product.upsert({
+    where: { sku: 'PRD-002' },
+    update: {},
+    create: {
+      sku: 'PRD-002',
+      barcode: '899000000002',
+      name: 'Keyboard Mechanical RGB',
+      description: 'Keyboard mechanical blue switch',
+      categoryId: 'computers',
+      unitId: 'pcs',
+      costPrice: 250000,
+      sellPrice: 350000,
+      minStock: 3,
+      isActive: true,
+      isService: false,
+      imageUrl: null,
+    },
+  });
+
+  const productAirMineral = await prisma.product.upsert({
+    where: { sku: 'PRD-003' },
+    update: {},
+    create: {
+      sku: 'PRD-003',
+      barcode: '899000000003',
+      name: 'Air Mineral 600ml',
+      description: 'Air mineral botol',
+      categoryId: 'drinks',
+      unitId: 'pcs',
+      costPrice: 2000,
+      sellPrice: 4000,
+      minStock: 24,
+      isActive: true,
+      isService: false,
+      imageUrl: null,
+    },
+  });
+
+  const productSnack = await prisma.product.upsert({
+    where: { sku: 'PRD-004' },
+    update: {},
+    create: {
+      sku: 'PRD-004',
+      barcode: '899000000004',
+      name: 'Snack Kentang 75gr',
+      description: 'Makanan ringan',
+      categoryId: 'snacks',
+      unitId: 'pcs',
+      costPrice: 6000,
+      sellPrice: 10000,
+      minStock: 12,
+      isActive: true,
+      isService: false,
+      imageUrl: null,
+    },
+  });
+
+  const serviceInstall = await prisma.product.upsert({
+    where: { sku: 'SRV-001' },
+    update: {},
+    create: {
+      sku: 'SRV-001',
+      barcode: null,
+      name: 'Jasa Instal Ulang Laptop',
+      description: 'Install ulang Windows + driver',
+      categoryId: 'general',
+      unitId: 'pcs',
+      costPrice: 0,
+      sellPrice: 150000,
+      minStock: 0,
+      isActive: true,
+      isService: true,
+      imageUrl: null,
+    },
+  });
+
+  console.log('✅ Dummy products created', {
+    mouse: productMouse.name,
+    keyboard: productKeyboard.name,
+    airMineral: productAirMineral.name,
+    snack: productSnack.name,
+    serviceInstall: serviceInstall.name,
+  });
+
   // Create default app settings
   const defaultSettings = [
     // Company settings

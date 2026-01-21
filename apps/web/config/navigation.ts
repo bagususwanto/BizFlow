@@ -14,14 +14,20 @@ export const navigationConfig = {
   navMain: [
     {
       title: 'Dashboard',
-      url: '/dashboard',
+      url: '#',
       icon: Home,
+      items: [
+        {
+          title: 'Overview',
+          url: '/dashboard',
+        },
+        {
+          title: 'Stock Alerts',
+          url: '/dashboard/stock-alerts',
+        },
+      ],
     },
-    {
-      title: 'POS',
-      url: '/pos',
-      icon: ShoppingCart,
-    },
+
     {
       title: 'Master Data',
       url: '#',

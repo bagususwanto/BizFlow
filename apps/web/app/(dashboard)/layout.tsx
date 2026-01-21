@@ -6,6 +6,9 @@ import {
   Separator,
 } from '@bizflow/ui';
 import { DynamicBreadcrumb } from '@/components/layout/dynamic-breadcrumb';
+import Link from 'next/link';
+import { Button } from '@bizflow/ui';
+import { ShoppingCart } from 'lucide-react';
 
 export default function DashboardLayout({
   children,
@@ -21,6 +24,14 @@ export default function DashboardLayout({
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <DynamicBreadcrumb />
+          </div>
+          <div className="ml-auto px-4">
+            <Link href="/pos">
+              <Button variant="outline" size="sm">
+                <ShoppingCart className="mr-2 h-4 w-4" />
+                POS
+              </Button>
+            </Link>
           </div>
         </header>
         <main className="flex flex-1 flex-col overflow-hidden">

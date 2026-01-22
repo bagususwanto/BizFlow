@@ -18,11 +18,7 @@ import {
   FormMessage,
   Input,
   Switch,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Combobox,
   Textarea,
   Tabs,
   TabsContent,
@@ -182,24 +178,17 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel required>Kategori</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          value={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Pilih Kategori" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {categories.map((category) => (
-                              <SelectItem key={category.id} value={category.id}>
-                                {category.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <Combobox
+                          options={categories.map((category) => ({
+                            label: category.name,
+                            value: category.id,
+                          }))}
+                          value={field.value as string}
+                          onChange={field.onChange}
+                          placeholder="Pilih Kategori"
+                          searchPlaceholder="Cari Kategori..."
+                          emptyMessage="Kategori tidak ditemukan."
+                        />
                         <FormMessage />
                       </FormItem>
                     )}
@@ -211,24 +200,17 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel required>Satuan</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          value={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Pilih Satuan" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {units.map((unit) => (
-                              <SelectItem key={unit.id} value={unit.id}>
-                                {unit.name} ({unit.symbol})
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <Combobox
+                          options={units.map((unit) => ({
+                            label: `${unit.name} (${unit.symbol})`,
+                            value: unit.id,
+                          }))}
+                          value={field.value as string}
+                          onChange={field.onChange}
+                          placeholder="Pilih Satuan"
+                          searchPlaceholder="Cari Satuan..."
+                          emptyMessage="Satuan tidak ditemukan."
+                        />
                         <FormMessage />
                       </FormItem>
                     )}

@@ -753,6 +753,50 @@ async function main() {
 
   console.log('✅ Dummy variants created');
 
+  // ============================
+  // Create dummy price levels
+  // ============================
+  await prisma.priceLevel.upsert({
+    where: {
+      productId_name: { productId: productMouse.id, name: 'Grosir 1' },
+    },
+    update: {},
+    create: {
+      productId: productMouse.id,
+      name: 'Grosir 1',
+      minQty: 10,
+      price: 110000,
+    },
+  });
+
+  await prisma.priceLevel.upsert({
+    where: {
+      productId_name: { productId: productMouse.id, name: 'Grosir 2' },
+    },
+    update: {},
+    create: {
+      productId: productMouse.id,
+      name: 'Grosir 2',
+      minQty: 50,
+      price: 100000,
+    },
+  });
+
+  await prisma.priceLevel.upsert({
+    where: {
+      productId_name: { productId: productKeyboard.id, name: 'Wholesale' },
+    },
+    update: {},
+    create: {
+      productId: productKeyboard.id,
+      name: 'Wholesale',
+      minQty: 5,
+      price: 330000,
+    },
+  });
+
+  console.log('✅ Dummy price levels created');
+
   // Create default app settings
   const defaultSettings = [
     // Company settings

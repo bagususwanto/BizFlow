@@ -2,8 +2,14 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
-import type { CreateProductValues, UpdateProductValues } from '@bizflow/types';
+import type {
+  CreateProductValues,
+  UpdateProductValues,
+  CreateVariantValues,
+  UpdateVariantValues,
+} from '@bizflow/types';
 
 import { PrismaService } from '../../../prisma';
 import { successResponse, paginatedResponse } from '../../../common/utils';
@@ -666,5 +672,254 @@ export class ProductsService {
     }
 
     return sku;
+  }
+
+  /**
+   * ========================================
+   * PRODUCT VARIANT METHODS
+   * ========================================
+   */
+
+  /**
+   * Get all variants for a product
+   */
+  async findVariantsByProduct(productId: string): Promise<any> {
+    const product = await this.prisma.product.findUnique({
+      where: { id: productId },
+    });
+
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${productId} not found`);
+    }
+
+    const variants = await this.prisma.productVariant.findMany({
+      where: { productId },
+      orderBy: { name: 'asc' },
+      include: {
+        product: { select: { id: true, name: true, sku: true } },
+      },
+    });
+
+    return successResponse(variants);
+  }
+
+  /**
+   * Get a single variant by ID
+   */
+  async findVariantById(id: string): Promise<any> {
+    const variant = await this.prisma.productVariant.findUnique({
+      where: { id },
+      include: {
+        product: {
+          select: {
+            id: true,
+            name: true,
+            sku: true,
+            category: true,
+            unit: true,
+          },
+        },
+      },
+    });
+
+    if (!variant) {
+      throw new NotFoundException(`Variant with ID ${id} not found`);
+    }
+
+    return successResponse(variant);
+  }
+
+  /**
+   * Create a new product variant
+   */
+  async createVariant(
+    productId: string,
+    dto: CreateVariantValues,
+  ): Promise<any> {
+    const product = await this.prisma.product.findUnique({
+      where: { id: productId },
+    });
+
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${productId} not found`);
+    }
+
+    const existingSku = await this.prisma.productVariant.findUnique({
+      where: { sku: dto.sku },
+    });
+
+    if (existingSku) {
+      throw new ConflictException(`Variant SKU ${dto.sku} already exists`);
+    }
+
+    if (dto.barcode) {
+      const existingBarcode = await this.prisma.productVariant.findUnique({
+        where: { barcode: dto.barcode },
+      });
+
+      if (existingBarcode) {
+        throw new ConflictException(
+          `Variant barcode ${dto.barcode} already exists`,
+        );
+      }
+    }
+
+    const variant = await this.prisma.productVariant.create({
+      data: {
+        productId,
+        sku: dto.sku,
+        barcode: dto.barcode,
+        name: dto.name,
+        attributes: JSON.stringify(dto.attributes),
+        costPrice: dto.costPrice,
+        sellPrice: dto.sellPrice,
+        isActive: true,
+      },
+      include: {
+        product: { select: { id: true, name: true, sku: true } },
+      },
+    });
+
+    return successResponse(variant);
+  }
+
+  /**
+   * Update a product variant
+   */
+  async updateVariant(id: string, dto: UpdateVariantValues): Promise<any> {
+    const existing = await this.prisma.productVariant.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Variant with ID ${id} not found`);
+    }
+
+    if (dto.sku && dto.sku !== existing.sku) {
+      const existingSku = await this.prisma.productVariant.findUnique({
+        where: { sku: dto.sku },
+      });
+
+      if (existingSku) {
+        throw new ConflictException(`Variant SKU ${dto.sku} already exists`);
+      }
+    }
+
+    if (dto.barcode && dto.barcode !== existing.barcode) {
+      const existingBarcode = await this.prisma.productVariant.findUnique({
+        where: { barcode: dto.barcode },
+      });
+
+      if (existingBarcode) {
+        throw new ConflictException(
+          `Variant barcode ${dto.barcode} already exists`,
+        );
+      }
+    }
+
+    const variant = await this.prisma.productVariant.update({
+      where: { id },
+      data: {
+        ...(dto.sku && { sku: dto.sku }),
+        ...(dto.barcode !== undefined && { barcode: dto.barcode }),
+        ...(dto.name && { name: dto.name }),
+        ...(dto.attributes && { attributes: JSON.stringify(dto.attributes) }),
+        ...(dto.costPrice !== undefined && { costPrice: dto.costPrice }),
+        ...(dto.sellPrice !== undefined && { sellPrice: dto.sellPrice }),
+      },
+      include: {
+        product: { select: { id: true, name: true, sku: true } },
+      },
+    });
+
+    return successResponse(variant);
+  }
+
+  /**
+   * Delete a product variant (soft delete)
+   */
+  async deleteVariant(id: string) {
+    const variant = await this.prisma.productVariant.findUnique({
+      where: { id },
+      include: {
+        stocks: true,
+        salesOrderItems: true,
+        purchaseOrderItems: true,
+      },
+    });
+
+    if (!variant) {
+      throw new NotFoundException(`Variant with ID ${id} not found`);
+    }
+
+    const hasStock = variant.stocks.some((stock) => Number(stock.quantity) > 0);
+    if (hasStock) {
+      throw new BadRequestException(
+        'Cannot delete variant with existing stock. Please adjust stock to zero first.',
+      );
+    }
+
+    if (
+      variant.salesOrderItems.length > 0 ||
+      variant.purchaseOrderItems.length > 0
+    ) {
+      throw new BadRequestException(
+        'Cannot delete variant with existing transactions. Consider deactivating instead.',
+      );
+    }
+
+    await this.prisma.productVariant.update({
+      where: { id },
+      data: { isActive: false },
+    });
+
+    return successResponse({ message: 'Variant deactivated successfully' });
+  }
+
+  /**
+   * Bulk delete product variants (soft delete)
+   */
+  async bulkDeleteVariants(ids: string[]) {
+    const variants = await this.prisma.productVariant.findMany({
+      where: { id: { in: ids } },
+      include: {
+        stocks: true,
+        salesOrderItems: true,
+        purchaseOrderItems: true,
+      },
+    });
+
+    if (variants.length !== ids.length) {
+      throw new NotFoundException('One or more variants not found');
+    }
+
+    for (const variant of variants) {
+      const hasStock = variant.stocks.some(
+        (stock) => Number(stock.quantity) > 0,
+      );
+      if (hasStock) {
+        throw new BadRequestException(
+          `Cannot delete variant ${variant.name} with existing stock`,
+        );
+      }
+
+      if (
+        variant.salesOrderItems.length > 0 ||
+        variant.purchaseOrderItems.length > 0
+      ) {
+        throw new BadRequestException(
+          `Cannot delete variant ${variant.name} with existing transactions`,
+        );
+      }
+    }
+
+    await this.prisma.productVariant.updateMany({
+      where: { id: { in: ids } },
+      data: { isActive: false },
+    });
+
+    return successResponse({
+      message: `${ids.length} variants deactivated successfully`,
+    });
   }
 }

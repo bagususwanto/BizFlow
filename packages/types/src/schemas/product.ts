@@ -211,3 +211,7 @@ export const createVariantSchema = z.object({
 });
 
 export type CreateVariantValues = z.infer<typeof createVariantSchema>;
+
+export const updateVariantSchema = createVariantSchema.partial();
+
+export type UpdateVariantValues = z.infer<typeof updateVariantSchema>;

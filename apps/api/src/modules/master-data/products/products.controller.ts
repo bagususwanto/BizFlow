@@ -27,7 +27,13 @@ import {
 } from '@bizflow/types';
 
 import { ProductsService } from './products.service';
-import { CreateProductDto, UpdateProductDto, QueryProductsDto } from './dto';
+import {
+  CreateProductDto,
+  UpdateProductDto,
+  QueryProductsDto,
+  CreateVariantDto,
+  UpdateVariantDto,
+} from './dto';
 
 @Controller('master-data/products')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
@@ -154,5 +160,95 @@ export class ProductsController {
     @CurrentUser() user: JwtPayload,
   ) {
     return this.productsService.bulkDelete(body.ids, user.sub);
+  }
+
+  /**
+   * ========================================
+   * PRODUCT VARIANT ENDPOINTS
+   * ========================================
+   */
+
+  /**
+   * Get all variants for a product
+   */
+  @Get(':productId/variants')
+  @Permissions(Permission.Products.Read)
+  async findVariantsByProduct(@Param('productId') productId: string) {
+    return this.productsService.findVariantsByProduct(productId);
+  }
+
+  /**
+   * Get a single variant by ID
+   */
+  @Get('variants/:id')
+  @Permissions(Permission.Products.Read)
+  async findVariantById(@Param('id') id: string) {
+    return this.productsService.findVariantById(id);
+  }
+
+  /**
+   * Create a new product variant
+   */
+  @Post(':productId/variants')
+  @Permissions(Permission.Products.Create as PermissionType)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.PRODUCTS,
+    action: AuditAction.CREATE,
+    entityType: 'product variant',
+  })
+  @HttpCode(HttpStatus.CREATED)
+  async createVariant(
+    @Param('productId') productId: string,
+    @Body() dto: CreateVariantDto,
+  ) {
+    return this.productsService.createVariant(productId, dto);
+  }
+
+  /**
+   * Update a product variant
+   */
+  @Patch('variants/:id')
+  @Permissions(Permission.Products.Update as PermissionType)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.PRODUCTS,
+    action: AuditAction.UPDATE,
+    entityType: 'product variant',
+  })
+  async updateVariant(@Param('id') id: string, @Body() dto: UpdateVariantDto) {
+    return this.productsService.updateVariant(id, dto);
+  }
+
+  /**
+   * Delete a product variant
+   */
+  @Delete('variants/:id')
+  @Permissions(Permission.Products.Delete as PermissionType)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.PRODUCTS,
+    action: AuditAction.DELETE,
+    entityType: 'product variant',
+  })
+  @HttpCode(HttpStatus.OK)
+  async deleteVariant(@Param('id') id: string) {
+    return this.productsService.deleteVariant(id);
+  }
+
+  /**
+   * Bulk delete product variants
+   */
+  @Post('variants/bulk-delete')
+  @Permissions(Permission.Products.Delete as PermissionType)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.PRODUCTS,
+    action: AuditAction.DELETE,
+    entityType: 'product variant (bulk)',
+  })
+  @HttpCode(HttpStatus.OK)
+  async bulkDeleteVariants(@Body() body: { ids: string[] }) {
+    return this.productsService.bulkDeleteVariants(body.ids);
   }
 }

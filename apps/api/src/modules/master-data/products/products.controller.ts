@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   UseInterceptors,
+  Req,
 } from '@nestjs/common';
 
 import { JwtAuthGuard, PermissionsGuard } from '../../../common/guards';
@@ -33,7 +34,13 @@ import {
   QueryProductsDto,
   CreateVariantDto,
   UpdateVariantDto,
+  CreatePriceLevelDto,
+  UpdatePriceLevelDto,
 } from './dto';
+
+class BulkDeleteDto {
+  ids: string[];
+}
 
 @Controller('master-data/products')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
@@ -258,7 +265,83 @@ export class ProductsController {
     entityType: 'product variant (bulk)',
   })
   @HttpCode(HttpStatus.OK)
-  async bulkDeleteVariants(@Body() body: { ids: string[] }) {
-    return this.productsService.bulkDeleteVariants(body.ids);
+  async bulkDeleteVariants(@Body() bulkDeleteDto: { ids: string[] }) {
+    return this.productsService.bulkDeleteVariants(bulkDeleteDto.ids);
+  }
+
+  // ========================================
+  // PRICE LEVEL ENDPOINTS
+  // ========================================
+
+  /**
+   * Get all price levels for a product
+   */
+  @Get(':productId/price-levels')
+  @Permissions(Permission.Products.Read)
+  async findPriceLevelsByProduct(@Param('productId') productId: string) {
+    return this.productsService.findPriceLevelsByProduct(productId);
+  }
+
+  /**
+   * Get a single price level by ID
+   */
+  @Get('price-levels/:id')
+  @Permissions(Permission.Products.Read)
+  async findPriceLevelById(@Param('id') id: string) {
+    return this.productsService.findPriceLevelById(id);
+  }
+
+  /**
+   * Create a new price level
+   */
+  @Post(':productId/price-levels')
+  @Permissions(Permission.Products.Create as PermissionType)
+  @UseInterceptors(AuditLogInterceptor)
+  async createPriceLevel(
+    @Param('productId') productId: string,
+    @Body() createPriceLevelDto: CreatePriceLevelDto,
+    @Req() req: any,
+  ) {
+    return this.productsService.createPriceLevel(
+      productId,
+      createPriceLevelDto,
+    );
+  }
+
+  /**
+   * Update a price level
+   */
+  @Patch('price-levels/:id')
+  @Permissions(Permission.Products.Update as PermissionType)
+  @UseInterceptors(AuditLogInterceptor)
+  async updatePriceLevel(
+    @Param('id') id: string,
+    @Body() updatePriceLevelDto: UpdatePriceLevelDto,
+    @Req() req: any,
+  ) {
+    return this.productsService.updatePriceLevel(id, updatePriceLevelDto);
+  }
+
+  /**
+   * Delete a price level
+   */
+  @Delete('price-levels/:id')
+  @Permissions(Permission.Products.Delete as PermissionType)
+  @UseInterceptors(AuditLogInterceptor)
+  async deletePriceLevel(@Param('id') id: string, @Req() req: any) {
+    return this.productsService.deletePriceLevel(id);
+  }
+
+  /**
+   * Bulk delete price levels
+   */
+  @Post('price-levels/bulk-delete')
+  @Permissions(Permission.Products.Delete as PermissionType)
+  @UseInterceptors(AuditLogInterceptor)
+  async bulkDeletePriceLevels(
+    @Body() bulkDeleteDto: BulkDeleteDto,
+    @Req() req: any,
+  ) {
+    return this.productsService.bulkDeletePriceLevels(bulkDeleteDto.ids);
   }
 }

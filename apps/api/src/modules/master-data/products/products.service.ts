@@ -9,6 +9,8 @@ import type {
   UpdateProductValues,
   CreateVariantValues,
   UpdateVariantValues,
+  CreatePriceLevelValues,
+  UpdatePriceLevelValues,
 } from '@bizflow/types';
 
 import { PrismaService } from '../../../prisma';
@@ -990,6 +992,190 @@ export class ProductsService {
 
     return successResponse({
       message: `${ids.length} variants deactivated successfully`,
+    });
+  }
+
+  // ========================================
+  // PRICE LEVEL METHODS
+  // ========================================
+
+  /**
+   * Get all price levels for a product
+   */
+  async findPriceLevelsByProduct(productId: string): Promise<any> {
+    const product = await this.prisma.product.findUnique({
+      where: { id: productId },
+    });
+
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${productId} not found`);
+    }
+
+    const priceLevels = await this.prisma.priceLevel.findMany({
+      where: { productId },
+      orderBy: { minQty: 'asc' },
+    });
+
+    return successResponse(priceLevels);
+  }
+
+  /**
+   * Get a single price level by ID
+   */
+  async findPriceLevelById(id: string): Promise<any> {
+    const priceLevel = await this.prisma.priceLevel.findUnique({
+      where: { id },
+      include: {
+        product: {
+          select: {
+            id: true,
+            name: true,
+            sku: true,
+          },
+        },
+      },
+    });
+
+    if (!priceLevel) {
+      throw new NotFoundException(`Price level with ID ${id} not found`);
+    }
+
+    return successResponse(priceLevel);
+  }
+
+  /**
+   * Create a new price level
+   */
+  async createPriceLevel(
+    productId: string,
+    dto: CreatePriceLevelValues,
+  ): Promise<any> {
+    const product = await this.prisma.product.findUnique({
+      where: { id: productId },
+    });
+
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${productId} not found`);
+    }
+
+    // Check for duplicate name within the same product
+    const existingName = await this.prisma.priceLevel.findUnique({
+      where: {
+        productId_name: {
+          productId,
+          name: dto.name,
+        },
+      },
+    });
+
+    if (existingName) {
+      throw new ConflictException(
+        `Price level with name "${dto.name}" already exists for this product`,
+      );
+    }
+
+    const priceLevel = await this.prisma.priceLevel.create({
+      data: {
+        productId,
+        name: dto.name,
+        minQty: dto.minQty,
+        price: dto.price,
+      },
+      include: {
+        product: { select: { id: true, name: true, sku: true } },
+      },
+    });
+
+    return successResponse(priceLevel);
+  }
+
+  /**
+   * Update a price level
+   */
+  async updatePriceLevel(
+    id: string,
+    dto: UpdatePriceLevelValues,
+  ): Promise<any> {
+    const existing = await this.prisma.priceLevel.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Price level with ID ${id} not found`);
+    }
+
+    // Check for duplicate name if name is being updated
+    if (dto.name && dto.name !== existing.name) {
+      const existingName = await this.prisma.priceLevel.findUnique({
+        where: {
+          productId_name: {
+            productId: existing.productId,
+            name: dto.name,
+          },
+        },
+      });
+
+      if (existingName) {
+        throw new ConflictException(
+          `Price level with name "${dto.name}" already exists for this product`,
+        );
+      }
+    }
+
+    const priceLevel = await this.prisma.priceLevel.update({
+      where: { id },
+      data: {
+        ...(dto.name && { name: dto.name }),
+        ...(dto.minQty !== undefined && { minQty: dto.minQty }),
+        ...(dto.price !== undefined && { price: dto.price }),
+      },
+      include: {
+        product: { select: { id: true, name: true, sku: true } },
+      },
+    });
+
+    return successResponse(priceLevel);
+  }
+
+  /**
+   * Delete a price level
+   */
+  async deletePriceLevel(id: string) {
+    const priceLevel = await this.prisma.priceLevel.findUnique({
+      where: { id },
+    });
+
+    if (!priceLevel) {
+      throw new NotFoundException(`Price level with ID ${id} not found`);
+    }
+
+    await this.prisma.priceLevel.delete({
+      where: { id },
+    });
+
+    return successResponse({
+      message: `Price level "${priceLevel.name}" deleted successfully`,
+    });
+  }
+
+  /**
+   * Bulk delete price levels
+   */
+  async bulkDeletePriceLevels(ids: string[]) {
+    if (!ids || ids.length === 0) {
+      throw new BadRequestException('No price level IDs provided');
+    }
+
+    const result = await this.prisma.priceLevel.deleteMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
+    });
+
+    return successResponse({
+      message: `${result.count} price level(s) deleted successfully`,
     });
   }
 }

@@ -179,6 +179,10 @@ export const createPriceLevelSchema = z.object({
 
 export type CreatePriceLevelValues = z.infer<typeof createPriceLevelSchema>;
 
+export const updatePriceLevelSchema = createPriceLevelSchema.partial();
+
+export type UpdatePriceLevelValues = z.infer<typeof updatePriceLevelSchema>;
+
 // ========================================
 // Product Variant Schemas
 // ========================================

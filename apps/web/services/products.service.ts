@@ -2,7 +2,10 @@ import {
   CreateProductValues,
   UpdateProductValues,
   QueryProductsValues,
+  CreateVariantValues,
+  UpdateVariantValues,
   Product,
+  ProductVariant,
   ApiResponse,
 } from '@bizflow/types';
 import { apiClient } from '@/lib/fetch-client';
@@ -129,6 +132,61 @@ class ProductsService {
   async bulkDelete(ids: string[]): Promise<void> {
     await apiClient.post<ApiResponse<void>>(
       '/master-data/products/bulk-delete',
+      {
+        ids,
+      },
+    );
+  }
+
+  // ========================================
+  // Variants
+  // ========================================
+
+  async getVariants(productId: string): Promise<ProductVariant[]> {
+    const res = await apiClient.get<ApiResponse<ProductVariant[]>>(
+      `/master-data/products/${productId}/variants`,
+    );
+    return res.data!;
+  }
+
+  async getVariantById(id: string): Promise<ProductVariant> {
+    const res = await apiClient.get<ApiResponse<ProductVariant>>(
+      `/master-data/products/variants/${id}`,
+    );
+    return res.data!;
+  }
+
+  async createVariant(
+    productId: string,
+    data: CreateVariantValues,
+  ): Promise<ProductVariant> {
+    const res = await apiClient.post<ApiResponse<ProductVariant>>(
+      `/master-data/products/${productId}/variants`,
+      data,
+    );
+    return res.data!;
+  }
+
+  async updateVariant(
+    id: string,
+    data: UpdateVariantValues,
+  ): Promise<ProductVariant> {
+    const res = await apiClient.patch<ApiResponse<ProductVariant>>(
+      `/master-data/products/variants/${id}`,
+      data,
+    );
+    return res.data!;
+  }
+
+  async deleteVariant(id: string): Promise<void> {
+    await apiClient.delete<ApiResponse<void>>(
+      `/master-data/products/variants/${id}`,
+    );
+  }
+
+  async bulkDeleteVariants(ids: string[]): Promise<void> {
+    await apiClient.post<ApiResponse<void>>(
+      '/master-data/products/variants/bulk-delete',
       {
         ids,
       },

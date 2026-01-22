@@ -688,6 +688,71 @@ async function main() {
     serviceInstall: serviceInstall.name,
   });
 
+  // ============================
+  // Create dummy variants
+  // ============================
+  const mouseBlack = await prisma.productVariant.upsert({
+    where: { sku: 'PRD-001-BLK' },
+    update: {},
+    create: {
+      productId: productMouse.id,
+      sku: 'PRD-001-BLK',
+      barcode: '899000000001-B',
+      name: 'Black',
+      attributes: JSON.stringify({ Warna: 'Hitam' }),
+      costPrice: 85000,
+      sellPrice: 120000,
+      isActive: true,
+    },
+  });
+
+  const mouseGrey = await prisma.productVariant.upsert({
+    where: { sku: 'PRD-001-GRY' },
+    update: {},
+    create: {
+      productId: productMouse.id,
+      sku: 'PRD-001-GRY',
+      barcode: '899000000001-G',
+      name: 'Grey',
+      attributes: JSON.stringify({ Warna: 'Abu-abu' }),
+      costPrice: 85000,
+      sellPrice: 120000,
+      isActive: true,
+    },
+  });
+
+  const keyboardBlue = await prisma.productVariant.upsert({
+    where: { sku: 'PRD-002-BLU' },
+    update: {},
+    create: {
+      productId: productKeyboard.id,
+      sku: 'PRD-002-BLU',
+      barcode: '899000000002-B',
+      name: 'Blue Switch',
+      attributes: JSON.stringify({ Switch: 'Blue' }),
+      costPrice: 250000,
+      sellPrice: 350000,
+      isActive: true,
+    },
+  });
+
+  const keyboardRed = await prisma.productVariant.upsert({
+    where: { sku: 'PRD-002-RED' },
+    update: {},
+    create: {
+      productId: productKeyboard.id,
+      sku: 'PRD-002-RED',
+      barcode: '899000000002-R',
+      name: 'Red Switch',
+      attributes: JSON.stringify({ Switch: 'Red' }),
+      costPrice: 250000,
+      sellPrice: 355000,
+      isActive: true,
+    },
+  });
+
+  console.log('✅ Dummy variants created');
+
   // Create default app settings
   const defaultSettings = [
     // Company settings

@@ -2,7 +2,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { productsService } from '@/services/products.service';
 import { useAuthStore } from '@/stores/auth.store';
 import { toast } from 'sonner';
-import { QueryProductsValues } from '@bizflow/types';
+import {
+  QueryProductsValues,
+  CreateVariantValues,
+  UpdateVariantValues,
+} from '@bizflow/types';
 import { useRouter } from 'next/navigation';
 
 export function useProducts(params?: QueryProductsValues) {
@@ -119,6 +123,73 @@ export function useBulkDeleteProducts() {
     onSuccess: (_, variables) => {
       toast.success(`${variables.length} produk berhasil dinonaktifkan`);
       queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+}
+
+// ========================================
+// Variants
+// ========================================
+
+export function useProductVariants(productId?: string) {
+  const token = useAuthStore((state) => state.accessToken);
+
+  return useQuery({
+    queryKey: ['products', productId, 'variants'],
+    queryFn: () => productsService.getVariants(productId!),
+    enabled: !!token && !!productId,
+  });
+}
+
+export function useCreateVariant(productId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: CreateVariantValues) =>
+      productsService.createVariant(productId, data),
+    onSuccess: () => {
+      toast.success('Varian berhasil dibuat');
+      queryClient.invalidateQueries({
+        queryKey: ['products', productId, 'variants'],
+      });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+}
+
+export function useUpdateVariant(productId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { id: string; values: UpdateVariantValues }) =>
+      productsService.updateVariant(data.id, data.values),
+    onSuccess: () => {
+      toast.success('Varian berhasil diperbarui');
+      queryClient.invalidateQueries({
+        queryKey: ['products', productId, 'variants'],
+      });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+}
+
+export function useDeleteVariant(productId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: productsService.deleteVariant,
+    onSuccess: () => {
+      toast.success('Varian berhasil dihapus');
+      queryClient.invalidateQueries({
+        queryKey: ['products', productId, 'variants'],
+      });
     },
     onError: (error: Error) => {
       toast.error(error.message);

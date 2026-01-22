@@ -46,6 +46,7 @@ import { useActiveCategories } from '@/hooks/use-categories';
 import { useActiveUnits } from '@/hooks/use-units';
 import { useGenerateSku } from '@/hooks/use-products';
 import { useBarcodeScanner } from '@/hooks/use-barcode-scanner';
+import { VariantList } from './variant-list';
 
 interface ProductFormProps {
   initialData?: ProductWithRelations;
@@ -146,10 +147,13 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <Tabs defaultValue="info" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 lg:w-[400px]">
+          <TabsList
+            className={`grid w-full ${isEdit ? 'grid-cols-4 lg:w-[500px]' : 'grid-cols-3 lg:w-[400px]'}`}
+          >
             <TabsTrigger value="info">Informasi Dasar</TabsTrigger>
             <TabsTrigger value="pricing">Harga & Stok</TabsTrigger>
             <TabsTrigger value="media">Media & Lainnya</TabsTrigger>
+            {isEdit && <TabsTrigger value="variants">Varian</TabsTrigger>}
           </TabsList>
 
           <TabsContent value="info" className="mt-6 space-y-6">
@@ -461,6 +465,16 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {isEdit && initialData && (
+            <TabsContent value="variants" className="mt-6 space-y-6">
+              <Card>
+                <CardContent className="pt-6">
+                  <VariantList productId={initialData.id} />
+                </CardContent>
+              </Card>
+            </TabsContent>
+          )}
         </Tabs>
 
         <div className="flex justify-end gap-4">

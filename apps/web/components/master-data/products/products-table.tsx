@@ -143,6 +143,11 @@ export function ProductsTable({
                   {row.original.variantCount} Varian
                 </Badge>
               )}
+              {(row.original.priceLevelCount || 0) > 0 && (
+                <Badge variant="secondary" className="h-5 px-1.5 text-[10px]">
+                  {row.original.priceLevelCount} Level Harga
+                </Badge>
+              )}
             </div>
           </div>
         ),

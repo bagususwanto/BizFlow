@@ -42,6 +42,7 @@ import { useActiveUnits } from '@/hooks/use-units';
 import { useGenerateSku } from '@/hooks/use-products';
 import { useBarcodeScanner } from '@/hooks/use-barcode-scanner';
 import { VariantList } from './variant-list';
+import { PriceLevelList } from './price-level-list';
 
 interface ProductFormProps {
   initialData?: ProductWithRelations;
@@ -143,12 +144,15 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <Tabs defaultValue="info" className="w-full">
           <TabsList
-            className={`grid w-full ${isEdit ? 'grid-cols-4 lg:w-[500px]' : 'grid-cols-3 lg:w-[400px]'}`}
+            className={`grid w-full ${isEdit ? 'grid-cols-5 lg:w-[600px]' : 'grid-cols-3 lg:w-[400px]'}`}
           >
             <TabsTrigger value="info">Informasi Dasar</TabsTrigger>
             <TabsTrigger value="pricing">Harga & Stok</TabsTrigger>
             <TabsTrigger value="media">Media & Lainnya</TabsTrigger>
             {isEdit && <TabsTrigger value="variants">Varian</TabsTrigger>}
+            {isEdit && (
+              <TabsTrigger value="price-levels">Level Harga</TabsTrigger>
+            )}
           </TabsList>
 
           <TabsContent value="info" className="mt-6 space-y-6">
@@ -457,6 +461,12 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                   <VariantList productId={initialData.id} />
                 </CardContent>
               </Card>
+            </TabsContent>
+          )}
+
+          {isEdit && initialData && (
+            <TabsContent value="price-levels" className="mt-6 space-y-6">
+              <PriceLevelList productId={initialData.id} />
             </TabsContent>
           )}
         </Tabs>

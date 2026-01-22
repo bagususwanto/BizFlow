@@ -4,6 +4,8 @@ import {
   QueryProductsValues,
   CreateVariantValues,
   UpdateVariantValues,
+  CreatePriceLevelValues,
+  UpdatePriceLevelValues,
   Product,
   ProductVariant,
   ApiResponse,
@@ -198,6 +200,61 @@ class ProductsService {
       `/master-data/products/${productId}/variants/generate-sku`,
     );
     return response.data.sku;
+  }
+
+  // ========================================
+  // PRICE LEVELS
+  // ========================================
+
+  async getPriceLevels(productId: string): Promise<any[]> {
+    const res = await apiClient.get<ApiResponse<any[]>>(
+      `/master-data/products/${productId}/price-levels`,
+    );
+    return res.data || [];
+  }
+
+  async getPriceLevelById(id: string): Promise<any> {
+    const res = await apiClient.get<ApiResponse<any>>(
+      `/master-data/products/price-levels/${id}`,
+    );
+    return res.data!;
+  }
+
+  async createPriceLevel(
+    productId: string,
+    data: CreatePriceLevelValues,
+  ): Promise<any> {
+    const res = await apiClient.post<ApiResponse<any>>(
+      `/master-data/products/${productId}/price-levels`,
+      data,
+    );
+    return res.data!;
+  }
+
+  async updatePriceLevel(
+    id: string,
+    data: UpdatePriceLevelValues,
+  ): Promise<any> {
+    const res = await apiClient.patch<ApiResponse<any>>(
+      `/master-data/products/price-levels/${id}`,
+      data,
+    );
+    return res.data!;
+  }
+
+  async deletePriceLevel(id: string): Promise<void> {
+    await apiClient.delete<ApiResponse<void>>(
+      `/master-data/products/price-levels/${id}`,
+    );
+  }
+
+  async bulkDeletePriceLevels(ids: string[]): Promise<void> {
+    await apiClient.post<ApiResponse<void>>(
+      '/master-data/products/price-levels/bulk-delete',
+      {
+        ids,
+      },
+    );
   }
 }
 

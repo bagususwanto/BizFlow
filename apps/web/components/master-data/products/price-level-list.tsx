@@ -1,0 +1,204 @@
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from '@bizflow/ui';
+import { formatCurrency } from '@/lib/utils';
+import { MoreHorizontal, Pencil, Trash2, Plus } from 'lucide-react';
+import { useState } from 'react';
+import { PriceLevelForm } from './price-level-form';
+import {
+  usePriceLevels,
+  useCreatePriceLevel,
+  useUpdatePriceLevel,
+  useDeletePriceLevel,
+} from '@/hooks/use-products';
+
+interface PriceLevelListProps {
+  productId: string;
+}
+
+export function PriceLevelList({ productId }: PriceLevelListProps) {
+  const { data: priceLevels, isLoading } = usePriceLevels(productId);
+  const createMutation = useCreatePriceLevel(productId);
+  const updateMutation = useUpdatePriceLevel(productId);
+  const deleteMutation = useDeletePriceLevel(productId);
+
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+
+  const handleCreate = async (data: any) => {
+    await createMutation.mutateAsync(data);
+    setIsFormOpen(false);
+  };
+
+  const handleUpdate = async (data: any) => {
+    if (editingId) {
+      await updateMutation.mutateAsync({ id: editingId, values: data });
+      setIsFormOpen(false);
+      setEditingId(null);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (deleteId) {
+      await deleteMutation.mutateAsync(deleteId);
+      setDeleteId(null);
+    }
+  };
+
+  const openCreate = () => {
+    setEditingId(null);
+    setIsFormOpen(true);
+  };
+
+  const openEdit = (priceLevel: any) => {
+    setEditingId(priceLevel.id);
+    setIsFormOpen(true);
+  };
+
+  if (isLoading) {
+    return <div className="p-4 text-center">Loading price levels...</div>;
+  }
+
+  const editingPriceLevel = priceLevels?.find((pl) => pl.id === editingId);
+
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <div>
+          <CardTitle>Level Harga</CardTitle>
+          <CardDescription>
+            Kelola harga bertingkat berdasarkan jumlah pembelian
+          </CardDescription>
+        </div>
+        <Button type="button" onClick={openCreate} size="sm">
+          <Plus className="mr-2 h-4 w-4" />
+          Tambah Level
+        </Button>
+      </CardHeader>
+      <CardContent>
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nama Level</TableHead>
+                <TableHead className="text-center">Min. Qty</TableHead>
+                <TableHead className="text-right">Harga Satuan</TableHead>
+                <TableHead className="w-[70px]"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {priceLevels?.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={4}
+                    className="h-24 text-center text-muted-foreground"
+                  >
+                    Belum ada level harga.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                priceLevels?.map((priceLevel) => (
+                  <TableRow key={priceLevel.id}>
+                    <TableCell className="font-medium">
+                      {priceLevel.name}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {priceLevel.minQty}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {formatCurrency(Number(priceLevel.price))}
+                    </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            className="h-8 w-8 p-0"
+                            type="button"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={() => openEdit(priceLevel)}
+                          >
+                            <Pencil className="mr-2 h-4 w-4" />
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => setDeleteId(priceLevel.id)}
+                            className="text-destructive focus:text-destructive"
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Hapus
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
+
+        <PriceLevelForm
+          open={isFormOpen}
+          onOpenChange={setIsFormOpen}
+          onSubmit={editingId ? handleUpdate : handleCreate}
+          initialData={editingPriceLevel}
+          isSubmitting={createMutation.isPending || updateMutation.isPending}
+        />
+
+        <AlertDialog
+          open={!!deleteId}
+          onOpenChange={(open) => !open && setDeleteId(null)}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Hapus Level Harga?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Tindakan ini tidak dapat dibatalkan. Level harga ini akan
+                dihapus permanen.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Batal</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDelete}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                {deleteMutation.isPending ? 'Menghapus...' : 'Hapus'}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </CardContent>
+    </Card>
+  );
+}

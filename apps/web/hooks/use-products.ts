@@ -6,6 +6,8 @@ import {
   QueryProductsValues,
   CreateVariantValues,
   UpdateVariantValues,
+  CreatePriceLevelValues,
+  UpdatePriceLevelValues,
 } from '@bizflow/types';
 import { useRouter } from 'next/navigation';
 
@@ -200,5 +202,72 @@ export function useDeleteVariant(productId: string) {
 export function useGenerateVariantSku(productId: string) {
   return useMutation({
     mutationFn: () => productsService.generateVariantSku(productId),
+  });
+}
+
+// ========================================
+// Price Levels
+// ========================================
+
+export function usePriceLevels(productId?: string) {
+  const token = useAuthStore((state) => state.accessToken);
+
+  return useQuery({
+    queryKey: ['products', productId, 'price-levels'],
+    queryFn: () => productsService.getPriceLevels(productId!),
+    enabled: !!token && !!productId,
+  });
+}
+
+export function useCreatePriceLevel(productId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: CreatePriceLevelValues) =>
+      productsService.createPriceLevel(productId, data),
+    onSuccess: () => {
+      toast.success('Level harga berhasil dibuat');
+      queryClient.invalidateQueries({
+        queryKey: ['products', productId, 'price-levels'],
+      });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+}
+
+export function useUpdatePriceLevel(productId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { id: string; values: UpdatePriceLevelValues }) =>
+      productsService.updatePriceLevel(data.id, data.values),
+    onSuccess: () => {
+      toast.success('Level harga berhasil diperbarui');
+      queryClient.invalidateQueries({
+        queryKey: ['products', productId, 'price-levels'],
+      });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+}
+
+export function useDeletePriceLevel(productId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => productsService.deletePriceLevel(id),
+    onSuccess: () => {
+      toast.success('Level harga berhasil dihapus');
+      queryClient.invalidateQueries({
+        queryKey: ['products', productId, 'price-levels'],
+      });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
   });
 }

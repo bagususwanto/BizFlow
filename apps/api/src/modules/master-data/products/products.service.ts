@@ -730,6 +730,38 @@ export class ProductsService {
   }
 
   /**
+   * Generate SKU for new variant
+   */
+  async generateVariantSku(productId: string): Promise<string> {
+    const product = await this.prisma.product.findUnique({
+      where: { id: productId },
+    });
+
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${productId} not found`);
+    }
+
+    // Find the highest variant number for this product
+    const existingVariants = await this.prisma.productVariant.findMany({
+      where: { productId },
+      select: { sku: true },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    // Extract variant numbers from existing SKUs (e.g., PRD-001-V1 -> 1)
+    const variantNumbers = existingVariants
+      .map((v) => {
+        const match = v.sku.match(/-V(\d+)$/);
+        return match ? parseInt(match[1], 10) : 0;
+      })
+      .filter((n) => n > 0);
+
+    const nextNumber =
+      variantNumbers.length > 0 ? Math.max(...variantNumbers) + 1 : 1;
+    return `${product.sku}-V${nextNumber}`;
+  }
+
+  /**
    * Create a new product variant
    */
   async createVariant(
@@ -744,12 +776,35 @@ export class ProductsService {
       throw new NotFoundException(`Product with ID ${productId} not found`);
     }
 
+    // Auto-generate SKU if not provided
+    let variantSku = dto.sku;
+    if (!variantSku) {
+      // Find the highest variant number for this product
+      const existingVariants = await this.prisma.productVariant.findMany({
+        where: { productId },
+        select: { sku: true },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      // Extract variant numbers from existing SKUs (e.g., PRD-001-V1 -> 1)
+      const variantNumbers = existingVariants
+        .map((v) => {
+          const match = v.sku.match(/-V(\d+)$/);
+          return match ? parseInt(match[1], 10) : 0;
+        })
+        .filter((n) => n > 0);
+
+      const nextNumber =
+        variantNumbers.length > 0 ? Math.max(...variantNumbers) + 1 : 1;
+      variantSku = `${product.sku}-V${nextNumber}`;
+    }
+
     const existingSku = await this.prisma.productVariant.findUnique({
-      where: { sku: dto.sku },
+      where: { sku: variantSku },
     });
 
     if (existingSku) {
-      throw new ConflictException(`Variant SKU ${dto.sku} already exists`);
+      throw new ConflictException(`Variant SKU ${variantSku} already exists`);
     }
 
     if (dto.barcode) {
@@ -767,7 +822,7 @@ export class ProductsService {
     const variant = await this.prisma.productVariant.create({
       data: {
         productId,
-        sku: dto.sku,
+        sku: variantSku,
         barcode: dto.barcode,
         name: dto.name,
         attributes: JSON.stringify(dto.attributes),

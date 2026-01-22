@@ -184,15 +184,21 @@ export function useDeleteVariant(productId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: productsService.deleteVariant,
+    mutationFn: (id: string) => productsService.deleteVariant(id),
     onSuccess: () => {
-      toast.success('Varian berhasil dihapus');
       queryClient.invalidateQueries({
         queryKey: ['products', productId, 'variants'],
       });
+      toast.success('Varian berhasil dihapus');
     },
-    onError: (error: Error) => {
-      toast.error(error.message);
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Gagal menghapus variant');
     },
+  });
+}
+
+export function useGenerateVariantSku(productId: string) {
+  return useMutation({
+    mutationFn: () => productsService.generateVariantSku(productId),
   });
 }

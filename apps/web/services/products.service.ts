@@ -192,6 +192,13 @@ class ProductsService {
       },
     );
   }
+
+  async generateVariantSku(productId: string): Promise<string> {
+    const response = await apiClient.get<{ data: { sku: string } }>(
+      `/master-data/products/${productId}/variants/generate-sku`,
+    );
+    return response.data.sku;
+  }
 }
 
 export const productsService = new ProductsService();

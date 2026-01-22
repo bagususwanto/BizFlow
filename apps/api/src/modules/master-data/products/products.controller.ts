@@ -169,6 +169,16 @@ export class ProductsController {
    */
 
   /**
+   * Generate SKU for new variant
+   */
+  @Get(':productId/variants/generate-sku')
+  @Permissions(Permission.Products.Read)
+  async generateVariantSku(@Param('productId') productId: string) {
+    const sku = await this.productsService.generateVariantSku(productId);
+    return { data: { sku } };
+  }
+
+  /**
    * Get all variants for a product
    */
   @Get(':productId/variants')

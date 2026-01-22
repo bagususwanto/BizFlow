@@ -103,9 +103,7 @@ export function VariantList({ productId }: VariantListProps) {
         <h3 className="text-lg font-medium">Daftar Varian</h3>
         <Button
           type="button"
-          onClick={(e) => {
-            e.preventDefault(); // Prevent accidental form submission if any
-            console.log('Clicked Add Variant - Force Open');
+          onClick={() => {
             setEditingVariant(undefined);
             setIsFormOpen(true);
           }}
@@ -204,6 +202,7 @@ export function VariantList({ productId }: VariantListProps) {
             : undefined
         }
         isSubmitting={createVariant.isPending || updateVariant.isPending}
+        productId={productId}
       />
 
       <AlertDialog

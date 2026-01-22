@@ -16,8 +16,9 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@bizflow/ui';
-import { Plus, Trash2, X } from 'lucide-react';
+import { Plus, Trash2, RefreshCw } from 'lucide-react';
 import { useEffect } from 'react';
+import { useGenerateVariantSku } from '@/hooks/use-products';
 
 interface VariantFormProps {
   open: boolean;
@@ -25,6 +26,7 @@ interface VariantFormProps {
   onSubmit: (data: CreateVariantValues) => void;
   initialData?: CreateVariantValues;
   isSubmitting?: boolean;
+  productId: string;
 }
 
 export function VariantForm({
@@ -33,12 +35,14 @@ export function VariantForm({
   onSubmit,
   initialData,
   isSubmitting,
+  productId,
 }: VariantFormProps) {
-  console.log('VariantForm render', { open, initialData });
+  const generateSku = useGenerateVariantSku(productId);
+
   const form = useForm<CreateVariantValues>({
     resolver: zodResolver(createVariantSchema) as any,
     defaultValues: {
-      sku: '',
+      sku: undefined,
       barcode: null,
       name: '',
       costPrice: 0,
@@ -47,12 +51,21 @@ export function VariantForm({
     },
   });
 
+  const handleGenerateSku = async () => {
+    try {
+      const sku = await generateSku.mutateAsync();
+      form.setValue('sku', sku);
+    } catch (error) {
+      console.error('Failed to generate SKU:', error);
+    }
+  };
+
   useEffect(() => {
     if (open && initialData) {
       form.reset(initialData);
     } else if (open) {
       form.reset({
-        sku: '',
+        sku: undefined,
         barcode: null,
         name: '',
         costPrice: 0,
@@ -119,10 +132,28 @@ export function VariantForm({
                 name="sku"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel required>SKU</FormLabel>
-                    <FormControl>
-                      <Input placeholder="V-001" {...field} />
-                    </FormControl>
+                    <FormLabel optional>SKU</FormLabel>
+                    <div className="flex gap-2">
+                      <FormControl>
+                        <Input
+                          placeholder="Kosongkan untuk auto-generate"
+                          {...field}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={handleGenerateSku}
+                        title="Generate SKU Otomatis"
+                      >
+                        <RefreshCw className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Akan otomatis dibuat jika dikosongkan
+                    </p>
                     <FormMessage />
                   </FormItem>
                 )}

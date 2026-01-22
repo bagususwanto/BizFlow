@@ -132,11 +132,18 @@ export function ProductsTable({
         accessorKey: 'name',
         header: 'Nama Produk',
         cell: ({ row }) => (
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-1">
             <span className="font-medium">{row.getValue('name')}</span>
-            {row.original.isService && (
-              <span className="text-xs text-muted-foreground">(Jasa)</span>
-            )}
+            <div className="flex items-center gap-2">
+              {row.original.isService && (
+                <span className="text-xs text-muted-foreground">(Jasa)</span>
+              )}
+              {(row.original.variantCount || 0) > 0 && (
+                <Badge variant="secondary" className="h-5 px-1.5 text-[10px]">
+                  {row.original.variantCount} Varian
+                </Badge>
+              )}
+            </div>
           </div>
         ),
       },

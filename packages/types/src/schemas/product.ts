@@ -12,7 +12,8 @@ export const createProductSchema = z.object({
   sku: z
     .string()
     .min(1, { message: 'SKU wajib diisi' })
-    .max(50, { message: 'SKU maksimal 50 karakter' }),
+    .max(50, { message: 'SKU maksimal 50 karakter' })
+    .optional(),
   barcode: z.preprocess(
     (val) => (val === '' ? null : val),
     z

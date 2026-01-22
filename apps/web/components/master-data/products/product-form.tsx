@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import { Loader2, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
-import { useEffect } from 'react';
 
 import {
   Button,
@@ -234,37 +233,40 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                       </FormItem>
                     )}
                   />
-
-                  <div className="flex gap-2 items-end">
-                    <FormField
-                      control={form.control}
-                      name="sku"
-                      render={({ field }) => (
-                        <FormItem className="flex-1">
-                          <FormLabel required>SKU</FormLabel>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="sku"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormLabel optional>SKU</FormLabel>
+                        <div className="flex gap-2">
                           <FormControl>
                             <Input
                               placeholder="Generate otomatis..."
                               {...field}
+                              value={field.value || ''}
                             />
                           </FormControl>
-                          <FormDescription>
-                            Kode unik produk (bisa generate otomatis)
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="mb-6 lg:mb-8"
-                      onClick={handleGenerateSku}
-                      disabled={!categoryId}
-                    >
-                      <RefreshCw className="h-4 w-4" />
-                    </Button>
-                  </div>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={handleGenerateSku}
+                            disabled={!categoryId}
+                            title="Generate SKU Otomatis"
+                          >
+                            <RefreshCw className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <FormDescription>
+                          Akan otomatis dibuat jika dikosongkan
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
                   <FormField
                     control={form.control}

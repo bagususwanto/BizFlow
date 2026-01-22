@@ -410,7 +410,7 @@ export class ProductsService {
       }
     }
 
-    // Validate category exists
+    // Check if category exists
     const category = await this.prisma.category.findUnique({
       where: { id: dto.categoryId },
     });
@@ -419,7 +419,22 @@ export class ProductsService {
       throw new NotFoundException('Kategori tidak ditemukan');
     }
 
-    // Validate unit exists
+    // Auto-generate SKU if not provided
+    let productSku = dto.sku;
+    if (!productSku) {
+      productSku = await this.generateSku(dto.categoryId);
+    } else {
+      // Validate unique SKU if provided manually
+      const existingSku = await this.prisma.product.findUnique({
+        where: { sku: dto.sku },
+      });
+
+      if (existingSku) {
+        throw new ConflictException(`Produk dengan SKU ${dto.sku} sudah ada`);
+      }
+    }
+
+    // Check if unit exists
     const unit = await this.prisma.unitOfMeasure.findUnique({
       where: { id: dto.unitId },
     });
@@ -430,7 +445,7 @@ export class ProductsService {
 
     const product = await this.prisma.product.create({
       data: {
-        sku: dto.sku,
+        sku: productSku,
         barcode: dto.barcode || null,
         name: dto.name,
         description: dto.description || null,

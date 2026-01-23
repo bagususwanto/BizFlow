@@ -72,8 +72,11 @@ export function UnitsTable({
     try {
       setIsBulkDeleting(true);
       const ids = Object.keys(rowSelection);
-      await unitsService.bulkDelete(ids);
-      toast.success(`${ids.length} satuan berhasil dihapus`);
+      const response = await unitsService.bulkDelete(ids);
+      const message =
+        (response as any).data?.message ||
+        `${ids.length} satuan berhasil dihapus`;
+      toast.success(message);
       setRowSelection({});
       setShowBulkDeleteDialog(false);
       onRefresh();

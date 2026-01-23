@@ -86,8 +86,11 @@ export function useDeleteCategory() {
 
   return useMutation({
     mutationFn: categoriesService.delete,
-    onSuccess: () => {
-      toast.success('Kategori berhasil dihapus/dinonaktifkan');
+    onSuccess: (response) => {
+      const message =
+        (response as any).data?.message ||
+        'Kategori berhasil dihapus/dinonaktifkan';
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
     onError: (error: Error) => {
@@ -101,8 +104,10 @@ export function useBulkDeleteCategories() {
 
   return useMutation({
     mutationFn: categoriesService.bulkDelete,
-    onSuccess: (_, variables) => {
-      toast.success(`${variables.length} kategori berhasil dinonaktifkan`);
+    onSuccess: (response) => {
+      const message =
+        (response as any).data?.message || 'Kategori berhasil dinonaktifkan';
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
     onError: (error: Error) => {

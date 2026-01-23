@@ -73,8 +73,11 @@ export function CategoriesTable({
     try {
       setIsBulkDeleting(true);
       const ids = Object.keys(rowSelection);
-      await categoriesService.bulkDelete(ids);
-      toast.success(`${ids.length} kategori berhasil dinonaktifkan`);
+      const response = await categoriesService.bulkDelete(ids);
+      const message =
+        (response as any).data?.message ||
+        `${ids.length} kategori berhasil dinonaktifkan`;
+      toast.success(message);
       setRowSelection({});
       setShowBulkDeleteDialog(false);
       onRefresh();

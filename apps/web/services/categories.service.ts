@@ -71,12 +71,12 @@ class CategoriesService {
     return res.data!;
   }
 
-  async delete(id: string): Promise<void> {
-    await apiClient.delete<ApiResponse<void>>(`/master-data/categories/${id}`);
+  async delete(id: string): Promise<ApiResponse<void>> {
+    return apiClient.delete<ApiResponse<void>>(`/master-data/categories/${id}`);
   }
 
-  async bulkDelete(ids: string[]): Promise<void> {
-    await apiClient.post<ApiResponse<void>>(
+  async bulkDelete(ids: string[]): Promise<ApiResponse<void>> {
+    return apiClient.post<ApiResponse<void>>(
       '/master-data/categories/bulk-delete',
       {
         ids,

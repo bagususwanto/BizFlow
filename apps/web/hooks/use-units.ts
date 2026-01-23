@@ -16,8 +16,10 @@ export function useUnits(params?: UnitsQuery) {
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => unitsService.delete(id),
-    onSuccess: () => {
-      toast.success('Satuan berhasil dihapus');
+    onSuccess: (response) => {
+      const message =
+        (response as any).data?.message || 'Satuan berhasil dihapus';
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['units'] });
     },
     onError: (error: Error) => {
@@ -27,8 +29,10 @@ export function useUnits(params?: UnitsQuery) {
 
   const bulkDeleteMutation = useMutation({
     mutationFn: (ids: string[]) => unitsService.bulkDelete(ids),
-    onSuccess: (_, variables) => {
-      toast.success(`${variables.length} satuan berhasil dihapus`);
+    onSuccess: (response) => {
+      const message =
+        (response as any).data?.message || 'Satuan berhasil dihapus';
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['units'] });
     },
     onError: (error: Error) => {

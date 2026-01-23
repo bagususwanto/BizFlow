@@ -263,8 +263,11 @@ export function ProductsTable({
     try {
       setIsBulkDeleting(true);
       const ids = Object.keys(rowSelection);
-      await productsService.bulkDelete(ids);
-      toast.success(`${ids.length} produk berhasil dinonaktifkan`);
+      const response = await productsService.bulkDelete(ids);
+      const message =
+        (response as any).data?.message ||
+        `${ids.length} produk berhasil dinonaktifkan`;
+      toast.success(message);
       setRowSelection({});
       setShowBulkDeleteDialog(false);
       onRefresh();

@@ -656,7 +656,7 @@ export class ProductsService {
   }
 
   /**
-   * Delete (deactivate) a product
+   * Delete a product - Smart delete: hard delete if unused, soft delete if used in transactions
    */
   async delete(id: string, userId: string) {
     const product = await this.prisma.product.findUnique({
@@ -672,8 +672,8 @@ export class ProductsService {
       throw new NotFoundException('Produk tidak ditemukan');
     }
 
-    // Check if product has been used in any transactions
-    // For now, we'll just soft delete
+    // Check if product has been used in any transactions via its variants
+    const isUsedInTransactions = await this.checkProductUsedInTransactions(id);
 
     // Delete all product images if exist
     const productImages = await this.prisma.productImage.findMany({
@@ -688,18 +688,108 @@ export class ProductsService {
       where: { productId: id },
     });
 
-    await this.prisma.product.update({
-      where: { id },
-      data: { isActive: false },
+    if (isUsedInTransactions) {
+      // Soft delete - product is used in transactions
+      await this.prisma.product.update({
+        where: { id },
+        data: { isActive: false },
+      });
+
+      return successResponse({
+        message: `Produk '${product.name}' dinonaktifkan karena sudah digunakan dalam transaksi`,
+        isHardDelete: false,
+      });
+    }
+
+    // Hard delete - product is not used anywhere
+    // First delete related data (cascade is set up in schema but we do it explicitly for safety)
+    await this.prisma.$transaction(async (tx) => {
+      // Delete price levels
+      await tx.priceLevel.deleteMany({
+        where: { productId: id },
+      });
+
+      // Delete variants
+      await tx.productVariant.deleteMany({
+        where: { productId: id },
+      });
+
+      // Delete the product
+      await tx.product.delete({
+        where: { id },
+      });
     });
 
     return successResponse({
-      message: `Produk '${product.name}' berhasil dinonaktifkan`,
+      message: `Produk '${product.name}' berhasil dihapus permanen`,
+      isHardDelete: true,
     });
   }
 
   /**
-   * Bulk delete (deactivate) products
+   * Check if any variant of this product is used in transactions
+   */
+  private async checkProductUsedInTransactions(
+    productId: string,
+  ): Promise<boolean> {
+    // Get all variant IDs for this product
+    const variants = await this.prisma.productVariant.findMany({
+      where: { productId },
+      select: { id: true },
+    });
+
+    if (variants.length === 0) {
+      return false;
+    }
+
+    const variantIds = variants.map((v) => v.id);
+
+    // Check usage in various transaction tables
+    const [
+      stockCount,
+      stockMovementCount,
+      salesOrderItemCount,
+      purchaseOrderItemCount,
+      stockAdjustmentItemCount,
+      stockTransferItemCount,
+      stockOpnameItemCount,
+    ] = await Promise.all([
+      this.prisma.stock.count({
+        where: { variantId: { in: variantIds } },
+      }),
+      this.prisma.stockMovement.count({
+        where: { variantId: { in: variantIds } },
+      }),
+      this.prisma.salesOrderItem.count({
+        where: { variantId: { in: variantIds } },
+      }),
+      this.prisma.purchaseOrderItem.count({
+        where: { variantId: { in: variantIds } },
+      }),
+      this.prisma.stockAdjustmentItem.count({
+        where: { variantId: { in: variantIds } },
+      }),
+      this.prisma.stockTransferItem.count({
+        where: { variantId: { in: variantIds } },
+      }),
+      this.prisma.stockOpnameItem.count({
+        where: { variantId: { in: variantIds } },
+      }),
+    ]);
+
+    return (
+      stockCount > 0 ||
+      stockMovementCount > 0 ||
+      salesOrderItemCount > 0 ||
+      purchaseOrderItemCount > 0 ||
+      stockAdjustmentItemCount > 0 ||
+      stockTransferItemCount > 0 ||
+      stockOpnameItemCount > 0
+    );
+  }
+
+  /**
+   * Bulk delete products - Smart delete: hard delete if unused, soft delete if used
    */
   async bulkDelete(ids: string[], userId: string) {
     // Validate all products exist
@@ -711,14 +801,64 @@ export class ProductsService {
       throw new NotFoundException('Beberapa produk tidak ditemukan');
     }
 
-    // Deactivate products
-    const result = await this.prisma.product.updateMany({
-      where: { id: { in: ids } },
-      data: { isActive: false },
-    });
+    let hardDeleteCount = 0;
+    let softDeleteCount = 0;
+
+    // Process each product individually to determine delete type
+    for (const product of products) {
+      const isUsedInTransactions = await this.checkProductUsedInTransactions(
+        product.id,
+      );
+
+      // Delete product images
+      const productImages = await this.prisma.productImage.findMany({
+        where: { productId: product.id },
+      });
+
+      for (const img of productImages) {
+        await this.uploadService.deleteProductImage(img.url);
+      }
+
+      await this.prisma.productImage.deleteMany({
+        where: { productId: product.id },
+      });
+
+      if (isUsedInTransactions) {
+        // Soft delete
+        await this.prisma.product.update({
+          where: { id: product.id },
+          data: { isActive: false },
+        });
+        softDeleteCount++;
+      } else {
+        // Hard delete
+        await this.prisma.$transaction(async (tx) => {
+          await tx.priceLevel.deleteMany({
+            where: { productId: product.id },
+          });
+          await tx.productVariant.deleteMany({
+            where: { productId: product.id },
+          });
+          await tx.product.delete({
+            where: { id: product.id },
+          });
+        });
+        hardDeleteCount++;
+      }
+    }
+
+    const messages: string[] = [];
+    if (hardDeleteCount > 0) {
+      messages.push(`${hardDeleteCount} produk dihapus permanen`);
+    }
+    if (softDeleteCount > 0) {
+      messages.push(`${softDeleteCount} produk dinonaktifkan`);
+    }
 
     return successResponse({
-      message: `${result.count} produk berhasil dinonaktifkan`,
+      message: messages.join(', '),
+      hardDeleteCount,
+      softDeleteCount,
     });
   }
 

@@ -128,12 +128,12 @@ class ProductsService {
     return res.data!;
   }
 
-  async delete(id: string): Promise<void> {
-    await apiClient.delete<ApiResponse<void>>(`/master-data/products/${id}`);
+  async delete(id: string): Promise<ApiResponse<void>> {
+    return apiClient.delete<ApiResponse<void>>(`/master-data/products/${id}`);
   }
 
-  async bulkDelete(ids: string[]): Promise<void> {
-    await apiClient.post<ApiResponse<void>>(
+  async bulkDelete(ids: string[]): Promise<ApiResponse<void>> {
+    return apiClient.post<ApiResponse<void>>(
       '/master-data/products/bulk-delete',
       {
         ids,
@@ -181,14 +181,14 @@ class ProductsService {
     return res.data!;
   }
 
-  async deleteVariant(id: string): Promise<void> {
-    await apiClient.delete<ApiResponse<void>>(
+  async deleteVariant(id: string): Promise<ApiResponse<void>> {
+    return apiClient.delete<ApiResponse<void>>(
       `/master-data/products/variants/${id}`,
     );
   }
 
-  async bulkDeleteVariants(ids: string[]): Promise<void> {
-    await apiClient.post<ApiResponse<void>>(
+  async bulkDeleteVariants(ids: string[]): Promise<ApiResponse<void>> {
+    return apiClient.post<ApiResponse<void>>(
       '/master-data/products/variants/bulk-delete',
       {
         ids,
@@ -243,14 +243,14 @@ class ProductsService {
     return res.data!;
   }
 
-  async deletePriceLevel(id: string): Promise<void> {
-    await apiClient.delete<ApiResponse<void>>(
+  async deletePriceLevel(id: string): Promise<ApiResponse<void>> {
+    return apiClient.delete<ApiResponse<void>>(
       `/master-data/products/price-levels/${id}`,
     );
   }
 
-  async bulkDeletePriceLevels(ids: string[]): Promise<void> {
-    await apiClient.post<ApiResponse<void>>(
+  async bulkDeletePriceLevels(ids: string[]): Promise<ApiResponse<void>> {
+    return apiClient.post<ApiResponse<void>>(
       '/master-data/products/price-levels/bulk-delete',
       {
         ids,

@@ -107,8 +107,16 @@ export function useDeleteProduct() {
 
   return useMutation({
     mutationFn: productsService.delete,
-    onSuccess: () => {
-      toast.success('Produk berhasil dinonaktifkan');
+    onSuccess: (response) => {
+      // response is ApiResponse<void>, so response.data might be undefined but response.message should be there if we follow standard structure
+      // Actually standard ApiResponse usually has { data, message, meta }
+      // Let's check api-response type if I could, but usually we put message in the top level or data.message
+      // Based on controller, it returns successResponse({ message: ... }) which structures it as data: { message: ... }
+      // So accessing response.data.message should be correct if typed as ApiResponse<any>
+      // But here we typed it as ApiResponse<void>. Let's cast or trust the new return.
+      const message =
+        (response as any).data?.message || 'Produk berhasil dihapus';
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['products'] });
     },
     onError: (error: Error) => {
@@ -122,8 +130,10 @@ export function useBulkDeleteProducts() {
 
   return useMutation({
     mutationFn: productsService.bulkDelete,
-    onSuccess: (_, variables) => {
-      toast.success(`${variables.length} produk berhasil dinonaktifkan`);
+    onSuccess: (response) => {
+      const message =
+        (response as any).data?.message || 'Produk berhasil dinonaktifkan';
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['products'] });
     },
     onError: (error: Error) => {

@@ -217,22 +217,13 @@ export const getColumns = ({
               Ganti PIN
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            {user.isActive ? (
-              <DropdownMenuItem
-                className="text-destructive focus:text-destructive"
-                onClick={() => onDelete(user)}
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Nonaktifkan
-              </DropdownMenuItem>
-            ) : (
-              <DropdownMenuItem
-                disabled // Reactivation not in requirement yet
-              >
-                <Lock className="mr-2 h-4 w-4" />
-                Sudah Nonaktif
-              </DropdownMenuItem>
-            )}
+            <DropdownMenuItem
+              className="text-destructive focus:text-destructive"
+              onClick={() => onDelete(user as any)}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Hapus
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

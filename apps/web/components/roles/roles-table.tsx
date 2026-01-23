@@ -126,30 +126,52 @@ export function RolesTable({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Apakah anda yakin?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {(roleToDelete?.userCount || 0) > 0
+                ? 'Gagal Menghapus'
+                : 'Hapus Role?'}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Tindakan ini tidak dapat dibatalkan. Role{' '}
-              <span className="font-medium text-foreground">
-                {roleToDelete?.name}
-              </span>{' '}
-              akan dihapus secara permanen.
+              {(roleToDelete?.userCount || 0) > 0 ? (
+                <>
+                  Role{' '}
+                  <span className="font-medium text-foreground">
+                    {roleToDelete?.name}
+                  </span>{' '}
+                  sedang digunakan oleh {roleToDelete?.userCount} user. Silakan
+                  ganti role user terlebih dahulu.
+                </>
+              ) : (
+                <>
+                  Role{' '}
+                  <span className="font-medium text-foreground">
+                    {roleToDelete?.name}
+                  </span>{' '}
+                  akan dihapus secara permanen. Tindakan ini tidak dapat
+                  dibatalkan.
+                </>
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>Batal</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive hover:bg-destructive/80 "
-              onClick={(e) => {
-                e.preventDefault();
-                if (roleToDelete) {
-                  onDelete(roleToDelete.id);
-                  setRoleToDelete(null);
-                }
-              }}
-              disabled={isDeleting}
-            >
-              {isDeleting ? 'Menghapus...' : 'Hapus'}
-            </AlertDialogAction>
+            <AlertDialogCancel disabled={isDeleting}>
+              {(roleToDelete?.userCount || 0) > 0 ? 'Tutup' : 'Batal'}
+            </AlertDialogCancel>
+            {(roleToDelete?.userCount || 0) === 0 && (
+              <AlertDialogAction
+                className="bg-destructive hover:bg-destructive/80 "
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (roleToDelete) {
+                    onDelete(roleToDelete.id);
+                    setRoleToDelete(null);
+                  }
+                }}
+                disabled={isDeleting}
+              >
+                {isDeleting ? 'Menghapus...' : 'Hapus'}
+              </AlertDialogAction>
+            )}
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

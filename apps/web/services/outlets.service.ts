@@ -16,6 +16,7 @@ export interface Outlet {
   phone?: string | null;
   isActive: boolean;
   userCount?: number;
+  transactionCount?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -71,12 +72,12 @@ class OutletsService {
     return res.data!;
   }
 
-  async delete(id: string): Promise<void> {
-    await apiClient.delete<ApiResponse<void>>(`/core/outlets/${id}`);
+  async delete(id: string): Promise<ApiResponse<void>> {
+    return apiClient.delete<ApiResponse<void>>(`/core/outlets/${id}`);
   }
 
-  async bulkDelete(ids: string[]): Promise<void> {
-    await apiClient.post<ApiResponse<void>>('/core/outlets/bulk-delete', {
+  async bulkDelete(ids: string[]): Promise<ApiResponse<void>> {
+    return apiClient.post<ApiResponse<void>>('/core/outlets/bulk-delete', {
       ids,
     });
   }

@@ -18,6 +18,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@bizflow/ui';
 import type { Role } from '@/services/roles.service';
@@ -177,6 +178,7 @@ export const getColumns = ({
                 Edit
               </Link>
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
             {!role.isSystemRole && (
               <DropdownMenuItem
                 className="text-destructive focus:text-destructive"

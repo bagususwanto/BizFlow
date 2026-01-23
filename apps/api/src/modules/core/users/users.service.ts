@@ -80,6 +80,12 @@ export class UsersService {
             outletId: true,
           },
         },
+        _count: {
+          select: {
+            auditLogs: true,
+            salesOrders: true,
+          },
+        },
       },
       orderBy,
       skip: (page - 1) * pageSize,
@@ -98,6 +104,7 @@ export class UsersService {
       lastLogin: user.lastLogin,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
+      usageCount: user._count.auditLogs + user._count.salesOrders,
     }));
 
     const summary = await this.buildSummary();
@@ -385,7 +392,7 @@ export class UsersService {
   }
 
   /**
-   * Deactivate a user (soft delete)
+   * Deactivate a user (smart delete)
    */
   async delete(id: string, deletedByUserId: string) {
     const user = await this.prisma.user.findUnique({
@@ -398,7 +405,7 @@ export class UsersService {
 
     // Prevent self-deactivation
     if (id === deletedByUserId) {
-      throw new ForbiddenException('Tidak dapat menonaktifkan akun sendiri');
+      throw new ForbiddenException('Tidak dapat menghapus akun sendiri');
     }
 
     // Count active admins to prevent deactivating last admin
@@ -415,20 +422,46 @@ export class UsersService {
       });
 
       if (activeAdminCount <= 1) {
-        throw new ForbiddenException(
-          'Tidak dapat menonaktifkan admin terakhir',
-        );
+        throw new ForbiddenException('Tidak dapat menghapus admin terakhir');
       }
     }
 
-    // Soft delete (deactivate)
-    await this.prisma.user.update({
-      where: { id },
-      data: { isActive: false },
+    // Check if user has transactions or usage
+    const [auditLogCount, salesOrderCount] = await Promise.all([
+      this.prisma.auditLog.count({ where: { userId: id } }),
+      this.prisma.salesOrder.count({ where: { userId: id } }),
+    ]);
+
+    const isUsed = auditLogCount > 0 || salesOrderCount > 0;
+
+    if (isUsed) {
+      // Soft delete (deactivate)
+      await this.prisma.user.update({
+        where: { id },
+        data: { isActive: false },
+      });
+
+      return successResponse({
+        message: `User '${user.username}' dinonaktifkan karena memiliki riwayat transaksi/aktivitas`,
+        isHardDelete: false,
+      });
+    }
+
+    // Hard delete
+    await this.prisma.$transaction(async (tx) => {
+      // Delete user outlets (cascade, but good to be explicit or if cascade not set)
+      await tx.userOutlet.deleteMany({
+        where: { userId: id },
+      });
+      // Delete user
+      await tx.user.delete({
+        where: { id },
+      });
     });
 
     return successResponse({
-      message: `User '${user.username}' berhasil dinonaktifkan`,
+      message: `User '${user.username}' berhasil dihapus permanen`,
+      isHardDelete: true,
     });
   }
 
@@ -495,7 +528,7 @@ export class UsersService {
   }
 
   /**
-   * Bulk delete (deactivate) users
+   * Bulk delete users
    */
   async bulkDelete(ids: string[], deletedByUserId: string) {
     // Validate all users exist
@@ -510,18 +543,50 @@ export class UsersService {
     // Prevent self-deactivation
     if (ids.includes(deletedByUserId)) {
       throw new ForbiddenException(
-        'Tidak dapat menonaktifkan akun sendiri dalam bulk delete',
+        'Tidak dapat menghapus akun sendiri dalam bulk delete',
       );
     }
 
-    // Deactivate users
-    const result = await this.prisma.user.updateMany({
-      where: { id: { in: ids } },
-      data: { isActive: false },
-    });
+    let hardDeleteCount = 0;
+    let softDeleteCount = 0;
+
+    for (const user of users) {
+      // Check usage
+      const [auditLogCount, salesOrderCount] = await Promise.all([
+        this.prisma.auditLog.count({ where: { userId: user.id } }),
+        this.prisma.salesOrder.count({ where: { userId: user.id } }),
+      ]);
+
+      const isUsed = auditLogCount > 0 || salesOrderCount > 0;
+
+      if (isUsed) {
+        // Soft delete
+        await this.prisma.user.update({
+          where: { id: user.id },
+          data: { isActive: false },
+        });
+        softDeleteCount++;
+      } else {
+        // Hard delete
+        await this.prisma.user.delete({
+          where: { id: user.id },
+        });
+        hardDeleteCount++;
+      }
+    }
+
+    const messages: string[] = [];
+    if (hardDeleteCount > 0) {
+      messages.push(`${hardDeleteCount} user dihapus permanen`);
+    }
+    if (softDeleteCount > 0) {
+      messages.push(`${softDeleteCount} user dinonaktifkan`);
+    }
 
     return successResponse({
-      message: `${result.count} user berhasil dinonaktifkan`,
+      message: messages.join(', '),
+      hardDeleteCount,
+      softDeleteCount,
     });
   }
 }

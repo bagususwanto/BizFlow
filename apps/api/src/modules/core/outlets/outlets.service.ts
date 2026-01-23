@@ -53,7 +53,7 @@ export class OutletsService {
       where,
       include: {
         _count: {
-          select: { users: true },
+          select: { users: true, salesOrders: true },
         },
       },
       orderBy,
@@ -70,6 +70,7 @@ export class OutletsService {
       phone: outlet.phone,
       isActive: outlet.isActive,
       userCount: outlet._count.users,
+      transactionCount: outlet._count.salesOrders,
       createdAt: outlet.createdAt,
       updatedAt: outlet.updatedAt,
     }));
@@ -328,14 +329,50 @@ export class OutletsService {
       throw new NotFoundException('Beberapa outlet tidak ditemukan');
     }
 
-    // Deactivate outlets
-    const result = await this.prisma.outlet.updateMany({
-      where: { id: { in: ids } },
-      data: { isActive: false },
-    });
+    let hardDeleteCount = 0;
+    let softDeleteCount = 0;
+
+    for (const outlet of outlets) {
+      const salesOrderCount = await this.prisma.salesOrder.count({
+        where: { outletId: outlet.id },
+      });
+
+      if (salesOrderCount > 0) {
+        // Soft delete (deactivate)
+        await this.prisma.outlet.update({
+          where: { id: outlet.id },
+          data: { isActive: false },
+        });
+        softDeleteCount++;
+      } else {
+        // Hard delete
+        await this.prisma.$transaction(async (tx) => {
+          // Remove user assignments
+          await tx.userOutlet.deleteMany({
+            where: { outletId: outlet.id },
+          });
+
+          // Delete outlet
+          await tx.outlet.delete({
+            where: { id: outlet.id },
+          });
+        });
+        hardDeleteCount++;
+      }
+    }
+
+    const messages: string[] = [];
+    if (hardDeleteCount > 0) {
+      messages.push(`${hardDeleteCount} outlet dihapus permanen`);
+    }
+    if (softDeleteCount > 0) {
+      messages.push(`${softDeleteCount} outlet dinonaktifkan`);
+    }
 
     return successResponse({
-      message: `${result.count} outlet berhasil dinonaktifkan`,
+      message: messages.join(', '),
+      hardDeleteCount,
+      softDeleteCount,
     });
   }
 }

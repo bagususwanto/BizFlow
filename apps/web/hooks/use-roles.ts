@@ -21,8 +21,10 @@ export function useRoles(params?: RolesQuery) {
     mutationFn: (id: string) => {
       return rolesService.delete(id);
     },
-    onSuccess: () => {
-      toast.success('Role berhasil dihapus');
+    onSuccess: (response) => {
+      const message =
+        (response as any).data?.message || 'Role berhasil dihapus';
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['roles'] });
     },
     onError: (error: Error) => {

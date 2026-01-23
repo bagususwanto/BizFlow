@@ -11,8 +11,12 @@ import { apiClient } from '@/lib/fetch-client';
 import { buildSearchParams } from '@/lib/utils';
 
 // Define response type locally or import if available
+export interface UserWithUsage extends User {
+  usageCount?: number;
+}
+
 export interface UsersResponse {
-  data: User[];
+  data: UserWithUsage[];
   meta: {
     page: number;
     pageSize: number;
@@ -52,8 +56,8 @@ class UsersService {
     return res.data!;
   }
 
-  async delete(id: string): Promise<void> {
-    await apiClient.delete<ApiResponse<void>>(`/core/users/${id}`);
+  async delete(id: string): Promise<ApiResponse<void>> {
+    return apiClient.delete<ApiResponse<void>>(`/core/users/${id}`);
   }
 
   async resetPassword(
@@ -70,8 +74,10 @@ class UsersService {
     await apiClient.patch<ApiResponse<void>>(`/core/users/${id}/pin`, data);
   }
 
-  async bulkDelete(ids: string[]): Promise<void> {
-    await apiClient.post<ApiResponse<void>>('/core/users/bulk-delete', { ids });
+  async bulkDelete(ids: string[]): Promise<ApiResponse<void>> {
+    return apiClient.post<ApiResponse<void>>('/core/users/bulk-delete', {
+      ids,
+    });
   }
 }
 

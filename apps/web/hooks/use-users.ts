@@ -17,8 +17,10 @@ export function useUsers(params?: UsersQuery) {
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => usersService.delete(id),
-    onSuccess: () => {
-      toast.success('User berhasil dinonaktifkan');
+    onSuccess: (response) => {
+      const message =
+        (response as any).data?.message || 'User berhasil dinonaktifkan';
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['users'] });
     },
     onError: (error: Error) => {
@@ -28,8 +30,10 @@ export function useUsers(params?: UsersQuery) {
 
   const bulkDeleteMutation = useMutation({
     mutationFn: (ids: string[]) => usersService.bulkDelete(ids),
-    onSuccess: (_, variables) => {
-      toast.success(`${variables.length} user berhasil dinonaktifkan`);
+    onSuccess: (response) => {
+      const message =
+        (response as any).data?.message || 'User berhasil dinonaktifkan';
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['users'] });
     },
     onError: (error: Error) => {

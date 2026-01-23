@@ -135,13 +135,31 @@ export function OutletsTable({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Nonaktifkan Outlet?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {(outletToDelete?.transactionCount || 0) > 0
+                ? 'Nonaktifkan Outlet?'
+                : 'Hapus Outlet?'}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Outlet{' '}
-              <span className="font-medium text-foreground">
-                {outletToDelete?.name}
-              </span>{' '}
-              akan dinonaktifkan. Data outlet tetap tersimpan.
+              {(outletToDelete?.transactionCount || 0) > 0 ? (
+                <>
+                  Outlet{' '}
+                  <span className="font-medium text-foreground">
+                    {outletToDelete?.name}
+                  </span>{' '}
+                  akan dinonaktifkan karena memiliki riwayat transaksi. Data
+                  outlet tetap tersimpan.
+                </>
+              ) : (
+                <>
+                  Outlet{' '}
+                  <span className="font-medium text-foreground">
+                    {outletToDelete?.name}
+                  </span>{' '}
+                  akan dihapus secara permanen. Tindakan ini tidak dapat
+                  dibatalkan.
+                </>
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -157,7 +175,11 @@ export function OutletsTable({
               }}
               disabled={isDeleting}
             >
-              {isDeleting ? 'Memproses...' : 'Nonaktifkan'}
+              {isDeleting
+                ? 'Memproses...'
+                : (outletToDelete?.transactionCount || 0) > 0
+                  ? 'Nonaktifkan'
+                  : 'Hapus'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

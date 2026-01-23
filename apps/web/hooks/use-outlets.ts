@@ -17,8 +17,11 @@ export function useOutlets(params?: QueryOutletsValues) {
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => outletsService.delete(id),
-    onSuccess: () => {
-      toast.success('Outlet berhasil dinonaktifkan/dihapus');
+    onSuccess: (response) => {
+      const message =
+        (response as any).data?.message ||
+        'Outlet berhasil dinonaktifkan/dihapus';
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['outlets'] });
     },
     onError: (error: Error) => {
@@ -28,8 +31,10 @@ export function useOutlets(params?: QueryOutletsValues) {
 
   const bulkDeleteMutation = useMutation({
     mutationFn: (ids: string[]) => outletsService.bulkDelete(ids),
-    onSuccess: (_, variables) => {
-      toast.success(`${variables.length} outlet berhasil dinonaktifkan`);
+    onSuccess: (response) => {
+      const message =
+        (response as any).data?.message || 'Outlet berhasil dinonaktifkan';
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['outlets'] });
     },
     onError: (error: Error) => {

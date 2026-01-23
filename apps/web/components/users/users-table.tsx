@@ -29,12 +29,12 @@ import { Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { User } from '@bizflow/types';
 
-import { usersService } from '@/services/users.service';
+import { usersService, UserWithUsage } from '@/services/users.service';
 import { DataTable } from '../ui/data-table';
 import { getColumns } from './columns';
 
 interface UsersTableProps {
-  data: User[];
+  data: UserWithUsage[];
   onDelete: (id: string) => void;
   isDeleting?: boolean;
   sortBy: string;
@@ -56,7 +56,7 @@ export function UsersTable({
   onColumnVisibilityChange,
   onRefresh,
 }: UsersTableProps) {
-  const [userToDelete, setUserToDelete] = useState<User | null>(null);
+  const [userToDelete, setUserToDelete] = useState<UserWithUsage | null>(null);
   const [userToReset, setUserToReset] = useState<User | null>(null);
   const [userToChangePin, setUserToChangePin] = useState<User | null>(null);
   const [newPin, setNewPin] = useState('');
@@ -220,14 +220,31 @@ export function UsersTable({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Nonaktifkan User?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {(userToDelete?.usageCount || 0) > 0
+                ? 'Nonaktifkan User?'
+                : 'Hapus User?'}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              User{' '}
-              <span className="font-medium text-foreground">
-                {userToDelete?.username}
-              </span>{' '}
-              akan dinonaktifkan dan tidak dapat login kembali. Data user tetap
-              tersimpan.
+              {(userToDelete?.usageCount || 0) > 0 ? (
+                <>
+                  User{' '}
+                  <span className="font-medium text-foreground">
+                    {userToDelete?.username}
+                  </span>{' '}
+                  akan dinonaktifkan karena memiliki riwayat aktivitas. Data
+                  user tetap tersimpan.
+                </>
+              ) : (
+                <>
+                  User{' '}
+                  <span className="font-medium text-foreground">
+                    {userToDelete?.username}
+                  </span>{' '}
+                  akan dihapus secara permanen. Tindakan ini tidak dapat
+                  dibatalkan.
+                </>
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -243,7 +260,11 @@ export function UsersTable({
               }}
               disabled={isDeleting}
             >
-              {isDeleting ? 'Memproses...' : 'Nonaktifkan'}
+              {isDeleting
+                ? 'Memproses...'
+                : (userToDelete?.usageCount || 0) > 0
+                  ? 'Nonaktifkan'
+                  : 'Hapus'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

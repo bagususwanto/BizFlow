@@ -39,11 +39,9 @@ import {
 } from '@/services/products.service';
 import { useActiveCategories } from '@/hooks/use-categories';
 import { useActiveUnits } from '@/hooks/use-units';
-import { useGenerateSku } from '@/hooks/use-products';
 import { useBarcodeScanner } from '@/hooks/use-barcode-scanner';
 import { VariantList } from './variant-list';
 import { PriceLevelList } from './price-level-list';
-import { ImageUpload } from '@/components/ui/image-upload';
 import { MultiImageUpload } from '@/components/ui/multi-image-upload';
 
 interface ProductFormProps {

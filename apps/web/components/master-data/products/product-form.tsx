@@ -44,6 +44,7 @@ import { useBarcodeScanner } from '@/hooks/use-barcode-scanner';
 import { VariantList } from './variant-list';
 import { PriceLevelList } from './price-level-list';
 import { ImageUpload } from '@/components/ui/image-upload';
+import { MultiImageUpload } from '@/components/ui/multi-image-upload';
 
 interface ProductFormProps {
   initialData?: ProductWithRelations;
@@ -75,7 +76,7 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
           minStock: initialData?.minStock || 0,
           isActive: initialData?.isActive ?? true,
           isService: initialData?.isService ?? false,
-          imageUrl: initialData?.imageUrl || '',
+          imageUrls: initialData?.images?.map((i) => i.url) || [],
         }
       : {
           name: '',
@@ -89,7 +90,7 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
           minStock: 0,
           isActive: true,
           isService: false,
-          imageUrl: '',
+          imageUrls: [],
         },
   });
 
@@ -390,32 +391,23 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
               <CardContent className="pt-6 space-y-6">
                 <FormField
                   control={form.control}
-                  name="imageUrl"
+                  name="imageUrls"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel optional>Foto Produk</FormLabel>
                       <FormControl>
-                        <ImageUpload
-                          value={field.value || undefined}
+                        <MultiImageUpload
+                          values={field.value || []}
                           onChange={field.onChange}
-                          onRemove={() => field.onChange('')}
+                          onRemove={(url) =>
+                            field.onChange(
+                              field.value?.filter((v: string) => v !== url),
+                            )
+                          }
                         />
                       </FormControl>
                       <FormDescription>
                         Format: JPG, PNG, WEBP. Maksimal 5MB.
-                        {isEdit &&
-                          field.value &&
-                          field.value !== initialData?.imageUrl && (
-                            <div className="mt-3 flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 p-3 text-amber-800 dark:border-amber-900/50 dark:bg-amber-950/50 dark:text-amber-200">
-                              <Info className="mt-0.5 h-4 w-4 shrink-0" />
-                              <span className="text-sm">
-                                Foto yang baru diupload belum tersimpan. Jangan
-                                lupa klik tombol{' '}
-                                <strong>Simpan Perubahan</strong> di bawah agar
-                                foto terupdate.
-                              </span>
-                            </div>
-                          )}
                       </FormDescription>
                       <FormMessage />
                     </FormItem>

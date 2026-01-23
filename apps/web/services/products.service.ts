@@ -17,6 +17,7 @@ export interface ProductWithRelations
   extends Omit<Product, 'category' | 'unit'> {
   category?: { id: string; name: string };
   unit?: { id: string; name: string; symbol: string };
+  images?: { id: string; url: string; order: number }[];
   variantCount?: number;
   priceLevelCount?: number;
 }

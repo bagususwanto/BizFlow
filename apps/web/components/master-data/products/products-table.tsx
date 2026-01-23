@@ -89,10 +89,12 @@ export function ProductsTable({
         enableHiding: false,
       },
       {
-        accessorKey: 'imageUrl',
+        accessorKey: 'images',
         header: 'Gambar',
         cell: ({ row }) => {
-          const imageUrl = getImageUrl(row.getValue('imageUrl') as string);
+          const images = row.original.images || [];
+          const mainImage = images[0]?.url;
+          const imageUrl = getImageUrl(mainImage);
           return (
             <div className="h-14 w-14 shrink-0 overflow-hidden rounded-md border bg-muted relative">
               {imageUrl ? (

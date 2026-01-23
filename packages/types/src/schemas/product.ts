@@ -9,11 +9,14 @@ import { z } from 'zod';
 // ========================================
 
 export const createProductSchema = z.object({
-  sku: z
-    .string()
-    .min(1, { message: 'SKU wajib diisi' })
-    .max(50, { message: 'SKU maksimal 50 karakter' })
-    .optional(),
+  sku: z.preprocess(
+    (val) => (val === '' ? undefined : val),
+    z
+      .string()
+      .min(1, { message: 'SKU wajib diisi' })
+      .max(50, { message: 'SKU maksimal 50 karakter' })
+      .optional(),
+  ),
   barcode: z.preprocess(
     (val) => (val === '' ? null : val),
     z
@@ -61,11 +64,14 @@ export type CreateProductValues = z.infer<typeof createProductSchema>;
 // ========================================
 
 export const updateProductSchema = z.object({
-  sku: z
-    .string()
-    .min(1, { message: 'SKU wajib diisi' })
-    .max(50, { message: 'SKU maksimal 50 karakter' })
-    .optional(),
+  sku: z.preprocess(
+    (val) => (val === '' ? undefined : val),
+    z
+      .string()
+      .min(1, { message: 'SKU wajib diisi' })
+      .max(50, { message: 'SKU maksimal 50 karakter' })
+      .optional(),
+  ),
   barcode: z.preprocess(
     (val) => (val === '' ? null : val),
     z

@@ -412,15 +412,6 @@ export class ProductsService {
    * Create a new product
    */
   async create(dto: CreateProductValues, userId: string) {
-    // Check duplicate SKU
-    const existingSku = await this.prisma.product.findUnique({
-      where: { sku: dto.sku },
-    });
-
-    if (existingSku) {
-      throw new ConflictException(`SKU '${dto.sku}' sudah digunakan`);
-    }
-
     // Check duplicate barcode if provided
     if (dto.barcode) {
       const existingBarcode = await this.prisma.product.findUnique({
@@ -576,23 +567,47 @@ export class ProductsService {
         where: { productId: id },
       });
 
-      // Delete old images from storage and database
-      for (const img of existingImages) {
-        await this.uploadService.deleteProductImage(img.url);
-      }
-      await this.prisma.productImage.deleteMany({
-        where: { productId: id },
-      });
+      const existingUrls = existingImages.map((img) => img.url);
+      const newUrls = dto.images;
 
-      // Create new images
-      if (dto.images.length > 0) {
+      // Find images to delete (exist in DB but not in new array)
+      const urlsToDelete = existingUrls.filter((url) => !newUrls.includes(url));
+
+      // Find images to add (exist in new array but not in DB)
+      const urlsToAdd = newUrls.filter((url) => !existingUrls.includes(url));
+
+      // Delete removed images from storage and database
+      for (const url of urlsToDelete) {
+        await this.uploadService.deleteProductImage(url);
+        await this.prisma.productImage.deleteMany({
+          where: { productId: id, url },
+        });
+      }
+
+      // Add new images
+      if (urlsToAdd.length > 0) {
+        const maxOrder =
+          existingImages.length > 0
+            ? Math.max(...existingImages.map((img) => img.order))
+            : -1;
+
         await this.prisma.productImage.createMany({
-          data: dto.images.map((url, index) => ({
+          data: urlsToAdd.map((url, index) => ({
             productId: id,
             url,
-            order: index,
+            order: maxOrder + index + 1,
           })),
         });
+      }
+
+      // Update order for all images based on new array order
+      if (newUrls.length > 0) {
+        for (let i = 0; i < newUrls.length; i++) {
+          await this.prisma.productImage.updateMany({
+            where: { productId: id, url: newUrls[i] },
+            data: { order: i },
+          });
+        }
       }
     }
 

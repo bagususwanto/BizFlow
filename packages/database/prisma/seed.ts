@@ -600,7 +600,6 @@ async function main() {
       minStock: 5,
       isActive: true,
       isService: false,
-      imageUrl: null,
     },
   });
 
@@ -619,7 +618,6 @@ async function main() {
       minStock: 3,
       isActive: true,
       isService: false,
-      imageUrl: null,
     },
   });
 
@@ -638,7 +636,6 @@ async function main() {
       minStock: 24,
       isActive: true,
       isService: false,
-      imageUrl: null,
     },
   });
 
@@ -657,7 +654,6 @@ async function main() {
       minStock: 12,
       isActive: true,
       isService: false,
-      imageUrl: null,
     },
   });
 
@@ -676,7 +672,6 @@ async function main() {
       minStock: 0,
       isActive: true,
       isService: true,
-      imageUrl: null,
     },
   });
 

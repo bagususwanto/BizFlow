@@ -13,6 +13,8 @@ import { CategoriesModule } from './modules/master-data/categories';
 import { ProductsModule } from './modules/master-data/products';
 import { UnitsModule } from './modules/master-data/units';
 
+import { UploadModule } from './modules/upload';
+
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
 
@@ -33,6 +35,8 @@ import { AppController } from './app.controller';
     CategoriesModule,
     ProductsModule,
     UnitsModule,
+    // Upload module
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

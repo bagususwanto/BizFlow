@@ -15,10 +15,14 @@ import type {
 
 import { PrismaService } from '../../../prisma';
 import { successResponse, paginatedResponse } from '../../../common/utils';
+import { UploadService } from '../../upload/upload.service';
 
 @Injectable()
 export class ProductsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly uploadService: UploadService,
+  ) {}
 
   /**
    * Get all products with pagination, filter, and summary
@@ -540,6 +544,11 @@ export class ProductsService {
       }
     }
 
+    // Delete old image if imageUrl is being updated
+    if (dto.imageUrl !== undefined && dto.imageUrl !== existing.imageUrl) {
+      await this.uploadService.deleteProductImage(existing.imageUrl);
+    }
+
     const product = await this.prisma.product.update({
       where: { id },
       data: {
@@ -600,6 +609,12 @@ export class ProductsService {
 
     // Check if product has been used in any transactions
     // For now, we'll just soft delete
+
+    // Delete product image if exists
+    if (product.imageUrl) {
+      await this.uploadService.deleteProductImage(product.imageUrl);
+    }
+
     await this.prisma.product.update({
       where: { id },
       data: { isActive: false },

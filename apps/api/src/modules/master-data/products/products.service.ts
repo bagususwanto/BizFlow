@@ -82,6 +82,14 @@ export class ProductsService {
             symbol: true,
           },
         },
+        images: {
+          select: {
+            id: true,
+            url: true,
+            order: true,
+          },
+          orderBy: { order: 'asc' },
+        },
         _count: {
           select: { variants: true, priceLevels: true },
         },
@@ -107,7 +115,7 @@ export class ProductsService {
       minStock: product.minStock,
       isActive: product.isActive,
       isService: product.isService,
-      imageUrl: product.imageUrl,
+      images: product.images,
       variantCount: product._count.variants,
       priceLevelCount: product._count.priceLevels,
       createdAt: product.createdAt,
@@ -221,6 +229,14 @@ export class ProductsService {
             symbol: true,
           },
         },
+        images: {
+          select: {
+            id: true,
+            url: true,
+            order: true,
+          },
+          orderBy: { order: 'asc' },
+        },
         variants: {
           select: {
             id: true,
@@ -268,7 +284,7 @@ export class ProductsService {
       minStock: product.minStock,
       isActive: product.isActive,
       isService: product.isService,
-      imageUrl: product.imageUrl,
+      images: product.images,
       variants: product.variants.map((v) => ({
         ...v,
         costPrice: Number(v.costPrice),
@@ -462,11 +478,20 @@ export class ProductsService {
         minStock: dto.minStock ?? 0,
         isService: dto.isService ?? false,
         isActive: dto.isActive ?? true,
-        imageUrl: dto.imageUrl || null,
+        images: {
+          create: (dto.imageUrls || []).map((url, index) => ({
+            url,
+            order: index,
+          })),
+        },
       },
       include: {
         category: { select: { id: true, name: true } },
         unit: { select: { id: true, name: true, symbol: true } },
+        images: {
+          select: { id: true, url: true, order: true },
+          orderBy: { order: 'asc' },
+        },
       },
     });
 
@@ -483,7 +508,7 @@ export class ProductsService {
       minStock: product.minStock,
       isService: product.isService,
       isActive: product.isActive,
-      imageUrl: product.imageUrl,
+      images: product.images,
       createdAt: product.createdAt,
     });
   }
@@ -544,9 +569,31 @@ export class ProductsService {
       }
     }
 
-    // Delete old image if imageUrl is being updated
-    if (dto.imageUrl !== undefined && dto.imageUrl !== existing.imageUrl) {
-      await this.uploadService.deleteProductImage(existing.imageUrl);
+    // Handle image updates if provided
+    if (dto.imageUrls !== undefined) {
+      // Get existing images
+      const existingImages = await this.prisma.productImage.findMany({
+        where: { productId: id },
+      });
+
+      // Delete old images from storage and database
+      for (const img of existingImages) {
+        await this.uploadService.deleteProductImage(img.url);
+      }
+      await this.prisma.productImage.deleteMany({
+        where: { productId: id },
+      });
+
+      // Create new images
+      if (dto.imageUrls.length > 0) {
+        await this.prisma.productImage.createMany({
+          data: dto.imageUrls.map((url, index) => ({
+            productId: id,
+            url,
+            order: index,
+          })),
+        });
+      }
     }
 
     const product = await this.prisma.product.update({
@@ -564,11 +611,14 @@ export class ProductsService {
         minStock: dto.minStock !== undefined ? dto.minStock : undefined,
         isService: dto.isService !== undefined ? dto.isService : undefined,
         isActive: dto.isActive !== undefined ? dto.isActive : undefined,
-        imageUrl: dto.imageUrl !== undefined ? dto.imageUrl : undefined,
       },
       include: {
         category: { select: { id: true, name: true } },
         unit: { select: { id: true, name: true, symbol: true } },
+        images: {
+          select: { id: true, url: true, order: true },
+          orderBy: { order: 'asc' },
+        },
       },
     });
 
@@ -585,7 +635,7 @@ export class ProductsService {
       minStock: product.minStock,
       isService: product.isService,
       isActive: product.isActive,
-      imageUrl: product.imageUrl,
+      images: product.images,
       updatedAt: product.updatedAt,
     });
   }
@@ -610,10 +660,18 @@ export class ProductsService {
     // Check if product has been used in any transactions
     // For now, we'll just soft delete
 
-    // Delete product image if exists
-    if (product.imageUrl) {
-      await this.uploadService.deleteProductImage(product.imageUrl);
+    // Delete all product images if exist
+    const productImages = await this.prisma.productImage.findMany({
+      where: { productId: id },
+    });
+
+    for (const img of productImages) {
+      await this.uploadService.deleteProductImage(img.url);
     }
+
+    await this.prisma.productImage.deleteMany({
+      where: { productId: id },
+    });
 
     await this.prisma.product.update({
       where: { id },

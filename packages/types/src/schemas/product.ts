@@ -51,21 +51,7 @@ export const createProductSchema = z.object({
     .default(0),
   isService: z.boolean().default(false),
   isActive: z.boolean().default(true),
-  imageUrl: z.preprocess(
-    (val) => (val === '' ? null : val),
-    z
-      .string()
-      .refine(
-        (val) => {
-          if (!val) return true; // Allow empty/null
-          // Accept URLs (http/https), absolute paths (/...), or relative paths (products/...)
-          return /^(https?:\/\/|\/|[a-zA-Z0-9]).+/.test(val);
-        },
-        { message: 'URL gambar tidak valid' },
-      )
-      .nullable()
-      .optional(),
-  ),
+  imageUrls: z.array(z.string()).optional().default([]),
 });
 
 export type CreateProductValues = z.infer<typeof createProductSchema>;
@@ -120,21 +106,7 @@ export const updateProductSchema = z.object({
     .optional(),
   isService: z.boolean().optional(),
   isActive: z.boolean().optional(),
-  imageUrl: z.preprocess(
-    (val) => (val === '' ? null : val),
-    z
-      .string()
-      .refine(
-        (val) => {
-          if (!val) return true; // Allow empty/null
-          // Accept URLs (http/https), absolute paths (/...), or relative paths (products/...)
-          return /^(https?:\/\/|\/|[a-zA-Z0-9]).+/.test(val);
-        },
-        { message: 'URL gambar tidak valid' },
-      )
-      .nullable()
-      .optional(),
-  ),
+  imageUrls: z.array(z.string()).optional(),
 });
 
 export type UpdateProductValues = z.infer<typeof updateProductSchema>;

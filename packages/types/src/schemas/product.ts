@@ -51,7 +51,7 @@ export const createProductSchema = z.object({
     .default(0),
   isService: z.boolean().default(false),
   isActive: z.boolean().default(true),
-  imageUrls: z.array(z.string()).optional().default([]),
+  images: z.array(z.string()).optional().default([]),
 });
 
 export type CreateProductValues = z.infer<typeof createProductSchema>;
@@ -106,7 +106,7 @@ export const updateProductSchema = z.object({
     .optional(),
   isService: z.boolean().optional(),
   isActive: z.boolean().optional(),
-  imageUrls: z.array(z.string()).optional(),
+  images: z.array(z.string()).optional(),
 });
 
 export type UpdateProductValues = z.infer<typeof updateProductSchema>;
@@ -153,6 +153,19 @@ export const queryProductsSchema = z.object({
 });
 
 export type QueryProductsValues = z.infer<typeof queryProductsSchema>;
+
+// ========================================
+// Product Image Schemas
+// ========================================
+
+export const productImageSchema = z.object({
+  id: z.string().optional(),
+  productId: z.string().optional(),
+  url: z.string().min(1, { message: 'URL gambar wajib diisi' }),
+  order: z.coerce.number().int().default(0),
+});
+
+export type ProductImageValues = z.infer<typeof productImageSchema>;
 
 // ========================================
 // Price Level Schemas

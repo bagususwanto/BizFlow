@@ -479,7 +479,7 @@ export class ProductsService {
         isService: dto.isService ?? false,
         isActive: dto.isActive ?? true,
         images: {
-          create: (dto.imageUrls || []).map((url, index) => ({
+          create: (dto.images || []).map((url, index) => ({
             url,
             order: index,
           })),
@@ -570,7 +570,7 @@ export class ProductsService {
     }
 
     // Handle image updates if provided
-    if (dto.imageUrls !== undefined) {
+    if (dto.images !== undefined) {
       // Get existing images
       const existingImages = await this.prisma.productImage.findMany({
         where: { productId: id },
@@ -585,9 +585,9 @@ export class ProductsService {
       });
 
       // Create new images
-      if (dto.imageUrls.length > 0) {
+      if (dto.images.length > 0) {
         await this.prisma.productImage.createMany({
-          data: dto.imageUrls.map((url, index) => ({
+          data: dto.images.map((url, index) => ({
             productId: id,
             url,
             order: index,

@@ -76,7 +76,7 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
           minStock: initialData?.minStock || 0,
           isActive: initialData?.isActive ?? true,
           isService: initialData?.isService ?? false,
-          imageUrls: initialData?.images?.map((i) => i.url) || [],
+          images: initialData?.images?.map((i) => i.url) || [],
         }
       : {
           name: '',
@@ -90,7 +90,7 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
           minStock: 0,
           isActive: true,
           isService: false,
-          imageUrls: [],
+          images: [],
         },
   });
 
@@ -391,7 +391,7 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
               <CardContent className="pt-6 space-y-6">
                 <FormField
                   control={form.control}
-                  name="imageUrls"
+                  name="images"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel optional>Foto Produk</FormLabel>

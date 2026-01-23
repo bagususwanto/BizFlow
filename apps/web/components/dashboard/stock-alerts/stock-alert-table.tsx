@@ -167,17 +167,11 @@ export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
       {selectedCount > 0 && (
         <div className="flex items-center gap-4 rounded-md bg-muted px-4 py-2">
           <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={true}
-              readOnly
-              className="translate-y-[2px]"
-            />
             <span className="text-sm font-medium">{selectedCount} Dipilih</span>
           </div>
           <Button size="sm" className="ml-auto h-8" onClick={handleBulkPO}>
             <ShoppingCart className="mr-2 h-4 w-4" />
-            Buat Purchase Order untuk yang dipilih
+            Buat Purchase Order
           </Button>
         </div>
       )}

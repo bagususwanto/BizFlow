@@ -43,6 +43,7 @@ import { useGenerateSku } from '@/hooks/use-products';
 import { useBarcodeScanner } from '@/hooks/use-barcode-scanner';
 import { VariantList } from './variant-list';
 import { PriceLevelList } from './price-level-list';
+import { ImageUpload } from '@/components/ui/image-upload';
 
 interface ProductFormProps {
   initialData?: ProductWithRelations;
@@ -392,17 +393,16 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                   name="imageUrl"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel optional>URL Gambar</FormLabel>
+                      <FormLabel optional>Foto Produk</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="https://..."
-                          {...field}
-                          value={field.value || ''}
+                        <ImageUpload
+                          value={field.value || undefined}
+                          onChange={field.onChange}
+                          onRemove={() => field.onChange('')}
                         />
                       </FormControl>
                       <FormDescription>
-                        Masukkan URL gambar produk (upload gambar akan tersedia
-                        segera)
+                        Format: JPG, PNG, WEBP. Maksimal 5MB.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>

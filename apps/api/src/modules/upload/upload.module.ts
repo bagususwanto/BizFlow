@@ -3,6 +3,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import { mkdirSync, existsSync } from 'fs';
 import { UploadController } from './upload.controller';
 import { UploadService } from './upload.service';
 
@@ -12,6 +13,12 @@ import { UploadService } from './upload.service';
       storage: diskStorage({
         destination: (req, file, cb) => {
           const uploadPath = join(process.cwd(), 'uploads', 'products');
+
+          // Ensure directory exists
+          if (!existsSync(uploadPath)) {
+            mkdirSync(uploadPath, { recursive: true });
+          }
+
           cb(null, uploadPath);
         },
         filename: (req, file, cb) => {

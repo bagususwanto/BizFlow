@@ -53,7 +53,18 @@ export const createProductSchema = z.object({
   isActive: z.boolean().default(true),
   imageUrl: z.preprocess(
     (val) => (val === '' ? null : val),
-    z.string().url({ message: 'URL gambar tidak valid' }).nullable().optional(),
+    z
+      .string()
+      .refine(
+        (val) => {
+          if (!val) return true; // Allow empty/null
+          // Accept URLs (http/https), absolute paths (/...), or relative paths (products/...)
+          return /^(https?:\/\/|\/|[a-zA-Z0-9]).+/.test(val);
+        },
+        { message: 'URL gambar tidak valid' },
+      )
+      .nullable()
+      .optional(),
   ),
 });
 
@@ -111,7 +122,18 @@ export const updateProductSchema = z.object({
   isActive: z.boolean().optional(),
   imageUrl: z.preprocess(
     (val) => (val === '' ? null : val),
-    z.string().url({ message: 'URL gambar tidak valid' }).nullable().optional(),
+    z
+      .string()
+      .refine(
+        (val) => {
+          if (!val) return true; // Allow empty/null
+          // Accept URLs (http/https), absolute paths (/...), or relative paths (products/...)
+          return /^(https?:\/\/|\/|[a-zA-Z0-9]).+/.test(val);
+        },
+        { message: 'URL gambar tidak valid' },
+      )
+      .nullable()
+      .optional(),
   ),
 });
 

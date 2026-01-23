@@ -5,9 +5,8 @@ import { ImagePlus, X, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Button } from '@bizflow/ui';
-import { cn } from '@/lib/utils';
+import { cn, getImageUrl } from '@/lib/utils';
 import { uploadService } from '@/services/upload.service';
-import Image from 'next/image';
 
 interface ImageUploadProps {
   value?: string;
@@ -47,7 +46,7 @@ export function ImageUpload({
       setIsUploading(true);
       const response = await uploadService.uploadProductImage(file);
       onChange(response.path); // Save relative path
-      toast.success('Poto produk berhasil diunggah');
+      toast.success('Foto produk berhasil diunggah');
     } catch (error) {
       toast.error('Gagal mengunggah foto');
       console.error('Upload error:', error);
@@ -58,13 +57,7 @@ export function ImageUpload({
     }
   };
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-  // Construct full URL if value is relative path
-  const imageUrl = value
-    ? value.startsWith('http')
-      ? value
-      : `${API_URL}/uploads/${value}`
-    : null;
+  const imageUrl = getImageUrl(value);
 
   return (
     <div className="flex items-center gap-4">
@@ -82,11 +75,11 @@ export function ImageUpload({
               <X className="h-4 w-4" />
             </Button>
           </div>
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src={imageUrl}
             alt="Product Image"
-            fill
-            className="object-cover"
+            className="h-full w-full object-cover"
           />
         </div>
       ) : (

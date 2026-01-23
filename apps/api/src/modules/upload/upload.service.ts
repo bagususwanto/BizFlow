@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { unlink } from 'fs/promises';
 import { join } from 'path';
-import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UploadService {
@@ -11,9 +10,9 @@ export class UploadService {
    * Save uploaded file and return relative path
    */
   async saveProductImage(file: Express.Multer.File): Promise<string> {
-    const filename = `${uuidv4()}${this.getFileExtension(file.originalname)}`;
-    const relativePath = `products/${filename}`;
-
+    // File is already saved to disk by Multer's diskStorage
+    // Just return the relative path
+    const relativePath = `products/${file.filename}`;
     return relativePath;
   }
 
@@ -34,13 +33,5 @@ export class UploadService {
       // Log error but don't throw - file might already be deleted
       console.warn(`Failed to delete image: ${imageUrl}`, error);
     }
-  }
-
-  /**
-   * Get file extension from filename
-   */
-  private getFileExtension(filename: string): string {
-    const ext = filename.split('.').pop();
-    return ext ? `.${ext}` : '';
   }
 }

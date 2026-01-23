@@ -32,7 +32,7 @@ import {
   productsService,
 } from '@/services/products.service';
 import { DataTable } from '@/components/ui/data-table';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, getImageUrl } from '@/lib/utils';
 
 interface ProductsTableProps {
   data: ProductWithRelations[];
@@ -92,9 +92,9 @@ export function ProductsTable({
         accessorKey: 'imageUrl',
         header: 'Gambar',
         cell: ({ row }) => {
-          const imageUrl = row.getValue('imageUrl') as string;
+          const imageUrl = getImageUrl(row.getValue('imageUrl') as string);
           return (
-            <div className="h-14 w-14 shrink-0 overflow-hidden rounded-md border bg-muted">
+            <div className="h-14 w-14 shrink-0 overflow-hidden rounded-md border bg-muted relative">
               {imageUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img

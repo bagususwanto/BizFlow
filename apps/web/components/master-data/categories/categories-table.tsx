@@ -139,30 +139,60 @@ export function CategoriesTable({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Nonaktifkan Kategori?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {(categoryToDelete?.childrenCount || 0) > 0
+                ? 'Gagal Menghapus'
+                : (categoryToDelete?.productCount || 0) > 0
+                  ? 'Nonaktifkan Kategori?'
+                  : 'Hapus Kategori?'}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Kategori{' '}
-              <span className="font-medium text-foreground">
-                {categoryToDelete?.name}
-              </span>{' '}
-              akan dinonaktifkan. Data kategori tetap tersimpan.
+              {(categoryToDelete?.childrenCount || 0) > 0 ? (
+                <>
+                  Kategori{' '}
+                  <span className="font-medium text-foreground">
+                    {categoryToDelete?.name}
+                  </span>{' '}
+                  memiliki {categoryToDelete?.childrenCount} sub-kategori.
+                  Silakan hapus sub-kategori terlebih dahulu.
+                </>
+              ) : (
+                <>
+                  Kategori{' '}
+                  <span className="font-medium text-foreground">
+                    {categoryToDelete?.name}
+                  </span>{' '}
+                  akan{' '}
+                  {(categoryToDelete?.productCount || 0) > 0
+                    ? 'dinonaktifkan karena memiliki produk terkait.'
+                    : 'dihapus secara permanen.'}
+                </>
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>Batal</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive hover:bg-destructive/80 "
-              onClick={(e) => {
-                e.preventDefault();
-                if (categoryToDelete) {
-                  onDelete(categoryToDelete.id);
-                  setCategoryToDelete(null);
-                }
-              }}
-              disabled={isDeleting}
-            >
-              {isDeleting ? 'Memproses...' : 'Nonaktifkan'}
-            </AlertDialogAction>
+            <AlertDialogCancel disabled={isDeleting}>
+              {(categoryToDelete?.childrenCount || 0) > 0 ? 'Tutup' : 'Batal'}
+            </AlertDialogCancel>
+            {(categoryToDelete?.childrenCount || 0) === 0 && (
+              <AlertDialogAction
+                className="bg-destructive hover:bg-destructive/80 "
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (categoryToDelete) {
+                    onDelete(categoryToDelete.id);
+                    setCategoryToDelete(null);
+                  }
+                }}
+                disabled={isDeleting}
+              >
+                {isDeleting
+                  ? 'Memproses...'
+                  : (categoryToDelete?.productCount || 0) > 0
+                    ? 'Nonaktifkan'
+                    : 'Hapus'}
+              </AlertDialogAction>
+            )}
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

@@ -151,20 +151,13 @@ export const getColumns = ({
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            {category.isActive ? (
-              <DropdownMenuItem
-                className="text-destructive focus:text-destructive"
-                onClick={() => onDelete(category)}
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Nonaktifkan
-              </DropdownMenuItem>
-            ) : (
-              <DropdownMenuItem disabled>
-                <Trash2 className="mr-2 h-4 w-4" />
-                Sudah Nonaktif
-              </DropdownMenuItem>
-            )}
+            <DropdownMenuItem
+              className="text-destructive focus:text-destructive"
+              onClick={() => onDelete(category)}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Hapus
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

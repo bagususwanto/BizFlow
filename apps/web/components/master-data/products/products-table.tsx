@@ -14,6 +14,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   Badge,
 } from '@bizflow/ui';
 import { useState, useMemo } from 'react';
@@ -230,18 +232,20 @@ export function ProductsTable({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Aksi</DropdownMenuLabel>
                 <DropdownMenuItem asChild>
                   <Link href={`/master-data/products/${product.id}`}>
                     <Pencil className="mr-2 h-4 w-4" />
                     Edit
                   </Link>
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="text-destructive focus:text-destructive"
                   onClick={() => setProductToDelete(product)}
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
-                  {product.isActive ? 'Nonaktifkan' : 'Hapus'}
+                  Hapus
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

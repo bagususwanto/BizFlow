@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
-import { Loader2, RefreshCw } from 'lucide-react';
+import { Loader2, RefreshCw, Info } from 'lucide-react';
 import { toast } from 'sonner';
 
 import {
@@ -403,6 +403,19 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                       </FormControl>
                       <FormDescription>
                         Format: JPG, PNG, WEBP. Maksimal 5MB.
+                        {isEdit &&
+                          field.value &&
+                          field.value !== initialData?.imageUrl && (
+                            <div className="mt-3 flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 p-3 text-amber-800 dark:border-amber-900/50 dark:bg-amber-950/50 dark:text-amber-200">
+                              <Info className="mt-0.5 h-4 w-4 shrink-0" />
+                              <span className="text-sm">
+                                Foto yang baru diupload belum tersimpan. Jangan
+                                lupa klik tombol{' '}
+                                <strong>Simpan Perubahan</strong> di bawah agar
+                                foto terupdate.
+                              </span>
+                            </div>
+                          )}
                       </FormDescription>
                       <FormMessage />
                     </FormItem>

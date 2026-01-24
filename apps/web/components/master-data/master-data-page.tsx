@@ -15,8 +15,17 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  Button,
 } from '@bizflow/ui';
-import { Loader2, Trash2, Box, CheckCircle2, LayoutGrid } from 'lucide-react';
+import {
+  Loader2,
+  Trash2,
+  Box,
+  CheckCircle2,
+  LayoutGrid,
+  Plus,
+} from 'lucide-react';
+import Link from 'next/link';
 import {
   ColumnDef,
   SortingState,
@@ -153,50 +162,6 @@ export function MasterDataPage<
     }
   };
 
-  // Enhance columns with actions if needed (can also be passed in `columns` prop)
-  // But usually Delete action is common.
-  // For now, we assume `columns` passed in has the actions, OR we rely on `onDelete` to be passed to the columns definition generator.
-
-  // NOTE: For the generic Delete Dialog to work for single items, the Toolbar/Table needs to know about `setItemToDelete`.
-  // Since columns are passed in, the `Action` column needs access to `setItemToDelete`.
-  // We can't easily inject it into `columns` prop here.
-  // PROVIDER PATTERN or passing `setItemToDelete` to the `columns` factory function in the PARENT is better.
-  // So the PARENT `page.tsx` will define columns using `(item) => setRowSelection(item)`.
-
-  // Wait, `setItemToDelete` is local state here.
-  // OPTION 1: Lift state up to parent? No, we want to hide it.
-  // OPTION 2: Expose a helper or context? Overkill.
-  // OPTION 3: The parent defines columns, but we don't control the "Delete" button click inside the table cell.
-
-  // Actually, standardizing the Delete Dialog is tricky if the button is inside `columns`.
-  // Let's stick to: The Parent handles the "Delete Confirmation" too?
-  // NO, the goal is to minimalize.
-
-  // HACK: We can expose `setInternalItemToDelete` via a ref or callback? No.
-  // BETTER: `MasterDataPage` exposes a `useMasterData()` hook? No.
-
-  // Let's assume for now the Parent handles the "Delete Item State" if it wants custom columns.
-  // OR, we make `columns` a function that receives `{ onDelete: (item) => void }`.
-
-  // COMPROMISE: We will NOT handle the Single Delete Dialog state here for now,
-  // UNLESS we want to force a specific "Actions" column.
-  // Let's let the parent handle the Single Item Delete Dialog for maximum flexibility in the Actions column,
-  // BUT we will handle the BULK DELETE dialog here because that's on the Toolbar.
-
-  // WAIT, the prompt said "minimalist".
-  // If I want to clean up the parent, I should probably handle the dialogs here.
-  // Let's accept a `renderActions` prop? No.
-
-  // Let's stick to the plan: `MasterDataPage` handles the layout, toolbar, and BULK operations.
-  // Single item actions (Edit/Delete) are usually specific (e.g. specialized logic).
-  // However, I can provide a `ConfirmationDialog` component helper or similar.
-
-  // Let's assume for this step, I will handle Bulk Delete here.
-  // For Single Delete, I will leave it to the parent to pass an `onDelete` which triggers the actual mutation,
-  // but the *Confirmation Dialog* state might need to be in the parent to trigger it from the table row.
-
-  // ... Unless I pass `onDeleteItemClick` to the `columns` factory in the parent.
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -205,9 +170,12 @@ export function MasterDataPage<
           <p className="text-muted-foreground">{description}</p>
         </div>
         {createLink && (
-          <div className="md:hidden">
-            {/* Mobile Create Button if needed, or just rely on Toolbar */}
-          </div>
+          <Button asChild>
+            <Link href={createLink}>
+              <Plus className="mr-2 h-4 w-4" />
+              {createLabel || 'Tambah Baru'}
+            </Link>
+          </Button>
         )}
       </div>
 
@@ -251,8 +219,7 @@ export function MasterDataPage<
               })}
             columnVisibility={columnVisibility}
             onColumnVisibilityChange={setColumnVisibility}
-            createLink={createLink}
-            createLabel={createLabel}
+            // createLink/createLabel removed from here as we moved it up
             extraActions={
               Object.keys(rowSelection).length > 0 && onBulkDelete ? (
                 <div className="flex items-center gap-2 rounded-md bg-muted px-4 py-2">

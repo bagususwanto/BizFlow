@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
@@ -52,6 +53,7 @@ interface ProductFormProps {
 export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [activeTab, setActiveTab] = useState('info');
 
   const { data: categories = [], isLoading: isLoadingCategories } =
     useActiveCategories();
@@ -139,10 +141,45 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
     }
   };
 
+  const onInvalid = (errors: any) => {
+    const errorFields = Object.keys(errors);
+
+    const infoFields = [
+      'name',
+      'categoryId',
+      'unitId',
+      'sku',
+      'barcode',
+      'isService',
+    ];
+    if (infoFields.some((field) => errorFields.includes(field))) {
+      setActiveTab('info');
+      toast.error('Mohon lengkapi data pada tab Informasi Dasar');
+      return;
+    }
+
+    const pricingFields = ['costPrice', 'sellPrice', 'minStock'];
+    if (pricingFields.some((field) => errorFields.includes(field))) {
+      setActiveTab('pricing');
+      toast.error('Mohon lengkapi data pada tab Harga & Stok');
+      return;
+    }
+
+    const mediaFields = ['images', 'description', 'isActive'];
+    if (mediaFields.some((field) => errorFields.includes(field))) {
+      setActiveTab('media');
+      toast.error('Mohon lengkapi data pada tab Media & Lainnya');
+      return;
+    }
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <Tabs defaultValue="info" className="w-full">
+      <form
+        onSubmit={form.handleSubmit(onSubmit, onInvalid)}
+        className="space-y-8"
+      >
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList
             className={`grid w-full ${isEdit ? 'grid-cols-5 lg:w-[600px]' : 'grid-cols-3 lg:w-[400px]'}`}
           >

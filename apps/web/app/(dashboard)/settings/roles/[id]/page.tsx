@@ -13,7 +13,7 @@ import {
 } from '@bizflow/ui';
 import { useAuthStore } from '@/stores/auth.store';
 import { rolesService } from '@/services/roles.service';
-import { RoleForm } from '@/components/roles/role-form';
+import { RoleForm } from '@/components/core/roles/role-form';
 import type { UpdateRoleValues } from '@bizflow/types';
 
 export default function EditRolePage() {

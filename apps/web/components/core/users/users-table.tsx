@@ -30,7 +30,7 @@ import { toast } from 'sonner';
 import { User } from '@bizflow/types';
 
 import { usersService, UserWithUsage } from '@/services/users.service';
-import { DataTable } from '../ui/data-table';
+import { DataTable } from '../../ui/data-table';
 import { getColumns } from './columns';
 
 interface UsersTableProps {

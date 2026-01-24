@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@bizflow/ui';
-import { UserForm } from '@/components/users/user-form';
+import { UserForm } from '@/components/core/users/user-form';
 import { useUser } from '@/hooks';
 
 export default function EditUserPage() {

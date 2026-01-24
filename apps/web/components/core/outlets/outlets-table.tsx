@@ -21,7 +21,7 @@ import { Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { outletsService } from '@/services/outlets.service';
-import { DataTable } from '../ui/data-table';
+import { DataTable } from '../../ui/data-table';
 import { getColumns } from './columns';
 import type { Outlet } from '@/services/outlets.service';
 

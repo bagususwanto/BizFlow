@@ -10,7 +10,7 @@ import {
 } from '@bizflow/ui';
 import { Loader2 } from 'lucide-react';
 import { useOutlet } from '@/hooks';
-import { OutletForm } from '@/components/outlets/outlet-form';
+import { OutletForm } from '@/components/core/outlets/outlet-form';
 
 export default function EditOutletPage({
   params,

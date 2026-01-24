@@ -13,9 +13,9 @@ import {
   CardTitle,
 } from '@bizflow/ui';
 
-import { UsersTable } from '@/components/users/users-table';
-import { UsersToolbar } from '@/components/users/users-toolbar';
-import { UsersPagination } from '@/components/users/users-pagination';
+import { UsersTable } from '@/components/core/users/users-table';
+import { UsersToolbar } from '@/components/core/users/users-toolbar';
+import { UsersPagination } from '@/components/core/users/users-pagination';
 import { LoadingState } from '@/components/common/loading-state';
 import { ErrorState } from '@/components/common/error-state';
 import { useUsers } from '@/hooks';

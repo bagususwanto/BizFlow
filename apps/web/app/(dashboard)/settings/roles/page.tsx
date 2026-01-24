@@ -13,9 +13,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@bizflow/ui';
-import { RolesTable } from '@/components/roles/roles-table';
-import { RolesToolbar } from '@/components/roles/roles-toolbar';
-import { RolesPagination } from '@/components/roles/roles-pagination';
+import { RolesTable } from '@/components/core/roles/roles-table';
+import { RolesToolbar } from '@/components/core/roles/roles-toolbar';
+import { RolesPagination } from '@/components/core/roles/roles-pagination';
 import { ErrorState } from '@/components/common/error-state';
 import { LoadingState } from '@/components/common/loading-state';
 import { useRoles, useDebounce } from '@/hooks';

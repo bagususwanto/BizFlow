@@ -19,7 +19,7 @@ import { Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Role, rolesService } from '@/services/roles.service';
-import { DataTable } from '../ui/data-table';
+import { DataTable } from '../../ui/data-table';
 import { getColumns } from './columns';
 
 interface RolesTableProps {

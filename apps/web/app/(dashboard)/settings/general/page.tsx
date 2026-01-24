@@ -7,7 +7,7 @@ import {
   ReceiptSettingsForm,
   DisplaySettingsForm,
   GeneralSettingsForm,
-} from '@/components/settings';
+} from '@/components/core/settings';
 import { useGroupedSettings } from '@/hooks';
 import { LoadingState } from '@/components/common/loading-state';
 import { ErrorState } from '@/components/common/error-state';

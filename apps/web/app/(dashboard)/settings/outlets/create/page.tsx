@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@bizflow/ui';
-import { OutletForm } from '@/components/outlets/outlet-form';
+import { OutletForm } from '@/components/core/outlets/outlet-form';
 
 export default function CreateOutletPage() {
   return (

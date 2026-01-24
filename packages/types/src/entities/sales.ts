@@ -24,7 +24,7 @@ export interface Customer extends ActiveEntity {
 export interface CustomerListResponse {
   data: Customer[];
   meta: {
-    total: number;
+    totalItems: number;
     page: number;
     pageSize: number;
     totalPages: number;

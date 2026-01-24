@@ -51,6 +51,18 @@ export const navData = [
         icon: Package,
         permission: 'products:read',
       },
+      {
+        title: 'Pelanggan',
+        href: '/master-data/customers',
+        icon: Users,
+        permission: 'customers:read',
+      },
+      {
+        title: 'Satuan',
+        href: '/master-data/units',
+        icon: Package,
+        permission: 'units:read',
+      },
     ],
   },
   {

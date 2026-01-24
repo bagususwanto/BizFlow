@@ -23,9 +23,11 @@ import {
   PermissionType,
   Module,
   AuditAction,
+  ApiResponse,
 } from '@bizflow/types';
 import { CustomersService } from './customers.service';
 import { CreateCustomerDto, UpdateCustomerDto, QueryCustomersDto } from './dto';
+import { Prisma } from '@bizflow/database';
 
 @Controller('master-data/customers')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
@@ -34,7 +36,11 @@ export class CustomersController {
 
   @Get()
   @Permissions(Permission.Customers.Read)
-  async findAll(@Query() query: QueryCustomersDto) {
+  async findAll(
+    @Query() query: QueryCustomersDto,
+  ): Promise<
+    ApiResponse<Prisma.CustomerGetPayload<object>[]> & { summary?: any }
+  > {
     return this.customersService.findAll(query);
   }
 
@@ -53,7 +59,9 @@ export class CustomersController {
 
   @Get(':id')
   @Permissions(Permission.Customers.Read)
-  async findById(@Param('id') id: string) {
+  async findById(
+    @Param('id') id: string,
+  ): Promise<ApiResponse<Prisma.CustomerGetPayload<object>>> {
     return this.customersService.findById(id);
   }
 
@@ -75,7 +83,7 @@ export class CustomersController {
   async create(
     @Body() dto: CreateCustomerDto,
     @CurrentUser() user: JwtPayload,
-  ) {
+  ): Promise<ApiResponse<Prisma.CustomerGetPayload<object>>> {
     return this.customersService.create(dto, user.sub);
   }
 
@@ -91,7 +99,7 @@ export class CustomersController {
     @Param('id') id: string,
     @Body() dto: UpdateCustomerDto,
     @CurrentUser() user: JwtPayload,
-  ) {
+  ): Promise<ApiResponse<Prisma.CustomerGetPayload<object>>> {
     return this.customersService.update(id, dto, user.sub);
   }
 

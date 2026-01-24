@@ -11,6 +11,8 @@ import {
 
 import { PrismaService } from '../../../prisma';
 import { successResponse, paginatedResponse } from '../../../common/utils';
+import { Prisma, Customer } from '@bizflow/database';
+import { ApiResponse } from '@bizflow/types';
 
 @Injectable()
 export class CustomersService {
@@ -19,7 +21,11 @@ export class CustomersService {
   /**
    * Get all customers with pagination, filter, and summary
    */
-  async findAll(query: QueryCustomersValues) {
+  async findAll(
+    query: QueryCustomersValues,
+  ): Promise<
+    ApiResponse<Prisma.CustomerGetPayload<object>[]> & { summary?: any }
+  > {
     const {
       page = 1,
       pageSize = 10,
@@ -114,7 +120,9 @@ export class CustomersService {
   /**
    * Get a single customer by ID
    */
-  async findById(id: string) {
+  async findById(
+    id: string,
+  ): Promise<ApiResponse<Prisma.CustomerGetPayload<object>>> {
     const customer = await this.prisma.customer.findUnique({
       where: { id },
     });
@@ -152,7 +160,10 @@ export class CustomersService {
   /**
    * Create a new customer
    */
-  async create(dto: CreateCustomerValues, userId: string) {
+  async create(
+    dto: CreateCustomerValues,
+    userId: string,
+  ): Promise<ApiResponse<Prisma.CustomerGetPayload<object>>> {
     // Generate code if not provided
     let customerCode = dto.code;
     if (!customerCode) {
@@ -199,7 +210,11 @@ export class CustomersService {
   /**
    * Update an existing customer
    */
-  async update(id: string, dto: UpdateCustomerValues, userId: string) {
+  async update(
+    id: string,
+    dto: UpdateCustomerValues,
+    userId: string,
+  ): Promise<ApiResponse<Prisma.CustomerGetPayload<object>>> {
     const existing = await this.prisma.customer.findUnique({
       where: { id },
     });

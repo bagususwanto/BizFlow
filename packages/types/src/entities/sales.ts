@@ -21,6 +21,21 @@ export interface Customer extends ActiveEntity {
   priceLevelId?: string | null;
 }
 
+export interface CustomerListResponse {
+  data: Customer[];
+  meta: {
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  };
+  summary: {
+    totalCustomers: number;
+    activeCustomers: number;
+    inactiveCustomers: number;
+  };
+}
+
 // ========================================
 // Sales Order Entities
 // ========================================

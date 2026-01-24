@@ -1,17 +1,15 @@
 'use client';
 
-import { X, SlidersHorizontal } from 'lucide-react';
+import { ChevronDown, Search, Settings2, X } from 'lucide-react';
 import { OnChangeFn } from '@tanstack/react-table';
 
 import {
   Button,
-  Input,
   DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  Input,
   Select,
   SelectContent,
   SelectItem,
@@ -38,29 +36,36 @@ export function CustomersToolbar({
   status,
   onStatusChange,
 }: CustomersToolbarProps) {
-  const isFiltered = search.length > 0 || status !== 'all';
+  const isFiltered = search !== '' || status !== 'all';
+
+  const columns = [
+    { id: 'code', label: 'Kode' },
+    { id: 'name', label: 'Nama' },
+    { id: 'phone', label: 'Telepon' },
+    { id: 'email', label: 'Email' },
+    { id: 'creditLimit', label: 'Credit Limit' },
+    { id: 'isActive', label: 'Status' },
+  ];
 
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center">
-        <Input
-          placeholder="Cari pelanggan..."
-          value={search}
-          onChange={(event) => onSearchChange(event.target.value)}
-          className="h-8 w-full sm:w-[250px]"
-        />
+    <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-1 flex-col gap-2 md:flex-row md:items-center">
+        <div className="relative w-full md:w-[200px] lg:w-[300px]">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Cari pelanggan..."
+            value={search}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="pl-8 h-9"
+          />
+        </div>
 
         <Select value={status} onValueChange={onStatusChange}>
-          <SelectTrigger className="h-8 w-full sm:w-[150px]">
-            <div className="flex items-center gap-2">
-              <span className="text-muted-foreground hidden sm:inline-block">
-                Status:
-              </span>
-              <SelectValue placeholder="Status" />
-            </div>
+          <SelectTrigger className="h-9 w-full md:w-[150px]">
+            <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Semua</SelectItem>
+            <SelectItem value="all">Semua Status</SelectItem>
             <SelectItem value="active">Aktif</SelectItem>
             <SelectItem value="inactive">Non-aktif</SelectItem>
           </SelectContent>
@@ -70,81 +75,44 @@ export function CustomersToolbar({
           <Button
             variant="ghost"
             onClick={onReset}
-            className="h-8 px-2 lg:px-3"
+            className="h-9 px-2 lg:px-3"
           >
             Reset
             <X className="ml-2 h-4 w-4" />
           </Button>
         )}
-      </div>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className="ml-auto h-8 hidden lg:flex"
-          >
-            <SlidersHorizontal className="mr-2 h-4 w-4" />
-            Tampilan
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-[150px]">
-          <DropdownMenuLabel>Toggle kolom</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuCheckboxItem
-            checked={columnVisibility.code !== false}
-            onCheckedChange={(value) =>
-              onColumnVisibilityChange({ ...columnVisibility, code: value })
-            }
-          >
-            Kode
-          </DropdownMenuCheckboxItem>
-          <DropdownMenuCheckboxItem
-            checked={columnVisibility.name !== false}
-            onCheckedChange={(value) =>
-              onColumnVisibilityChange({ ...columnVisibility, name: value })
-            }
-          >
-            Nama
-          </DropdownMenuCheckboxItem>
-          <DropdownMenuCheckboxItem
-            checked={columnVisibility.phone !== false}
-            onCheckedChange={(value) =>
-              onColumnVisibilityChange({ ...columnVisibility, phone: value })
-            }
-          >
-            Telepon
-          </DropdownMenuCheckboxItem>
-          <DropdownMenuCheckboxItem
-            checked={columnVisibility.email !== false}
-            onCheckedChange={(value) =>
-              onColumnVisibilityChange({ ...columnVisibility, email: value })
-            }
-          >
-            Email
-          </DropdownMenuCheckboxItem>
-          <DropdownMenuCheckboxItem
-            checked={columnVisibility.creditLimit !== false}
-            onCheckedChange={(value) =>
-              onColumnVisibilityChange({
-                ...columnVisibility,
-                creditLimit: value,
-              })
-            }
-          >
-            Credit Limit
-          </DropdownMenuCheckboxItem>
-          <DropdownMenuCheckboxItem
-            checked={columnVisibility.isActive !== false}
-            onCheckedChange={(value) =>
-              onColumnVisibilityChange({ ...columnVisibility, isActive: value })
-            }
-          >
-            Status
-          </DropdownMenuCheckboxItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+        <div className="ml-auto flex items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="h-9">
+                <Settings2 className="mr-2 h-4 w-4" />
+                Kolom
+                <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {columns.map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={columnVisibility[column.id] !== false}
+                    onCheckedChange={(value) =>
+                      onColumnVisibilityChange({
+                        ...columnVisibility,
+                        [column.id]: !!value,
+                      })
+                    }
+                  >
+                    {column.label}
+                  </DropdownMenuCheckboxItem>
+                );
+              })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
     </div>
   );
 }

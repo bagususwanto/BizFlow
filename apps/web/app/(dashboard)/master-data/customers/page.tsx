@@ -1,24 +1,26 @@
 'use client';
 
-import { Suspense, useCallback, useState } from 'react';
+import { Suspense, useCallback, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Plus, Loader2 } from 'lucide-react';
-import {
-  Button,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@bizflow/ui';
-
-import { CustomersTable } from '@/components/master-data/customers/customers-table';
-import { CustomersToolbar } from '@/components/master-data/customers/customers-toolbar';
-import { CustomersPagination } from '@/components/master-data/customers/customers-pagination';
-import { LoadingState } from '@/components/common/loading-state';
+import { Loader2 } from 'lucide-react';
+import { useCustomers } from '@/hooks/use-customers';
+import { CustomersQuery } from '@/services/customers.service';
+import { Customer } from '@bizflow/types';
+import { MasterDataPage } from '@/components/master-data/master-data-page';
+import { getColumns } from '@/components/master-data/customers/columns';
 import { ErrorState } from '@/components/common/error-state';
-import { useCustomers } from '@/hooks';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@bizflow/ui';
+import { toast } from 'sonner';
 
 function CustomersContent() {
   const router = useRouter();
@@ -33,10 +35,14 @@ function CustomersContent() {
   const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'asc';
   const status = searchParams.get('status') || 'all';
 
-  // Local state for column visibility
-  const [columnVisibility, setColumnVisibility] = useState<
-    Record<string, boolean>
-  >({});
+  const queryParams: CustomersQuery = {
+    page,
+    pageSize,
+    search,
+    sortBy,
+    sortOrder,
+    isActive: status === 'all' ? undefined : status === 'active',
+  };
 
   const {
     customers,
@@ -46,17 +52,17 @@ function CustomersContent() {
     isError,
     deleteCustomer,
     isDeleting,
+    bulkDeleteCustomers,
+    isBulkDeleting,
     refetch,
-  } = useCustomers({
-    page,
-    pageSize,
-    search,
-    sortBy,
-    sortOrder,
-    isActive: status === 'all' ? undefined : status === 'active',
-  });
+  } = useCustomers(queryParams);
 
-  const createQueryString = useCallback(
+  // Delete Dialog State
+  const [customerToDelete, setCustomerToDelete] = useState<Customer | null>(
+    null,
+  );
+
+  const handleCreateQueryString = useCallback(
     (params: Record<string, string | number | null>) => {
       const newSearchParams = new URLSearchParams(searchParams.toString());
 
@@ -74,113 +80,143 @@ function CustomersContent() {
   );
 
   const updateUrl = (params: Record<string, string | number | null>) => {
-    const queryString = createQueryString(params);
+    const queryString = handleCreateQueryString(params);
     router.push(`${pathname}?${queryString}`);
   };
 
-  const handleSearchChange = (value: string) => {
-    updateUrl({ search: value, page: 1 });
+  const handleError = () => (
+    <ErrorState title="Gagal memuat data pelanggan" onRetry={() => refetch()} />
+  );
+
+  const handleBulkDelete = (ids: string[]) => {
+    bulkDeleteCustomers(ids, {
+      onSuccess: () => {
+        refetch();
+      },
+    });
   };
 
-  const handleStatusChange = (value: string) => {
-    updateUrl({ status: value, page: 1 });
-  };
+  const columns = useMemo(
+    () =>
+      getColumns({
+        onDelete: (customer) => setCustomerToDelete(customer),
+      }),
+    [],
+  );
 
-  const handleSortChange = (field: string) => {
-    if (sortBy === field) {
-      updateUrl({ sortOrder: sortOrder === 'asc' ? 'desc' : 'asc' });
-    } else {
-      updateUrl({ sortBy: field, sortOrder: 'asc' });
-    }
-  };
+  if (isError) return handleError();
 
-  const handlePageChange = (newPage: number) => {
-    updateUrl({ page: newPage });
+  const data = customers || [];
+  const metaData = meta || {
+    totalPages: 1,
+    totalItems: 0,
+    page: 1,
+    pageSize: 10,
   };
-
-  const handlePageSizeChange = (newSize: number) => {
-    updateUrl({ pageSize: newSize, page: 1 });
-  };
-
-  const handleReset = () => {
-    router.push(pathname);
-  };
-
-  if (isError) {
-    return (
-      <ErrorState
-        title="Gagal memuat data pelanggan"
-        onRetry={() => refetch()}
-      />
-    );
-  }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">Pelanggan</h2>
-          <p className="text-muted-foreground">
-            Manajemen data pelanggan dan credit limit.
-          </p>
-        </div>
-        <Button asChild>
-          <Link href="/master-data/customers/create">
-            <Plus className="mr-2 h-4 w-4" />
-            Tambah Pelanggan
-          </Link>
-        </Button>
-      </div>
+    <>
+      <MasterDataPage
+        title="Pelanggan"
+        description="Manajemen data pelanggan dan credit limit."
+        createLink="/master-data/customers/create"
+        createLabel="Tambah Pelanggan"
+        data={data}
+        columns={columns}
+        isLoading={isLoading}
+        // Pagination
+        page={page}
+        pageSize={pageSize}
+        totalPages={metaData.totalPages}
+        totalItems={metaData.totalItems}
+        onPageChange={(p) => updateUrl({ page: p })}
+        onPageSizeChange={(s) => updateUrl({ pageSize: s, page: 1 })}
+        summary={
+          summary
+            ? {
+                total: summary.totalCustomers,
+                active: summary.activeCustomers,
+                inactive: summary.inactiveCustomers,
+              }
+            : undefined
+        }
+        // Sorting
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        onSortChange={(field) => {
+          if (sortBy === field) {
+            updateUrl({ sortOrder: sortOrder === 'asc' ? 'desc' : 'asc' });
+          } else {
+            updateUrl({ sortBy: field, sortOrder: 'asc' });
+          }
+        }}
+        // Search
+        search={search}
+        onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
+        searchPlaceholder="Cari pelanggan..."
+        // Filters
+        filterValues={{ status }}
+        onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
+        onReset={() => router.push(pathname)}
+        filters={[
+          {
+            key: 'status',
+            label: 'Status',
+            options: [
+              { label: 'Aktif', value: 'active' },
+              { label: 'Non-aktif', value: 'inactive' },
+            ],
+            width: 'w-[150px]',
+          },
+        ]}
+        // Actions
+        onBulkDelete={handleBulkDelete}
+        isBulkDeleting={isBulkDeleting}
+        onRefresh={refetch}
+      />
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Daftar Pelanggan</CardTitle>
-          <CardDescription>
-            Menampilkan semua pelanggan yang terdaftar dalam sistem.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <CustomersToolbar
-            search={search}
-            onSearchChange={handleSearchChange}
-            columnVisibility={columnVisibility}
-            onColumnVisibilityChange={setColumnVisibility}
-            onReset={handleReset}
-            status={status}
-            onStatusChange={handleStatusChange}
-          />
-
-          {isLoading ? (
-            <div className="flex justify-center p-8">
-              <LoadingState />
-            </div>
-          ) : (
-            <>
-              <CustomersTable
-                data={customers || []}
-                onDelete={deleteCustomer}
-                isDeleting={isDeleting}
-                sortBy={sortBy}
-                sortOrder={sortOrder}
-                onSortChange={handleSortChange}
-                columnVisibility={columnVisibility}
-                onColumnVisibilityChange={setColumnVisibility}
-                onRefresh={refetch}
-              />
-
-              <CustomersPagination
-                page={page}
-                totalPages={meta?.totalPages || 1}
-                onPageChange={handlePageChange}
-                summary={summary}
-                pageSize={pageSize}
-                onPageSizeChange={handlePageSizeChange}
-              />
-            </>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+      {/* Single Delete Dialog */}
+      <AlertDialog
+        open={!!customerToDelete}
+        onOpenChange={(open) => !open && setCustomerToDelete(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {customerToDelete?.isActive ? 'Nonaktifkan' : 'Hapus'} Pelanggan?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Pelanggan{' '}
+              <span className="font-medium text-foreground">
+                {customerToDelete?.name}
+              </span>{' '}
+              akan {customerToDelete?.isActive ? 'dinonaktifkan' : 'dihapus'}.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Batal</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive hover:bg-destructive/80"
+              onClick={(e) => {
+                e.preventDefault();
+                if (customerToDelete) {
+                  deleteCustomer(customerToDelete.id, {
+                    onSuccess: () => setCustomerToDelete(null),
+                  });
+                }
+              }}
+              disabled={isDeleting}
+            >
+              {isDeleting
+                ? 'Memproses...'
+                : customerToDelete?.isActive
+                  ? 'Nonaktifkan'
+                  : 'Hapus'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
 

@@ -1,24 +1,24 @@
 'use client';
 
-import { Suspense, useCallback, useState } from 'react';
-import Link from 'next/link';
+import { Suspense, useCallback, useState, useMemo } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Plus, Loader2 } from 'lucide-react';
-import {
-  Button,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@bizflow/ui';
-
-import { UnitsTable } from '@/components/master-data/units/units-table';
-import { UnitsToolbar } from '@/components/master-data/units/units-toolbar';
-import { UnitsPagination } from '@/components/master-data/units/units-pagination';
-import { LoadingState } from '@/components/common/loading-state';
+import { Loader2 } from 'lucide-react';
+import { useUnits } from '@/hooks/use-units';
+import { UnitsQuery, UnitOfMeasure } from '@/services/units.service';
+import { MasterDataPage } from '@/components/master-data/master-data-page';
+import { getColumns } from '@/components/master-data/units/columns';
 import { ErrorState } from '@/components/common/error-state';
-import { useUnits } from '@/hooks';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@bizflow/ui';
+import { toast } from 'sonner';
 
 function UnitsContent() {
   const router = useRouter();
@@ -32,10 +32,13 @@ function UnitsContent() {
   const sortBy = searchParams.get('sortBy') || 'name';
   const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'asc';
 
-  // Local state for column visibility (doesn't need to be in URL)
-  const [columnVisibility, setColumnVisibility] = useState<
-    Record<string, boolean>
-  >({});
+  const queryParams: UnitsQuery = {
+    page,
+    pageSize,
+    search,
+    sortBy,
+    sortOrder,
+  };
 
   const {
     units,
@@ -45,16 +48,15 @@ function UnitsContent() {
     isError,
     deleteUnit,
     isDeleting,
+    bulkDeleteUnits,
+    isBulkDeleting,
     refetch,
-  } = useUnits({
-    page,
-    pageSize,
-    search,
-    sortBy,
-    sortOrder,
-  });
+  } = useUnits(queryParams);
 
-  const createQueryString = useCallback(
+  // Delete Dialog State (Local to Page to handle confirmation)
+  const [unitToDelete, setUnitToDelete] = useState<UnitOfMeasure | null>(null);
+
+  const handleCreateQueryString = useCallback(
     (params: Record<string, string | number | null>) => {
       const newSearchParams = new URLSearchParams(searchParams.toString());
 
@@ -72,104 +74,123 @@ function UnitsContent() {
   );
 
   const updateUrl = (params: Record<string, string | number | null>) => {
-    const queryString = createQueryString(params);
+    const queryString = handleCreateQueryString(params);
     router.push(`${pathname}?${queryString}`);
   };
 
-  const handleSearchChange = (value: string) => {
-    updateUrl({ search: value, page: 1 });
+  const handleError = () => (
+    <ErrorState title="Gagal memuat data satuan" onRetry={() => refetch()} />
+  );
+
+  const handleBulkDelete = (ids: string[]) => {
+    bulkDeleteUnits(ids, {
+      onSuccess: () => {
+        refetch();
+      },
+    });
   };
 
-  const handleSortChange = (field: string) => {
-    if (sortBy === field) {
-      updateUrl({ sortOrder: sortOrder === 'asc' ? 'desc' : 'asc' });
-    } else {
-      updateUrl({ sortBy: field, sortOrder: 'asc' });
-    }
-  };
+  const columns = useMemo(
+    () =>
+      getColumns({
+        onDelete: (unit) => setUnitToDelete(unit),
+      }),
+    [],
+  );
 
-  const handlePageChange = (newPage: number) => {
-    updateUrl({ page: newPage });
-  };
+  if (isError) return handleError();
 
-  const handlePageSizeChange = (newSize: number) => {
-    updateUrl({ pageSize: newSize, page: 1 });
+  const data = units || [];
+  const metaData = meta || {
+    totalPages: 1,
+    totalItems: 0,
+    page: 1,
+    pageSize: 10,
   };
-
-  const handleReset = () => {
-    router.push(pathname);
-  };
-
-  if (isError) {
-    return (
-      <ErrorState title="Gagal memuat data satuan" onRetry={() => refetch()} />
-    );
-  }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">Satuan</h2>
-          <p className="text-muted-foreground">
-            Manajemen satuan produk (Unit of Measure).
-          </p>
-        </div>
-        <Button asChild>
-          <Link href="/master-data/units/create">
-            <Plus className="mr-2 h-4 w-4" />
-            Tambah Satuan
-          </Link>
-        </Button>
-      </div>
+    <>
+      <MasterDataPage
+        title="Satuan"
+        description="Manajemen satuan produk (Unit of Measure)."
+        createLink="/master-data/units/create"
+        createLabel="Tambah Satuan"
+        data={data}
+        columns={columns}
+        isLoading={isLoading}
+        // Pagination
+        page={page}
+        pageSize={pageSize}
+        totalPages={metaData.totalPages}
+        totalItems={metaData.totalItems}
+        onPageChange={(p) => updateUrl({ page: p })}
+        onPageSizeChange={(s) => updateUrl({ pageSize: s, page: 1 })}
+        summary={
+          summary
+            ? {
+                total: summary.totalUnits,
+              }
+            : undefined
+        }
+        // Sorting
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        onSortChange={(field) => {
+          if (sortBy === field) {
+            updateUrl({ sortOrder: sortOrder === 'asc' ? 'desc' : 'asc' });
+          } else {
+            updateUrl({ sortBy: field, sortOrder: 'asc' });
+          }
+        }}
+        // Search
+        search={search}
+        onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
+        searchPlaceholder="Cari satuan..."
+        onReset={() => router.push(pathname)}
+        // No filters for Units currently based on existing implementation
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Daftar Satuan</CardTitle>
-          <CardDescription>
-            Menampilkan semua satuan yang terdaftar dalam sistem.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <UnitsToolbar
-            search={search}
-            onSearchChange={handleSearchChange}
-            columnVisibility={columnVisibility}
-            onColumnVisibilityChange={setColumnVisibility}
-            onReset={handleReset}
-          />
+        // Actions
+        onBulkDelete={handleBulkDelete}
+        isBulkDeleting={isBulkDeleting}
+        onRefresh={refetch}
+      />
 
-          {isLoading ? (
-            <div className="flex justify-center p-8">
-              <LoadingState />
-            </div>
-          ) : (
-            <>
-              <UnitsTable
-                data={units || []}
-                onDelete={deleteUnit}
-                isDeleting={isDeleting}
-                sortBy={sortBy}
-                sortOrder={sortOrder}
-                onSortChange={handleSortChange}
-                columnVisibility={columnVisibility}
-                onColumnVisibilityChange={setColumnVisibility}
-                onRefresh={refetch}
-              />
-
-              <UnitsPagination
-                page={page}
-                totalPages={meta?.totalPages || 1}
-                onPageChange={handlePageChange}
-                summary={summary}
-                pageSize={pageSize}
-                onPageSizeChange={handlePageSizeChange}
-              />
-            </>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+      {/* Single Delete Dialog */}
+      <AlertDialog
+        open={!!unitToDelete}
+        onOpenChange={(open) => !open && setUnitToDelete(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Hapus Satuan?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Satuan{' '}
+              <span className="font-medium text-foreground">
+                {unitToDelete?.name}
+              </span>{' '}
+              akan dihapus.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Batal</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive hover:bg-destructive/80"
+              onClick={(e) => {
+                e.preventDefault();
+                if (unitToDelete) {
+                  deleteUnit(unitToDelete.id, {
+                    onSuccess: () => setUnitToDelete(null),
+                  });
+                }
+              }}
+              disabled={isDeleting}
+            >
+              {isDeleting ? 'Memproses...' : 'Hapus'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
 

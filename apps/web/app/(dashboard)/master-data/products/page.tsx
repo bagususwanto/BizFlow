@@ -1,24 +1,29 @@
 'use client';
 
-import { Suspense, useCallback, useState } from 'react';
-import Link from 'next/link';
+import { Suspense, useCallback, useState, useMemo } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Plus, Loader2 } from 'lucide-react';
-import {
-  Button,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@bizflow/ui';
-import { ProductsTable } from '@/components/master-data/products/products-table';
-import { ProductsToolbar } from '@/components/master-data/products/products-toolbar';
-import { ProductsPagination } from '@/components/master-data/products/products-pagination';
-import { LoadingState } from '@/components/common/loading-state';
-import { ErrorState } from '@/components/common/error-state';
+import { Loader2 } from 'lucide-react';
 import { useProducts, useDeleteProduct } from '@/hooks/use-products';
+import {
+  productsService,
+  ProductWithRelations,
+} from '@/services/products.service'; // Fixed import
 import { QueryProductsValues } from '@bizflow/types';
+import { MasterDataPage } from '@/components/master-data/master-data-page';
+import { getColumns } from '@/components/master-data/products/columns';
+import { ErrorState } from '@/components/common/error-state';
+import { useActiveCategories } from '@/hooks/use-categories';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@bizflow/ui';
+import { toast } from 'sonner';
 
 function ProductsContent() {
   const router = useRouter();
@@ -34,10 +39,8 @@ function ProductsContent() {
   const sortBy = searchParams.get('sortBy') || 'name';
   const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'asc';
 
-  // Local state
-  const [columnVisibility, setColumnVisibility] = useState<
-    Record<string, boolean>
-  >({});
+  // Fetch Categories for Filter
+  const { data: categories = [] } = useActiveCategories();
 
   const queryParams: QueryProductsValues = {
     page,
@@ -58,6 +61,11 @@ function ProductsContent() {
   } = useProducts(queryParams);
 
   const deleteMutation = useDeleteProduct();
+
+  // Delete Dialog State (Local to Page to handle confirmation)
+  const [productToDelete, setProductToDelete] =
+    useState<ProductWithRelations | null>(null);
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
   const handleCreateQueryString = useCallback(
     (params: Record<string, string | number | null>) => {
@@ -81,125 +89,160 @@ function ProductsContent() {
     router.push(`${pathname}?${queryString}`);
   };
 
-  const handleSearchChange = (value: string) => {
-    updateUrl({ search: value, page: 1 });
-  };
+  const handleError = () => (
+    <ErrorState title="Gagal memuat data produk" onRetry={() => refetch()} />
+  );
 
-  const handleCategoryFilterChange = (value: string) => {
-    updateUrl({ categoryId: value, page: 1 });
-  };
-
-  const handleStatusFilterChange = (value: string) => {
-    updateUrl({ status: value, page: 1 });
-  };
-
-  const handleSortChange = (field: string) => {
-    if (sortBy === field) {
-      updateUrl({ sortOrder: sortOrder === 'asc' ? 'desc' : 'asc' });
-    } else {
-      updateUrl({ sortBy: field, sortOrder: 'asc' });
+  const handleBulkDelete = async (ids: string[]) => {
+    try {
+      setIsBulkDeleting(true);
+      // Assuming productsService is imported or define it here if not available in hooks
+      // We'll use the imported one or a direct call
+      const { productsService } = await import('@/services/products.service');
+      const response = await productsService.bulkDelete(ids);
+      const message =
+        (response as any).data?.message ||
+        `${ids.length} produk berhasil dinonaktifkan`;
+      toast.success(message);
+      refetch();
+    } catch (error: any) {
+      toast.error(
+        error instanceof Error ? error.message : 'Gagal menghapus produk',
+      );
+    } finally {
+      setIsBulkDeleting(false);
     }
   };
 
-  const handlePageChange = (newPage: number) => {
-    updateUrl({ page: newPage });
-  };
+  const columns = useMemo(
+    () =>
+      getColumns({
+        onDelete: (product) => setProductToDelete(product),
+      }),
+    [],
+  );
 
-  const handlePageSizeChange = (newSize: number) => {
-    updateUrl({ pageSize: newSize, page: 1 });
-  };
-
-  const handleReset = () => {
-    router.push(pathname);
-  };
-
-  if (isError) {
-    return (
-      <ErrorState title="Gagal memuat data produk" onRetry={() => refetch()} />
-    );
-  }
-
-  // Delete handler passed to table (now only handles actual delete mutation, dialog is in Table)
-  const handleDelete = (id: string) => {
-    deleteMutation.mutate(id);
-  };
+  if (isError) return handleError();
 
   const products = productsData?.data || [];
-  const meta = productsData?.meta;
+  const meta = productsData?.meta || {
+    totalPages: 1,
+    totalItems: 0,
+    page: 1,
+    pageSize: 10,
+  };
   const summary = productsData?.summary;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">Produk</h2>
-          <p className="text-muted-foreground">
-            Manajemen katalog produk dan jasa.
-          </p>
-        </div>
-        <Button asChild>
-          <Link href="/master-data/products/create">
-            <Plus className="mr-2 h-4 w-4" />
-            Tambah Produk
-          </Link>
-        </Button>
-      </div>
+    <>
+      <MasterDataPage
+        title="Produk"
+        description="Manajemen katalog produk dan jasa."
+        createLink="/master-data/products/create"
+        createLabel="Tambah Produk"
+        data={products}
+        columns={columns}
+        isLoading={isLoading}
+        // Pagination
+        page={page}
+        pageSize={pageSize}
+        totalPages={meta.totalPages}
+        totalItems={meta.totalItems}
+        onPageChange={(p) => updateUrl({ page: p })}
+        onPageSizeChange={(s) => updateUrl({ pageSize: s, page: 1 })}
+        summary={
+          summary
+            ? {
+                total: summary.totalProducts,
+                active: summary.activeProducts,
+                service: summary.serviceProducts,
+              }
+            : undefined
+        }
+        // Sorting
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        onSortChange={(field) => {
+          if (sortBy === field) {
+            updateUrl({ sortOrder: sortOrder === 'asc' ? 'desc' : 'asc' });
+          } else {
+            updateUrl({ sortBy: field, sortOrder: 'asc' });
+          }
+        }}
+        // Search & Filters
+        search={search}
+        onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
+        searchPlaceholder="Cari produk (Nama, SKU, Barcode)..."
+        filterValues={{ categoryId, status }}
+        onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
+        onReset={() => router.push(pathname)}
+        filters={[
+          {
+            key: 'categoryId',
+            label: 'Kategori',
+            options: categories.map((c) => ({ label: c.name, value: c.id })),
+            width: 'w-full md:w-[240px]',
+          },
+          {
+            key: 'status',
+            label: 'Status',
+            options: [
+              { label: 'Aktif', value: 'active' },
+              { label: 'Nonaktif', value: 'inactive' },
+            ],
+            width: 'w-full md:w-[150px]',
+          },
+        ]}
+        // Actions
+        onBulkDelete={handleBulkDelete}
+        isBulkDeleting={isBulkDeleting}
+        onRefresh={refetch}
+      />
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Daftar Produk</CardTitle>
-          <CardDescription>
-            Menampilkan semua produk yang terdaftar dalam sistem.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <ProductsToolbar
-            search={search}
-            onSearchChange={handleSearchChange}
-            categoryId={categoryId}
-            onCategoryFilterChange={handleCategoryFilterChange}
-            status={status}
-            onStatusFilterChange={handleStatusFilterChange}
-            columnVisibility={columnVisibility}
-            onColumnVisibilityChange={setColumnVisibility}
-            onReset={handleReset}
-          />
-
-          {isLoading ? (
-            <div className="flex justify-center p-8">
-              <LoadingState />
-            </div>
-          ) : (
-            <>
-              <ProductsTable
-                data={products}
-                isLoading={isLoading}
-                columnVisibility={columnVisibility}
-                onColumnVisibilityChange={setColumnVisibility}
-                onDelete={handleDelete}
-                isDeleting={deleteMutation.isPending}
-                sortBy={sortBy}
-                sortOrder={sortOrder}
-                onSortChange={handleSortChange}
-                onRefresh={refetch}
-              />
-
-              {meta && (
-                <ProductsPagination
-                  page={page}
-                  pageSize={pageSize}
-                  totalPages={meta.totalPages}
-                  totalItems={meta.totalItems}
-                  onPageChange={handlePageChange}
-                  onPageSizeChange={handlePageSizeChange}
-                  summary={summary}
-                />
-              )}
-            </>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+      {/* Single Delete Dialog - Kept here for custom message */}
+      <AlertDialog
+        open={!!productToDelete}
+        onOpenChange={(open) => !open && setProductToDelete(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {productToDelete?.isActive ? 'Nonaktifkan' : 'Hapus'} Produk?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Produk{' '}
+              <span className="font-medium text-foreground">
+                {productToDelete?.name}
+              </span>{' '}
+              akan {productToDelete?.isActive ? 'dinonaktifkan' : 'dihapus'}.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteMutation.isPending}>
+              Batal
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive hover:bg-destructive/80"
+              onClick={(e) => {
+                e.preventDefault();
+                if (productToDelete) {
+                  deleteMutation.mutate(productToDelete.id, {
+                    onSuccess: () => setProductToDelete(null),
+                  });
+                }
+              }}
+              disabled={deleteMutation.isPending}
+            >
+              {deleteMutation.isPending
+                ? 'Memproses...'
+                : productToDelete?.isActive
+                  ? 'Nonaktifkan'
+                  : 'Hapus'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
 

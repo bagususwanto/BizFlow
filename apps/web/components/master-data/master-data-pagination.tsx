@@ -1,6 +1,7 @@
 'use client';
 
-import { Users, CheckCircle, XCircle } from 'lucide-react';
+import { Box, CheckCircle2, XCircle, LayoutGrid } from 'lucide-react';
+
 import {
   Pagination,
   PaginationContent,
@@ -14,61 +15,84 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@bizflow/ui';
-import { CustomerListResponse } from '@bizflow/types';
 
-interface CustomersPaginationProps {
-  page: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-  summary?: CustomerListResponse['summary'];
-  pageSize: number;
-  onPageSizeChange: (pageSize: number) => void;
+export interface PaginationSummary {
+  total: number;
+  active?: number;
+  inactive?: number;
+  service?: number;
+  // Add more generic keys as needed
+  [key: string]: number | undefined;
 }
 
-export function CustomersPagination({
+interface MasterDataPaginationProps {
+  page: number;
+  totalPages: number;
+  totalItems: number;
+  onPageChange: (page: number) => void;
+  pageSize: number;
+  onPageSizeChange: (pageSize: number) => void;
+  summary?: PaginationSummary;
+}
+
+export function MasterDataPagination({
   page,
   totalPages,
+  totalItems,
   onPageChange,
-  summary,
   pageSize,
   onPageSizeChange,
-}: CustomersPaginationProps) {
+  summary,
+}: MasterDataPaginationProps) {
   return (
     <div className="flex flex-col gap-4 pt-4 md:flex-row md:items-center md:justify-between">
-      {/* Summary Section */}
+      {/* Summary Section - Bottom Left */}
       <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-        {summary && (
+        {summary ? (
           <>
             <div className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
+              <Box className="h-4 w-4" />
               <span>
                 Total:{' '}
                 <span className="font-medium text-foreground">
-                  {summary.totalCustomers}
+                  {summary.total ?? totalItems}
                 </span>
               </span>
             </div>
-            <Separator orientation="vertical" className="h-4" />
-            <div className="flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-green-500" />
-              <span>
-                Aktif:{' '}
-                <span className="font-medium text-foreground">
-                  {summary.activeCustomers}
-                </span>
-              </span>
-            </div>
-            <Separator orientation="vertical" className="h-4" />
-            <div className="flex items-center gap-2">
-              <XCircle className="h-4 w-4 text-red-500" />
-              <span>
-                Non-aktif:{' '}
-                <span className="font-medium text-foreground">
-                  {summary.inactiveCustomers}
-                </span>
-              </span>
-            </div>
+            {summary.active !== undefined && (
+              <>
+                <Separator orientation="vertical" className="h-4" />
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  <span>
+                    Aktif:{' '}
+                    <span className="font-medium text-foreground">
+                      {summary.active}
+                    </span>
+                  </span>
+                </div>
+              </>
+            )}
+            {summary.service !== undefined && (
+              <>
+                <Separator orientation="vertical" className="h-4" />
+                <div className="flex items-center gap-2">
+                  <LayoutGrid className="h-4 w-4 text-purple-500" />
+                  <span>
+                    Service:{' '}
+                    <span className="font-medium text-foreground">
+                      {summary.service}
+                    </span>
+                  </span>
+                </div>
+              </>
+            )}
           </>
+        ) : (
+          <span>
+            Total:{' '}
+            <span className="font-medium text-foreground">{totalItems}</span>
+          </span>
         )}
       </div>
 
@@ -94,7 +118,7 @@ export function CustomersPagination({
           </Select>
         </div>
 
-        {/* Pagination */}
+        {/* Pagination - Bottom Right */}
         <Pagination className="justify-end w-auto mx-0">
           <PaginationContent>
             <PaginationItem>

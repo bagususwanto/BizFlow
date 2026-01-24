@@ -5,6 +5,8 @@ import {
   ApiResponse,
   UnitListResponse,
 } from '@bizflow/types';
+
+export type { UnitOfMeasure };
 import { apiClient } from '@/lib/fetch-client';
 import { buildSearchParams } from '@/lib/utils';
 

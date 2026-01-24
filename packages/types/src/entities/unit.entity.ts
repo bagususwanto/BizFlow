@@ -30,7 +30,7 @@ export type UpdateUnitValues = Partial<CreateUnitValues>;
 export interface UnitListResponse {
   data: UnitOfMeasure[];
   meta: {
-    total: number;
+    totalItems: number;
     page: number;
     pageSize: number;
     totalPages: number;

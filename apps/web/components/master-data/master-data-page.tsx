@@ -225,10 +225,30 @@ export function MasterDataPage<
             filterValues={filterValues}
             onFilterChange={onFilterChange}
             onReset={onReset}
-            columns={columns.map((c) => ({
-              id: c.id as string,
-              label: String(c.header),
-            }))} // Simplified
+            columns={columns
+              .filter(
+                (c) =>
+                  c.id !== 'select' &&
+                  c.id !== 'actions' &&
+                  (c.enableHiding !== false || c.enableHiding === undefined),
+              )
+              .map((c) => {
+                // Try to get a meaningful label
+                let label = c.id;
+
+                if ((c.meta as any)?.title) {
+                  label = (c.meta as any).title;
+                } else if (typeof c.header === 'string') {
+                  label = c.header;
+                } else if ('accessorKey' in c) {
+                  label = String(c.accessorKey);
+                }
+
+                return {
+                  id: c.id || (c as any).accessorKey,
+                  label: label || 'Column',
+                };
+              })}
             columnVisibility={columnVisibility}
             onColumnVisibilityChange={setColumnVisibility}
             createLink={createLink}

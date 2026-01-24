@@ -72,6 +72,9 @@ export const getColumns = ({
     cell: ({ row }) => (
       <div className="font-medium">{row.getValue('name')}</div>
     ),
+    meta: {
+      title: 'Nama Satuan',
+    },
   },
   {
     accessorKey: 'symbol',
@@ -90,6 +93,9 @@ export const getColumns = ({
           ) : null}
         </Button>
       );
+    },
+    meta: {
+      title: 'Simbol',
     },
   },
   {
@@ -112,6 +118,9 @@ export const getColumns = ({
       );
     },
     cell: ({ row }) => row.original.baseUnit?.name || '-',
+    meta: {
+      title: 'Base Unit',
+    },
   },
   {
     accessorKey: 'conversionRate',

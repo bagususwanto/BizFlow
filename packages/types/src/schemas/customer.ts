@@ -4,7 +4,12 @@ const customerBaseSchema = z.object({
   code: z.string().optional(),
   name: z.string().min(1, 'Nama pelanggan wajib diisi'),
   phone: z.string().optional().nullable(),
-  email: z.string().email('Email tidak valid').optional().nullable(),
+  email: z
+    .string()
+    .email('Email tidak valid')
+    .or(z.literal(''))
+    .optional()
+    .nullable(),
   address: z.string().optional().nullable(),
   taxId: z.string().optional().nullable(),
   creditLimit: z

@@ -131,7 +131,7 @@ export function CustomerForm({
                 name="code"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Kode Pelanggan</FormLabel>
+                    <FormLabel optional>Kode Pelanggan</FormLabel>
                     <div className="flex gap-2">
                       <FormControl>
                         <Input
@@ -189,7 +189,7 @@ export function CustomerForm({
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel optional>Email</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
@@ -208,7 +208,7 @@ export function CustomerForm({
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Telepon</FormLabel>
+                    <FormLabel optional>Telepon</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="08123456789"
@@ -227,7 +227,7 @@ export function CustomerForm({
               name="address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Alamat</FormLabel>
+                  <FormLabel optional>Alamat</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Alamat lengkap"
@@ -246,7 +246,7 @@ export function CustomerForm({
                 name="taxId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>NPWP / Tax ID</FormLabel>
+                    <FormLabel optional>NPWP / Tax ID</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Nomor NPWP"
@@ -264,7 +264,7 @@ export function CustomerForm({
                 name="creditLimit"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Credit Limit (Rp)</FormLabel>
+                    <FormLabel optional>Credit Limit (Rp)</FormLabel>
                     <FormControl>
                       <Input
                         type="number"

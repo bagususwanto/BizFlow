@@ -120,9 +120,9 @@ export function SettingsToolbar({
             value={filterValues[filter.key] ?? filter.defaultValue ?? 'all'}
             onValueChange={(value) => onFilterChange?.(filter.key, value)}
           >
-            <SelectTrigger className={filter.width || 'w-full md:w-[150px]'}>
+            <SelectTrigger className={filter.width || 'w-full md:w-[180px]'}>
               <div className="flex items-center">
-                <span className="mr-2 hidden lg:inline-block">
+                <span className="mr-2 hidden lg:inline-block whitespace-nowrap">
                   {filter.label}:
                 </span>
                 <SelectValue placeholder={`Pilih ${filter.label}`} />

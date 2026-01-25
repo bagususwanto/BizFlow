@@ -159,7 +159,7 @@ function RolesContent() {
               { label: 'System', value: 'true' },
               { label: 'Custom', value: 'false' },
             ],
-            width: 'w-[150px]',
+            width: 'w-[220px]',
           },
         ]}
         // Actions

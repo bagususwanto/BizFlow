@@ -22,7 +22,7 @@ export interface PaginationSummary {
   inactive?: number;
   service?: number;
   // Add more generic keys as needed
-  [key: string]: number | undefined;
+  [key: string]: string | number | undefined;
 }
 
 interface SettingsPaginationProps {
@@ -87,6 +87,18 @@ export function SettingsPagination({
                 </div>
               </>
             )}
+            {/* Render other keys dynamically */}
+            {Object.entries(summary)
+              .filter(([key]) => !['total', 'active', 'service'].includes(key))
+              .map(([key, value]) => (
+                <div key={key} className="flex items-center gap-2">
+                  <Separator orientation="vertical" className="h-4" />
+                  <span className="capitalize">
+                    {key.replace(/([A-Z])/g, ' $1').trim()}:{' '}
+                    <span className="font-medium text-foreground">{value}</span>
+                  </span>
+                </div>
+              ))}
           </>
         ) : (
           <span>

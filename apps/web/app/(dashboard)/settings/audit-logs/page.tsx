@@ -1,24 +1,16 @@
 'use client';
 
-import { Suspense, useCallback, useState } from 'react';
+import { Suspense, useCallback, useState, useMemo } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import {
-  Button,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@bizflow/ui';
-import { AuditLogsTable } from '@/components/audit-logs/audit-logs-table';
-import { AuditLogsToolbar } from '@/components/audit-logs/audit-logs-toolbar';
-import { AuditLogsPagination } from '@/components/audit-logs/audit-logs-pagination';
+import { Button } from '@bizflow/ui';
 import { AuditLogDetailSheet } from '@/components/audit-logs/audit-log-detail-sheet';
 import { ErrorState } from '@/components/common/error-state';
-import { LoadingState } from '@/components/common/loading-state';
 import { useAuditLogs, useDebounce } from '@/hooks';
 import { AuditLog } from '@/services/audit-logs.service';
-import { Download } from 'lucide-react';
+import { Download, Loader2 } from 'lucide-react';
+import { SettingsPage } from '@/components/settings/settings-page';
+import { getColumns } from '@/components/audit-logs/columns';
+import { AVAILABLE_MODULES, AVAILABLE_ACTIONS } from '@bizflow/types';
 
 function AuditLogsContent() {
   const router = useRouter();
@@ -46,18 +38,6 @@ function AuditLogsContent() {
 
   const [selectedLog, setSelectedLog] = useState<AuditLog | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
-
-  // Local state for column visibility
-  const [columnVisibility, setColumnVisibility] = useState<
-    Record<string, boolean>
-  >({
-    time: true,
-    user: true,
-    module: true,
-    action: true,
-    entity: true,
-    ipAddress: true,
-  });
 
   const debouncedSearch = useDebounce(search, 500);
 
@@ -96,51 +76,11 @@ function AuditLogsContent() {
     router.push(`${pathname}?${queryString}`);
   };
 
-  const handleSearchChange = (value: string) => {
-    updateUrl({ search: value, page: 1 });
-  };
-
-  const handleModuleFilterChange = (value: string) => {
-    updateUrl({ module: value, page: 1 });
-  };
-
-  const handleActionFilterChange = (value: string) => {
-    updateUrl({ action: value, page: 1 });
-  };
-
   const handleDateRangeChange = (start?: Date, end?: Date) => {
     updateUrl({
       startDate: start ? start.toISOString() : null,
       endDate: end ? end.toISOString() : null,
       page: 1,
-    });
-  };
-
-  const handleSortChange = (field: string) => {
-    if (sortBy === field) {
-      updateUrl({ sortOrder: sortOrder === 'asc' ? 'desc' : 'asc' });
-    } else {
-      updateUrl({ sortBy: field, sortOrder: 'asc' });
-    }
-  };
-
-  const handlePageChange = (newPage: number) => {
-    updateUrl({ page: newPage });
-  };
-
-  const handlePageSizeChange = (newSize: number) => {
-    updateUrl({ pageSize: newSize, page: 1 });
-  };
-
-  const handleReset = () => {
-    router.push(pathname);
-    setColumnVisibility({
-      time: true,
-      user: true,
-      module: true,
-      action: true,
-      entity: true,
-      ipAddress: true,
     });
   };
 
@@ -150,89 +90,123 @@ function AuditLogsContent() {
     );
   }
 
-  const totalPages = meta?.totalPages || 1;
+  const columns = useMemo(
+    () =>
+      getColumns({
+        onViewDetail: (log) => {
+          setSelectedLog(log);
+          setIsDetailOpen(true);
+        },
+      }),
+    [],
+  );
+
+  const data = auditLogs || [];
+  const metaData = meta || {
+    totalPages: 1,
+    totalItems: 0,
+    page: 1,
+    pageSize: 10,
+  };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">Audit Logs</h2>
-          <p className="text-muted-foreground">
-            Monitor dan pelacakan aktivitas pengguna dalam sistem.
-          </p>
-        </div>
-        <Button variant="outline">
-          <Download className="mr-2 h-4 w-4" />
-          Export Log
-        </Button>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Riwayat Aktivitas</CardTitle>
-          <CardDescription>
-            Menampilkan daftar lengkap aktivitas yang tercatat oleh sistem.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <AuditLogsToolbar
-            search={search}
-            onSearchChange={handleSearchChange}
-            moduleFilter={moduleFilter}
-            onModuleFilterChange={handleModuleFilterChange}
-            actionFilter={actionFilter}
-            onActionFilterChange={handleActionFilterChange}
-            startDate={startDate}
-            endDate={endDate}
-            onDateRangeChange={handleDateRangeChange}
-            onReset={handleReset}
-            columnVisibility={columnVisibility}
-            onColumnVisibilityChange={setColumnVisibility}
-          />
-
-          {isLoading ? (
-            <div className="flex justify-center p-8">
-              <LoadingState />
-            </div>
-          ) : (
-            <>
-              <AuditLogsTable
-                data={auditLogs || []}
-                onViewDetail={(log) => {
-                  setSelectedLog(log);
-                  setIsDetailOpen(true);
-                }}
-                columnVisibility={columnVisibility}
-                sortBy={sortBy}
-                sortOrder={sortOrder}
-                onSortChange={handleSortChange}
-              />
-
-              <AuditLogsPagination
-                page={page}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-                summary={summary}
-                pageSize={pageSize}
-                onPageSizeChange={handlePageSizeChange}
-              />
-            </>
-          )}
-        </CardContent>
-      </Card>
+    <>
+      <SettingsPage
+        title="Audit Logs"
+        description="Monitor dan pelacakan aktivitas pengguna dalam sistem."
+        data={data}
+        columns={columns}
+        isLoading={isLoading}
+        // Pagination
+        page={page}
+        pageSize={pageSize}
+        totalPages={metaData.totalPages}
+        totalItems={metaData.totalItems}
+        onPageChange={(p) => updateUrl({ page: p })}
+        onPageSizeChange={(s) => updateUrl({ pageSize: s, page: 1 })}
+        summary={
+          summary
+            ? {
+                total: summary.totalLogs,
+                'Log Hari Ini': summary.logsToday,
+                'User Unik': summary.uniqueUsers,
+                'Top Module': summary.topModules?.[0]
+                  ? `${summary.topModules[0].module} (${summary.topModules[0].count})`
+                  : '-',
+              }
+            : undefined
+        }
+        // Sorting
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        onSortChange={(field) => {
+          if (sortBy === field) {
+            updateUrl({ sortOrder: sortOrder === 'asc' ? 'desc' : 'asc' });
+          } else {
+            updateUrl({ sortBy: field, sortOrder: 'asc' });
+          }
+        }}
+        // Search
+        search={search}
+        onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
+        searchPlaceholder="Cari ID Entity..."
+        // Filters
+        filterValues={{ module: moduleFilter, action: actionFilter }}
+        onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
+        filters={[
+          {
+            key: 'module',
+            label: 'Module',
+            options: AVAILABLE_MODULES.map((module) => ({
+              value: module,
+              label: module.charAt(0).toUpperCase() + module.slice(1),
+            })),
+            width: 'w-[150px]',
+          },
+          {
+            key: 'action',
+            label: 'Aksi',
+            options: AVAILABLE_ACTIONS.map((action) => ({
+              value: action,
+              label: action.charAt(0).toUpperCase() + action.slice(1),
+            })),
+            width: 'w-[150px]',
+          },
+        ]}
+        // Date Range
+        startDate={startDate}
+        endDate={endDate}
+        onDateRangeChange={handleDateRangeChange}
+        // Reset
+        onReset={() => router.push(pathname)}
+        // Extra Actions
+        extraActions={
+          <Button variant="outline">
+            <Download className="mr-2 h-4 w-4" />
+            Export Log
+          </Button>
+        }
+        onRefresh={refetch}
+      />
 
       <AuditLogDetailSheet
         log={selectedLog}
         open={isDetailOpen}
         onOpenChange={setIsDetailOpen}
       />
-    </div>
+    </>
   );
 }
 
 export default function AuditLogsPage() {
   return (
-    <Suspense fallback={<LoadingState />}>
+    <Suspense
+      fallback={
+        <div className="flex justify-center p-8">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      }
+    >
       <AuditLogsContent />
     </Suspense>
   );

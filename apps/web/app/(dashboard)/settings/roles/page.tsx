@@ -20,7 +20,7 @@ import { getColumns } from '@/components/core/roles/columns';
 import { ErrorState } from '@/components/common/error-state';
 import { useRoles, useDebounce } from '@/hooks';
 import { Role, rolesService } from '@/services/roles.service';
-import { SettingsPage } from '@/components/core/settings-page';
+import { SettingsPage } from '@/components/settings/settings-page';
 
 function RolesContent() {
   const router = useRouter();

@@ -29,7 +29,7 @@ import { ErrorState } from '@/components/common/error-state';
 import { useUsers } from '@/hooks';
 import { usersService, UserWithUsage } from '@/services/users.service';
 import { User } from '@bizflow/types';
-import { SettingsPage } from '@/components/core/settings-page';
+import { SettingsPage } from '@/components/settings/settings-page';
 
 function UsersContent() {
   const router = useRouter();

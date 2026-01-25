@@ -53,6 +53,11 @@ interface SettingsPageProps<TData> {
   onFilterChange?: (key: string, value: string) => void;
   onReset?: () => void;
 
+  // Date Range
+  startDate?: Date;
+  endDate?: Date;
+  onDateRangeChange?: (startDate?: Date, endDate?: Date) => void;
+
   // Pagination
   page: number;
   pageSize: number;
@@ -70,6 +75,7 @@ interface SettingsPageProps<TData> {
   onBulkDelete?: (ids: string[]) => void;
   isBulkDeleting?: boolean;
   onRefresh?: () => void;
+  extraActions?: ReactNode;
 
   // Custom Rendering (Optional)
   renderCustomView?: (props: any) => ReactNode;
@@ -94,6 +100,9 @@ export function SettingsPage<
   filterValues,
   onFilterChange,
   onReset,
+  startDate,
+  endDate,
+  onDateRangeChange,
   page,
   pageSize,
   totalPages,
@@ -108,6 +117,7 @@ export function SettingsPage<
   onBulkDelete,
   isBulkDeleting,
   onRefresh,
+  extraActions,
   renderCustomView,
 }: SettingsPageProps<TData>) {
   // Local State for interactive table features
@@ -181,6 +191,9 @@ export function SettingsPage<
             filters={filters}
             filterValues={filterValues}
             onFilterChange={onFilterChange}
+            startDate={startDate}
+            endDate={endDate}
+            onDateRangeChange={onDateRangeChange}
             onReset={onReset}
             columns={columns
               .filter(
@@ -208,22 +221,24 @@ export function SettingsPage<
               })}
             columnVisibility={columnVisibility}
             onColumnVisibilityChange={setColumnVisibility}
-            // createLink/createLabel removed from here as we moved it up
             extraActions={
-              Object.keys(rowSelection).length > 0 && onBulkDelete ? (
-                <div className="flex items-center gap-2 rounded-md bg-muted px-4 py-2">
-                  <span className="text-sm font-medium">
-                    {Object.keys(rowSelection).length} dipilih
-                  </span>
-                  <button
-                    onClick={() => setShowBulkDeleteDialog(true)}
-                    className="text-destructive hover:text-destructive/80 text-sm font-medium flex items-center"
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Hapus
-                  </button>
-                </div>
-              ) : null
+              <>
+                {extraActions}
+                {Object.keys(rowSelection).length > 0 && onBulkDelete ? (
+                  <div className="flex items-center gap-2 rounded-md bg-muted px-4 py-2">
+                    <span className="text-sm font-medium">
+                      {Object.keys(rowSelection).length} dipilih
+                    </span>
+                    <button
+                      onClick={() => setShowBulkDeleteDialog(true)}
+                      className="text-destructive hover:text-destructive/80 text-sm font-medium flex items-center"
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Hapus
+                    </button>
+                  </div>
+                ) : null}
+              </>
             }
           />
 

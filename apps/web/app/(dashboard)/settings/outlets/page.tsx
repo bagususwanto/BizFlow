@@ -23,7 +23,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { useOutlets } from '@/hooks';
 import { getColumns } from '@/components/core/outlets/columns';
-import { SettingsPage } from '@/components/core/settings-page';
+import { SettingsPage } from '@/components/settings/settings-page';
 import { Outlet } from '@/services/outlets.service';
 
 function OutletsContent() {

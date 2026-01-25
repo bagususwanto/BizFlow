@@ -1,7 +1,15 @@
 'use client';
 
-import { Suspense, useCallback, useState } from 'react';
+import { Suspense, useCallback, useState, useMemo } from 'react';
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
   Button,
   Card,
   CardContent,
@@ -14,9 +22,9 @@ import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { useOutlets } from '@/hooks';
-import { OutletsTable } from '@/components/core/outlets/outlets-table';
-import { OutletsToolbar } from '@/components/core/outlets/outlets-toolbar';
-import { OutletsPagination } from '@/components/core/outlets/outlets-pagination';
+import { getColumns } from '@/components/core/outlets/columns';
+import { SettingsPage } from '@/components/core/settings-page';
+import { Outlet } from '@/services/outlets.service';
 
 function OutletsContent() {
   const router = useRouter();
@@ -37,14 +45,6 @@ function OutletsContent() {
       | 'userCount') || 'name';
   const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'asc';
 
-  // Local state for column visibility
-  const [columnVisibility, setColumnVisibility] = useState<
-    Record<string, boolean>
-  >({
-    address: true,
-    phone: true,
-  });
-
   // Debounce search input would be better but keeping simple for now
   const {
     outlets,
@@ -53,6 +53,8 @@ function OutletsContent() {
     isLoading,
     deleteOutlet,
     isDeleting,
+    bulkDeleteOutlets,
+    isBulkDeleting,
     refetch,
   } = useOutlets({
     page,
@@ -63,6 +65,9 @@ function OutletsContent() {
     sortBy,
     sortOrder,
   });
+
+  // Local state
+  const [outletToDelete, setOutletToDelete] = useState<Outlet | null>(null);
 
   const createQueryString = useCallback(
     (params: Record<string, string | number | null>) => {
@@ -86,100 +91,153 @@ function OutletsContent() {
     router.push(`${pathname}?${queryString}`);
   };
 
-  const handleSortChange = (field: string) => {
-    if (field === sortBy) {
-      updateUrl({ sortOrder: sortOrder === 'asc' ? 'desc' : 'asc' });
-    } else {
-      updateUrl({ sortBy: field, sortOrder: 'asc' });
-    }
+  const handleBulkDelete = (ids: string[]) => {
+    bulkDeleteOutlets(ids, {
+      onSuccess: () => {
+        refetch();
+      },
+    });
   };
 
-  const handleSearchChange = (value: string) => {
-    updateUrl({ search: value, page: 1 });
-  };
+  const columns = useMemo(
+    () =>
+      getColumns({
+        onDelete: setOutletToDelete,
+      }),
+    [],
+  );
 
-  const handleStatusFilterChange = (value: string) => {
-    updateUrl({ status: value, page: 1 });
-  };
-
-  const handlePageChange = (newPage: number) => {
-    updateUrl({ page: newPage });
-  };
-
-  const handlePageSizeChange = (newSize: number) => {
-    updateUrl({ pageSize: newSize, page: 1 });
-  };
-
-  const handleReset = () => {
-    router.push(pathname);
+  const data = outlets || [];
+  const metaData = meta || {
+    totalPages: 1,
+    totalItems: 0,
+    page: 1,
+    pageSize: 10,
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">Outlet</h2>
-          <p className="text-muted-foreground">
-            Kelola data outlet dan cabang perusahaan.
-          </p>
-        </div>
-        <Button asChild>
-          <Link href="/settings/outlets/create">
-            <Plus className="mr-2 h-4 w-4" />
-            Tambah Outlet
-          </Link>
-        </Button>
-      </div>
+    <>
+      <SettingsPage
+        title="Outlet"
+        description="Kelola data outlet dan cabang perusahaan."
+        createLink="/settings/outlets/create"
+        createLabel="Tambah Outlet"
+        data={data}
+        columns={columns}
+        isLoading={isLoading}
+        // Pagination
+        page={page}
+        pageSize={pageSize}
+        totalPages={metaData.totalPages}
+        totalItems={metaData.totalItems}
+        onPageChange={(p) => updateUrl({ page: p })}
+        onPageSizeChange={(s) => updateUrl({ pageSize: s, page: 1 })}
+        summary={
+          summary
+            ? {
+                total: summary.totalOutlets,
+                active: summary.activeOutlets,
+                inactive: summary.inactiveOutlets,
+              }
+            : undefined
+        }
+        // Sorting
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        onSortChange={(field) => {
+          if (sortBy === field) {
+            updateUrl({ sortOrder: sortOrder === 'asc' ? 'desc' : 'asc' });
+          } else {
+            updateUrl({ sortBy: field, sortOrder: 'asc' });
+          }
+        }}
+        // Search
+        search={search}
+        onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
+        searchPlaceholder="Cari outlet..."
+        // Filters
+        filterValues={{ status }}
+        onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
+        onReset={() => router.push(pathname)}
+        filters={[
+          {
+            key: 'status',
+            label: 'Status',
+            options: [
+              { label: 'Aktif', value: 'active' },
+              { label: 'Non-aktif', value: 'inactive' },
+            ],
+            width: 'w-[150px]',
+          },
+        ]}
+        // Actions
+        onBulkDelete={handleBulkDelete}
+        isBulkDeleting={isBulkDeleting}
+        onRefresh={refetch}
+        onDelete={(id) => {
+          const outlet = data.find((o) => o.id === id);
+          if (outlet) setOutletToDelete(outlet);
+        }}
+      />
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Daftar Outlet</CardTitle>
-          <CardDescription>
-            Menampilkan semua outlet yang terdaftar dalam sistem.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <OutletsToolbar
-            search={search}
-            onSearchChange={handleSearchChange}
-            status={status}
-            onStatusFilterChange={handleStatusFilterChange}
-            columnVisibility={columnVisibility}
-            onColumnVisibilityChange={setColumnVisibility}
-            onReset={handleReset}
-          />
-
-          {isLoading ? (
-            <div className="flex justify-center p-8">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-            </div>
-          ) : (
-            <>
-              <OutletsTable
-                data={outlets || []}
-                onDelete={deleteOutlet}
-                isDeleting={isDeleting}
-                sortBy={sortBy}
-                sortOrder={sortOrder}
-                onSortChange={handleSortChange}
-                columnVisibility={columnVisibility}
-                onColumnVisibilityChange={setColumnVisibility}
-                onRefresh={refetch}
-              />
-
-              <OutletsPagination
-                page={page}
-                totalPages={meta?.totalPages || 1}
-                onPageChange={handlePageChange}
-                summary={summary}
-                pageSize={pageSize}
-                onPageSizeChange={handlePageSizeChange}
-              />
-            </>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+      {/* Delete Dialog */}
+      <AlertDialog
+        open={!!outletToDelete}
+        onOpenChange={(open) => !open && setOutletToDelete(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {(outletToDelete?.transactionCount || 0) > 0
+                ? 'Nonaktifkan Outlet?'
+                : 'Hapus Outlet?'}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {(outletToDelete?.transactionCount || 0) > 0 ? (
+                <>
+                  Outlet{' '}
+                  <span className="font-medium text-foreground">
+                    {outletToDelete?.name}
+                  </span>{' '}
+                  akan dinonaktifkan karena memiliki riwayat transaksi. Data
+                  outlet tetap tersimpan.
+                </>
+              ) : (
+                <>
+                  Outlet{' '}
+                  <span className="font-medium text-foreground">
+                    {outletToDelete?.name}
+                  </span>{' '}
+                  akan dihapus secara permanen. Tindakan ini tidak dapat
+                  dibatalkan.
+                </>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Batal</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive hover:bg-destructive/80 "
+              onClick={(e) => {
+                e.preventDefault();
+                if (outletToDelete) {
+                  deleteOutlet(outletToDelete.id, {
+                    onSuccess: () => setOutletToDelete(null),
+                  });
+                }
+              }}
+              disabled={isDeleting}
+            >
+              {isDeleting
+                ? 'Memproses...'
+                : (outletToDelete?.transactionCount || 0) > 0
+                  ? 'Nonaktifkan'
+                  : 'Hapus'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
 

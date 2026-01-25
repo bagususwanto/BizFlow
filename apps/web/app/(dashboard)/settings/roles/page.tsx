@@ -1,24 +1,26 @@
 'use client';
 
-import { Suspense, useCallback, useState } from 'react';
-import { Plus, Loader2 } from 'lucide-react';
+import { Suspense, useCallback, useState, useMemo } from 'react';
+import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-
 import {
-  Button,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from '@bizflow/ui';
-import { RolesTable } from '@/components/core/roles/roles-table';
-import { RolesToolbar } from '@/components/core/roles/roles-toolbar';
-import { RolesPagination } from '@/components/core/roles/roles-pagination';
+import { toast } from 'sonner';
+
+import { getColumns } from '@/components/core/roles/columns';
 import { ErrorState } from '@/components/common/error-state';
-import { LoadingState } from '@/components/common/loading-state';
 import { useRoles, useDebounce } from '@/hooks';
+import { Role, rolesService } from '@/services/roles.service';
+import { SettingsPage } from '@/components/core/settings-page';
 
 function RolesContent() {
   const router = useRouter();
@@ -32,11 +34,6 @@ function RolesContent() {
   const isSystemRole = searchParams.get('isSystemRole') || 'all';
   const sortBy = searchParams.get('sortBy') || 'name';
   const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'asc';
-
-  // Local state for column visibility
-  const [columnVisibility, setColumnVisibility] = useState<
-    Record<string, boolean>
-  >({});
 
   const debouncedSearch = useDebounce(search, 500);
 
@@ -57,6 +54,10 @@ function RolesContent() {
     sortBy,
     sortOrder,
   });
+
+  // Local state
+  const [roleToDelete, setRoleToDelete] = useState<Role | null>(null);
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
   const createQueryString = useCallback(
     (params: Record<string, string | number | null>) => {
@@ -80,33 +81,22 @@ function RolesContent() {
     router.push(`${pathname}?${queryString}`);
   };
 
-  const handleSearchChange = (value: string) => {
-    updateUrl({ search: value, page: 1 });
-  };
-
-  const handleRoleTypeChange = (value: string) => {
-    updateUrl({ isSystemRole: value, page: 1 });
-  };
-
-  const handleSortChange = (field: string) => {
-    if (sortBy === field) {
-      updateUrl({ sortOrder: sortOrder === 'asc' ? 'desc' : 'asc' });
-    } else {
-      updateUrl({ sortBy: field, sortOrder: 'asc' });
+  const handleBulkDelete = async (ids: string[]) => {
+    try {
+      setIsBulkDeleting(true);
+      await rolesService.bulkDelete(ids);
+      toast.success(`${ids.length} role berhasil dihapus`);
+      refetch();
+    } catch (error: any) {
+      toast.error(
+        error instanceof Error ? error.message : 'Gagal menghapus role',
+      );
+    } finally {
+      setIsBulkDeleting(false);
     }
   };
 
-  const handlePageChange = (newPage: number) => {
-    updateUrl({ page: newPage });
-  };
-
-  const handlePageSizeChange = (newSize: number) => {
-    updateUrl({ pageSize: newSize, page: 1 });
-  };
-
-  const handleReset = () => {
-    router.push(pathname);
-  };
+  const columns = useMemo(() => getColumns({ onDelete: setRoleToDelete }), []);
 
   if (isError) {
     return (
@@ -115,73 +105,131 @@ function RolesContent() {
   }
 
   const totalPages = meta?.totalPages || 1;
+  const totalItems = meta?.totalItems || 0;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">Peran & Akses</h2>
-          <p className="text-muted-foreground">
-            Kelola hak akses pengguna aplikasi sesuai perannya.
-          </p>
-        </div>
-        <Button asChild>
-          <Link href="/settings/roles/create">
-            <Plus className="mr-2 h-4 w-4" />
-            Tambah Peran
-          </Link>
-        </Button>
-      </div>
+    <>
+      <SettingsPage
+        title="Peran & Akses"
+        description="Kelola hak akses pengguna aplikasi sesuai perannya."
+        createLink="/settings/roles/create"
+        createLabel="Tambah Peran"
+        data={roles || []}
+        columns={columns}
+        isLoading={isLoading}
+        // Pagination
+        page={page}
+        pageSize={pageSize}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        onPageChange={(p) => updateUrl({ page: p })}
+        onPageSizeChange={(s) => updateUrl({ pageSize: s, page: 1 })}
+        summary={
+          summary
+            ? {
+                total: summary.totalRoles,
+                // Roles summary might have specific fields, but assuming generic structure or using total
+              }
+            : undefined
+        }
+        // Sorting
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        onSortChange={(field) => {
+          if (sortBy === field) {
+            updateUrl({ sortOrder: sortOrder === 'asc' ? 'desc' : 'asc' });
+          } else {
+            updateUrl({ sortBy: field, sortOrder: 'asc' });
+          }
+        }}
+        // Search
+        search={search} // Note: search here is the immediate value, but useRoles uses debounced.
+        // If we want immediate feedback in input, we use 'search'.
+        onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
+        searchPlaceholder="Cari peran..."
+        // Filters
+        filterValues={{ isSystemRole }}
+        onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
+        onReset={() => router.push(pathname)}
+        filters={[
+          {
+            key: 'isSystemRole',
+            label: 'Tipe Role',
+            options: [
+              { label: 'System', value: 'true' },
+              { label: 'Custom', value: 'false' },
+            ],
+            width: 'w-[150px]',
+          },
+        ]}
+        // Actions
+        onBulkDelete={handleBulkDelete}
+        isBulkDeleting={isBulkDeleting}
+        onRefresh={refetch}
+        onDelete={(id) => {
+          const role = roles?.find((r) => r.id === id);
+          if (role) setRoleToDelete(role);
+        }}
+      />
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Daftar Peran</CardTitle>
-          <CardDescription>
-            Menampilkan semua peran yang tersedia beserta jumlah penggunanya.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <RolesToolbar
-            search={search}
-            onSearchChange={handleSearchChange}
-            roleType={isSystemRole}
-            onRoleTypeChange={handleRoleTypeChange}
-            columnVisibility={columnVisibility}
-            onColumnVisibilityChange={setColumnVisibility}
-            onReset={handleReset}
-          />
-
-          {isLoading ? (
-            <div className="flex justify-center p-8">
-              <LoadingState />
-            </div>
-          ) : (
-            <>
-              <RolesTable
-                data={roles || []}
-                onDelete={(id) => deleteRole(id)}
-                isDeleting={isDeleting}
-                sortBy={sortBy}
-                sortOrder={sortOrder}
-                onSortChange={handleSortChange}
-                columnVisibility={columnVisibility}
-                onColumnVisibilityChange={setColumnVisibility}
-                onRefresh={refetch}
-              />
-
-              <RolesPagination
-                page={page}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-                summary={summary}
-                pageSize={pageSize}
-                onPageSizeChange={handlePageSizeChange}
-              />
-            </>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+      {/* Single Delete Dialog */}
+      <AlertDialog
+        open={!!roleToDelete}
+        onOpenChange={(open) => !open && setRoleToDelete(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {(roleToDelete?.userCount || 0) > 0
+                ? 'Gagal Menghapus'
+                : 'Hapus Role?'}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {(roleToDelete?.userCount || 0) > 0 ? (
+                <>
+                  Role{' '}
+                  <span className="font-medium text-foreground">
+                    {roleToDelete?.name}
+                  </span>{' '}
+                  sedang digunakan oleh {roleToDelete?.userCount} user. Silakan
+                  ganti role user terlebih dahulu.
+                </>
+              ) : (
+                <>
+                  Role{' '}
+                  <span className="font-medium text-foreground">
+                    {roleToDelete?.name}
+                  </span>{' '}
+                  akan dihapus secara permanen. Tindakan ini tidak dapat
+                  dibatalkan.
+                </>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>
+              {(roleToDelete?.userCount || 0) > 0 ? 'Tutup' : 'Batal'}
+            </AlertDialogCancel>
+            {(roleToDelete?.userCount || 0) === 0 && (
+              <AlertDialogAction
+                className="bg-destructive hover:bg-destructive/80 "
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (roleToDelete) {
+                    deleteRole(roleToDelete.id, {
+                      onSuccess: () => setRoleToDelete(null),
+                    });
+                  }
+                }}
+                disabled={isDeleting}
+              >
+                {isDeleting ? 'Menghapus...' : 'Hapus'}
+              </AlertDialogAction>
+            )}
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
 

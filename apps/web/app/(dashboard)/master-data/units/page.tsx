@@ -129,6 +129,8 @@ function UnitsContent() {
           summary
             ? {
                 total: summary.totalUnits,
+                baseUnits: summary.baseUnits,
+                derivedUnits: summary.derivedUnits,
               }
             : undefined
         }

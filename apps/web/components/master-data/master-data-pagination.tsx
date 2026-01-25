@@ -21,6 +21,8 @@ export interface PaginationSummary {
   active?: number;
   inactive?: number;
   service?: number;
+  baseUnits?: number;
+  derivedUnits?: number;
   // Add more generic keys as needed
   [key: string]: number | undefined;
 }
@@ -59,6 +61,34 @@ export function MasterDataPagination({
                 </span>
               </span>
             </div>
+            {summary.baseUnits !== undefined && (
+              <>
+                <Separator orientation="vertical" className="h-4" />
+                <div className="flex items-center gap-2">
+                  <Box className="h-4 w-4 text-blue-500" />
+                  <span>
+                    Base:{' '}
+                    <span className="font-medium text-foreground">
+                      {summary.baseUnits}
+                    </span>
+                  </span>
+                </div>
+              </>
+            )}
+            {summary.derivedUnits !== undefined && (
+              <>
+                <Separator orientation="vertical" className="h-4" />
+                <div className="flex items-center gap-2">
+                  <Box className="h-4 w-4 text-orange-500" />
+                  <span>
+                    Turunan:{' '}
+                    <span className="font-medium text-foreground">
+                      {summary.derivedUnits}
+                    </span>
+                  </span>
+                </div>
+              </>
+            )}
             {summary.active !== undefined && (
               <>
                 <Separator orientation="vertical" className="h-4" />

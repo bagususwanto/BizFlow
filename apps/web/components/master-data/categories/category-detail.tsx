@@ -36,6 +36,7 @@ import { id as idLocale } from 'date-fns/locale';
 interface CategoryDetailProps {
   category?: CategoryWithRelations;
   isLoading?: boolean;
+  isDeleting?: boolean;
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
 }
@@ -43,6 +44,7 @@ interface CategoryDetailProps {
 export function CategoryDetail({
   category,
   isLoading,
+  isDeleting,
   onEdit,
   onDelete,
 }: CategoryDetailProps) {
@@ -123,14 +125,76 @@ export function CategoryDetail({
                 onClick={() => setDeleteDialogOpen(true)}
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                Hapus
+                {category.isActive ? 'Nonaktifkan' : 'Hapus'}
               </Button>
               <DeleteConfirmDialog
                 open={deleteDialogOpen}
                 onOpenChange={setDeleteDialogOpen}
-                title="Apakah anda yakin?"
-                description="Tindakan ini tidak dapat dibatalkan. Kategori ini akan dihapus secara permanen dari sistem."
+                title={
+                  category.isActive
+                    ? 'Nonaktifkan Kategori?'
+                    : (category.productCount || 0) > 0 ||
+                        (category.childrenCount || 0) > 0
+                      ? 'Kategori Tidak Dapat Dihapus'
+                      : 'Hapus Kategori Permanen?'
+                }
+                description={
+                  category.isActive ? (
+                    <>
+                      Kategori{' '}
+                      <span className="font-medium text-foreground">
+                        {category.name}
+                      </span>{' '}
+                      akan dinonaktifkan. Data kategori tetap tersimpan.
+                    </>
+                  ) : (category.productCount || 0) > 0 ||
+                    (category.childrenCount || 0) > 0 ? (
+                    <>
+                      Kategori{' '}
+                      <span className="font-medium text-foreground">
+                        {category.name}
+                      </span>{' '}
+                      tidak dapat dihapus secara permanen karena masih memiliki{' '}
+                      {(category.productCount || 0) > 0 &&
+                        `${category.productCount} produk`}
+                      {(category.productCount || 0) > 0 &&
+                        (category.childrenCount || 0) > 0 &&
+                        ' dan '}
+                      {(category.childrenCount || 0) > 0 &&
+                        `${category.childrenCount} sub-kategori`}
+                      . Silakan kosongkan atau hapus item di dalamnya terlebih
+                      dahulu.
+                    </>
+                  ) : (
+                    <>
+                      <p>
+                        Kategori{' '}
+                        <span className="font-medium text-foreground">
+                          {category.name}
+                        </span>{' '}
+                        akan dihapus secara permanen. Tindakan ini tidak dapat
+                        dibatalkan.
+                      </p>
+                    </>
+                  )
+                }
+                confirmLabel={
+                  category.isActive ? 'Nonaktifkan' : 'Hapus Permanen'
+                }
+                cancelLabel={
+                  !category.isActive &&
+                  ((category.productCount || 0) > 0 ||
+                    (category.childrenCount || 0) > 0)
+                    ? 'Tutup'
+                    : 'Batal'
+                }
+                showConfirm={
+                  category.isActive ||
+                  ((category.productCount || 0) === 0 &&
+                    (category.childrenCount || 0) === 0)
+                }
                 onConfirm={() => onDelete(category.id)}
+                isDeleting={isDeleting}
               />
             </>
           )}

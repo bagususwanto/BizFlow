@@ -431,33 +431,42 @@ export class CategoriesService {
       throw new NotFoundException('Kategori tidak ditemukan');
     }
 
-    // If has children, cannot delete
-    if (category._count.children > 0) {
-      throw new BadRequestException(
-        `Kategori '${category.name}' memiliki ${category._count.children} sub-kategori. Hapus sub-kategori terlebih dahulu.`,
-      );
-    }
+    // Logic:
+    // 1. If Active -> Deactivate (Soft Delete)
+    // 2. If Inactive -> Try to Hard Delete (check dependencies first)
 
-    // Check if category has any products - prevent deletion
-    if (category._count.products > 0) {
-      // Soft delete (deactivate) instead
+    if (category.isActive) {
       await this.prisma.category.update({
         where: { id },
         data: { isActive: false },
       });
 
       return successResponse({
-        message: `Kategori '${category.name}' dinonaktifkan karena memiliki ${category._count.products} produk`,
+        message: `Kategori '${category.name}' berhasil dinonaktifkan`,
+        isHardDelete: false,
       });
     }
 
-    // If no products and no children, we can safely delete
+    // If category is inactive, try hard delete
+    if (category._count.children > 0) {
+      throw new ConflictException(
+        `Kategori '${category.name}' tidak dapat dihapus permanen karena memiliki ${category._count.children} sub-kategori. Hapus sub-kategori terlebih dahulu.`,
+      );
+    }
+
+    if (category._count.products > 0) {
+      throw new ConflictException(
+        `Kategori '${category.name}' tidak dapat dihapus permanen karena memiliki ${category._count.products} produk. Hanya bisa dinonaktifkan.`,
+      );
+    }
+
+    // Safe to hard delete
     await this.prisma.category.delete({
       where: { id },
     });
 
     return successResponse({
-      message: `Kategori '${category.name}' berhasil dihapus`,
+      message: `Kategori '${category.name}' berhasil dihapus permanen`,
     });
   }
 
@@ -468,20 +477,64 @@ export class CategoriesService {
     // Validate all categories exist
     const categories = await this.prisma.category.findMany({
       where: { id: { in: ids } },
+      include: {
+        _count: {
+          select: { products: true, children: true },
+        },
+      },
     });
 
     if (categories.length !== ids.length) {
       throw new NotFoundException('Beberapa kategori tidak ditemukan');
     }
 
-    // Deactivate categories
-    const result = await this.prisma.category.updateMany({
-      where: { id: { in: ids } },
-      data: { isActive: false },
-    });
+    let hardDeleteCount = 0;
+    let softDeleteCount = 0;
+    let skippedCount = 0;
+
+    for (const category of categories) {
+      if (category.isActive) {
+        // Case 1: Active -> Soft Delete (Deactivate)
+        await this.prisma.category.update({
+          where: { id: category.id },
+          data: { isActive: false },
+        });
+        softDeleteCount++;
+      } else {
+        // Case 2: Inactive -> Try Hard Delete
+        const hasChildren = category._count.children > 0;
+        const hasProducts = category._count.products > 0;
+
+        if (hasChildren || hasProducts) {
+          skippedCount++;
+        } else {
+          // Safe to hard delete
+          await this.prisma.category.delete({
+            where: { id: category.id },
+          });
+          hardDeleteCount++;
+        }
+      }
+    }
+
+    const messages: string[] = [];
+    if (hardDeleteCount > 0) {
+      messages.push(`${hardDeleteCount} kategori dihapus permanen`);
+    }
+    if (softDeleteCount > 0) {
+      messages.push(`${softDeleteCount} kategori dinonaktifkan`);
+    }
+    if (skippedCount > 0) {
+      messages.push(
+        `${skippedCount} kategori dilewati (memiliki produk/sub-kategori)`,
+      );
+    }
 
     return successResponse({
-      message: `${result.count} kategori berhasil dinonaktifkan`,
+      message: messages.join(', '),
+      hardDeleteCount,
+      softDeleteCount,
+      skippedCount,
     });
   }
 

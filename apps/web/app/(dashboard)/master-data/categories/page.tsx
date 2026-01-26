@@ -37,7 +37,8 @@ function CategoriesContent() {
   );
 
   // Delete hook
-  const { mutate: deleteCategory } = useDeleteCategory();
+  const { mutate: deleteCategory, isPending: isDeletingCategory } =
+    useDeleteCategory();
 
   // Reorder hook
   const { mutate: reorderCategory } = useReorderCategory();
@@ -171,7 +172,8 @@ function CategoriesContent() {
             <CategoryDetail
               category={selectedCategory}
               isLoading={isDetailLoading}
-              onEdit={(id) => router.push(`/master-data/categories/${id}/edit`)}
+              isDeleting={isDeletingCategory}
+              onEdit={(id) => router.push(`/master-data/categories/${id}`)}
               onDelete={handleDelete}
             />
           </div>

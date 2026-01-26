@@ -12,8 +12,10 @@ import {
   Badge,
   Checkbox,
 } from '@bizflow/ui';
-import { MoreHorizontal, Edit, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
+import { MoreHorizontal, Edit, Trash2 } from 'lucide-react';
 import Link from 'next/link';
+
+import { DataTableColumnHeader } from '@/components/ui/data-table-column-header';
 
 interface ColumnsProps {
   onDelete: (customer: Customer) => void;
@@ -43,39 +45,15 @@ export const getColumns = ({
   },
   {
     accessorKey: 'code',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Kode
-          {column.getIsSorted() === 'asc' ? (
-            <ArrowUp className="ml-2 h-4 w-4" />
-          ) : column.getIsSorted() === 'desc' ? (
-            <ArrowDown className="ml-2 h-4 w-4" />
-          ) : null}
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Kode" />
+    ),
   },
   {
     accessorKey: 'name',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Nama Pelanggan
-          {column.getIsSorted() === 'asc' ? (
-            <ArrowUp className="ml-2 h-4 w-4" />
-          ) : column.getIsSorted() === 'desc' ? (
-            <ArrowDown className="ml-2 h-4 w-4" />
-          ) : null}
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Nama Pelanggan" />
+    ),
   },
   {
     accessorKey: 'phone',

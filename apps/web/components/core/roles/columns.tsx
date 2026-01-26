@@ -2,14 +2,9 @@
 
 import Link from 'next/link';
 import { ColumnDef } from '@tanstack/react-table';
-import {
-  ArrowUp,
-  ArrowDown,
-  MoreHorizontal,
-  Pencil,
-  Trash2,
-  Users,
-} from 'lucide-react';
+import { MoreHorizontal, Pencil, Trash2, Users } from 'lucide-react';
+
+import { DataTableColumnHeader } from '@/components/ui/data-table-column-header';
 
 import {
   Badge,
@@ -52,22 +47,9 @@ export const getColumns = ({
   },
   {
     accessorKey: 'name',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="-ml-4"
-        >
-          Nama Role
-          {column.getIsSorted() === 'asc' ? (
-            <ArrowUp className="ml-2 h-4 w-4" />
-          ) : column.getIsSorted() === 'desc' ? (
-            <ArrowDown className="ml-2 h-4 w-4" />
-          ) : null}
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Nama Role" />
+    ),
     cell: ({ row }) => {
       const role = row.original;
       return (
@@ -84,42 +66,16 @@ export const getColumns = ({
   },
   {
     accessorKey: 'description',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="-ml-4"
-        >
-          Deskripsi
-          {column.getIsSorted() === 'asc' ? (
-            <ArrowUp className="ml-2 h-4 w-4" />
-          ) : column.getIsSorted() === 'desc' ? (
-            <ArrowDown className="ml-2 h-4 w-4" />
-          ) : null}
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Deskripsi" />
+    ),
     cell: ({ row }) => row.getValue('description') || '-',
   },
   {
     accessorKey: 'userCount',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="-ml-4"
-        >
-          Pengguna
-          {column.getIsSorted() === 'asc' ? (
-            <ArrowUp className="ml-2 h-4 w-4" />
-          ) : column.getIsSorted() === 'desc' ? (
-            <ArrowDown className="ml-2 h-4 w-4" />
-          ) : null}
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Pengguna" />
+    ),
     cell: ({ row }) => (
       <div className="flex items-center gap-1 text-muted-foreground">
         <Users className="h-3 w-3" />
@@ -129,22 +85,9 @@ export const getColumns = ({
   },
   {
     accessorKey: 'updatedAt',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="-ml-4"
-        >
-          Update Terakhir
-          {column.getIsSorted() === 'asc' ? (
-            <ArrowUp className="ml-2 h-4 w-4" />
-          ) : column.getIsSorted() === 'desc' ? (
-            <ArrowDown className="ml-2 h-4 w-4" />
-          ) : null}
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Update Terakhir" />
+    ),
     cell: ({ row }) => {
       return new Date(row.original.updatedAt).toLocaleDateString('id-ID', {
         day: 'numeric',

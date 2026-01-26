@@ -1,13 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import {
-  MoreHorizontal,
-  Pencil,
-  Trash2,
-  ArrowUp,
-  ArrowDown,
-} from 'lucide-react';
+import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import {
   Badge,
@@ -22,6 +16,7 @@ import {
 } from '@bizflow/ui';
 import { ProductWithRelations } from '@/services/products.service';
 import { formatCurrency, getImageUrl } from '@/lib/utils';
+import { DataTableColumnHeader } from '@/components/ui/data-table-column-header';
 
 interface GetColumnsProps {
   onDelete: (product: ProductWithRelations) => void;
@@ -79,22 +74,9 @@ export const getColumns = ({
   },
   {
     accessorKey: 'sku',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="-ml-4"
-        >
-          SKU
-          {column.getIsSorted() === 'asc' ? (
-            <ArrowUp className="ml-2 h-4 w-4" />
-          ) : column.getIsSorted() === 'desc' ? (
-            <ArrowDown className="ml-2 h-4 w-4" />
-          ) : null}
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="SKU" />
+    ),
     cell: ({ row }) => (
       <span className="font-mono font-medium">{row.getValue('sku')}</span>
     ),
@@ -110,22 +92,9 @@ export const getColumns = ({
   },
   {
     accessorKey: 'name',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="-ml-4"
-        >
-          Nama Produk
-          {column.getIsSorted() === 'asc' ? (
-            <ArrowUp className="ml-2 h-4 w-4" />
-          ) : column.getIsSorted() === 'desc' ? (
-            <ArrowDown className="ml-2 h-4 w-4" />
-          ) : null}
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Nama Produk" />
+    ),
     cell: ({ row }) => (
       <div className="flex flex-col gap-1">
         <span className="font-medium">{row.getValue('name')}</span>
@@ -167,22 +136,9 @@ export const getColumns = ({
   },
   {
     accessorKey: 'sellPrice',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="-ml-4"
-        >
-          Harga Jual
-          {column.getIsSorted() === 'asc' ? (
-            <ArrowUp className="ml-2 h-4 w-4" />
-          ) : column.getIsSorted() === 'desc' ? (
-            <ArrowDown className="ml-2 h-4 w-4" />
-          ) : null}
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Harga Jual" />
+    ),
     cell: ({ row }) => {
       const price = Number(row.getValue('sellPrice'));
       return <div className="font-medium">{formatCurrency(price)}</div>;
@@ -190,22 +146,9 @@ export const getColumns = ({
   },
   {
     accessorKey: 'minStock',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="-ml-4"
-        >
-          Min. Stok
-          {column.getIsSorted() === 'asc' ? (
-            <ArrowUp className="ml-2 h-4 w-4" />
-          ) : column.getIsSorted() === 'desc' ? (
-            <ArrowDown className="ml-2 h-4 w-4" />
-          ) : null}
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Min. Stok" />
+    ),
     cell: ({ row }) => {
       if (row.original.isService)
         return <span className="text-muted-foreground">-</span>;
@@ -226,22 +169,9 @@ export const getColumns = ({
   },
   {
     accessorKey: 'isActive',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="-ml-4"
-        >
-          Status
-          {column.getIsSorted() === 'asc' ? (
-            <ArrowUp className="ml-2 h-4 w-4" />
-          ) : column.getIsSorted() === 'desc' ? (
-            <ArrowDown className="ml-2 h-4 w-4" />
-          ) : null}
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
     cell: ({ row }) => {
       const isActive = row.getValue('isActive') as boolean;
       return (

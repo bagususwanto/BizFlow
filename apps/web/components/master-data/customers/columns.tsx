@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
   Button,
   Badge,
+  Checkbox,
 } from '@bizflow/ui';
 import { MoreHorizontal, Edit, Trash2, ArrowUpDown } from 'lucide-react';
 import Link from 'next/link';
@@ -26,21 +27,17 @@ export const getColumns = ({
   {
     id: 'select',
     header: ({ table }) => (
-      <input
-        type="checkbox"
+      <Checkbox
         checked={table.getIsAllPageRowsSelected()}
-        onChange={(e) => table.toggleAllPageRowsSelected(!!e.target.checked)}
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
-        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
       />
     ),
     cell: ({ row }) => (
-      <input
-        type="checkbox"
+      <Checkbox
         checked={row.getIsSelected()}
-        onChange={(e) => row.toggleSelected(!!e.target.checked)}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
-        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
       />
     ),
     enableSorting: false,

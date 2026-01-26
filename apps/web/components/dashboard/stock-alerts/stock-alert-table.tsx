@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge, Button } from '@bizflow/ui';
+import { Badge, Button, Checkbox } from '@bizflow/ui';
 import { ShoppingCart } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
@@ -59,10 +59,11 @@ export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
         id: 'select',
         header: ({ table }) => (
           <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
+            <Checkbox
               checked={table.getIsAllPageRowsSelected()}
-              onChange={table.getToggleAllPageRowsSelectedHandler()}
+              onCheckedChange={(value) =>
+                table.toggleAllPageRowsSelected(!!value)
+              }
               className="translate-y-[2px]"
             />
             {/* Added explicit text as per wireframe implication, standard DataTable usually just has checkbox */}
@@ -70,10 +71,9 @@ export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
           </div>
         ),
         cell: ({ row }) => (
-          <input
-            type="checkbox"
+          <Checkbox
             checked={row.getIsSelected()}
-            onChange={row.getToggleSelectedHandler()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
             className="translate-y-[2px]"
           />
         ),

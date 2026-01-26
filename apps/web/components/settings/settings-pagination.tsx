@@ -1,6 +1,13 @@
 'use client';
 
-import { Box, CheckCircle2, LayoutGrid } from 'lucide-react';
+import {
+  Box,
+  CheckCircle2,
+  LayoutGrid,
+  Shield,
+  UserCog,
+  Users,
+} from 'lucide-react';
 
 import {
   Pagination,
@@ -21,6 +28,9 @@ export interface PaginationSummary {
   active?: number;
   inactive?: number;
   service?: number;
+  systemRoles?: number;
+  customRoles?: number;
+  totalUsersAssigned?: number;
   // Add more generic keys as needed
   [key: string]: string | number | undefined;
 }
@@ -59,6 +69,48 @@ export function SettingsPagination({
                 </span>
               </span>
             </div>
+            {summary.systemRoles !== undefined && (
+              <>
+                <Separator orientation="vertical" className="h-4" />
+                <div className="flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-blue-500" />
+                  <span>
+                    System:{' '}
+                    <span className="font-medium text-foreground">
+                      {summary.systemRoles}
+                    </span>
+                  </span>
+                </div>
+              </>
+            )}
+            {summary.customRoles !== undefined && (
+              <>
+                <Separator orientation="vertical" className="h-4" />
+                <div className="flex items-center gap-2">
+                  <UserCog className="h-4 w-4 text-orange-500" />
+                  <span>
+                    Custom:{' '}
+                    <span className="font-medium text-foreground">
+                      {summary.customRoles}
+                    </span>
+                  </span>
+                </div>
+              </>
+            )}
+            {summary.totalUsersAssigned !== undefined && (
+              <>
+                <Separator orientation="vertical" className="h-4" />
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4 text-green-500" />
+                  <span>
+                    Assigned Users:{' '}
+                    <span className="font-medium text-foreground">
+                      {summary.totalUsersAssigned}
+                    </span>
+                  </span>
+                </div>
+              </>
+            )}
             {summary.active !== undefined && (
               <>
                 <Separator orientation="vertical" className="h-4" />
@@ -89,7 +141,17 @@ export function SettingsPagination({
             )}
             {/* Render other keys dynamically */}
             {Object.entries(summary)
-              .filter(([key]) => !['total', 'active', 'service'].includes(key))
+              .filter(
+                ([key]) =>
+                  ![
+                    'total',
+                    'active',
+                    'service',
+                    'systemRoles',
+                    'customRoles',
+                    'totalUsersAssigned',
+                  ].includes(key),
+              )
               .map(([key, value]) => (
                 <div key={key} className="flex items-center gap-2">
                   <Separator orientation="vertical" className="h-4" />

@@ -128,7 +128,9 @@ function RolesContent() {
           summary
             ? {
                 total: summary.totalRoles,
-                // Roles summary might have specific fields, but assuming generic structure or using total
+                systemRoles: summary.systemRoles,
+                customRoles: summary.customRoles,
+                totalUsersAssigned: summary.totalUsersAssigned,
               }
             : undefined
         }

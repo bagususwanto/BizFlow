@@ -7,14 +7,6 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
   Button,
 } from '@bizflow/ui';
 import { Trash2, Plus } from 'lucide-react';
@@ -28,6 +20,7 @@ import {
 import { DataTable } from '@/components/ui/data-table';
 import { SettingsToolbar, FilterConfig } from './settings-toolbar';
 import { SettingsPagination, PaginationSummary } from './settings-pagination';
+import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 
 interface SettingsPageProps<TData> {
   title: string;
@@ -288,38 +281,14 @@ export function SettingsPage<
         </CardContent>
       </Card>
 
-      {/* Bulk Delete Dialog */}
-      <AlertDialog
+      <DeleteConfirmDialog
         open={showBulkDeleteDialog}
         onOpenChange={(open) => !open && setShowBulkDeleteDialog(false)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              Hapus {Object.keys(rowSelection).length} item?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              Tindakan ini tidak dapat dibatalkan. Data yang dipilih akan
-              dihapus permanen atau dinonaktifkan.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isBulkDeleting}>
-              Batal
-            </AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive hover:bg-destructive/80"
-              onClick={(e) => {
-                e.preventDefault();
-                handleBulkDelete();
-              }}
-              disabled={isBulkDeleting}
-            >
-              {isBulkDeleting ? 'Memproses...' : 'Hapus'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        title={`Hapus ${Object.keys(rowSelection).length} item?`}
+        description="Tindakan ini tidak dapat dibatalkan. Data yang dipilih akan dihapus permanen atau dinonaktifkan."
+        onConfirm={handleBulkDelete}
+        isDeleting={isBulkDeleting}
+      />
     </div>
   );
 }

@@ -397,6 +397,14 @@ export class UsersService {
   async delete(id: string, deletedByUserId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id },
+      include: {
+        _count: {
+          select: {
+            auditLogs: true,
+            salesOrders: true,
+          },
+        },
+      },
     });
 
     if (!user) {
@@ -408,48 +416,52 @@ export class UsersService {
       throw new ForbiddenException('Tidak dapat menghapus akun sendiri');
     }
 
-    // Count active admins to prevent deactivating last admin
-    const adminRole = await this.prisma.role.findFirst({
-      where: { name: 'owner' },
-    });
+    // Logic:
+    // 1. If Active -> Deactivate (Soft Delete)
+    // 2. If Inactive -> Try to Hard Delete (check dependencies first)
 
-    if (adminRole && user.roleId === adminRole.id) {
-      const activeAdminCount = await this.prisma.user.count({
-        where: {
-          roleId: adminRole.id,
-          isActive: true,
-        },
+    if (user.isActive) {
+      // Count active admins to prevent deactivating last admin
+      const adminRole = await this.prisma.role.findFirst({
+        where: { name: 'owner' },
       });
 
-      if (activeAdminCount <= 1) {
-        throw new ForbiddenException('Tidak dapat menghapus admin terakhir');
+      if (adminRole && user.roleId === adminRole.id) {
+        const activeAdminCount = await this.prisma.user.count({
+          where: {
+            roleId: adminRole.id,
+            isActive: true,
+          },
+        });
+
+        if (activeAdminCount <= 1) {
+          throw new ForbiddenException('Tidak dapat menghapus admin terakhir');
+        }
       }
-    }
 
-    // Check if user has transactions or usage
-    const [auditLogCount, salesOrderCount] = await Promise.all([
-      this.prisma.auditLog.count({ where: { userId: id } }),
-      this.prisma.salesOrder.count({ where: { userId: id } }),
-    ]);
-
-    const isUsed = auditLogCount > 0 || salesOrderCount > 0;
-
-    if (isUsed) {
-      // Soft delete (deactivate)
       await this.prisma.user.update({
         where: { id },
         data: { isActive: false },
       });
 
       return successResponse({
-        message: `User '${user.username}' dinonaktifkan karena memiliki riwayat transaksi/aktivitas`,
+        message: `User '${user.username}' berhasil dinonaktifkan`,
         isHardDelete: false,
       });
     }
 
+    // If user is inactive, try hard delete
+    const usageCount = user._count.auditLogs + user._count.salesOrders;
+
+    if (usageCount > 0) {
+      throw new ConflictException(
+        `User '${user.username}' tidak dapat dihapus permanen karena memiliki ${usageCount} riwayat aktivitas/transaksi. Hanya bisa dinonaktifkan.`,
+      );
+    }
+
     // Hard delete
     await this.prisma.$transaction(async (tx) => {
-      // Delete user outlets (cascade, but good to be explicit or if cascade not set)
+      // Delete user outlets
       await tx.userOutlet.deleteMany({
         where: { userId: id },
       });
@@ -461,7 +473,6 @@ export class UsersService {
 
     return successResponse({
       message: `User '${user.username}' berhasil dihapus permanen`,
-      isHardDelete: true,
     });
   }
 
@@ -534,6 +545,14 @@ export class UsersService {
     // Validate all users exist
     const users = await this.prisma.user.findMany({
       where: { id: { in: ids } },
+      include: {
+        _count: {
+          select: {
+            auditLogs: true,
+            salesOrders: true,
+          },
+        },
+      },
     });
 
     if (users.length !== ids.length) {
@@ -549,29 +568,54 @@ export class UsersService {
 
     let hardDeleteCount = 0;
     let softDeleteCount = 0;
+    let skippedCount = 0;
+
+    const adminRole = await this.prisma.role.findFirst({
+      where: { name: 'owner' },
+    });
 
     for (const user of users) {
-      // Check usage
-      const [auditLogCount, salesOrderCount] = await Promise.all([
-        this.prisma.auditLog.count({ where: { userId: user.id } }),
-        this.prisma.salesOrder.count({ where: { userId: user.id } }),
-      ]);
+      if (user.isActive) {
+        // Case 1: Active -> Soft Delete (Deactivate)
 
-      const isUsed = auditLogCount > 0 || salesOrderCount > 0;
+        // Safety check for last admin
+        if (adminRole && user.roleId === adminRole.id) {
+          const activeAdminCount = await this.prisma.user.count({
+            where: {
+              roleId: adminRole.id,
+              isActive: true,
+            },
+          });
 
-      if (isUsed) {
-        // Soft delete
+          if (activeAdminCount <= 1) {
+            skippedCount++;
+            continue;
+          }
+        }
+
         await this.prisma.user.update({
           where: { id: user.id },
           data: { isActive: false },
         });
         softDeleteCount++;
       } else {
-        // Hard delete
-        await this.prisma.user.delete({
-          where: { id: user.id },
-        });
-        hardDeleteCount++;
+        // Case 2: Inactive
+        const usageCount = user._count.auditLogs + user._count.salesOrders;
+        if (usageCount > 0) {
+          // Has usage -> Skip hard delete
+          skippedCount++;
+        } else {
+          // No usage -> Hard delete
+          await this.prisma.$transaction(async (tx) => {
+            await tx.userOutlet.deleteMany({
+              where: { userId: user.id },
+            });
+            await tx.user.delete({
+              where: { id: user.id },
+            });
+          });
+          hardDeleteCount++;
+        }
       }
     }
 
@@ -582,11 +626,17 @@ export class UsersService {
     if (softDeleteCount > 0) {
       messages.push(`${softDeleteCount} user dinonaktifkan`);
     }
+    if (skippedCount > 0) {
+      messages.push(
+        `${skippedCount} user dilewati (admin terakhir atau memiliki riwayat)`,
+      );
+    }
 
     return successResponse({
       message: messages.join(', '),
       hardDeleteCount,
       softDeleteCount,
+      skippedCount,
     });
   }
 }

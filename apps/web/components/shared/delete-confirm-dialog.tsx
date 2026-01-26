@@ -17,11 +17,12 @@ interface DeleteConfirmDialogProps {
   onOpenChange: (open: boolean) => void;
   title?: ReactNode;
   description?: ReactNode;
-  onConfirm: () => void;
+  onConfirm?: () => void;
   isDeleting?: boolean;
   confirmLabel?: string;
   cancelLabel?: string;
   variant?: 'destructive' | 'default';
+  showConfirm?: boolean;
 }
 
 export function DeleteConfirmDialog({
@@ -34,6 +35,7 @@ export function DeleteConfirmDialog({
   confirmLabel = 'Hapus',
   cancelLabel = 'Batal',
   variant = 'destructive',
+  showConfirm = true,
 }: DeleteConfirmDialogProps) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -48,20 +50,22 @@ export function DeleteConfirmDialog({
           <AlertDialogCancel disabled={isDeleting}>
             {cancelLabel}
           </AlertDialogCancel>
-          <AlertDialogAction
-            className={
-              variant === 'destructive'
-                ? 'bg-destructive hover:bg-destructive/80'
-                : ''
-            }
-            onClick={(e) => {
-              e.preventDefault();
-              onConfirm();
-            }}
-            disabled={isDeleting}
-          >
-            {isDeleting ? 'Memproses...' : confirmLabel}
-          </AlertDialogAction>
+          {showConfirm && (
+            <AlertDialogAction
+              className={
+                variant === 'destructive'
+                  ? 'bg-destructive hover:bg-destructive/80'
+                  : ''
+              }
+              onClick={(e) => {
+                e.preventDefault();
+                onConfirm?.();
+              }}
+              disabled={isDeleting}
+            >
+              {isDeleting ? 'Memproses...' : confirmLabel}
+            </AlertDialogAction>
+          )}
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

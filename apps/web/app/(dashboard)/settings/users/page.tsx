@@ -4,14 +4,6 @@ import { Suspense, useCallback, useState, useMemo } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
   Dialog,
   DialogContent,
   DialogDescription,
@@ -30,6 +22,7 @@ import { useUsers } from '@/hooks';
 import { usersService, UserWithUsage } from '@/services/users.service';
 import { User } from '@bizflow/types';
 import { SettingsPage } from '@/components/settings/settings-page';
+import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 
 function UsersContent() {
   const router = useRouter();
@@ -280,94 +273,69 @@ function UsersContent() {
         }}
       />
 
-      {/* Delete Dialog */}
-      <AlertDialog
+      <DeleteConfirmDialog
         open={!!userToDelete}
         onOpenChange={(open) => !open && setUserToDelete(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {(userToDelete?.usageCount || 0) > 0
-                ? 'Nonaktifkan User?'
-                : 'Hapus User?'}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {(userToDelete?.usageCount || 0) > 0 ? (
-                <>
-                  User{' '}
-                  <span className="font-medium text-foreground">
-                    {userToDelete?.username}
-                  </span>{' '}
-                  akan dinonaktifkan karena memiliki riwayat aktivitas. Data
-                  user tetap tersimpan.
-                </>
-              ) : (
-                <>
-                  User{' '}
-                  <span className="font-medium text-foreground">
-                    {userToDelete?.username}
-                  </span>{' '}
-                  akan dihapus secara permanen. Tindakan ini tidak dapat
-                  dibatalkan.
-                </>
+        title={
+          userToDelete?.isActive ? 'Nonaktifkan User?' : 'Hapus User Permanen?'
+        }
+        description={
+          userToDelete?.isActive ? (
+            <>
+              User{' '}
+              <span className="font-medium text-foreground">
+                {userToDelete?.username}
+              </span>{' '}
+              akan dinonaktifkan. Data user tetap tersimpan.
+            </>
+          ) : (
+            <>
+              <p>
+                User{' '}
+                <span className="font-medium text-foreground">
+                  {userToDelete?.username}
+                </span>{' '}
+                akan dihapus secara permanen. Tindakan ini tidak dapat
+                dibatalkan.
+              </p>
+              {(userToDelete?.usageCount || 0) > 0 && (
+                <p className="mt-2 text-sm font-medium text-destructive">
+                  Peringatan: User ini memiliki riwayat transaksi/aktivitas dan
+                  mungkin tidak dapat dihapus permanen.
+                </p>
               )}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>Batal</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive hover:bg-destructive/80 "
-              onClick={(e) => {
-                e.preventDefault();
-                if (userToDelete) {
-                  deleteUser(userToDelete.id, {
-                    onSuccess: () => setUserToDelete(null),
-                  });
-                }
-              }}
-              disabled={isDeleting}
-            >
-              {isDeleting
-                ? 'Memproses...'
-                : (userToDelete?.usageCount || 0) > 0
-                  ? 'Nonaktifkan'
-                  : 'Hapus'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+            </>
+          )
+        }
+        confirmLabel={userToDelete?.isActive ? 'Nonaktifkan' : 'Hapus Permanen'}
+        isDeleting={isDeleting}
+        onConfirm={() => {
+          if (userToDelete) {
+            deleteUser(userToDelete.id, {
+              onSuccess: () => setUserToDelete(null),
+            });
+          }
+        }}
+      />
 
-      {/* Reset Password Dialog */}
-      <AlertDialog
+      <DeleteConfirmDialog
         open={!!userToReset}
         onOpenChange={(open) => !open && setUserToReset(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Reset Password?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Password untuk user{' '}
-              <span className="font-medium text-foreground">
-                {userToReset?.username}
-              </span>{' '}
-              akan direset menjadi password acak baru.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isResetting}>Batal</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={(e) => {
-                e.preventDefault();
-                handleResetPassword();
-              }}
-              disabled={isResetting}
-            >
-              {isResetting ? 'Memproses...' : 'Reset Password'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        title="Reset Password?"
+        description={
+          <>
+            Password untuk user{' '}
+            <span className="font-medium text-foreground">
+              {userToReset?.username}
+            </span>{' '}
+            akan direset menjadi password acak baru.
+          </>
+        }
+        confirmLabel="Reset Password"
+        variant="default"
+        isDeleting={isResetting}
+        onConfirm={handleResetPassword}
+      />
 
       {/* Change PIN Dialog */}
       <Dialog

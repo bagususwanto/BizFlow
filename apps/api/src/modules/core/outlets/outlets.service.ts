@@ -285,20 +285,30 @@ export class OutletsService {
       throw new NotFoundException('Outlet tidak ditemukan');
     }
 
-    // Check if outlet has any sales orders - prevent deletion
-    if (outlet._count.salesOrders > 0) {
-      // Soft delete (deactivate) instead
+    // Logic:
+    // 1. If Active -> Deactivate (Soft Delete)
+    // 2. If Inactive -> Try to Hard Delete (check dependencies first)
+
+    if (outlet.isActive) {
       await this.prisma.outlet.update({
         where: { id },
         data: { isActive: false },
       });
 
       return successResponse({
-        message: `Outlet '${outlet.name}' dinonaktifkan karena memiliki ${outlet._count.salesOrders} transaksi`,
+        message: `Outlet '${outlet.name}' berhasil dinonaktifkan`,
       });
     }
 
-    // If no sales orders, we can safely delete
+    // If outlet is active=false, we try to hard delete.
+    // BUT we must check for data integrity.
+    if (outlet._count.salesOrders > 0) {
+      throw new ConflictException(
+        `Outlet '${outlet.name}' tidak dapat dihapus permanen karena memiliki ${outlet._count.salesOrders} riwayat transaksi. Hanya bisa dinonaktifkan.`,
+      );
+    }
+
+    // Safe to hard delete
     await this.prisma.$transaction(async (tx) => {
       // Remove user assignments
       await tx.userOutlet.deleteMany({
@@ -312,7 +322,7 @@ export class OutletsService {
     });
 
     return successResponse({
-      message: `Outlet '${outlet.name}' berhasil dihapus`,
+      message: `Outlet '${outlet.name}' berhasil dihapus permanen`,
     });
   }
 
@@ -323,6 +333,11 @@ export class OutletsService {
     // Validate all outlets exist
     const outlets = await this.prisma.outlet.findMany({
       where: { id: { in: ids } },
+      include: {
+        _count: {
+          select: { salesOrders: true },
+        },
+      },
     });
 
     if (outlets.length !== ids.length) {
@@ -331,33 +346,36 @@ export class OutletsService {
 
     let hardDeleteCount = 0;
     let softDeleteCount = 0;
+    let skippedCount = 0;
 
     for (const outlet of outlets) {
-      const salesOrderCount = await this.prisma.salesOrder.count({
-        where: { outletId: outlet.id },
-      });
-
-      if (salesOrderCount > 0) {
-        // Soft delete (deactivate)
+      if (outlet.isActive) {
+        // Case 1: Active -> Soft Delete (Deactivate)
         await this.prisma.outlet.update({
           where: { id: outlet.id },
           data: { isActive: false },
         });
         softDeleteCount++;
       } else {
-        // Hard delete
-        await this.prisma.$transaction(async (tx) => {
-          // Remove user assignments
-          await tx.userOutlet.deleteMany({
-            where: { outletId: outlet.id },
-          });
+        // Case 2: Inactive
+        if (outlet._count.salesOrders > 0) {
+          // Has transactions -> Cannot hard delete -> Skip
+          skippedCount++;
+        } else {
+          // No transactions -> Hard Delete
+          await this.prisma.$transaction(async (tx) => {
+            // Remove user assignments
+            await tx.userOutlet.deleteMany({
+              where: { outletId: outlet.id },
+            });
 
-          // Delete outlet
-          await tx.outlet.delete({
-            where: { id: outlet.id },
+            // Delete outlet
+            await tx.outlet.delete({
+              where: { id: outlet.id },
+            });
           });
-        });
-        hardDeleteCount++;
+          hardDeleteCount++;
+        }
       }
     }
 
@@ -368,11 +386,15 @@ export class OutletsService {
     if (softDeleteCount > 0) {
       messages.push(`${softDeleteCount} outlet dinonaktifkan`);
     }
+    if (skippedCount > 0) {
+      messages.push(`${skippedCount} outlet dilewati (memiliki transaksi)`);
+    }
 
     return successResponse({
       message: messages.join(', '),
       hardDeleteCount,
       softDeleteCount,
+      skippedCount,
     });
   }
 }

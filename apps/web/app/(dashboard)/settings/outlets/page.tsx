@@ -1,22 +1,7 @@
 'use client';
 
 import { Suspense, useCallback, useState, useMemo } from 'react';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  Button,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@bizflow/ui';
+import { Button, Card, CardContent, CardHeader, CardTitle } from '@bizflow/ui';
 import { Plus, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -25,6 +10,7 @@ import { useOutlets } from '@/hooks';
 import { getColumns } from '@/components/core/outlets/columns';
 import { SettingsPage } from '@/components/settings/settings-page';
 import { Outlet } from '@/services/outlets.service';
+import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 
 function OutletsContent() {
   const router = useRouter();
@@ -182,62 +168,54 @@ function OutletsContent() {
       />
 
       {/* Delete Dialog */}
-      <AlertDialog
+      <DeleteConfirmDialog
         open={!!outletToDelete}
         onOpenChange={(open) => !open && setOutletToDelete(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {(outletToDelete?.transactionCount || 0) > 0
-                ? 'Nonaktifkan Outlet?'
-                : 'Hapus Outlet?'}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {(outletToDelete?.transactionCount || 0) > 0 ? (
-                <>
-                  Outlet{' '}
-                  <span className="font-medium text-foreground">
-                    {outletToDelete?.name}
-                  </span>{' '}
-                  akan dinonaktifkan karena memiliki riwayat transaksi. Data
-                  outlet tetap tersimpan.
-                </>
-              ) : (
-                <>
-                  Outlet{' '}
-                  <span className="font-medium text-foreground">
-                    {outletToDelete?.name}
-                  </span>{' '}
-                  akan dihapus secara permanen. Tindakan ini tidak dapat
-                  dibatalkan.
-                </>
+        title={
+          outletToDelete?.isActive
+            ? 'Nonaktifkan Outlet?'
+            : 'Hapus Outlet Permanen?'
+        }
+        description={
+          outletToDelete?.isActive ? (
+            <>
+              Outlet{' '}
+              <span className="font-medium text-foreground">
+                {outletToDelete?.name}
+              </span>{' '}
+              akan dinonaktifkan. Data outlet tetap tersimpan.
+            </>
+          ) : (
+            <>
+              <p>
+                Outlet{' '}
+                <span className="font-medium text-foreground">
+                  {outletToDelete?.name}
+                </span>{' '}
+                akan dihapus secara permanen. Tindakan ini tidak dapat
+                dibatalkan.
+              </p>
+              {(outletToDelete?.transactionCount || 0) > 0 && (
+                <p className="mt-2 text-sm font-medium text-destructive">
+                  Peringatan: Outlet ini memiliki riwayat transaksi dan mungkin
+                  tidak dapat dihapus permanen.
+                </p>
               )}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>Batal</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive hover:bg-destructive/80 "
-              onClick={(e) => {
-                e.preventDefault();
-                if (outletToDelete) {
-                  deleteOutlet(outletToDelete.id, {
-                    onSuccess: () => setOutletToDelete(null),
-                  });
-                }
-              }}
-              disabled={isDeleting}
-            >
-              {isDeleting
-                ? 'Memproses...'
-                : (outletToDelete?.transactionCount || 0) > 0
-                  ? 'Nonaktifkan'
-                  : 'Hapus'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+            </>
+          )
+        }
+        confirmLabel={
+          outletToDelete?.isActive ? 'Nonaktifkan' : 'Hapus Permanen'
+        }
+        isDeleting={isDeleting}
+        onConfirm={() => {
+          if (outletToDelete) {
+            deleteOutlet(outletToDelete.id, {
+              onSuccess: () => setOutletToDelete(null),
+            });
+          }
+        }}
+      />
     </>
   );
 }

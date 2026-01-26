@@ -17,12 +17,23 @@ import {
 } from '@bizflow/ui';
 
 export interface PaginationSummary {
-  total: number;
+  total?: number;
   active?: number;
   inactive?: number;
   service?: number;
   baseUnits?: number;
   derivedUnits?: number;
+
+  // Server-side specific keys (optional mapping)
+  totalCustomers?: number;
+  activeCustomers?: number;
+  inactiveCustomers?: number;
+
+  totalProducts?: number;
+  activeProducts?: number;
+  inactiveProducts?: number;
+  serviceProducts?: number;
+
   // Add more generic keys as needed
   [key: string]: number | undefined;
 }
@@ -46,83 +57,98 @@ export function MasterDataPagination({
   onPageSizeChange,
   summary,
 }: MasterDataPaginationProps) {
+  // Normalize summary data
+  const total =
+    summary?.total ??
+    summary?.totalCustomers ??
+    summary?.totalProducts ??
+    totalItems;
+  const active =
+    summary?.active ?? summary?.activeCustomers ?? summary?.activeProducts;
+  const inactive =
+    summary?.inactive ??
+    summary?.inactiveCustomers ??
+    summary?.inactiveProducts;
+  const service = summary?.service ?? summary?.serviceProducts;
+
   return (
     <div className="flex flex-col gap-4 pt-4 md:flex-row md:items-center md:justify-between">
       {/* Summary Section - Bottom Left */}
       <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-        {summary ? (
+        <div className="flex items-center gap-2">
+          <Box className="h-4 w-4" />
+          <span>
+            Total: <span className="font-medium text-foreground">{total}</span>
+          </span>
+        </div>
+
+        {summary?.baseUnits !== undefined && (
           <>
+            <Separator orientation="vertical" className="h-4" />
             <div className="flex items-center gap-2">
-              <Box className="h-4 w-4" />
+              <Box className="h-4 w-4 text-blue-500" />
               <span>
-                Total:{' '}
+                Base:{' '}
                 <span className="font-medium text-foreground">
-                  {summary.total ?? totalItems}
+                  {summary.baseUnits}
                 </span>
               </span>
             </div>
-            {summary.baseUnits !== undefined && (
-              <>
-                <Separator orientation="vertical" className="h-4" />
-                <div className="flex items-center gap-2">
-                  <Box className="h-4 w-4 text-blue-500" />
-                  <span>
-                    Base:{' '}
-                    <span className="font-medium text-foreground">
-                      {summary.baseUnits}
-                    </span>
-                  </span>
-                </div>
-              </>
-            )}
-            {summary.derivedUnits !== undefined && (
-              <>
-                <Separator orientation="vertical" className="h-4" />
-                <div className="flex items-center gap-2">
-                  <Box className="h-4 w-4 text-orange-500" />
-                  <span>
-                    Turunan:{' '}
-                    <span className="font-medium text-foreground">
-                      {summary.derivedUnits}
-                    </span>
-                  </span>
-                </div>
-              </>
-            )}
-            {summary.active !== undefined && (
-              <>
-                <Separator orientation="vertical" className="h-4" />
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-green-500" />
-                  <span>
-                    Aktif:{' '}
-                    <span className="font-medium text-foreground">
-                      {summary.active}
-                    </span>
-                  </span>
-                </div>
-              </>
-            )}
-            {summary.service !== undefined && (
-              <>
-                <Separator orientation="vertical" className="h-4" />
-                <div className="flex items-center gap-2">
-                  <LayoutGrid className="h-4 w-4 text-purple-500" />
-                  <span>
-                    Service:{' '}
-                    <span className="font-medium text-foreground">
-                      {summary.service}
-                    </span>
-                  </span>
-                </div>
-              </>
-            )}
           </>
-        ) : (
-          <span>
-            Total:{' '}
-            <span className="font-medium text-foreground">{totalItems}</span>
-          </span>
+        )}
+
+        {summary?.derivedUnits !== undefined && (
+          <>
+            <Separator orientation="vertical" className="h-4" />
+            <div className="flex items-center gap-2">
+              <Box className="h-4 w-4 text-orange-500" />
+              <span>
+                Turunan:{' '}
+                <span className="font-medium text-foreground">
+                  {summary.derivedUnits}
+                </span>
+              </span>
+            </div>
+          </>
+        )}
+
+        {active !== undefined && (
+          <>
+            <Separator orientation="vertical" className="h-4" />
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-green-500" />
+              <span>
+                Aktif:{' '}
+                <span className="font-medium text-foreground">{active}</span>
+              </span>
+            </div>
+          </>
+        )}
+
+        {inactive !== undefined && (
+          <>
+            <Separator orientation="vertical" className="h-4" />
+            <div className="flex items-center gap-2">
+              <XCircle className="h-4 w-4 text-red-500" />
+              <span>
+                Non-aktif:{' '}
+                <span className="font-medium text-foreground">{inactive}</span>
+              </span>
+            </div>
+          </>
+        )}
+
+        {service !== undefined && (
+          <>
+            <Separator orientation="vertical" className="h-4" />
+            <div className="flex items-center gap-2">
+              <LayoutGrid className="h-4 w-4 text-purple-500" />
+              <span>
+                Service:{' '}
+                <span className="font-medium text-foreground">{service}</span>
+              </span>
+            </div>
+          </>
         )}
       </div>
 

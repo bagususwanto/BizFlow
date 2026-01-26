@@ -85,7 +85,9 @@ export const getColumns = ({
   {
     accessorKey: 'entityType',
     id: 'entity',
-    header: 'Entity',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Entity" />
+    ),
     cell: ({ row }) => {
       const log = row.original;
       return (
@@ -108,7 +110,9 @@ export const getColumns = ({
   {
     accessorKey: 'ipAddress',
     id: 'ipAddress',
-    header: 'IP Address',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="IP Address" />
+    ),
     cell: ({ row }) => (
       <span className="font-mono text-xs text-muted-foreground">
         {row.original.ipAddress || '-'}

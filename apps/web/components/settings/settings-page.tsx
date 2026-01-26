@@ -77,6 +77,8 @@ interface SettingsPageProps<TData> {
   onRefresh?: () => void;
   extraActions?: ReactNode;
 
+  headerAction?: ReactNode;
+
   // Custom Rendering (Optional)
   renderCustomView?: (props: any) => ReactNode;
 }
@@ -118,6 +120,7 @@ export function SettingsPage<
   isBulkDeleting,
   onRefresh,
   extraActions,
+  headerAction,
   renderCustomView,
 }: SettingsPageProps<TData>) {
   // Local State for interactive table features
@@ -168,14 +171,17 @@ export function SettingsPage<
           <h2 className="text-2xl font-bold tracking-tight">{title}</h2>
           <p className="text-muted-foreground">{description}</p>
         </div>
-        {createLink && (
-          <Button asChild>
-            <Link href={createLink}>
-              <Plus className="mr-2 h-4 w-4" />
-              {createLabel || 'Tambah Baru'}
-            </Link>
-          </Button>
-        )}
+        <div className="flex items-center gap-2">
+          {headerAction}
+          {createLink && (
+            <Button asChild>
+              <Link href={createLink}>
+                <Plus className="mr-2 h-4 w-4" />
+                {createLabel || 'Tambah Baru'}
+              </Link>
+            </Button>
+          )}
+        </div>
       </div>
 
       <Card>

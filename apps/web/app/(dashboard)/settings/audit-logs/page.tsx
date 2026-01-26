@@ -181,8 +181,8 @@ function AuditLogsContent() {
         // Reset
         onReset={() => router.push(pathname)}
         // Extra Actions
-        extraActions={
-          <Button variant="outline">
+        headerAction={
+          <Button>
             <Download className="mr-2 h-4 w-4" />
             Export Log
           </Button>

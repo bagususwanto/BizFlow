@@ -21,11 +21,7 @@ import {
   FormLabel,
   FormMessage,
   Input,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Combobox,
 } from '@bizflow/ui';
 import { Loader2 } from 'lucide-react';
 import { useUnits, useCreateUnit, useUpdateUnit } from '@/hooks';
@@ -130,29 +126,24 @@ export function UnitForm({ initialData, isEdit = false }: UnitFormProps) {
             control={form.control}
             name="baseUnitId"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="flex flex-col">
                 <FormLabel optional>Base Unit</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  value={field.value || undefined}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Pilih base unit" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="none">Tidak ada</SelectItem>
-                    {availableUnits
-                      .filter((u) => u.id !== initialData?.id) // Prevent selecting self as base unit
-                      .map((unit) => (
-                        <SelectItem key={unit.id} value={unit.id}>
-                          {unit.name} ({unit.symbol})
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  <Combobox
+                    options={availableUnits
+                      .filter((u) => u.id !== initialData?.id)
+                      .map((u) => ({
+                        label: `${u.name} (${u.symbol})`,
+                        value: u.id,
+                      }))}
+                    value={field.value}
+                    onChange={(val) => field.onChange(val || undefined)}
+                    placeholder="Pilih base unit"
+                    searchPlaceholder="Cari unit..."
+                    allowClear
+                    clearLabel="Tidak ada (Base Unit Utama)"
+                  />
+                </FormControl>
                 <FormDescription>
                   Satuan dasar yang menjadi acuan konversi.
                 </FormDescription>
@@ -161,7 +152,7 @@ export function UnitForm({ initialData, isEdit = false }: UnitFormProps) {
             )}
           />
 
-          {watchBaseUnitId && watchBaseUnitId !== 'none' && (
+          {watchBaseUnitId && (
             <FormField
               control={form.control}
               name="conversionRate"

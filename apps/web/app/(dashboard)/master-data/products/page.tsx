@@ -13,16 +13,7 @@ import { MasterDataPage } from '@/components/master-data/master-data-page';
 import { getColumns } from '@/components/master-data/products/columns';
 import { ErrorState } from '@/components/common/error-state';
 import { useActiveCategories } from '@/hooks/use-categories';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@bizflow/ui';
+import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 import { toast } from 'sonner';
 
 function ProductsContent() {
@@ -201,48 +192,52 @@ function ProductsContent() {
       />
 
       {/* Single Delete Dialog - Kept here for custom message */}
-      <AlertDialog
+      <DeleteConfirmDialog
         open={!!productToDelete}
         onOpenChange={(open) => !open && setProductToDelete(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {productToDelete?.isActive ? 'Nonaktifkan' : 'Hapus'} Produk?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
+        title={
+          productToDelete?.isActive
+            ? 'Nonaktifkan Produk?'
+            : 'Hapus Produk Permanen?'
+        }
+        description={
+          productToDelete?.isActive ? (
+            <>
               Produk{' '}
               <span className="font-medium text-foreground">
                 {productToDelete?.name}
               </span>{' '}
-              akan {productToDelete?.isActive ? 'dinonaktifkan' : 'dihapus'}.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleteMutation.isPending}>
-              Batal
-            </AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive hover:bg-destructive/80"
-              onClick={(e) => {
-                e.preventDefault();
-                if (productToDelete) {
-                  deleteMutation.mutate(productToDelete.id, {
-                    onSuccess: () => setProductToDelete(null),
-                  });
-                }
-              }}
-              disabled={deleteMutation.isPending}
-            >
-              {deleteMutation.isPending
-                ? 'Memproses...'
-                : productToDelete?.isActive
-                  ? 'Nonaktifkan'
-                  : 'Hapus'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+              akan dinonaktifkan. Data produk tetap tersimpan.
+            </>
+          ) : (
+            <>
+              <p>
+                Produk{' '}
+                <span className="font-medium text-foreground">
+                  {productToDelete?.name}
+                </span>{' '}
+                akan dihapus secara permanen. Tindakan ini tidak dapat
+                dibatalkan.
+              </p>
+              <p className="mt-2 text-sm font-medium text-destructive">
+                Peringatan: Produk yang memiliki riwayat transaksi/stok tidak
+                dapat dihapus permanen.
+              </p>
+            </>
+          )
+        }
+        onConfirm={() => {
+          if (productToDelete) {
+            deleteMutation.mutate(productToDelete.id, {
+              onSuccess: () => setProductToDelete(null),
+            });
+          }
+        }}
+        isDeleting={deleteMutation.isPending}
+        confirmLabel={
+          productToDelete?.isActive ? 'Nonaktifkan' : 'Hapus Permanen'
+        }
+      />
     </>
   );
 }

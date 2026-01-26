@@ -661,20 +661,38 @@ export class ProductsService {
   async delete(id: string, userId: string) {
     const product = await this.prisma.product.findUnique({
       where: { id },
-      include: {
-        _count: {
-          select: { variants: true },
-        },
-      },
     });
 
     if (!product) {
       throw new NotFoundException('Produk tidak ditemukan');
     }
 
-    // Check if product has been used in any transactions via its variants
+    // Logic:
+    // 1. If Active -> Deactivate (Soft Delete)
+    // 2. If Inactive -> Try to Hard Delete (check dependencies first)
+
+    if (product.isActive) {
+      await this.prisma.product.update({
+        where: { id },
+        data: { isActive: false },
+      });
+
+      return successResponse({
+        message: `Produk '${product.name}' berhasil dinonaktifkan`,
+        isHardDelete: false,
+      });
+    }
+
+    // If product is inactive, try hard delete
     const isUsedInTransactions = await this.checkProductUsedInTransactions(id);
 
+    if (isUsedInTransactions) {
+      throw new ConflictException(
+        `Produk '${product.name}' tidak dapat dihapus permanen karena sudah digunakan dalam transaksi. Hanya bisa dinonaktifkan.`,
+      );
+    }
+
+    // Safe to hard delete
     // Delete all product images if exist
     const productImages = await this.prisma.productImage.findMany({
       where: { productId: id },
@@ -684,26 +702,12 @@ export class ProductsService {
       await this.uploadService.deleteProductImage(img.url);
     }
 
-    await this.prisma.productImage.deleteMany({
-      where: { productId: id },
-    });
-
-    if (isUsedInTransactions) {
-      // Soft delete - product is used in transactions
-      await this.prisma.product.update({
-        where: { id },
-        data: { isActive: false },
-      });
-
-      return successResponse({
-        message: `Produk '${product.name}' dinonaktifkan karena sudah digunakan dalam transaksi`,
-        isHardDelete: false,
-      });
-    }
-
-    // Hard delete - product is not used anywhere
-    // First delete related data (cascade is set up in schema but we do it explicitly for safety)
     await this.prisma.$transaction(async (tx) => {
+      // Delete images
+      await tx.productImage.deleteMany({
+        where: { productId: id },
+      });
+
       // Delete price levels
       await tx.priceLevel.deleteMany({
         where: { productId: id },
@@ -803,47 +807,48 @@ export class ProductsService {
 
     let hardDeleteCount = 0;
     let softDeleteCount = 0;
+    let skippedCount = 0;
 
-    // Process each product individually to determine delete type
     for (const product of products) {
-      const isUsedInTransactions = await this.checkProductUsedInTransactions(
-        product.id,
-      );
-
-      // Delete product images
-      const productImages = await this.prisma.productImage.findMany({
-        where: { productId: product.id },
-      });
-
-      for (const img of productImages) {
-        await this.uploadService.deleteProductImage(img.url);
-      }
-
-      await this.prisma.productImage.deleteMany({
-        where: { productId: product.id },
-      });
-
-      if (isUsedInTransactions) {
-        // Soft delete
+      if (product.isActive) {
+        // Case 1: Active -> Soft Delete (Deactivate)
         await this.prisma.product.update({
           where: { id: product.id },
           data: { isActive: false },
         });
         softDeleteCount++;
       } else {
-        // Hard delete
-        await this.prisma.$transaction(async (tx) => {
-          await tx.priceLevel.deleteMany({
+        // Case 2: Inactive -> Try Hard Delete
+        const isUsed = await this.checkProductUsedInTransactions(product.id);
+
+        if (isUsed) {
+          skippedCount++;
+        } else {
+          // Safe to hard delete
+          const productImages = await this.prisma.productImage.findMany({
             where: { productId: product.id },
           });
-          await tx.productVariant.deleteMany({
-            where: { productId: product.id },
+
+          for (const img of productImages) {
+            await this.uploadService.deleteProductImage(img.url);
+          }
+
+          await this.prisma.$transaction(async (tx) => {
+            await tx.productImage.deleteMany({
+              where: { productId: product.id },
+            });
+            await tx.priceLevel.deleteMany({
+              where: { productId: product.id },
+            });
+            await tx.productVariant.deleteMany({
+              where: { productId: product.id },
+            });
+            await tx.product.delete({
+              where: { id: product.id },
+            });
           });
-          await tx.product.delete({
-            where: { id: product.id },
-          });
-        });
-        hardDeleteCount++;
+          hardDeleteCount++;
+        }
       }
     }
 
@@ -854,11 +859,15 @@ export class ProductsService {
     if (softDeleteCount > 0) {
       messages.push(`${softDeleteCount} produk dinonaktifkan`);
     }
+    if (skippedCount > 0) {
+      messages.push(`${skippedCount} produk dilewati (memiliki transaksi)`);
+    }
 
     return successResponse({
       message: messages.join(', '),
       hardDeleteCount,
       softDeleteCount,
+      skippedCount,
     });
   }
 
@@ -934,7 +943,9 @@ export class ProductsService {
     });
 
     if (!product) {
-      throw new NotFoundException(`Product with ID ${productId} not found`);
+      throw new NotFoundException(
+        `Produk dengan ID ${productId} tidak ditemukan`,
+      );
     }
 
     const variants = await this.prisma.productVariant.findMany({
@@ -968,7 +979,7 @@ export class ProductsService {
     });
 
     if (!variant) {
-      throw new NotFoundException(`Variant with ID ${id} not found`);
+      throw new NotFoundException(`Variant dengan ID ${id} tidak ditemukan`);
     }
 
     return successResponse(variant);
@@ -983,7 +994,9 @@ export class ProductsService {
     });
 
     if (!product) {
-      throw new NotFoundException(`Product with ID ${productId} not found`);
+      throw new NotFoundException(
+        `Produk dengan ID ${productId} tidak ditemukan`,
+      );
     }
 
     // Find the highest variant number for this product
@@ -1018,7 +1031,9 @@ export class ProductsService {
     });
 
     if (!product) {
-      throw new NotFoundException(`Product with ID ${productId} not found`);
+      throw new NotFoundException(
+        `Produk dengan ID ${productId} tidak ditemukan`,
+      );
     }
 
     // Auto-generate SKU if not provided
@@ -1049,7 +1064,7 @@ export class ProductsService {
     });
 
     if (existingSku) {
-      throw new ConflictException(`Variant SKU ${variantSku} already exists`);
+      throw new ConflictException(`Variant SKU ${variantSku} sudah ada`);
     }
 
     if (dto.barcode) {
@@ -1058,9 +1073,7 @@ export class ProductsService {
       });
 
       if (existingBarcode) {
-        throw new ConflictException(
-          `Variant barcode ${dto.barcode} already exists`,
-        );
+        throw new ConflictException(`Variant barcode ${dto.barcode} sudah ada`);
       }
     }
 
@@ -1092,7 +1105,7 @@ export class ProductsService {
     });
 
     if (!existing) {
-      throw new NotFoundException(`Variant with ID ${id} not found`);
+      throw new NotFoundException(`Variant dengan ID ${id} tidak ditemukan`);
     }
 
     if (dto.sku && dto.sku !== existing.sku) {
@@ -1101,7 +1114,7 @@ export class ProductsService {
       });
 
       if (existingSku) {
-        throw new ConflictException(`Variant SKU ${dto.sku} already exists`);
+        throw new ConflictException(`Variant SKU ${dto.sku} sudah ada`);
       }
     }
 
@@ -1111,9 +1124,7 @@ export class ProductsService {
       });
 
       if (existingBarcode) {
-        throw new ConflictException(
-          `Variant barcode ${dto.barcode} already exists`,
-        );
+        throw new ConflictException(`Variant barcode ${dto.barcode} sudah ada`);
       }
     }
 
@@ -1149,13 +1160,13 @@ export class ProductsService {
     });
 
     if (!variant) {
-      throw new NotFoundException(`Variant with ID ${id} not found`);
+      throw new NotFoundException(`Variant dengan ID ${id} tidak ditemukan`);
     }
 
     const hasStock = variant.stocks.some((stock) => Number(stock.quantity) > 0);
     if (hasStock) {
       throw new BadRequestException(
-        'Cannot delete variant with existing stock. Please adjust stock to zero first.',
+        'Tidak dapat menghapus variant dengan stok yang ada. Harap atur stok menjadi nol terlebih dahulu.',
       );
     }
 
@@ -1164,7 +1175,7 @@ export class ProductsService {
       variant.purchaseOrderItems.length > 0
     ) {
       throw new BadRequestException(
-        'Cannot delete variant with existing transactions. Consider deactivating instead.',
+        'Tidak dapat menghapus variant dengan transaksi yang ada. Harap matikan transaksi terlebih dahulu.',
       );
     }
 
@@ -1173,7 +1184,7 @@ export class ProductsService {
       data: { isActive: false },
     });
 
-    return successResponse({ message: 'Variant deactivated successfully' });
+    return successResponse({ message: 'Variant berhasil dinonaktifkan' });
   }
 
   /**
@@ -1190,7 +1201,7 @@ export class ProductsService {
     });
 
     if (variants.length !== ids.length) {
-      throw new NotFoundException('One or more variants not found');
+      throw new NotFoundException('Satu atau lebih variant tidak ditemukan  ');
     }
 
     for (const variant of variants) {
@@ -1199,7 +1210,7 @@ export class ProductsService {
       );
       if (hasStock) {
         throw new BadRequestException(
-          `Cannot delete variant ${variant.name} with existing stock`,
+          `Tidak dapat menghapus variant ${variant.name} dengan stok yang ada. Harap atur stok menjadi nol terlebih dahulu.`,
         );
       }
 
@@ -1208,7 +1219,7 @@ export class ProductsService {
         variant.purchaseOrderItems.length > 0
       ) {
         throw new BadRequestException(
-          `Cannot delete variant ${variant.name} with existing transactions`,
+          `Tidak dapat menghapus variant ${variant.name} dengan transaksi yang ada. Harap matikan transaksi terlebih dahulu.`,
         );
       }
     }
@@ -1236,7 +1247,9 @@ export class ProductsService {
     });
 
     if (!product) {
-      throw new NotFoundException(`Product with ID ${productId} not found`);
+      throw new NotFoundException(
+        `Produk dengan ID ${productId} tidak ditemukan`,
+      );
     }
 
     const priceLevels = await this.prisma.priceLevel.findMany({
@@ -1265,7 +1278,9 @@ export class ProductsService {
     });
 
     if (!priceLevel) {
-      throw new NotFoundException(`Price level with ID ${id} not found`);
+      throw new NotFoundException(
+        `Price level dengan ID ${id} tidak ditemukan`,
+      );
     }
 
     return successResponse(priceLevel);
@@ -1283,7 +1298,9 @@ export class ProductsService {
     });
 
     if (!product) {
-      throw new NotFoundException(`Product with ID ${productId} not found`);
+      throw new NotFoundException(
+        `Produk dengan ID ${productId} tidak ditemukan`,
+      );
     }
 
     // Check for duplicate name within the same product
@@ -1298,7 +1315,7 @@ export class ProductsService {
 
     if (existingName) {
       throw new ConflictException(
-        `Price level with name "${dto.name}" already exists for this product`,
+        `Price level dengan nama "${dto.name}" sudah ada untuk produk ini`,
       );
     }
 
@@ -1329,7 +1346,9 @@ export class ProductsService {
     });
 
     if (!existing) {
-      throw new NotFoundException(`Price level with ID ${id} not found`);
+      throw new NotFoundException(
+        `Price level dengan ID ${id} tidak ditemukan`,
+      );
     }
 
     // Check for duplicate name if name is being updated
@@ -1345,7 +1364,7 @@ export class ProductsService {
 
       if (existingName) {
         throw new ConflictException(
-          `Price level with name "${dto.name}" already exists for this product`,
+          `Price level dengan nama "${dto.name}" sudah ada untuk produk ini`,
         );
       }
     }
@@ -1374,7 +1393,9 @@ export class ProductsService {
     });
 
     if (!priceLevel) {
-      throw new NotFoundException(`Price level with ID ${id} not found`);
+      throw new NotFoundException(
+        `Price level dengan ID ${id} tidak ditemukan`,
+      );
     }
 
     await this.prisma.priceLevel.delete({
@@ -1382,7 +1403,7 @@ export class ProductsService {
     });
 
     return successResponse({
-      message: `Price level "${priceLevel.name}" deleted successfully`,
+      message: `Price level "${priceLevel.name}" berhasil dihapus`,
     });
   }
 
@@ -1391,7 +1412,7 @@ export class ProductsService {
    */
   async bulkDeletePriceLevels(ids: string[]) {
     if (!ids || ids.length === 0) {
-      throw new BadRequestException('No price level IDs provided');
+      throw new BadRequestException('Tidak ada price level yang dipilih');
     }
 
     const result = await this.prisma.priceLevel.deleteMany({
@@ -1403,7 +1424,7 @@ export class ProductsService {
     });
 
     return successResponse({
-      message: `${result.count} price level(s) deleted successfully`,
+      message: `${result.count} price level(s) berhasil dihapus`,
     });
   }
 }

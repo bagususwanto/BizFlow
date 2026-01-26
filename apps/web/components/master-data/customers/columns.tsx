@@ -12,14 +12,12 @@ import {
   Badge,
   Checkbox,
 } from '@bizflow/ui';
-import { MoreHorizontal, Edit, Trash2, ArrowUpDown } from 'lucide-react';
+import { MoreHorizontal, Edit, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
 import Link from 'next/link';
 
 interface ColumnsProps {
   onDelete: (customer: Customer) => void;
 }
-
-// ... existing imports
 
 export const getColumns = ({
   onDelete,
@@ -52,7 +50,11 @@ export const getColumns = ({
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Kode
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          {column.getIsSorted() === 'asc' ? (
+            <ArrowUp className="ml-2 h-4 w-4" />
+          ) : column.getIsSorted() === 'desc' ? (
+            <ArrowDown className="ml-2 h-4 w-4" />
+          ) : null}
         </Button>
       );
     },
@@ -66,7 +68,11 @@ export const getColumns = ({
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Nama Pelanggan
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          {column.getIsSorted() === 'asc' ? (
+            <ArrowUp className="ml-2 h-4 w-4" />
+          ) : column.getIsSorted() === 'desc' ? (
+            <ArrowDown className="ml-2 h-4 w-4" />
+          ) : null}
         </Button>
       );
     },

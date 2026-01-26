@@ -1,7 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { MoreHorizontal, Edit, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import {
   Badge,
@@ -198,7 +198,7 @@ export const getColumns = ({
             <DropdownMenuLabel>Aksi</DropdownMenuLabel>
             <DropdownMenuItem asChild>
               <Link href={`/master-data/products/${product.id}`}>
-                <Pencil className="mr-2 h-4 w-4" />
+                <Edit className="mr-2 h-4 w-4" />
                 Edit
               </Link>
             </DropdownMenuItem>

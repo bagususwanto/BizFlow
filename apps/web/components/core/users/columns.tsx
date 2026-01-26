@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { ColumnDef } from '@tanstack/react-table';
-import { MoreHorizontal, Pencil, Trash2, Lock, RotateCcw } from 'lucide-react';
+import { MoreHorizontal, Edit, Trash2, Lock, RotateCcw } from 'lucide-react';
 
 import { DataTableColumnHeader } from '@/components/ui/data-table-column-header';
 
@@ -130,7 +130,7 @@ export const getColumns = ({
             <DropdownMenuLabel>Aksi</DropdownMenuLabel>
             <DropdownMenuItem asChild>
               <Link href={`/settings/users/${user.id}`}>
-                <Pencil className="mr-2 h-4 w-4" />
+                <Edit className="mr-2 h-4 w-4" />
                 Edit
               </Link>
             </DropdownMenuItem>

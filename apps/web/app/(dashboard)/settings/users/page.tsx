@@ -51,8 +51,9 @@ function UsersContent() {
       | 'updatedAt'
       | 'lastLogin'
       | 'role.name'
-      | 'status') || 'name';
-  const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'asc';
+      | 'status') || undefined;
+  const sortOrder =
+    (searchParams.get('sortOrder') as 'asc' | 'desc') || undefined;
 
   const {
     users,

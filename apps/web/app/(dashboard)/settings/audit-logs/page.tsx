@@ -30,8 +30,9 @@ function AuditLogsContent() {
       | 'createdAt'
       | 'action'
       | 'module'
-      | 'user.name') || 'createdAt';
-  const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc';
+      | 'user.name') || undefined;
+  const sortOrder =
+    (searchParams.get('sortOrder') as 'asc' | 'desc') || undefined;
 
   const startDate = startDateStr ? new Date(startDateStr) : undefined;
   const endDate = endDateStr ? new Date(endDateStr) : undefined;

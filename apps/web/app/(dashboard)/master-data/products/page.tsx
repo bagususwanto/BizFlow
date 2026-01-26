@@ -36,8 +36,9 @@ function ProductsContent() {
   const search = searchParams.get('search') || '';
   const categoryId = searchParams.get('categoryId') || 'all';
   const status = searchParams.get('status') || 'all';
-  const sortBy = searchParams.get('sortBy') || 'name';
-  const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'asc';
+  const sortBy = searchParams.get('sortBy') || undefined;
+  const sortOrder =
+    (searchParams.get('sortOrder') as 'asc' | 'desc') || undefined;
 
   // Fetch Categories for Filter
   const { data: categories = [] } = useActiveCategories();

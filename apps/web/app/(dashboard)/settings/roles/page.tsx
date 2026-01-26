@@ -32,8 +32,9 @@ function RolesContent() {
   const pageSize = Number(searchParams.get('pageSize')) || 10;
   const search = searchParams.get('search') || '';
   const isSystemRole = searchParams.get('isSystemRole') || 'all';
-  const sortBy = searchParams.get('sortBy') || 'name';
-  const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'asc';
+  const sortBy = searchParams.get('sortBy') || undefined;
+  const sortOrder =
+    (searchParams.get('sortOrder') as 'asc' | 'desc') || undefined;
 
   const debouncedSearch = useDebounce(search, 500);
 

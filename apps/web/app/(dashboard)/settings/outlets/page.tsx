@@ -42,8 +42,9 @@ function OutletsContent() {
       | 'name'
       | 'createdAt'
       | 'updatedAt'
-      | 'userCount') || 'name';
-  const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'asc';
+      | 'userCount') || undefined;
+  const sortOrder =
+    (searchParams.get('sortOrder') as 'asc' | 'desc') || undefined;
 
   // Debounce search input would be better but keeping simple for now
   const {

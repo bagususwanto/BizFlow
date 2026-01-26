@@ -11,6 +11,8 @@ import {
   Trash2,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { DeleteConfirmDialog } from '../../shared/delete-confirm-dialog';
 
 import type { CategoryWithRelations } from '@bizflow/types';
 import {
@@ -27,15 +29,6 @@ import {
   Separator,
   Badge,
   Skeleton,
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
 } from '@bizflow/ui';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
@@ -54,6 +47,7 @@ export function CategoryDetail({
   onDelete,
 }: CategoryDetailProps) {
   const router = useRouter();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   if (isLoading) {
     return (
@@ -122,32 +116,23 @@ export function CategoryDetail({
             </Button>
           )}
           {onDelete && (
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="destructive" size="sm">
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Hapus
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Apakah anda yakin?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Tindakan ini tidak dapat dibatalkan. Kategori ini akan
-                    dihapus secara permanen dari sistem.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Batal</AlertDialogCancel>
-                  <AlertDialogAction
-                    className="bg-destructive hover:bg-destructive/80"
-                    onClick={() => onDelete(category.id)}
-                  >
-                    Hapus
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => setDeleteDialogOpen(true)}
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Hapus
+              </Button>
+              <DeleteConfirmDialog
+                open={deleteDialogOpen}
+                onOpenChange={setDeleteDialogOpen}
+                title="Apakah anda yakin?"
+                description="Tindakan ini tidak dapat dibatalkan. Kategori ini akan dihapus secara permanen dari sistem."
+                onConfirm={() => onDelete(category.id)}
+              />
+            </>
           )}
 
           <DropdownMenu>

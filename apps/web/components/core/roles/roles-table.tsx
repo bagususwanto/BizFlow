@@ -1,13 +1,3 @@
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@bizflow/ui';
 import { useState, useMemo } from 'react';
 import {
   SortingState,
@@ -19,6 +9,7 @@ import { Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Role, rolesService } from '@/services/roles.service';
+import { DeleteConfirmDialog } from '../../shared/delete-confirm-dialog';
 import { DataTable } from '../../ui/data-table';
 import { getColumns } from './columns';
 
@@ -120,93 +111,55 @@ export function RolesTable({
       />
 
       {/* Single Delete Dialog */}
-      <AlertDialog
+      <DeleteConfirmDialog
         open={!!roleToDelete}
         onOpenChange={(open) => !open && setRoleToDelete(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {(roleToDelete?.userCount || 0) > 0
-                ? 'Gagal Menghapus'
-                : 'Hapus Role?'}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {(roleToDelete?.userCount || 0) > 0 ? (
-                <>
-                  Role{' '}
-                  <span className="font-medium text-foreground">
-                    {roleToDelete?.name}
-                  </span>{' '}
-                  sedang digunakan oleh {roleToDelete?.userCount} user. Silakan
-                  ganti role user terlebih dahulu.
-                </>
-              ) : (
-                <>
-                  Role{' '}
-                  <span className="font-medium text-foreground">
-                    {roleToDelete?.name}
-                  </span>{' '}
-                  akan dihapus secara permanen. Tindakan ini tidak dapat
-                  dibatalkan.
-                </>
-              )}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>
-              {(roleToDelete?.userCount || 0) > 0 ? 'Tutup' : 'Batal'}
-            </AlertDialogCancel>
-            {(roleToDelete?.userCount || 0) === 0 && (
-              <AlertDialogAction
-                className="bg-destructive hover:bg-destructive/80 "
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (roleToDelete) {
-                    onDelete(roleToDelete.id);
-                    setRoleToDelete(null);
-                  }
-                }}
-                disabled={isDeleting}
-              >
-                {isDeleting ? 'Menghapus...' : 'Hapus'}
-              </AlertDialogAction>
-            )}
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        title={
+          (roleToDelete?.userCount || 0) > 0 ? 'Gagal Menghapus' : 'Hapus Role?'
+        }
+        description={
+          (roleToDelete?.userCount || 0) > 0 ? (
+            <>
+              Role{' '}
+              <span className="font-medium text-foreground">
+                {roleToDelete?.name}
+              </span>{' '}
+              sedang digunakan oleh {roleToDelete?.userCount} user. Silakan
+              ganti role user terlebih dahulu.
+            </>
+          ) : (
+            <>
+              Role{' '}
+              <span className="font-medium text-foreground">
+                {roleToDelete?.name}
+              </span>{' '}
+              akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.
+            </>
+          )
+        }
+        onConfirm={() => {
+          if (roleToDelete && (roleToDelete.userCount || 0) === 0) {
+            onDelete(roleToDelete.id);
+            setRoleToDelete(null);
+          } else {
+            setRoleToDelete(null);
+          }
+        }}
+        isDeleting={isDeleting}
+        confirmLabel={(roleToDelete?.userCount || 0) > 0 ? 'Tutup' : 'Hapus'}
+        variant={(roleToDelete?.userCount || 0) > 0 ? 'default' : 'destructive'}
+        cancelLabel={(roleToDelete?.userCount || 0) > 0 ? undefined : 'Batal'}
+      />
 
       {/* Bulk Delete Dialog */}
-      <AlertDialog
+      <DeleteConfirmDialog
         open={showBulkDeleteDialog}
-        onOpenChange={(open) => !open && setShowBulkDeleteDialog(false)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Hapus {selectedCount} role?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Tindakan ini tidak dapat dibatalkan. Role yang dipilih akan
-              dihapus secara permanen. Role sistem atau role dengan pengguna
-              aktif tidak akan dihapus.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isBulkDeleting}>
-              Batal
-            </AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive hover:bg-destructive/80 "
-              onClick={(e) => {
-                e.preventDefault();
-                handleBulkDelete();
-              }}
-              disabled={isBulkDeleting}
-            >
-              {isBulkDeleting ? 'Menghapus...' : 'Hapus'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        onOpenChange={setShowBulkDeleteDialog}
+        title={`Hapus ${selectedCount} role?`}
+        description="Tindakan ini tidak dapat dibatalkan. Role yang dipilih akan dihapus secara permanen. Role sistem atau role dengan pengguna aktif tidak akan dihapus."
+        onConfirm={handleBulkDelete}
+        isDeleting={isBulkDeleting}
+      />
     </div>
   );
 }

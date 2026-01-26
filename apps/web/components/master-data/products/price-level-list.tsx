@@ -10,14 +10,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
   Card,
   CardContent,
   CardHeader,
@@ -34,6 +26,8 @@ import {
   useUpdatePriceLevel,
   useDeletePriceLevel,
 } from '@/hooks/use-products';
+
+import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 
 interface PriceLevelListProps {
   productId: string;
@@ -175,29 +169,14 @@ export function PriceLevelList({ productId }: PriceLevelListProps) {
           isSubmitting={createMutation.isPending || updateMutation.isPending}
         />
 
-        <AlertDialog
+        <DeleteConfirmDialog
           open={!!deleteId}
           onOpenChange={(open) => !open && setDeleteId(null)}
-        >
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Hapus Level Harga?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Tindakan ini tidak dapat dibatalkan. Level harga ini akan
-                dihapus permanen.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Batal</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={handleDelete}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              >
-                {deleteMutation.isPending ? 'Menghapus...' : 'Hapus'}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+          title="Hapus Level Harga?"
+          description="Tindakan ini tidak dapat dibatalkan. Level harga ini akan dihapus permanen."
+          onConfirm={handleDelete}
+          isDeleting={deleteMutation.isPending}
+        />
       </CardContent>
     </Card>
   );

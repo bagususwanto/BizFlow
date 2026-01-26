@@ -30,6 +30,7 @@ import { toast } from 'sonner';
 import { User } from '@bizflow/types';
 
 import { usersService, UserWithUsage } from '@/services/users.service';
+import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 import { DataTable } from '../../ui/data-table';
 import { getColumns } from './columns';
 
@@ -214,95 +215,56 @@ export function UsersTable({
       />
 
       {/* Delete Dialog */}
-      <AlertDialog
+      <DeleteConfirmDialog
         open={!!userToDelete}
         onOpenChange={(open) => !open && setUserToDelete(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {(userToDelete?.usageCount || 0) > 0
-                ? 'Nonaktifkan User?'
-                : 'Hapus User?'}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {(userToDelete?.usageCount || 0) > 0 ? (
-                <>
-                  User{' '}
-                  <span className="font-medium text-foreground">
-                    {userToDelete?.username}
-                  </span>{' '}
-                  akan dinonaktifkan karena memiliki riwayat aktivitas. Data
-                  user tetap tersimpan.
-                </>
-              ) : (
-                <>
-                  User{' '}
-                  <span className="font-medium text-foreground">
-                    {userToDelete?.username}
-                  </span>{' '}
-                  akan dihapus secara permanen. Tindakan ini tidak dapat
-                  dibatalkan.
-                </>
-              )}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>Batal</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive hover:bg-destructive/80 "
-              onClick={(e) => {
-                e.preventDefault();
-                if (userToDelete) {
-                  onDelete(userToDelete.id);
-                  setUserToDelete(null);
-                }
-              }}
-              disabled={isDeleting}
-            >
-              {isDeleting
-                ? 'Memproses...'
-                : (userToDelete?.usageCount || 0) > 0
-                  ? 'Nonaktifkan'
-                  : 'Hapus'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        title={
+          (userToDelete?.usageCount || 0) > 0
+            ? 'Nonaktifkan User?'
+            : 'Hapus User?'
+        }
+        description={
+          (userToDelete?.usageCount || 0) > 0 ? (
+            <>
+              User{' '}
+              <span className="font-medium text-foreground">
+                {userToDelete?.username}
+              </span>{' '}
+              akan dinonaktifkan karena memiliki riwayat aktivitas. Data user
+              tetap tersimpan.
+            </>
+          ) : (
+            <>
+              User{' '}
+              <span className="font-medium text-foreground">
+                {userToDelete?.username}
+              </span>{' '}
+              akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.
+            </>
+          )
+        }
+        onConfirm={() => {
+          if (userToDelete) {
+            onDelete(userToDelete.id);
+            setUserToDelete(null);
+          }
+        }}
+        isDeleting={isDeleting}
+        confirmLabel={
+          (userToDelete?.usageCount || 0) > 0 ? 'Nonaktifkan' : 'Hapus'
+        }
+      />
 
       {/* Bulk Delete Dialog */}
-      <AlertDialog
+      <DeleteConfirmDialog
         open={showBulkDeleteDialog}
-        onOpenChange={(open) => !open && setShowBulkDeleteDialog(false)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              Nonaktifkan {selectedCount} User?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              User yang dipilih akan dinonaktifkan dan tidak dapat login
-              kembali. Akun anda sendiri atau admin terakhir tidak akan
-              dinonaktifkan.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isBulkDeleting}>
-              Batal
-            </AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive hover:bg-destructive/80 "
-              onClick={(e) => {
-                e.preventDefault();
-                handleBulkDelete();
-              }}
-              disabled={isBulkDeleting}
-            >
-              {isBulkDeleting ? 'Memproses...' : 'Nonaktifkan'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        onOpenChange={setShowBulkDeleteDialog}
+        title={`Nonaktifkan ${selectedCount} User?`}
+        description="User yang dipilih akan dinonaktifkan dan tidak dapat login kembali. Akun anda sendiri atau admin terakhir tidak akan dinonaktifkan."
+        onConfirm={handleBulkDelete}
+        isDeleting={isBulkDeleting}
+        confirmLabel="Nonaktifkan"
+      />
 
       {/* Reset Password Dialog */}
       <AlertDialog

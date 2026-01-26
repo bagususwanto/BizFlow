@@ -13,14 +13,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   Checkbox,
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
 } from '@bizflow/ui';
 import { MoreHorizontal, Pencil, Trash2, Plus } from 'lucide-react';
 import { VariantForm } from './variant-form';
@@ -30,6 +22,7 @@ import {
   useUpdateVariant,
   useDeleteVariant,
 } from '@/hooks/use-products';
+import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 import { formatCurrency } from '@/lib/utils'; // Assuming this exists, if not use Intl
 
 interface VariantListProps {
@@ -209,29 +202,13 @@ export function VariantList({ productId }: VariantListProps) {
         productId={productId}
       />
 
-      <AlertDialog
+      <DeleteConfirmDialog
         open={!!deleteId}
         onOpenChange={(open) => !open && setDeleteId(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Apakah anda yakin?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Tindakan ini tidak dapat dibatalkan. Varian ini akan
-              dinonaktifkan.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              onClick={handleDelete}
-            >
-              Hapus
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        title="Apakah anda yakin?"
+        description="Tindakan ini tidak dapat dibatalkan. Varian ini akan dinonaktifkan."
+        onConfirm={handleDelete}
+      />
     </div>
   );
 }

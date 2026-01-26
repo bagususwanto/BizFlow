@@ -175,10 +175,7 @@ export const getColumns = ({
     cell: ({ row }) => {
       const isActive = row.getValue('isActive') as boolean;
       return (
-        <Badge
-          variant={isActive ? 'default' : 'secondary'}
-          className={isActive ? 'bg-green-600 hover:bg-green-700' : ''}
-        >
+        <Badge variant={isActive ? 'default' : 'secondary'}>
           {isActive ? 'Aktif' : 'Nonaktif'}
         </Badge>
       );

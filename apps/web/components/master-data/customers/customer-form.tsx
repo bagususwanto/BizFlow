@@ -300,7 +300,6 @@ export function CustomerForm({
                     <Switch
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      disabled={isEdit && !initialData?.isActive} // Cannot activate if it was soft deleted by system/logic? Or just allow? Service handles restrictions.
                     />
                   </FormControl>
                 </FormItem>

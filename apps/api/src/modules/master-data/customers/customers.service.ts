@@ -62,6 +62,11 @@ export class CustomersService {
       this.prisma.customer.count({ where }),
       this.prisma.customer.findMany({
         where,
+        include: {
+          _count: {
+            select: { salesOrders: true, payments: true },
+          },
+        },
         orderBy,
         skip,
         take: sizeNum,
@@ -277,23 +282,31 @@ export class CustomersService {
       throw new NotFoundException('Pelanggan tidak ditemukan');
     }
 
-    // Check usage in transactions
-    const isUsedInTransactions = await this.checkCustomerUsedInTransactions(id);
+    // Logic:
+    // 1. If Active -> Deactivate (Soft Delete)
+    // 2. If Inactive -> Try to Hard Delete (check usage first)
 
-    if (isUsedInTransactions) {
-      // Soft delete
+    if (customer.isActive) {
       await this.prisma.customer.update({
         where: { id },
         data: { isActive: false },
       });
 
       return successResponse({
-        message: `Pelanggan '${customer.name}' dinonaktifkan karena sudah memiliki riwayat transaksi`,
-        isHardDelete: false,
+        message: `Pelanggan '${customer.name}' berhasil dinonaktifkan`,
       });
     }
 
-    // Hard delete
+    // If inactive, check dependencies
+    const isUsedInTransactions = await this.checkCustomerUsedInTransactions(id);
+
+    if (isUsedInTransactions) {
+      throw new ConflictException(
+        `Pelanggan '${customer.name}' tidak dapat dihapus permanen karena sudah memiliki riwayat transaksi. Hanya bisa dinonaktifkan.`,
+      );
+    }
+
+    // Safe to hard delete
     await this.prisma.customer.delete({
       where: { id },
     });
@@ -327,21 +340,50 @@ export class CustomersService {
       throw new NotFoundException('Beberapa pelanggan tidak ditemukan');
     }
 
-    let deletedCount = 0;
-    let deactivatedCount = 0;
+    let hardDeleteCount = 0;
+    let softDeleteCount = 0;
+    let skippedCount = 0;
 
-    for (const id of ids) {
-      const result = await this.delete(id, userId);
-      if (result.data.isHardDelete) {
-        deletedCount++;
+    for (const customer of customers) {
+      if (customer.isActive) {
+        // Case 1: Active -> Soft Delete (Deactivate)
+        await this.prisma.customer.update({
+          where: { id: customer.id },
+          data: { isActive: false },
+        });
+        softDeleteCount++;
       } else {
-        deactivatedCount++;
+        // Case 2: Inactive -> Try Hard Delete
+        const isUsed = await this.checkCustomerUsedInTransactions(customer.id);
+
+        if (isUsed) {
+          skippedCount++;
+        } else {
+          // Safe to hard delete
+          await this.prisma.customer.delete({
+            where: { id: customer.id },
+          });
+          hardDeleteCount++;
+        }
       }
     }
 
+    const messages: string[] = [];
+    if (hardDeleteCount > 0) {
+      messages.push(`${hardDeleteCount} pelanggan dihapus permanen`);
+    }
+    if (softDeleteCount > 0) {
+      messages.push(`${softDeleteCount} pelanggan dinonaktifkan`);
+    }
+    if (skippedCount > 0) {
+      messages.push(`${skippedCount} pelanggan dilewati (memiliki transaksi)`);
+    }
+
     return successResponse({
-      message: `${deletedCount} pelanggan dihapus permanen, ${deactivatedCount} dinonaktifkan`,
-      details: { deletedCount, deactivatedCount },
+      message: messages.join(', '),
+      hardDeleteCount,
+      softDeleteCount,
+      skippedCount,
     });
   }
   /**

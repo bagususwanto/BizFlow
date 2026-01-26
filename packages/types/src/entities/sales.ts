@@ -19,6 +19,10 @@ export interface Customer extends ActiveEntity {
   taxId?: string | null;
   creditLimit: Decimal;
   priceLevelId?: string | null;
+  _count?: {
+    salesOrders: number;
+    payments: number;
+  };
 }
 
 export interface CustomerListResponse {

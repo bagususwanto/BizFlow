@@ -10,16 +10,7 @@ import { Customer } from '@bizflow/types';
 import { MasterDataPage } from '@/components/master-data/master-data-page';
 import { getColumns } from '@/components/master-data/customers/columns';
 import { ErrorState } from '@/components/common/error-state';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@bizflow/ui';
+import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 import { toast } from 'sonner';
 
 function CustomersContent() {
@@ -177,46 +168,80 @@ function CustomersContent() {
       />
 
       {/* Single Delete Dialog */}
-      <AlertDialog
+      <DeleteConfirmDialog
         open={!!customerToDelete}
         onOpenChange={(open) => !open && setCustomerToDelete(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {customerToDelete?.isActive ? 'Nonaktifkan' : 'Hapus'} Pelanggan?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
+        title={
+          customerToDelete?.isActive
+            ? 'Nonaktifkan Pelanggan?'
+            : (customerToDelete?._count?.salesOrders || 0) > 0 ||
+                (customerToDelete?._count?.payments || 0) > 0
+              ? 'Pelanggan Tidak Dapat Dihapus'
+              : 'Hapus Pelanggan Permanen?'
+        }
+        description={
+          customerToDelete?.isActive ? (
+            <>
               Pelanggan{' '}
               <span className="font-medium text-foreground">
                 {customerToDelete?.name}
               </span>{' '}
-              akan {customerToDelete?.isActive ? 'dinonaktifkan' : 'dihapus'}.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>Batal</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive hover:bg-destructive/80"
-              onClick={(e) => {
-                e.preventDefault();
-                if (customerToDelete) {
-                  deleteCustomer(customerToDelete.id, {
-                    onSuccess: () => setCustomerToDelete(null),
-                  });
-                }
-              }}
-              disabled={isDeleting}
-            >
-              {isDeleting
-                ? 'Memproses...'
-                : customerToDelete?.isActive
-                  ? 'Nonaktifkan'
-                  : 'Hapus'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+              akan dinonaktifkan. Data pelanggan tetap tersimpan.
+            </>
+          ) : (customerToDelete?._count?.salesOrders || 0) > 0 ||
+            (customerToDelete?._count?.payments || 0) > 0 ? (
+            <>
+              Pelanggan{' '}
+              <span className="font-medium text-foreground">
+                {customerToDelete?.name}
+              </span>{' '}
+              tidak dapat dihapus secara permanen karena masih memiliki{' '}
+              {(customerToDelete?._count?.salesOrders || 0) > 0 &&
+                `${customerToDelete?._count?.salesOrders} riwayat penjualan`}
+              {(customerToDelete?._count?.salesOrders || 0) > 0 &&
+                (customerToDelete?._count?.payments || 0) > 0 &&
+                ' dan '}
+              {(customerToDelete?._count?.payments || 0) > 0 &&
+                `${customerToDelete?._count?.payments} riwayat pembayaran`}
+              . Hanya dapat dinonaktifkan untuk menjaga integritas data.
+            </>
+          ) : (
+            <>
+              <p>
+                Pelanggan{' '}
+                <span className="font-medium text-foreground">
+                  {customerToDelete?.name}
+                </span>{' '}
+                akan dihapus secara permanen. Tindakan ini tidak dapat
+                dibatalkan.
+              </p>
+            </>
+          )
+        }
+        onConfirm={() => {
+          if (customerToDelete) {
+            deleteCustomer(customerToDelete.id, {
+              onSuccess: () => setCustomerToDelete(null),
+            });
+          }
+        }}
+        isDeleting={isDeleting}
+        confirmLabel={
+          customerToDelete?.isActive ? 'Nonaktifkan' : 'Hapus Permanen'
+        }
+        cancelLabel={
+          !customerToDelete?.isActive &&
+          ((customerToDelete?._count?.salesOrders || 0) > 0 ||
+            (customerToDelete?._count?.payments || 0) > 0)
+            ? 'Tutup'
+            : 'Batal'
+        }
+        showConfirm={
+          customerToDelete?.isActive ||
+          ((customerToDelete?._count?.salesOrders || 0) === 0 &&
+            (customerToDelete?._count?.payments || 0) === 0)
+        }
+      />
     </>
   );
 }

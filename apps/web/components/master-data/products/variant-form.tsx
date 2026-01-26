@@ -15,6 +15,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  Switch,
+  FormDescription,
 } from '@bizflow/ui';
 import { Plus, Trash2, RefreshCw } from 'lucide-react';
 import { useEffect } from 'react';
@@ -47,6 +49,7 @@ export function VariantForm({
       name: '',
       costPrice: 0,
       sellPrice: 0,
+      isActive: true,
       attributes: {},
     },
   });
@@ -70,6 +73,7 @@ export function VariantForm({
         name: '',
         costPrice: 0,
         sellPrice: 0,
+        isActive: true,
         attributes: {},
       });
     }
@@ -122,10 +126,7 @@ export function VariantForm({
         </DialogHeader>
 
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-6"
-          >
+          <div className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -226,6 +227,27 @@ export function VariantForm({
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="isActive"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm col-span-2">
+                    <div className="space-y-0.5">
+                      <FormLabel>Status Aktif</FormLabel>
+                      <FormDescription>
+                        Tentukan apakah varian ini aktif atau tidak.
+                      </FormDescription>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
             </div>
 
             <div className="space-y-4">
@@ -289,11 +311,15 @@ export function VariantForm({
               >
                 Batal
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button
+                type="button"
+                disabled={isSubmitting}
+                onClick={form.handleSubmit(handleSubmit)}
+              >
                 {isSubmitting ? 'Menyimpan...' : 'Simpan'}
               </Button>
             </DialogFooter>
-          </form>
+          </div>
         </Form>
       </DialogContent>
     </Dialog>

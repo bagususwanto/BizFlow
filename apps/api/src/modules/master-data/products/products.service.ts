@@ -1086,7 +1086,7 @@ export class ProductsService {
         attributes: JSON.stringify(dto.attributes),
         costPrice: dto.costPrice,
         sellPrice: dto.sellPrice,
-        isActive: true,
+        isActive: dto.isActive ?? true,
       },
       include: {
         product: { select: { id: true, name: true, sku: true } },
@@ -1137,6 +1137,7 @@ export class ProductsService {
         ...(dto.attributes && { attributes: JSON.stringify(dto.attributes) }),
         ...(dto.costPrice !== undefined && { costPrice: dto.costPrice }),
         ...(dto.sellPrice !== undefined && { sellPrice: dto.sellPrice }),
+        ...(dto.isActive !== undefined && { isActive: dto.isActive }),
       },
       include: {
         product: { select: { id: true, name: true, sku: true } },
@@ -1163,6 +1164,23 @@ export class ProductsService {
       throw new NotFoundException(`Variant dengan ID ${id} tidak ditemukan`);
     }
 
+    // Logic:
+    // 1. If Active -> Deactivate (Soft Delete)
+    // 2. If Inactive -> Try to Hard Delete (check dependencies first)
+
+    if (variant.isActive) {
+      await this.prisma.productVariant.update({
+        where: { id },
+        data: { isActive: false },
+      });
+
+      return successResponse({
+        message: `Variant '${variant.name}' berhasil dinonaktifkan`,
+        isHardDelete: false,
+      });
+    }
+
+    // If inactive, check dependencies
     const hasStock = variant.stocks.some((stock) => Number(stock.quantity) > 0);
     if (hasStock) {
       throw new BadRequestException(
@@ -1174,17 +1192,20 @@ export class ProductsService {
       variant.salesOrderItems.length > 0 ||
       variant.purchaseOrderItems.length > 0
     ) {
-      throw new BadRequestException(
-        'Tidak dapat menghapus variant dengan transaksi yang ada. Harap matikan transaksi terlebih dahulu.',
+      throw new ConflictException(
+        'Tidak dapat menghapus variant dengan transaksi yang ada. Hanya bisa dinonaktifkan.',
       );
     }
 
-    await this.prisma.productVariant.update({
+    // Safe to hard delete
+    await this.prisma.productVariant.delete({
       where: { id },
-      data: { isActive: false },
     });
 
-    return successResponse({ message: 'Variant berhasil dinonaktifkan' });
+    return successResponse({
+      message: `Variant '${variant.name}' berhasil dihapus permanen`,
+      isHardDelete: true,
+    });
   }
 
   /**

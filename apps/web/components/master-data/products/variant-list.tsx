@@ -13,6 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   Checkbox,
+  Badge,
 } from '@bizflow/ui';
 import { MoreHorizontal, Pencil, Trash2, Plus } from 'lucide-react';
 import { VariantForm } from './variant-form';
@@ -39,7 +40,9 @@ export function VariantList({ productId }: VariantListProps) {
   const [editingVariant, setEditingVariant] = useState<
     ProductVariant | undefined
   >(undefined);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [variantToDelete, setVariantToDelete] = useState<ProductVariant | null>(
+    null,
+  );
 
   const handleCreate = (data: CreateVariantValues) => {
     createVariant.mutate(data, {
@@ -68,9 +71,9 @@ export function VariantList({ productId }: VariantListProps) {
   };
 
   const handleDelete = () => {
-    if (deleteId) {
-      deleteVariant.mutate(deleteId, {
-        onSuccess: () => setDeleteId(null),
+    if (variantToDelete) {
+      deleteVariant.mutate(variantToDelete.id, {
+        onSuccess: () => setVariantToDelete(null),
       });
     }
   };
@@ -115,13 +118,14 @@ export function VariantList({ productId }: VariantListProps) {
               <TableHead>Atribut</TableHead>
               <TableHead>Harga Beli</TableHead>
               <TableHead>Harga Jual</TableHead>
+              <TableHead>Status</TableHead>
               <TableHead className="w-[70px]"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {variants?.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center h-24">
+                <TableCell colSpan={7} className="text-center h-24">
                   Belum ada varian produk.
                 </TableCell>
               </TableRow>
@@ -148,6 +152,11 @@ export function VariantList({ productId }: VariantListProps) {
                     }).format(Number(variant.sellPrice))}
                   </TableCell>
                   <TableCell>
+                    <Badge variant={variant.isActive ? 'default' : 'secondary'}>
+                      {variant.isActive ? 'Aktif' : 'Nonaktif'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
@@ -166,7 +175,7 @@ export function VariantList({ productId }: VariantListProps) {
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           className="text-destructive focus:text-destructive"
-                          onClick={() => setDeleteId(variant.id)}
+                          onClick={() => setVariantToDelete(variant)}
                         >
                           <Trash2 className="mr-2 h-4 w-4" />
                           Hapus
@@ -203,10 +212,42 @@ export function VariantList({ productId }: VariantListProps) {
       />
 
       <DeleteConfirmDialog
-        open={!!deleteId}
-        onOpenChange={(open) => !open && setDeleteId(null)}
-        title="Apakah anda yakin?"
-        description="Tindakan ini tidak dapat dibatalkan. Varian ini akan dinonaktifkan."
+        open={!!variantToDelete}
+        onOpenChange={(open) => !open && setVariantToDelete(null)}
+        title={
+          variantToDelete?.isActive
+            ? 'Nonaktifkan Varian?'
+            : 'Hapus Varian Permanen?'
+        }
+        description={
+          variantToDelete?.isActive ? (
+            <>
+              Varian{' '}
+              <span className="font-medium text-foreground">
+                {variantToDelete?.name}
+              </span>{' '}
+              akan dinonaktifkan.
+            </>
+          ) : (
+            <>
+              <p>
+                Varian{' '}
+                <span className="font-medium text-foreground">
+                  {variantToDelete?.name}
+                </span>{' '}
+                akan dihapus secara permanen. Tindakan ini tidak dapat
+                dibatalkan.
+              </p>
+              <p className="mt-2 text-sm font-medium text-destructive">
+                Peringatan: Varian yang memiliki riwayat stok atau transaksi
+                tidak dapat dihapus permanen.
+              </p>
+            </>
+          )
+        }
+        confirmLabel={
+          variantToDelete?.isActive ? 'Nonaktifkan' : 'Hapus Permanen'
+        }
         onConfirm={handleDelete}
       />
     </div>

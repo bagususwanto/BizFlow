@@ -211,8 +211,7 @@ export const createVariantSchema = z.object({
     z
       .string()
       .min(8, { message: 'Barcode minimal 8 karakter' })
-      .max(14, { message: 'Barcode maksimal 14 karakter' })
-      .regex(/^[0-9]+$/, { message: 'Barcode hanya boleh berisi angka' })
+      .max(50, { message: 'Barcode maksimal 50 karakter' })
       .nullable()
       .optional(),
   ),
@@ -227,6 +226,7 @@ export const createVariantSchema = z.object({
   sellPrice: z.coerce
     .number()
     .min(0, { message: 'Harga jual tidak boleh negatif' }),
+  isActive: z.boolean().default(true),
 });
 
 export type CreateVariantValues = z.infer<typeof createVariantSchema>;

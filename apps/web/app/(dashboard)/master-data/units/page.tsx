@@ -19,6 +19,7 @@ import {
   AlertDialogTitle,
 } from '@bizflow/ui';
 import { toast } from 'sonner';
+import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 
 function UnitsContent() {
   const router = useRouter();
@@ -159,40 +160,63 @@ function UnitsContent() {
       />
 
       {/* Single Delete Dialog */}
-      <AlertDialog
+      <DeleteConfirmDialog
         open={!!unitToDelete}
         onOpenChange={(open) => !open && setUnitToDelete(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Hapus Satuan?</AlertDialogTitle>
-            <AlertDialogDescription>
+        title={
+          (unitToDelete?._count?.products || 0) > 0 ||
+          (unitToDelete?._count?.derivedUnits || 0) > 0
+            ? 'Satuan Tidak Dapat Dihapus'
+            : 'Hapus Satuan Permanen?'
+        }
+        description={
+          (unitToDelete?._count?.products || 0) > 0 ||
+          (unitToDelete?._count?.derivedUnits || 0) > 0 ? (
+            <>
               Satuan{' '}
               <span className="font-medium text-foreground">
                 {unitToDelete?.name}
               </span>{' '}
-              akan dihapus.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>Batal</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive hover:bg-destructive/80"
-              onClick={(e) => {
-                e.preventDefault();
-                if (unitToDelete) {
-                  deleteUnit(unitToDelete.id, {
-                    onSuccess: () => setUnitToDelete(null),
-                  });
-                }
-              }}
-              disabled={isDeleting}
-            >
-              {isDeleting ? 'Memproses...' : 'Hapus'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+              tidak dapat dihapus secara permanen karena masih digunakan oleh{' '}
+              {(unitToDelete?._count?.products || 0) > 0 &&
+                `${unitToDelete?._count?.products} produk`}
+              {(unitToDelete?._count?.products || 0) > 0 &&
+                (unitToDelete?._count?.derivedUnits || 0) > 0 &&
+                ' dan '}
+              {(unitToDelete?._count?.derivedUnits || 0) > 0 &&
+                `${unitToDelete?._count?.derivedUnits} unit turunan`}
+              . Silakan pindahkan atau hapus item di dalamnya terlebih dahulu.
+            </>
+          ) : (
+            <>
+              Satuan{' '}
+              <span className="font-medium text-foreground">
+                {unitToDelete?.name}
+              </span>{' '}
+              akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.
+            </>
+          )
+        }
+        onConfirm={() => {
+          if (unitToDelete) {
+            deleteUnit(unitToDelete.id, {
+              onSuccess: () => setUnitToDelete(null),
+            });
+          }
+        }}
+        isDeleting={isDeleting}
+        confirmLabel="Hapus Permanen"
+        cancelLabel={
+          (unitToDelete?._count?.products || 0) > 0 ||
+          (unitToDelete?._count?.derivedUnits || 0) > 0
+            ? 'Tutup'
+            : 'Batal'
+        }
+        showConfirm={
+          (unitToDelete?._count?.products || 0) === 0 &&
+          (unitToDelete?._count?.derivedUnits || 0) === 0
+        }
+      />
     </>
   );
 }

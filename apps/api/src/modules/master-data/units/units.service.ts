@@ -142,7 +142,7 @@ export class UnitsService {
     });
 
     if (!unit) {
-      throw new NotFoundException(`Unit with ID ${id} not found`);
+      throw new NotFoundException(`Unit dengan ID ${id} tidak ditemukan`);
     }
 
     return successResponse(unit);
@@ -159,8 +159,8 @@ export class UnitsService {
     if (existing) {
       throw new ConflictException(
         existing.name === dto.name
-          ? `Unit with name ${dto.name} already exists`
-          : `Unit with symbol ${dto.symbol} already exists`,
+          ? `Unit dengan nama ${dto.name} sudah ada`
+          : `Unit dengan simbol ${dto.symbol} sudah ada`,
       );
     }
 
@@ -171,7 +171,7 @@ export class UnitsService {
       });
 
       if (!baseUnit) {
-        throw new BadRequestException('Selected base unit not found');
+        throw new BadRequestException('Unit dasar tidak ditemukan');
       }
 
       // Validasi: Base unit tidak boleh punya base unit (max depth 1 level)
@@ -179,7 +179,7 @@ export class UnitsService {
       // Untuk MVP, kita batasi 1 level conversion agar tidak ribet.
       if (baseUnit.baseUnitId) {
         throw new BadRequestException(
-          'Cannot derive from a unit that is already derived (max depth 1)',
+          'Tidak dapat menurunkan dari unit yang sudah diturunkan (depth 1)',
         );
       }
     } else {
@@ -201,7 +201,7 @@ export class UnitsService {
     });
 
     if (!unit) {
-      throw new NotFoundException(`Unit with ID ${id} not found`);
+      throw new NotFoundException(`Unit dengan ID ${id} tidak ditemukan`);
     }
 
     // Check name uniqueness if changed
@@ -210,9 +210,7 @@ export class UnitsService {
         where: { name: dto.name, id: { not: id } },
       });
       if (existing) {
-        throw new ConflictException(
-          `Unit with name ${dto.name} already exists`,
-        );
+        throw new ConflictException(`Unit dengan nama ${dto.name} sudah ada`);
       }
     }
 
@@ -223,7 +221,7 @@ export class UnitsService {
       });
       if (existing) {
         throw new ConflictException(
-          `Unit with symbol ${dto.symbol} already exists`,
+          `Unit dengan simbol ${dto.symbol} sudah ada`,
         );
       }
     }
@@ -231,7 +229,9 @@ export class UnitsService {
     // Validate base unit change
     if (dto.baseUnitId !== undefined) {
       if (dto.baseUnitId === id) {
-        throw new BadRequestException('Unit cannot be its own base unit');
+        throw new BadRequestException(
+          'Unit tidak bisa menjadi base unitnya sendiri',
+        );
       }
 
       if (dto.baseUnitId) {
@@ -242,12 +242,12 @@ export class UnitsService {
         });
 
         if (!baseUnit) {
-          throw new BadRequestException('Selected base unit not found');
+          throw new BadRequestException('Unit dasar tidak ditemukan');
         }
 
         if (baseUnit.baseUnitId) {
           throw new BadRequestException(
-            'Cannot derive from a unit that is already derived',
+            'Tidak bisa menurunkan dari unit yang sudah diturunkan',
           );
         }
       }
@@ -272,18 +272,18 @@ export class UnitsService {
     });
 
     if (!unit) {
-      throw new NotFoundException(`Unit with ID ${id} not found`);
+      throw new NotFoundException(`Unit dengan ID ${id} tidak ditemukan`);
     }
 
     if (unit._count.products > 0) {
       throw new BadRequestException(
-        'Cannot delete unit that is associated with products',
+        `Unit '${unit.name}' tidak dapat dihapus karena digunakan oleh ${unit._count.products} produk.`,
       );
     }
 
     if (unit._count.derivedUnits > 0) {
       throw new BadRequestException(
-        'Cannot delete unit that is used as base unit for others',
+        `Unit '${unit.name}' tidak dapat dihapus karena digunakan sebagai unit dasar (base unit) oleh ${unit._count.derivedUnits} unit lain.`,
       );
     }
 
@@ -291,7 +291,7 @@ export class UnitsService {
       where: { id },
     });
 
-    return successResponse(null);
+    return successResponse('Unit berhasil dihapus permanen');
   }
 
   async bulkDelete(ids: string[], userId: string) {

@@ -36,13 +36,20 @@ export class UnitsService {
 
     const where = this.buildWhereClause(search, baseUnitId);
 
+    const orderBy: any = {};
+    if (sortBy === 'baseUnit') {
+      orderBy.baseUnit = { name: sortOrder };
+    } else {
+      orderBy[sortBy] = sortOrder;
+    }
+
     const [total, data] = await Promise.all([
       this.prisma.unitOfMeasure.count({ where }),
       this.prisma.unitOfMeasure.findMany({
         where,
         take: sizeNum,
         skip,
-        orderBy: { [sortBy]: sortOrder },
+        orderBy,
         include: {
           baseUnit: true,
           _count: {

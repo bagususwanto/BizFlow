@@ -43,6 +43,12 @@ interface SettingsPaginationProps {
   pageSize: number;
   onPageSizeChange: (pageSize: number) => void;
   summary?: PaginationSummary;
+  summaryLabels?: {
+    total?: string;
+    active?: string;
+    inactive?: string;
+    [key: string]: string | undefined;
+  };
 }
 
 export function SettingsPagination({
@@ -53,6 +59,7 @@ export function SettingsPagination({
   pageSize,
   onPageSizeChange,
   summary,
+  summaryLabels,
 }: SettingsPaginationProps) {
   return (
     <div className="flex flex-col gap-4 pt-4 md:flex-row md:items-center md:justify-between">
@@ -63,7 +70,7 @@ export function SettingsPagination({
             <div className="flex items-center gap-2">
               <Box className="h-4 w-4" />
               <span>
-                Total:{' '}
+                {summaryLabels?.total || 'Total:'}{' '}
                 <span className="font-medium text-foreground">
                   {summary.total ?? totalItems}
                 </span>
@@ -75,7 +82,7 @@ export function SettingsPagination({
                 <div className="flex items-center gap-2">
                   <Shield className="h-4 w-4 text-blue-500" />
                   <span>
-                    System:{' '}
+                    Sistem:{' '}
                     <span className="font-medium text-foreground">
                       {summary.systemRoles}
                     </span>
@@ -89,7 +96,7 @@ export function SettingsPagination({
                 <div className="flex items-center gap-2">
                   <UserCog className="h-4 w-4 text-orange-500" />
                   <span>
-                    Custom:{' '}
+                    Kustom:{' '}
                     <span className="font-medium text-foreground">
                       {summary.customRoles}
                     </span>
@@ -103,7 +110,7 @@ export function SettingsPagination({
                 <div className="flex items-center gap-2">
                   <Users className="h-4 w-4 text-green-500" />
                   <span>
-                    Assigned Users:{' '}
+                    Pengguna Terkait:{' '}
                     <span className="font-medium text-foreground">
                       {summary.totalUsersAssigned}
                     </span>
@@ -117,9 +124,23 @@ export function SettingsPagination({
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="h-4 w-4 text-green-500" />
                   <span>
-                    Aktif:{' '}
+                    {summaryLabels?.active || 'Aktif:'}{' '}
                     <span className="font-medium text-foreground">
                       {summary.active}
+                    </span>
+                  </span>
+                </div>
+              </>
+            )}
+            {summary.inactive !== undefined && (
+              <>
+                <Separator orientation="vertical" className="h-4" />
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-red-500" />
+                  <span>
+                    {summaryLabels?.inactive || 'Non-aktif:'}{' '}
+                    <span className="font-medium text-foreground">
+                      {summary.inactive}
                     </span>
                   </span>
                 </div>
@@ -131,7 +152,7 @@ export function SettingsPagination({
                 <div className="flex items-center gap-2">
                   <LayoutGrid className="h-4 w-4 text-purple-500" />
                   <span>
-                    Service:{' '}
+                    Jasa:{' '}
                     <span className="font-medium text-foreground">
                       {summary.service}
                     </span>
@@ -145,7 +166,9 @@ export function SettingsPagination({
                 ([key]) =>
                   ![
                     'total',
+                    'total',
                     'active',
+                    'inactive',
                     'service',
                     'systemRoles',
                     'customRoles',
@@ -164,7 +187,7 @@ export function SettingsPagination({
           </>
         ) : (
           <span>
-            Total:{' '}
+            {summaryLabels?.total || 'Total:'}{' '}
             <span className="font-medium text-foreground">{totalItems}</span>
           </span>
         )}

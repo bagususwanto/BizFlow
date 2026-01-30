@@ -59,6 +59,12 @@ interface SettingsPageProps<TData> {
   onPageChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
   summary?: PaginationSummary; // Generic Summary
+  summaryLabels?: {
+    total?: string;
+    active?: string;
+    inactive?: string;
+    [key: string]: string | undefined;
+  };
 
   // Actions
   createLink?: string;
@@ -105,6 +111,7 @@ export function SettingsPage<
   onPageChange,
   onPageSizeChange,
   summary,
+  summaryLabels,
   createLink,
   createLabel,
   onDelete,
@@ -275,6 +282,7 @@ export function SettingsPage<
                 onPageChange={onPageChange}
                 onPageSizeChange={onPageSizeChange}
                 summary={summary}
+                summaryLabels={summaryLabels}
               />
             </>
           )}

@@ -78,7 +78,7 @@ export const getColumns = ({
   {
     accessorKey: 'role.name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Role" />
+      <DataTableColumnHeader column={column} title="Peran" />
     ),
     cell: ({ row }) => (
       <Badge variant="outline" className="capitalize">
@@ -86,7 +86,7 @@ export const getColumns = ({
       </Badge>
     ),
     meta: {
-      title: 'Role',
+      title: 'Peran',
     },
   },
   {

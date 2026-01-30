@@ -18,7 +18,7 @@ import { toast } from 'sonner';
 
 import { getColumns } from '@/components/core/users/columns';
 import { ErrorState } from '@/components/common/error-state';
-import { useUsers } from '@/hooks';
+import { useUsers, useRoles } from '@/hooks';
 import { usersService, UserWithUsage } from '@/services/users.service';
 import { User } from '@bizflow/types';
 import { SettingsPage } from '@/components/settings/settings-page';
@@ -77,6 +77,14 @@ function UsersContent() {
   const [newPin, setNewPin] = useState('');
   const [isResetting, setIsResetting] = useState(false);
   const [isChangingPin, setIsChangingPin] = useState(false);
+
+  // Fetch roles for filter
+  const { roles: rolesList } = useRoles({ page: 1, pageSize: 100 });
+  const roleOptions =
+    rolesList?.map((role) => ({
+      label: role.name,
+      value: role.id,
+    })) || [];
 
   const createQueryString = useCallback(
     (params: Record<string, string | number | null>) => {
@@ -224,6 +232,11 @@ function UsersContent() {
               }
             : undefined
         }
+        summaryLabels={{
+          total: 'Total Pengguna:',
+          active: 'Aktif:',
+          inactive: 'Non-aktif:',
+        }}
         // Sorting
         sortBy={sortBy}
         sortOrder={sortOrder}
@@ -244,12 +257,9 @@ function UsersContent() {
         onReset={() => router.push(pathname)}
         filters={[
           {
-            key: 'roleId', // Note: Using text input for roleId filter might need a dropdown if we had role list. The original page had UsersToolbar which had specific logic?
-            label: 'Role',
-            options: [
-              // In original UsersToolbar, role selection was dynamic?
-              // Let's check UsersToolbar again.
-            ],
+            key: 'roleId',
+            label: 'Peran',
+            options: roleOptions,
             // For now leaving generic, but we need to check if we can populate roles options.
             // If UsersToolbar fetched roles, we need to fetch them here or pass empty for now.
           },

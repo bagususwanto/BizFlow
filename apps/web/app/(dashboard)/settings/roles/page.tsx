@@ -126,6 +126,9 @@ function RolesContent() {
               }
             : undefined
         }
+        summaryLabels={{
+          total: 'Total Peran:',
+        }}
         // Sorting
         sortBy={sortBy}
         sortOrder={sortOrder}

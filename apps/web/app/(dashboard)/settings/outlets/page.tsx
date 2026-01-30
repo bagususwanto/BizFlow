@@ -128,6 +128,11 @@ function OutletsContent() {
               }
             : undefined
         }
+        summaryLabels={{
+          total: 'Total Outlet:',
+          active: 'Aktif:',
+          inactive: 'Non-aktif:',
+        }}
         // Sorting
         sortBy={sortBy}
         sortOrder={sortOrder}

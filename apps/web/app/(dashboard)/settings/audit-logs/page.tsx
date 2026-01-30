@@ -125,13 +125,16 @@ function AuditLogsContent() {
         totalItems={metaData.totalItems}
         onPageChange={(p) => updateUrl({ page: p })}
         onPageSizeChange={(s) => updateUrl({ pageSize: s, page: 1 })}
+        summaryLabels={{
+          total: 'Total Log:',
+        }}
         summary={
           summary
             ? {
                 total: summary.totalLogs,
                 'Log Hari Ini': summary.logsToday,
-                'User Unik': summary.uniqueUsers,
-                'Top Module': summary.topModules?.[0]
+                'Pengguna Unik': summary.uniqueUsers,
+                'Modul Teratas': summary.topModules?.[0]
                   ? `${summary.topModules[0].module} (${summary.topModules[0].count})`
                   : '-',
               }

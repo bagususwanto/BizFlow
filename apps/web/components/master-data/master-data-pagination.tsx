@@ -88,7 +88,7 @@ export function MasterDataPagination({
             <div className="flex items-center gap-2">
               <Box className="h-4 w-4 text-blue-500" />
               <span>
-                Base:{' '}
+                Dasar:{' '}
                 <span className="font-medium text-foreground">
                   {summary.baseUnits}
                 </span>
@@ -144,7 +144,7 @@ export function MasterDataPagination({
             <div className="flex items-center gap-2">
               <LayoutGrid className="h-4 w-4 text-purple-500" />
               <span>
-                Service:{' '}
+                Jasa:{' '}
                 <span className="font-medium text-foreground">{service}</span>
               </span>
             </div>

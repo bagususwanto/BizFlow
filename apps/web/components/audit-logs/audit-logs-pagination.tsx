@@ -43,7 +43,7 @@ export function AuditLogsPagination({
             <div className="flex items-center gap-2">
               <FileText className="h-4 w-4" />
               <span>
-                Total Logs:{' '}
+                Total Log:{' '}
                 <span className="font-medium text-foreground">
                   {summary.totalLogs}
                 </span>
@@ -63,7 +63,7 @@ export function AuditLogsPagination({
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4 text-green-500" />
               <span>
-                User Aktif:{' '}
+                Pengguna Aktif:{' '}
                 <span className="font-medium text-foreground">
                   {summary.uniqueUsers}
                 </span>
@@ -75,7 +75,7 @@ export function AuditLogsPagination({
                 <div className="flex items-center gap-2">
                   <BarChart className="h-4 w-4 text-orange-500" />
                   <span>
-                    Top Module:{' '}
+                    Modul Teratas:{' '}
                     <span className="font-medium text-foreground capitalize">
                       {summary.topModules[0]?.module} (
                       {summary.topModules[0]?.count})

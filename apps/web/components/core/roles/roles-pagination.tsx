@@ -53,7 +53,7 @@ export function RolesPagination({
             <div className="flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-blue-500" />
               <span>
-                System:{' '}
+                Sistem:{' '}
                 <span className="font-medium text-foreground">
                   {summary.systemRoles}
                 </span>
@@ -63,7 +63,7 @@ export function RolesPagination({
             <div className="flex items-center gap-2">
               <UserCog className="h-4 w-4 text-green-500" />
               <span>
-                Custom:{' '}
+                Kustom:{' '}
                 <span className="font-medium text-foreground">
                   {summary.customRoles}
                 </span>

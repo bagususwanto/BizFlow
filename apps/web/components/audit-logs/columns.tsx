@@ -36,7 +36,7 @@ export const getColumns = ({
     accessorKey: 'user.name',
     id: 'user',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="User" />
+      <DataTableColumnHeader column={column} title="Pengguna" />
     ),
     cell: ({ row }) => (
       <div className="flex flex-col">
@@ -47,14 +47,14 @@ export const getColumns = ({
       </div>
     ),
     meta: {
-      title: 'User',
+      title: 'Pengguna',
     },
   },
   {
     accessorKey: 'module',
     id: 'module',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Module" />
+      <DataTableColumnHeader column={column} title="Modul" />
     ),
     cell: ({ row }) => (
       <Badge variant="outline" className="capitalize">
@@ -62,7 +62,7 @@ export const getColumns = ({
       </Badge>
     ),
     meta: {
-      title: 'Module',
+      title: 'Modul',
     },
   },
   {
@@ -73,6 +73,14 @@ export const getColumns = ({
     ),
     cell: ({ row }) => {
       const log = row.original;
+      const actionMap: Record<string, string> = {
+        create: 'Tambah',
+        update: 'Ubah',
+        delete: 'Hapus',
+        login: 'Masuk',
+        logout: 'Keluar',
+      };
+
       return (
         <Badge
           variant={
@@ -86,7 +94,7 @@ export const getColumns = ({
           }
           className="capitalize"
         >
-          {log.action}
+          {actionMap[log.action] || log.action}
         </Badge>
       );
     },
@@ -98,7 +106,7 @@ export const getColumns = ({
     accessorKey: 'entityType',
     id: 'entity',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Entity" />
+      <DataTableColumnHeader column={column} title="Entitas" />
     ),
     cell: ({ row }) => {
       const log = row.original;
@@ -119,14 +127,14 @@ export const getColumns = ({
       );
     },
     meta: {
-      title: 'Entity',
+      title: 'Entitas',
     },
   },
   {
     accessorKey: 'ipAddress',
     id: 'ipAddress',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="IP Address" />
+      <DataTableColumnHeader column={column} title="Alamat IP" />
     ),
     cell: ({ row }) => (
       <span className="font-mono text-xs text-muted-foreground">
@@ -134,7 +142,7 @@ export const getColumns = ({
       </span>
     ),
     meta: {
-      title: 'IP Address',
+      title: 'Alamat IP',
     },
   },
   {

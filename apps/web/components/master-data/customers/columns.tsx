@@ -48,12 +48,18 @@ export const getColumns = ({
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Kode" />
     ),
+    meta: {
+      title: 'Kode',
+    },
   },
   {
     accessorKey: 'name',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Nama Pelanggan" />
     ),
+    meta: {
+      title: 'Nama Pelanggan',
+    },
   },
   {
     accessorKey: 'phone',

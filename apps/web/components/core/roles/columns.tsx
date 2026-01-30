@@ -63,6 +63,9 @@ export const getColumns = ({
         </div>
       );
     },
+    meta: {
+      title: 'Nama Role',
+    },
   },
   {
     accessorKey: 'description',
@@ -70,6 +73,9 @@ export const getColumns = ({
       <DataTableColumnHeader column={column} title="Deskripsi" />
     ),
     cell: ({ row }) => row.getValue('description') || '-',
+    meta: {
+      title: 'Deskripsi',
+    },
   },
   {
     accessorKey: 'userCount',
@@ -82,6 +88,9 @@ export const getColumns = ({
         {row.original.userCount}
       </div>
     ),
+    meta: {
+      title: 'Pengguna',
+    },
   },
   {
     accessorKey: 'updatedAt',
@@ -94,6 +103,9 @@ export const getColumns = ({
         month: 'short',
         year: 'numeric',
       });
+    },
+    meta: {
+      title: 'Update Terakhir',
     },
   },
   {

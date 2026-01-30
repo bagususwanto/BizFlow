@@ -28,6 +28,9 @@ export const getColumns = ({
         })}
       </span>
     ),
+    meta: {
+      title: 'Waktu',
+    },
   },
   {
     accessorKey: 'user.name',
@@ -43,6 +46,9 @@ export const getColumns = ({
         </span>
       </div>
     ),
+    meta: {
+      title: 'User',
+    },
   },
   {
     accessorKey: 'module',
@@ -55,6 +61,9 @@ export const getColumns = ({
         {row.original.module}
       </Badge>
     ),
+    meta: {
+      title: 'Module',
+    },
   },
   {
     accessorKey: 'action',
@@ -81,6 +90,9 @@ export const getColumns = ({
         </Badge>
       );
     },
+    meta: {
+      title: 'Aksi',
+    },
   },
   {
     accessorKey: 'entityType',
@@ -106,6 +118,9 @@ export const getColumns = ({
         </div>
       );
     },
+    meta: {
+      title: 'Entity',
+    },
   },
   {
     accessorKey: 'ipAddress',
@@ -118,6 +133,9 @@ export const getColumns = ({
         {row.original.ipAddress || '-'}
       </span>
     ),
+    meta: {
+      title: 'IP Address',
+    },
   },
   {
     id: 'actions',

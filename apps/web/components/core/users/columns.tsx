@@ -62,12 +62,18 @@ export const getColumns = ({
         </span>
       </div>
     ),
+    meta: {
+      title: 'Username',
+    },
   },
   {
     accessorKey: 'name',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Nama Lengkap" />
     ),
+    meta: {
+      title: 'Nama Lengkap',
+    },
   },
   {
     accessorKey: 'role.name',
@@ -79,6 +85,9 @@ export const getColumns = ({
         {row.original.role?.name || '-'}
       </Badge>
     ),
+    meta: {
+      title: 'Role',
+    },
   },
   {
     accessorKey: 'isActive',
@@ -92,6 +101,9 @@ export const getColumns = ({
           {isActive ? 'Aktif' : 'Nonaktif'}
         </Badge>
       );
+    },
+    meta: {
+      title: 'Status',
     },
   },
   {
@@ -108,6 +120,9 @@ export const getColumns = ({
         hour: '2-digit',
         minute: '2-digit',
       });
+    },
+    meta: {
+      title: 'Login Terakhir',
     },
   },
   {

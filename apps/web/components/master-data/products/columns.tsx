@@ -80,6 +80,9 @@ export const getColumns = ({
     cell: ({ row }) => (
       <span className="font-mono font-medium">{row.getValue('sku')}</span>
     ),
+    meta: {
+      title: 'SKU',
+    },
   },
   {
     accessorKey: 'barcode',
@@ -115,6 +118,9 @@ export const getColumns = ({
         </div>
       </div>
     ),
+    meta: {
+      title: 'Nama Produk',
+    },
   },
   {
     accessorKey: 'category',
@@ -143,6 +149,9 @@ export const getColumns = ({
       const price = Number(row.getValue('sellPrice'));
       return <div className="font-medium">{formatCurrency(price)}</div>;
     },
+    meta: {
+      title: 'Harga Jual',
+    },
   },
   {
     accessorKey: 'minStock',
@@ -166,6 +175,9 @@ export const getColumns = ({
         </div>
       );
     },
+    meta: {
+      title: 'Min. Stok',
+    },
   },
   {
     accessorKey: 'isActive',
@@ -179,6 +191,9 @@ export const getColumns = ({
           {isActive ? 'Aktif' : 'Nonaktif'}
         </Badge>
       );
+    },
+    meta: {
+      title: 'Status',
     },
   },
   {

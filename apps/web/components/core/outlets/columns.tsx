@@ -51,6 +51,9 @@ export const getColumns = ({
       <DataTableColumnHeader column={column} title="Kode Outlet" />
     ),
     cell: ({ row }) => <span className="font-mono">{row.original.code}</span>,
+    meta: {
+      title: 'Kode Outlet',
+    },
   },
   {
     accessorKey: 'name',
@@ -58,6 +61,9 @@ export const getColumns = ({
       <DataTableColumnHeader column={column} title="Nama Outlet" />
     ),
     cell: ({ row }) => <span className="font-medium">{row.original.name}</span>,
+    meta: {
+      title: 'Nama Outlet',
+    },
   },
   {
     accessorKey: 'address',
@@ -72,13 +78,19 @@ export const getColumns = ({
         {row.original.address || '-'}
       </div>
     ),
+    meta: {
+      title: 'Alamat',
+    },
   },
   {
     accessorKey: 'userCount',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Users" />
+      <DataTableColumnHeader column={column} title="Pengguna" />
     ),
     cell: ({ row }) => <span>{row.original.userCount || 0}</span>,
+    meta: {
+      title: 'Pengguna',
+    },
   },
   {
     accessorKey: 'isActive',
@@ -92,6 +104,9 @@ export const getColumns = ({
           {isActive ? 'Aktif' : 'Nonaktif'}
         </Badge>
       );
+    },
+    meta: {
+      title: 'Status',
     },
   },
   {

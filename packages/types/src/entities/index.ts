@@ -10,3 +10,4 @@ export * from './purchase';
 export * from './inventory';
 export * from './finance';
 export * from './unit.entity';
+export * from './warehouse';

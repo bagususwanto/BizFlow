@@ -1,5 +1,6 @@
 import type { BaseEntity, Decimal, ApprovableEntity } from './base';
-import type { Warehouse, ProductVariant } from './product';
+import type { ProductVariant } from './product';
+import type { Warehouse } from './warehouse';
 
 // ========================================
 // Stock Adjustment Entities

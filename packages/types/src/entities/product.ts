@@ -1,5 +1,6 @@
 import type { BaseEntity, ActiveEntity, Decimal, JsonValue } from './base';
 import type { UnitOfMeasure } from './unit.entity';
+import type { Warehouse } from './warehouse';
 
 // ========================================
 // Category & Unit Entities
@@ -82,15 +83,9 @@ export interface PriceLevel {
 }
 
 // ========================================
-// Warehouse & Stock Entities
+// Stock Entities
 // ========================================
-
-export interface Warehouse extends ActiveEntity {
-  code: string;
-  name: string;
-  address?: string | null;
-  isDefault: boolean;
-}
+// Note: Warehouse entity moved to ./warehouse.ts
 
 export interface Stock {
   id: string;

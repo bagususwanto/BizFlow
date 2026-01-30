@@ -13,6 +13,7 @@ import { CategoriesModule } from './modules/master-data/categories';
 import { ProductsModule } from './modules/master-data/products';
 import { UnitsModule } from './modules/master-data/units';
 import { CustomersModule } from './modules/master-data/customers';
+import { WarehousesModule } from './modules/master-data/warehouses';
 
 import { UploadModule } from './modules/upload';
 
@@ -37,6 +38,7 @@ import { AppController } from './app.controller';
     ProductsModule,
     UnitsModule,
     CustomersModule,
+    WarehousesModule,
     // Upload module
     UploadModule,
   ],

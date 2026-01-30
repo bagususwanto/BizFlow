@@ -4,7 +4,8 @@ import type {
   Decimal,
   ApprovableEntity,
 } from './base';
-import type { ProductVariant, Warehouse } from './product';
+import type { ProductVariant } from './product';
+import type { Warehouse } from './warehouse';
 
 // ========================================
 // Supplier Entity

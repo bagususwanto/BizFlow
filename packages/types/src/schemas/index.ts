@@ -8,3 +8,4 @@ export * from './settings';
 export * from './user';
 export * from './unit';
 export * from './customer';
+export * from './warehouse';

@@ -123,8 +123,8 @@ Referensi: [03-product-management.md](file:///Users/bagus/Project/personal/BizFl
 | **Products** - Stock alert (min stock) | [x]    | High     |
 | **Units** - CRUD Unit of Measure       | [x]    | High     |
 | **Units** - Konversi satuan            | [x]    | Medium   |
-| **Customers** - CRUD Customer          | [ ]    | High     |
-| **Customers** - Credit limit           | [ ]    | Medium   |
+| **Customers** - CRUD Customer          | [x]    | High     |
+| **Customers** - Credit limit           | [x]    | Medium   |
 | **Warehouses** - CRUD Warehouse        | [ ]    | High     |
 
 **API Endpoints**: `/api/v1/master-data/products/*`, `/api/v1/master-data/categories/*`, `/api/v1/master-data/units/*`, `/api/v1/master-data/customers/*`, `/api/v1/master-data/warehouses/*`

@@ -121,7 +121,7 @@ export function WarehouseForm({
                     <div className="flex gap-2">
                       <FormControl>
                         <Input
-                          placeholder="Auto-generated"
+                          placeholder="Generate otomatis"
                           {...field}
                           value={field.value || ''}
                           disabled={isEdit}

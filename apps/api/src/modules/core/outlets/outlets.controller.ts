@@ -55,6 +55,16 @@ export class OutletsController {
   }
 
   /**
+   * Generate unique outlet code
+   */
+  @Get('generate-code')
+  @Permissions(Permission.Outlets.Create as PermissionType)
+  async generateCode() {
+    const code = await this.outletsService.generateCode();
+    return { data: code };
+  }
+
+  /**
    * Get a single outlet by ID
    */
   @Get(':id')

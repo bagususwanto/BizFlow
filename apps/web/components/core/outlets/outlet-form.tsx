@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
-import { Loader2 } from 'lucide-react';
+import { Loader2, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 
 import {
@@ -28,6 +28,11 @@ import {
 } from '@bizflow/types';
 import { outletsService } from '@/services/outlets.service';
 import type { Outlet } from '@/services/outlets.service';
+import {
+  useCreateOutlet,
+  useUpdateOutlet,
+  useGenerateOutletCode,
+} from '@/hooks';
 
 interface OutletFormProps {
   initialData?: Outlet;
@@ -37,6 +42,19 @@ interface OutletFormProps {
 export function OutletForm({ initialData, isEdit = false }: OutletFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
+
+  // Hooks for mutations
+  const { mutateAsync: createOutlet, isPending: isCreating } =
+    useCreateOutlet();
+  const { mutateAsync: updateOutlet, isPending: isUpdating } = useUpdateOutlet(
+    initialData?.id || '',
+  );
+
+  const {
+    data: generatedCode,
+    refetch: generateCode,
+    isFetching: isGenerating,
+  } = useGenerateOutletCode();
 
   const form = useForm<CreateOutletValues | UpdateOutletValues>({
     resolver: zodResolver(
@@ -52,19 +70,23 @@ export function OutletForm({ initialData, isEdit = false }: OutletFormProps) {
   });
 
   const { isSubmitting } = form.formState;
+  const isLoading = isCreating || isUpdating || isSubmitting;
+
+  const handleGenerateCode = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    const res = await generateCode();
+    if (res.data) {
+      form.setValue('code', res.data);
+    }
+  };
 
   const onSubmit = async (data: CreateOutletValues | UpdateOutletValues) => {
     try {
       if (isEdit && initialData) {
-        await outletsService.update(initialData.id, data as UpdateOutletValues);
-        toast.success('Outlet berhasil diperbarui');
+        await updateOutlet(data as UpdateOutletValues);
       } else {
-        await outletsService.create(data as CreateOutletValues);
-        toast.success('Outlet berhasil dibuat');
+        await createOutlet(data as CreateOutletValues);
       }
-      // Invalidate outlets queries so the list refreshes automatically
-      await queryClient.invalidateQueries({ queryKey: ['outlets'] });
-
       router.back();
       router.refresh();
     } catch (error: any) {
@@ -81,18 +103,34 @@ export function OutletForm({ initialData, isEdit = false }: OutletFormProps) {
             name="code"
             render={({ field }) => (
               <FormItem>
-                <FormLabel required>Kode Outlet</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="OUT001"
-                    {...field}
-                    value={field.value || ''}
-                    disabled={isEdit}
-                    className="uppercase"
-                  />
-                </FormControl>
+                <FormLabel optional>Kode Outlet</FormLabel>
+                <div className="flex gap-2">
+                  <FormControl>
+                    <Input
+                      placeholder="Generate otomatis"
+                      {...field}
+                      value={field.value || ''}
+                      disabled={isEdit}
+                      className="uppercase"
+                    />
+                  </FormControl>
+                  {!isEdit && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={handleGenerateCode}
+                      disabled={isGenerating}
+                      title="Generate Kode Baru"
+                    >
+                      <RefreshCw
+                        className={`h-4 w-4 ${isGenerating ? 'animate-spin' : ''}`}
+                      />
+                    </Button>
+                  )}
+                </div>
                 <FormDescription>
-                  Kode unik untuk identifikasi outlet.
+                  Akan di-generate otomatis jika kosong.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -182,12 +220,12 @@ export function OutletForm({ initialData, isEdit = false }: OutletFormProps) {
             type="button"
             variant="outline"
             onClick={() => router.back()}
-            disabled={isSubmitting}
+            disabled={isLoading}
           >
             Batal
           </Button>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          <Button type="submit" disabled={isLoading}>
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {isEdit ? 'Simpan Perubahan' : 'Buat Outlet'}
           </Button>
         </div>

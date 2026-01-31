@@ -75,3 +75,41 @@ export function useActiveOutlets() {
     enabled: !!token,
   });
 }
+
+export function useGenerateOutletCode() {
+  return useQuery({
+    queryKey: ['outlets', 'generate-code'],
+    queryFn: () => outletsService.generateCode(),
+    enabled: false, // Only run when manually triggered
+  });
+}
+
+export function useCreateOutlet() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: any) => outletsService.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['outlets'] });
+      toast.success('Outlet berhasil dibuat');
+    },
+    onError: (error: any) => {
+      toast.error(error instanceof Error ? error.message : 'Terjadi kesalahan');
+    },
+  });
+}
+
+export function useUpdateOutlet(id: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: any) => outletsService.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['outlets'] });
+      toast.success('Outlet berhasil diperbarui');
+    },
+    onError: (error: any) => {
+      toast.error(error instanceof Error ? error.message : 'Terjadi kesalahan');
+    },
+  });
+}

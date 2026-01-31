@@ -171,6 +171,29 @@ export class OutletsService {
   }
 
   /**
+   * Generate a unique outlet code
+   */
+  async generateCode(): Promise<string> {
+    const lastOutlet = await this.prisma.outlet.findFirst({
+      orderBy: { code: 'desc' },
+      select: { code: true },
+    });
+
+    if (!lastOutlet) {
+      return 'OUT001';
+    }
+
+    // Extract number from code (e.g., OUT001 -> 1)
+    const match = lastOutlet.code.match(/OUT(\d+)/);
+    if (match) {
+      const num = parseInt(match[1], 10);
+      return `OUT${String(num + 1).padStart(3, '0')}`;
+    }
+
+    return 'OUT001';
+  }
+
+  /**
    * Get active outlets for dropdown/select
    */
   async findActiveList() {

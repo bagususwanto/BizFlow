@@ -81,6 +81,13 @@ class OutletsService {
       ids,
     });
   }
+
+  async generateCode(): Promise<string> {
+    const res = await apiClient.get<ApiResponse<string>>(
+      '/core/outlets/generate-code',
+    );
+    return res.data!;
+  }
 }
 
 export const outletsService = new OutletsService();

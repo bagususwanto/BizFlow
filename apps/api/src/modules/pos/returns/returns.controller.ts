@@ -8,15 +8,20 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  UseInterceptors,
 } from '@nestjs/common';
 
 import { JwtAuthGuard, PermissionsGuard } from '../../../common/guards';
 import { CurrentUser } from '../../../common/decorators';
 import { Permissions } from '../../../common/decorators/permissions.decorator';
+import { AuditLog } from '../../../common/decorators/audit-log.decorator';
+import { AuditLogInterceptor } from '../../../common/interceptors/audit-log.interceptor';
 import type { JwtPayload } from '../../core/auth/strategies/jwt.strategy';
 import {
   Permission,
   type PermissionType,
+  Module,
+  AuditAction,
   type CreateReturnValues,
   type ProcessReturnRefundValues,
   type RejectReturnValues,
@@ -43,6 +48,12 @@ export class ReturnsController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @Permissions(Permission.Pos.Create as PermissionType)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.POS,
+    action: AuditAction.CREATE,
+    entityType: 'pos return',
+  })
   async create(@Body() dto: CreateReturnDto, @CurrentUser() user: JwtPayload) {
     return this.returnsService.createReturn(
       dto as CreateReturnValues,
@@ -77,6 +88,12 @@ export class ReturnsController {
   @Post(':id/refund')
   @HttpCode(HttpStatus.OK)
   @Permissions(Permission.Pos.Create as PermissionType)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.POS,
+    action: AuditAction.CREATE,
+    entityType: 'return refund',
+  })
   async processRefund(
     @Param('id') id: string,
     @Body() dto: ProcessReturnRefundDto,
@@ -96,6 +113,12 @@ export class ReturnsController {
   @Post(':id/approve')
   @HttpCode(HttpStatus.OK)
   @Permissions(Permission.Pos.Update as PermissionType)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.POS,
+    action: AuditAction.UPDATE,
+    entityType: 'pos return',
+  })
   async approve(
     @Param('id') id: string,
     @Body() dto: ApproveReturnDto,
@@ -111,6 +134,12 @@ export class ReturnsController {
   @Post(':id/reject')
   @HttpCode(HttpStatus.OK)
   @Permissions(Permission.Pos.Update as PermissionType)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.POS,
+    action: AuditAction.UPDATE,
+    entityType: 'pos return',
+  })
   async reject(
     @Param('id') id: string,
     @Body() dto: RejectReturnDto,

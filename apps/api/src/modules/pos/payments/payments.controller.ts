@@ -8,13 +8,21 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  UseInterceptors,
 } from '@nestjs/common';
 
 import { JwtAuthGuard, PermissionsGuard } from '../../../common/guards';
 import { CurrentUser } from '../../../common/decorators';
 import { Permissions } from '../../../common/decorators/permissions.decorator';
+import { AuditLog } from '../../../common/decorators/audit-log.decorator';
+import { AuditLogInterceptor } from '../../../common/interceptors/audit-log.interceptor';
 import type { JwtPayload } from '../../core/auth/strategies/jwt.strategy';
-import { Permission, type PermissionType } from '@bizflow/types';
+import {
+  Permission,
+  type PermissionType,
+  Module,
+  AuditAction,
+} from '@bizflow/types';
 
 import { PaymentsService } from './payments.service';
 import {
@@ -36,6 +44,12 @@ export class PaymentsController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @Permissions(Permission.Pos.Create as PermissionType)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.POS,
+    action: AuditAction.CREATE,
+    entityType: 'pos payment',
+  })
   async create(@Body() dto: CreatePaymentDto, @CurrentUser() user: JwtPayload) {
     return this.paymentsService.createPayment(dto, user.sub);
   }
@@ -98,6 +112,12 @@ export class PaymentsController {
   @Post(':id/refund')
   @HttpCode(HttpStatus.OK)
   @Permissions(Permission.Pos.Create as PermissionType)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.POS,
+    action: AuditAction.CREATE,
+    entityType: 'payment refund',
+  })
   async processRefund(
     @Param('id') id: string,
     @Body() dto: ProcessRefundDto,

@@ -9,13 +9,21 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  UseInterceptors,
 } from '@nestjs/common';
 
 import { JwtAuthGuard, PermissionsGuard } from '../../../common/guards';
 import { CurrentUser } from '../../../common/decorators';
 import { Permissions } from '../../../common/decorators/permissions.decorator';
+import { AuditLog } from '../../../common/decorators/audit-log.decorator';
+import { AuditLogInterceptor } from '../../../common/interceptors/audit-log.interceptor';
 import type { JwtPayload } from '../../core/auth/strategies/jwt.strategy';
-import { Permission, type PermissionType } from '@bizflow/types';
+import {
+  Permission,
+  type PermissionType,
+  Module,
+  AuditAction,
+} from '@bizflow/types';
 
 import { TransactionsService } from './transactions.service';
 import {
@@ -68,6 +76,12 @@ export class TransactionsController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @Permissions(Permission.Pos.Create as PermissionType)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.POS,
+    action: AuditAction.CREATE,
+    entityType: 'pos transaction',
+  })
   async create(
     @Body() dto: CreatePOSTransactionDto,
     @CurrentUser() user: JwtPayload,
@@ -82,6 +96,12 @@ export class TransactionsController {
   @Post('hold')
   @HttpCode(HttpStatus.OK)
   @Permissions(Permission.Pos.Create as PermissionType)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.POS,
+    action: AuditAction.CREATE,
+    entityType: 'held transaction',
+  })
   async holdTransaction(
     @Body() dto: HoldTransactionDto,
     @CurrentUser() user: JwtPayload,
@@ -120,6 +140,12 @@ export class TransactionsController {
   @Delete('held/:id')
   @HttpCode(HttpStatus.OK)
   @Permissions(Permission.Pos.Delete as PermissionType)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.POS,
+    action: AuditAction.DELETE,
+    entityType: 'held transaction',
+  })
   async deleteHeldTransaction(
     @Param('id') id: string,
     @CurrentUser() user: JwtPayload,

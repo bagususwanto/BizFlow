@@ -1,16 +1,6 @@
 'use client';
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-  Card,
-  CardContent,
-  Skeleton,
-} from '@bizflow/ui';
+import { Card, CardContent, Skeleton } from '@bizflow/ui';
 import { WarehouseForm } from '@/components/master-data/warehouses/warehouse-form';
 import { useWarehouse } from '@/hooks/use-warehouses';
 import { useParams } from 'next/navigation';

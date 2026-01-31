@@ -1,19 +1,6 @@
 'use client';
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  Skeleton,
-} from '@bizflow/ui';
+import { Card, CardContent, Skeleton } from '@bizflow/ui';
 import { CustomerForm } from '@/components/master-data/customers/customer-form';
 import { useCustomer } from '@/hooks/use-customers';
 import { useParams } from 'next/navigation';
@@ -33,20 +20,6 @@ export default function EditCustomerPage() {
 
   return (
     <div className="space-y-6">
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/master-data/customers">
-              Pelanggan
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Edit Pelanggan</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Edit Pelanggan</h2>

@@ -276,7 +276,18 @@ export function MasterDataPage<
         open={showBulkDeleteDialog}
         onOpenChange={setShowBulkDeleteDialog}
         title={`Hapus ${Object.keys(rowSelection).length} item?`}
-        description="Tindakan ini tidak dapat dibatalkan. Data yang dipilih akan dihapus permanen atau dinonaktifkan."
+        description={
+          <>
+            <p>
+              Tindakan ini tidak dapat dibatalkan. Data yang dipilih akan
+              dihapus permanen atau dinonaktifkan.
+            </p>
+            <p className="mt-2 text-sm text-yellow-600">
+              Peringatan: Data yang sedang digunakan atau memiliki riwayat
+              aktivitas mungkin tidak dapat dihapus.
+            </p>
+          </>
+        }
         onConfirm={handleBulkDelete}
         isDeleting={isBulkDeleting}
       />

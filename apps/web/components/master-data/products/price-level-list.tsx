@@ -173,7 +173,18 @@ export function PriceLevelList({ productId }: PriceLevelListProps) {
           open={!!deleteId}
           onOpenChange={(open) => !open && setDeleteId(null)}
           title="Hapus Level Harga?"
-          description="Tindakan ini tidak dapat dibatalkan. Level harga ini akan dihapus permanen."
+          description={
+            <>
+              <p>
+                Level harga ini akan dihapus secara permanen. Tindakan ini tidak
+                dapat dibatalkan.
+              </p>
+              <p className="mt-2 text-sm text-yellow-600">
+                Peringatan: Jika level harga sudah digunakan dalam transaksi,
+                sistem mungkin menolak penghapusan.
+              </p>
+            </>
+          }
           onConfirm={handleDelete}
           isDeleting={deleteMutation.isPending}
         />

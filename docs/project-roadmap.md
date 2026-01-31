@@ -125,7 +125,7 @@ Referensi: [03-product-management.md](file:///Users/bagus/Project/personal/BizFl
 | **Units** - Konversi satuan            | [x]    | Medium   |
 | **Customers** - CRUD Customer          | [x]    | High     |
 | **Customers** - Credit limit           | [x]    | Medium   |
-| **Warehouses** - CRUD Warehouse        | [ ]    | High     |
+| **Warehouses** - CRUD Warehouse        | [x]    | High     |
 
 **API Endpoints**: `/api/v1/master-data/products/*`, `/api/v1/master-data/categories/*`, `/api/v1/master-data/units/*`, `/api/v1/master-data/customers/*`, `/api/v1/master-data/warehouses/*`
 

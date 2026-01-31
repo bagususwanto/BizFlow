@@ -194,6 +194,10 @@ function UnitsContent() {
                 {unitToDelete?.name}
               </span>{' '}
               akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.
+              <p className="mt-2 text-sm text-yellow-600">
+                Peringatan: Jika satuan masih digunakan dalam transaksi atau
+                produk, sistem akan menolak penghapusan permanen.
+              </p>
             </>
           )
         }

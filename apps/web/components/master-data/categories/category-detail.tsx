@@ -164,6 +164,11 @@ export function CategoryDetail({
                         `${category.childrenCount} sub-kategori`}
                       . Silakan kosongkan atau hapus item di dalamnya terlebih
                       dahulu.
+                      <p className="mt-2 text-sm text-yellow-600">
+                        Peringatan: Jika kategori masih memiliki produk atau
+                        sub-kategori aktif, sistem akan menolak penghapusan
+                        permanen.
+                      </p>
                     </>
                   ) : (
                     <>
@@ -174,6 +179,11 @@ export function CategoryDetail({
                         </span>{' '}
                         akan dihapus secara permanen. Tindakan ini tidak dapat
                         dibatalkan.
+                      </p>
+                      <p className="mt-2 text-sm text-yellow-600">
+                        Peringatan: Jika kategori masih memiliki produk atau
+                        sub-kategori aktif, sistem akan menolak penghapusan
+                        permanen.
                       </p>
                     </>
                   )

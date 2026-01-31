@@ -215,6 +215,11 @@ function CustomersContent() {
                 akan dihapus secara permanen. Tindakan ini tidak dapat
                 dibatalkan.
               </p>
+              <p className="mt-2 text-sm text-yellow-600">
+                Peringatan: Jika pelanggan masih memiliki riwayat transaksi
+                (penjualan, pembayaran, dll), sistem akan menolak penghapusan
+                permanen.
+              </p>
             </>
           )
         }

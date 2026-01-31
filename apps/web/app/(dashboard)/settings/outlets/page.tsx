@@ -200,12 +200,10 @@ function OutletsContent() {
                 akan dihapus secara permanen. Tindakan ini tidak dapat
                 dibatalkan.
               </p>
-              {(outletToDelete?.transactionCount || 0) > 0 && (
-                <p className="mt-2 text-sm font-medium text-destructive">
-                  Peringatan: Outlet ini memiliki riwayat transaksi dan mungkin
-                  tidak dapat dihapus permanen.
-                </p>
-              )}
+              <p className="mt-2 text-sm text-yellow-600">
+                Peringatan: Jika outlet masih memiliki riwayat transaksi (stok,
+                penjualan, dll), sistem akan menolak penghapusan permanen.
+              </p>
             </>
           )
         }

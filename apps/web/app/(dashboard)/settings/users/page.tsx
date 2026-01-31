@@ -308,12 +308,10 @@ function UsersContent() {
                 akan dihapus secara permanen. Tindakan ini tidak dapat
                 dibatalkan.
               </p>
-              {(userToDelete?.usageCount || 0) > 0 && (
-                <p className="mt-2 text-sm font-medium text-destructive">
-                  Peringatan: User ini memiliki riwayat transaksi/aktivitas dan
-                  mungkin tidak dapat dihapus permanen.
-                </p>
-              )}
+              <p className="mt-2 text-sm text-yellow-600">
+                Peringatan: Jika user masih memiliki riwayat aktivitas
+                (transaksi, log, dll), sistem akan menolak penghapusan permanen.
+              </p>
             </>
           )
         }

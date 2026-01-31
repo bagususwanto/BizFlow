@@ -10,3 +10,4 @@ export * from './use-outlets';
 export * from './use-pin-login-mutation';
 export * from './use-settings';
 export * from './use-customers';
+export * from './use-warehouses';

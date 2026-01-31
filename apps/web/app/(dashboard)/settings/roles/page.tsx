@@ -172,38 +172,23 @@ function RolesContent() {
       <DeleteConfirmDialog
         open={!!roleToDelete}
         onOpenChange={(open) => !open && setRoleToDelete(null)}
-        title={
-          (roleToDelete?.userCount || 0) > 0 ? 'Gagal Menghapus' : 'Hapus Role?'
-        }
+        title="Hapus Role?"
         description={
-          (roleToDelete?.userCount || 0) > 0 ? (
-            <>
+          <>
+            <p>
               Role{' '}
               <span className="font-medium text-foreground">
                 {roleToDelete?.name}
               </span>{' '}
-              sedang digunakan oleh {roleToDelete?.userCount} user. Silakan
-              ganti role user terlebih dahulu.
-            </>
-          ) : (
-            <>
-              <p>
-                Role{' '}
-                <span className="font-medium text-foreground">
-                  {roleToDelete?.name}
-                </span>{' '}
-                akan dihapus secara permanen. Tindakan ini tidak dapat
-                dibatalkan.
-              </p>
-              <p className="mt-2 text-sm text-yellow-600">
-                Peringatan: Jika role masih digunakan oleh user, sistem akan
-                menolak penghapusan permanen.
-              </p>
-            </>
-          )
+              akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.
+            </p>
+            <p className="mt-2 text-sm text-yellow-600">
+              Peringatan: Jika role masih digunakan oleh user, sistem akan
+              menolak penghapusan permanen.
+            </p>
+          </>
         }
-        cancelLabel={(roleToDelete?.userCount || 0) > 0 ? 'Tutup' : 'Batal'}
-        showConfirm={(roleToDelete?.userCount || 0) === 0}
+        cancelLabel="Batal"
         onConfirm={() => {
           if (roleToDelete) {
             deleteRole(roleToDelete.id, {

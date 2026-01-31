@@ -133,10 +133,7 @@ export function CategoryDetail({
                 title={
                   category.isActive
                     ? 'Nonaktifkan Kategori?'
-                    : (category.productCount || 0) > 0 ||
-                        (category.childrenCount || 0) > 0
-                      ? 'Kategori Tidak Dapat Dihapus'
-                      : 'Hapus Kategori Permanen?'
+                    : 'Hapus Kategori Permanen?'
                 }
                 description={
                   category.isActive ? (
@@ -146,29 +143,6 @@ export function CategoryDetail({
                         {category.name}
                       </span>{' '}
                       akan dinonaktifkan. Data kategori tetap tersimpan.
-                    </>
-                  ) : (category.productCount || 0) > 0 ||
-                    (category.childrenCount || 0) > 0 ? (
-                    <>
-                      Kategori{' '}
-                      <span className="font-medium text-foreground">
-                        {category.name}
-                      </span>{' '}
-                      tidak dapat dihapus secara permanen karena masih memiliki{' '}
-                      {(category.productCount || 0) > 0 &&
-                        `${category.productCount} produk`}
-                      {(category.productCount || 0) > 0 &&
-                        (category.childrenCount || 0) > 0 &&
-                        ' dan '}
-                      {(category.childrenCount || 0) > 0 &&
-                        `${category.childrenCount} sub-kategori`}
-                      . Silakan kosongkan atau hapus item di dalamnya terlebih
-                      dahulu.
-                      <p className="mt-2 text-sm text-yellow-600">
-                        Peringatan: Jika kategori masih memiliki produk atau
-                        sub-kategori aktif, sistem akan menolak penghapusan
-                        permanen.
-                      </p>
                     </>
                   ) : (
                     <>
@@ -191,18 +165,7 @@ export function CategoryDetail({
                 confirmLabel={
                   category.isActive ? 'Nonaktifkan' : 'Hapus Permanen'
                 }
-                cancelLabel={
-                  !category.isActive &&
-                  ((category.productCount || 0) > 0 ||
-                    (category.childrenCount || 0) > 0)
-                    ? 'Tutup'
-                    : 'Batal'
-                }
-                showConfirm={
-                  category.isActive ||
-                  ((category.productCount || 0) === 0 &&
-                    (category.childrenCount || 0) === 0)
-                }
+                cancelLabel="Batal"
                 onConfirm={() => onDelete(category.id)}
                 isDeleting={isDeleting}
               />

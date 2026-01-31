@@ -174,10 +174,7 @@ function CustomersContent() {
         title={
           customerToDelete?.isActive
             ? 'Nonaktifkan Pelanggan?'
-            : (customerToDelete?._count?.salesOrders || 0) > 0 ||
-                (customerToDelete?._count?.payments || 0) > 0
-              ? 'Pelanggan Tidak Dapat Dihapus'
-              : 'Hapus Pelanggan Permanen?'
+            : 'Hapus Pelanggan Permanen?'
         }
         description={
           customerToDelete?.isActive ? (
@@ -187,23 +184,6 @@ function CustomersContent() {
                 {customerToDelete?.name}
               </span>{' '}
               akan dinonaktifkan. Data pelanggan tetap tersimpan.
-            </>
-          ) : (customerToDelete?._count?.salesOrders || 0) > 0 ||
-            (customerToDelete?._count?.payments || 0) > 0 ? (
-            <>
-              Pelanggan{' '}
-              <span className="font-medium text-foreground">
-                {customerToDelete?.name}
-              </span>{' '}
-              tidak dapat dihapus secara permanen karena masih memiliki{' '}
-              {(customerToDelete?._count?.salesOrders || 0) > 0 &&
-                `${customerToDelete?._count?.salesOrders} riwayat penjualan`}
-              {(customerToDelete?._count?.salesOrders || 0) > 0 &&
-                (customerToDelete?._count?.payments || 0) > 0 &&
-                ' dan '}
-              {(customerToDelete?._count?.payments || 0) > 0 &&
-                `${customerToDelete?._count?.payments} riwayat pembayaran`}
-              . Hanya dapat dinonaktifkan untuk menjaga integritas data.
             </>
           ) : (
             <>
@@ -234,18 +214,7 @@ function CustomersContent() {
         confirmLabel={
           customerToDelete?.isActive ? 'Nonaktifkan' : 'Hapus Permanen'
         }
-        cancelLabel={
-          !customerToDelete?.isActive &&
-          ((customerToDelete?._count?.salesOrders || 0) > 0 ||
-            (customerToDelete?._count?.payments || 0) > 0)
-            ? 'Tutup'
-            : 'Batal'
-        }
-        showConfirm={
-          customerToDelete?.isActive ||
-          ((customerToDelete?._count?.salesOrders || 0) === 0 &&
-            (customerToDelete?._count?.payments || 0) === 0)
-        }
+        cancelLabel="Batal"
       />
     </>
   );

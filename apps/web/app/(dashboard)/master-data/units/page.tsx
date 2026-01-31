@@ -163,43 +163,19 @@ function UnitsContent() {
       <DeleteConfirmDialog
         open={!!unitToDelete}
         onOpenChange={(open) => !open && setUnitToDelete(null)}
-        title={
-          (unitToDelete?._count?.products || 0) > 0 ||
-          (unitToDelete?._count?.derivedUnits || 0) > 0
-            ? 'Satuan Tidak Dapat Dihapus'
-            : 'Hapus Satuan Permanen?'
-        }
+        title="Hapus Satuan Permanen?"
         description={
-          (unitToDelete?._count?.products || 0) > 0 ||
-          (unitToDelete?._count?.derivedUnits || 0) > 0 ? (
-            <>
-              Satuan{' '}
-              <span className="font-medium text-foreground">
-                {unitToDelete?.name}
-              </span>{' '}
-              tidak dapat dihapus secara permanen karena masih digunakan oleh{' '}
-              {(unitToDelete?._count?.products || 0) > 0 &&
-                `${unitToDelete?._count?.products} produk`}
-              {(unitToDelete?._count?.products || 0) > 0 &&
-                (unitToDelete?._count?.derivedUnits || 0) > 0 &&
-                ' dan '}
-              {(unitToDelete?._count?.derivedUnits || 0) > 0 &&
-                `${unitToDelete?._count?.derivedUnits} unit turunan`}
-              . Silakan pindahkan atau hapus item di dalamnya terlebih dahulu.
-            </>
-          ) : (
-            <>
-              Satuan{' '}
-              <span className="font-medium text-foreground">
-                {unitToDelete?.name}
-              </span>{' '}
-              akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.
-              <p className="mt-2 text-sm text-yellow-600">
-                Peringatan: Jika satuan masih digunakan dalam transaksi atau
-                produk, sistem akan menolak penghapusan permanen.
-              </p>
-            </>
-          )
+          <>
+            Satuan{' '}
+            <span className="font-medium text-foreground">
+              {unitToDelete?.name}
+            </span>{' '}
+            akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.
+            <p className="mt-2 text-sm text-yellow-600">
+              Peringatan: Jika satuan masih digunakan dalam transaksi atau
+              produk, sistem akan menolak penghapusan permanen.
+            </p>
+          </>
         }
         onConfirm={() => {
           if (unitToDelete) {
@@ -210,16 +186,7 @@ function UnitsContent() {
         }}
         isDeleting={isDeleting}
         confirmLabel="Hapus Permanen"
-        cancelLabel={
-          (unitToDelete?._count?.products || 0) > 0 ||
-          (unitToDelete?._count?.derivedUnits || 0) > 0
-            ? 'Tutup'
-            : 'Batal'
-        }
-        showConfirm={
-          (unitToDelete?._count?.products || 0) === 0 &&
-          (unitToDelete?._count?.derivedUnits || 0) === 0
-        }
+        cancelLabel="Batal"
       />
     </>
   );

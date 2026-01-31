@@ -3,12 +3,19 @@
 import { Card, CardContent, Skeleton } from '@bizflow/ui';
 import { WarehouseForm } from '@/components/master-data/warehouses/warehouse-form';
 import { useWarehouse } from '@/hooks/use-warehouses';
+import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { useParams } from 'next/navigation';
 
 export default function EditWarehousePage() {
   const params = useParams();
   const id = params.id as string;
   const { data: warehouse, isLoading, isError } = useWarehouse(id);
+
+  // Set dynamic breadcrumb
+  useBreadcrumb(
+    `/master-data/warehouses/${id}`,
+    warehouse?.name || 'Edit Gudang',
+  );
 
   if (isLoading) {
     return <WarehouseFormSkeleton />;

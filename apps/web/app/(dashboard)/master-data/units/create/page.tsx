@@ -8,8 +8,11 @@ import {
   CardTitle,
 } from '@bizflow/ui';
 import { UnitForm } from '@/components/master-data/units/unit-form';
+import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 
 export default function CreateUnitPage() {
+  useBreadcrumb('/master-data/units/create', 'Tambah Satuan');
+
   return (
     <div className="space-y-6">
       <div>

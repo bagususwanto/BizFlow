@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from '@bizflow/ui';
 import { CategoryForm } from '@/components/master-data/categories/category-form';
+import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import { Loader2 } from 'lucide-react';
@@ -22,6 +23,8 @@ function CreateCategoryContent() {
 }
 
 export default function CreateCategoryPage() {
+  useBreadcrumb('/master-data/categories/create', 'Tambah Kategori');
+
   return (
     <div className="space-y-6">
       <div>

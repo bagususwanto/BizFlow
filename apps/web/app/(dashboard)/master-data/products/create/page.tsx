@@ -8,8 +8,11 @@ import {
   CardTitle,
 } from '@bizflow/ui';
 import { ProductForm } from '@/components/master-data/products/product-form';
+import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 
 export default function CreateProductPage() {
+  useBreadcrumb('/master-data/products/create', 'Tambah Produk');
+
   return (
     <div className="space-y-6">
       <div>

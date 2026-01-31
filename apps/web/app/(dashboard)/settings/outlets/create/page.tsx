@@ -8,8 +8,11 @@ import {
   CardTitle,
 } from '@bizflow/ui';
 import { OutletForm } from '@/components/core/outlets/outlet-form';
+import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 
 export default function CreateOutletPage() {
+  useBreadcrumb('/settings/outlets/create', 'Tambah Outlet');
+
   return (
     <div className="space-y-6">
       <div>

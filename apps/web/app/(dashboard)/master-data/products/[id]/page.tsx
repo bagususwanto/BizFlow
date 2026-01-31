@@ -10,6 +10,7 @@ import {
 } from '@bizflow/ui';
 import { ProductForm } from '@/components/master-data/products/product-form';
 import { useProduct } from '@/hooks/use-products';
+import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { LoadingState } from '@/components/common/loading-state';
 import { ErrorState } from '@/components/common/error-state';
 
@@ -25,6 +26,12 @@ export default function EditProductPage({
     isError,
     refetch,
   } = useProduct(resolvedParams.id);
+
+  // Set dynamic breadcrumb
+  useBreadcrumb(
+    `/master-data/products/${resolvedParams.id}`,
+    product?.name || 'Edit Produk',
+  );
 
   if (isLoading) {
     return (

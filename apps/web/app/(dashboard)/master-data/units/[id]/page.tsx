@@ -10,12 +10,16 @@ import {
   CardTitle,
 } from '@bizflow/ui';
 import { UnitForm } from '@/components/master-data/units/unit-form';
+import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { useUnit } from '@/hooks';
 
 export default function EditUnitPage() {
   const params = useParams();
   const id = params.id as string;
   const { data: unit, isLoading, isError } = useUnit(id);
+
+  // Set dynamic breadcrumb
+  useBreadcrumb(`/master-data/units/${id}`, unit?.name || 'Edit Satuan');
 
   if (isLoading) {
     return (

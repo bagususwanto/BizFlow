@@ -3,12 +3,19 @@
 import { Card, CardContent, Skeleton } from '@bizflow/ui';
 import { CustomerForm } from '@/components/master-data/customers/customer-form';
 import { useCustomer } from '@/hooks/use-customers';
+import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { useParams } from 'next/navigation';
 
 export default function EditCustomerPage() {
   const params = useParams();
   const id = params.id as string;
   const { data: customer, isLoading, isError } = useCustomer(id);
+
+  // Set dynamic breadcrumb
+  useBreadcrumb(
+    `/master-data/customers/${id}`,
+    customer?.name || 'Edit Pelanggan',
+  );
 
   if (isLoading) {
     return <CustomerFormSkeleton />;

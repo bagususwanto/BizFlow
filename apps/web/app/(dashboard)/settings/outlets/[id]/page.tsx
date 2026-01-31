@@ -10,6 +10,7 @@ import {
 } from '@bizflow/ui';
 import { Loader2 } from 'lucide-react';
 import { useOutlet } from '@/hooks';
+import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { OutletForm } from '@/components/core/outlets/outlet-form';
 
 export default function EditOutletPage({
@@ -19,6 +20,9 @@ export default function EditOutletPage({
 }) {
   const { id } = use(params);
   const { data: outlet, isLoading, isError } = useOutlet(id);
+
+  // Set dynamic breadcrumb
+  useBreadcrumb(`/settings/outlets/${id}`, outlet?.name || 'Edit Outlet');
 
   if (isLoading) {
     return (

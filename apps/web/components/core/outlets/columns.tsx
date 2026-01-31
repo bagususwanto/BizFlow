@@ -126,7 +126,7 @@ export const getColumns = ({
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Aksi</DropdownMenuLabel>
             <DropdownMenuItem asChild>
-              <Link href={`/settings/outlets/${outlet.id}/edit`}>
+              <Link href={`/settings/outlets/${outlet.id}`}>
                 <Edit className="mr-2 h-4 w-4" />
                 Edit
               </Link>

@@ -10,6 +10,7 @@ import {
 } from '@bizflow/ui';
 import { Loader2 } from 'lucide-react';
 import { useCategory } from '@/hooks';
+import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { CategoryForm } from '@/components/master-data/categories/category-form';
 
 export default function EditCategoryPage({
@@ -19,6 +20,12 @@ export default function EditCategoryPage({
 }) {
   const { id } = use(params);
   const { data: category, isLoading, isError } = useCategory(id);
+
+  // Set dynamic breadcrumb
+  useBreadcrumb(
+    `/master-data/categories/${id}`,
+    category?.name || 'Edit Kategori',
+  );
 
   if (isLoading) {
     return (

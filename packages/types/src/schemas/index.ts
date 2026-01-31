@@ -9,3 +9,4 @@ export * from './user';
 export * from './unit';
 export * from './customer';
 export * from './warehouse';
+export * from './pos-transaction';

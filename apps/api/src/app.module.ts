@@ -15,6 +15,8 @@ import { UnitsModule } from './modules/master-data/units';
 import { CustomersModule } from './modules/master-data/customers';
 import { WarehousesModule } from './modules/master-data/warehouses';
 
+import { TransactionsModule } from './modules/pos/transactions';
+
 import { UploadModule } from './modules/upload';
 
 import { AppService } from './app.service';
@@ -39,6 +41,8 @@ import { AppController } from './app.controller';
     UnitsModule,
     CustomersModule,
     WarehousesModule,
+    // POS modules
+    TransactionsModule,
     // Upload module
     UploadModule,
   ],

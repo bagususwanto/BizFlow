@@ -16,6 +16,7 @@ import { CustomersModule } from './modules/master-data/customers';
 import { WarehousesModule } from './modules/master-data/warehouses';
 
 import { TransactionsModule } from './modules/pos/transactions';
+import { PaymentsModule } from './modules/pos/payments';
 
 import { UploadModule } from './modules/upload';
 
@@ -43,6 +44,7 @@ import { AppController } from './app.controller';
     WarehousesModule,
     // POS modules
     TransactionsModule,
+    PaymentsModule,
     // Upload module
     UploadModule,
   ],

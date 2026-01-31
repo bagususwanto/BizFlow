@@ -185,7 +185,7 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
           >
             <TabsTrigger value="info">Informasi Dasar</TabsTrigger>
             <TabsTrigger value="pricing">Harga & Stok</TabsTrigger>
-            <TabsTrigger value="media">Media & Lainnya</TabsTrigger>
+            <TabsTrigger value="media">Media</TabsTrigger>
             {isEdit && <TabsTrigger value="variants">Varian</TabsTrigger>}
             {isEdit && (
               <TabsTrigger value="price-levels">Level Harga</TabsTrigger>
@@ -334,6 +334,28 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                       </FormItem>
                     )}
                   />
+                  <FormField
+                    control={form.control}
+                    name="isActive"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-base">
+                            Status Aktif
+                          </FormLabel>
+                          <div className="text-sm text-muted-foreground">
+                            Nonaktifkan produk jika tidak lagi dijual
+                          </div>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value as boolean}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -464,29 +486,6 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                         />
                       </FormControl>
                       <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="isActive"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                      <div className="space-y-0.5">
-                        <FormLabel className="text-base">
-                          Status Aktif
-                        </FormLabel>
-                        <div className="text-sm text-muted-foreground">
-                          Nonaktifkan produk jika tidak lagi dijual
-                        </div>
-                      </div>
-                      <FormControl>
-                        <Switch
-                          checked={field.value as boolean}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
                     </FormItem>
                   )}
                 />

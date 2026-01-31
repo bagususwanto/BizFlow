@@ -8,8 +8,11 @@ import {
   CardTitle,
 } from '@bizflow/ui';
 import { UserForm } from '@/components/core/users/user-form';
+import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 
 export default function CreateUserPage() {
+  useBreadcrumb('/settings/users/create', 'Tambah Pengguna');
+
   return (
     <div className="space-y-6">
       <div>

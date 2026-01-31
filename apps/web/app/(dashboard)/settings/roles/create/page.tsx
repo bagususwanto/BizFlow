@@ -13,10 +13,13 @@ import {
 } from '@bizflow/ui';
 import { useAuthStore } from '@/stores/auth.store';
 import { rolesService } from '@/services/roles.service';
+import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { RoleForm } from '@/components/core/roles/role-form';
 import type { CreateRoleValues } from '@bizflow/types';
 
 export default function CreateRolePage() {
+  useBreadcrumb('/settings/roles/create', 'Tambah Peran');
+
   const router = useRouter();
   const token = useAuthStore((state) => state.accessToken);
   const queryClient = useQueryClient();

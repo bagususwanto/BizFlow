@@ -11,12 +11,16 @@ import {
   CardTitle,
 } from '@bizflow/ui';
 import { UserForm } from '@/components/core/users/user-form';
+import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { useUser } from '@/hooks';
 
 export default function EditUserPage() {
   const params = useParams();
   const id = params.id as string;
   const { data: user, isLoading, isError } = useUser(id);
+
+  // Set dynamic breadcrumb
+  useBreadcrumb(`/settings/users/${id}`, user?.username || 'Edit Pengguna');
 
   if (isLoading) {
     return (

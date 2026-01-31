@@ -13,6 +13,7 @@ import {
 } from '@bizflow/ui';
 import { useAuthStore } from '@/stores/auth.store';
 import { rolesService } from '@/services/roles.service';
+import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { RoleForm } from '@/components/core/roles/role-form';
 import type { UpdateRoleValues } from '@bizflow/types';
 
@@ -48,6 +49,9 @@ export default function EditRolePage() {
     },
     enabled: !!token && !!id,
   });
+
+  // Set dynamic breadcrumb
+  useBreadcrumb(`/settings/roles/${id}`, role?.name || 'Edit Peran');
 
   const updateMutation = useMutation({
     mutationFn: (values: UpdateRoleValues) => {

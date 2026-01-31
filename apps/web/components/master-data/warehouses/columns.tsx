@@ -115,7 +115,7 @@ export const getColumns = ({
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem
-              className="text-red-600 focus:text-red-600"
+              className="text-destructive focus:text-destructive"
               onClick={() => onDelete(warehouse)}
               disabled={warehouse.isDefault} // Prevent delete from UI for default warehouse
             >

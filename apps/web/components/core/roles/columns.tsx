@@ -131,15 +131,14 @@ export const getColumns = ({
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            {!role.isSystemRole && (
-              <DropdownMenuItem
-                className="text-destructive focus:text-destructive"
-                onClick={() => onDelete(role)}
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Hapus
-              </DropdownMenuItem>
-            )}
+            <DropdownMenuItem
+              className="text-destructive focus:text-destructive"
+              onClick={() => onDelete(role)}
+              disabled={role.isSystemRole}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Hapus
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

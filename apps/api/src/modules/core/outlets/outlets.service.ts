@@ -213,19 +213,29 @@ export class OutletsService {
   /**
    * Create a new outlet
    */
+  /**
+   * Create a new outlet
+   */
   async create(dto: CreateOutletValues, userId: string) {
+    let code = dto.code;
+
+    // Auto-generate code if empty
+    if (!code) {
+      code = await this.generateCode();
+    }
+
     // Check if code already exists
     const existingCode = await this.prisma.outlet.findUnique({
-      where: { code: dto.code },
+      where: { code },
     });
 
     if (existingCode) {
-      throw new ConflictException(`Kode outlet '${dto.code}' sudah digunakan`);
+      throw new ConflictException(`Kode outlet '${code}' sudah digunakan`);
     }
 
     const outlet = await this.prisma.outlet.create({
       data: {
-        code: dto.code,
+        code,
         name: dto.name,
         address: dto.address || null,
         phone: dto.phone || null,

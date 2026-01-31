@@ -7,9 +7,8 @@ import { z } from 'zod';
 // Code validation: uppercase letters and numbers only
 const outletCodeSchema = z
   .string()
-  .min(2, { message: 'Kode outlet minimal 2 karakter' })
   .max(20, { message: 'Kode outlet maksimal 20 karakter' })
-  .regex(/^[A-Z0-9_]+$/, {
+  .regex(/^[A-Z0-9_]*$/, {
     message: 'Kode outlet hanya boleh huruf besar, angka, dan underscore',
   });
 
@@ -18,7 +17,7 @@ const outletCodeSchema = z
 // ========================================
 
 export const createOutletSchema = z.object({
-  code: outletCodeSchema,
+  code: outletCodeSchema.optional().or(z.literal('')),
   name: z
     .string()
     .min(1, { message: 'Nama outlet wajib diisi' })

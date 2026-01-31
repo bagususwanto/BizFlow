@@ -32,7 +32,6 @@ import {
   useUpdateWarehouse,
   useGenerateWarehouseCode,
 } from '@/hooks';
-import { useEffect } from 'react';
 
 interface WarehouseFormProps {
   initialData?: Warehouse;
@@ -78,13 +77,6 @@ export function WarehouseForm({
           isActive: true,
         },
   });
-
-  // Auto-fill code on create
-  useEffect(() => {
-    if (!isEdit && generatedCode && !form.getValues('code')) {
-      form.setValue('code', generatedCode);
-    }
-  }, [generatedCode, isEdit, form]);
 
   const { isSubmitting } = form.formState;
   const isLoading = isCreating || isUpdating || isSubmitting;

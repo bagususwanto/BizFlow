@@ -31,7 +31,6 @@ import {
   useUpdateCustomer,
   useGenerateCustomerCode,
 } from '@/hooks';
-import { useEffect } from 'react';
 
 interface CustomerFormProps {
   initialData?: Customer;
@@ -84,13 +83,6 @@ export function CustomerForm({
           isActive: true,
         },
   });
-
-  // Auto-fill code on create
-  useEffect(() => {
-    if (!isEdit && generatedCode && !form.getValues('code')) {
-      form.setValue('code', generatedCode);
-    }
-  }, [generatedCode, isEdit, form]);
 
   const { isSubmitting } = form.formState;
   const isLoading = isCreating || isUpdating || isSubmitting;

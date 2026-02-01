@@ -43,7 +43,7 @@ export function PosHeader() {
             <span className="hidden sm:inline">Dashboard</span>
           </Button>
         </Link>
-        <div className="h-4 w-[1px] bg-border" />
+        <div className="h-4 w-px bg-border" />
         <h1 className="text-lg font-semibold">POS Terminal</h1>
         <Badge
           variant={isOnline ? 'outline' : 'destructive'}

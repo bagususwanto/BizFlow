@@ -1,10 +1,31 @@
 import { ApiResponse, PaginatedResponse, Product } from '@bizflow/types';
 import { apiClient } from '@/lib/fetch-client';
 
-export interface PosProduct extends Omit<Product, 'sellPrice' | 'costPrice'> {
-  stock?: number;
-  sellPrice: number;
+export interface PosProduct {
+  id: string;
+  type: string; // 'product' | 'variant'
+  productId: string;
+  variantId?: string;
+  productName: string;
+  variantName?: string | null;
+  displayName: string;
+  name: string;
+  sku: string;
+  barcode?: string | null;
+  price: number;
   costPrice: number;
+  stock: number;
+  unit: {
+    id: string;
+    name: string;
+    symbol: string;
+  };
+  category: {
+    id: string;
+    name: string;
+  };
+  isService: boolean;
+  imageUrl?: string | null;
 }
 
 export interface SearchProductsParams {

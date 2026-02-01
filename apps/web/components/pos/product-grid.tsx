@@ -71,9 +71,7 @@ export function ProductGrid() {
               <Card
                 key={product.id}
                 className="cursor-pointer transition-all hover:bg-accent hover:border-primary/50 active:scale-95"
-                onClick={() =>
-                  addItem({ ...product, price: product.sellPrice })
-                }
+                onClick={() => addItem({ ...product, price: product.price })}
               >
                 <CardContent className="p-3">
                   <div className="mb-2 aspect-square w-full overflow-hidden rounded-md bg-muted">
@@ -110,7 +108,7 @@ export function ProductGrid() {
                           style: 'currency',
                           currency: 'IDR',
                           maximumFractionDigits: 0,
-                        }).format(Number(product.sellPrice) || 0)}
+                        }).format(Number(product.price) || 0)}
                       </p>
                       {product.stock !== undefined && (
                         <Badge

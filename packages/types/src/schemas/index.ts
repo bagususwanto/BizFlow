@@ -9,4 +9,6 @@ export * from './return';
 export * from './product';
 export * from './role';
 export * from './unit';
+export * from './user';
+export * from './settings';
 export * from './warehouse';

@@ -1,8 +1,21 @@
-export default function POSPage() {
+'use client';
+
+import { PosHeader } from '@/components/pos/pos-header';
+import { ProductGrid } from '@/components/pos/product-grid';
+import { CartSection } from '@/components/pos/cart-section';
+
+export default function PosPage() {
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4">
-      <h1 className="text-2xl font-bold">POS</h1>
-      <p className="text-muted-foreground">Point of Sale untuk transaksi</p>
-    </div>
+    <>
+      <PosHeader />
+      <div className="flex flex-1 overflow-hidden">
+        <div className="flex-1 bg-muted/10 p-4 overflow-hidden">
+          <ProductGrid />
+        </div>
+        <div className="w-[30%] min-w-[320px] max-w-[450px] border-l bg-background">
+          <CartSection />
+        </div>
+      </div>
+    </>
   );
 }

@@ -55,6 +55,16 @@ export class PaymentsController {
   }
 
   /**
+   * Get all payment accounts
+   * GET /pos/payments/accounts
+   */
+  @Get('accounts')
+  @Permissions(Permission.Pos.Read as PermissionType)
+  async getAccounts() {
+    return this.paymentsService.getAccounts();
+  }
+
+  /**
    * Get all payments with filters
    * GET /pos/payments
    */

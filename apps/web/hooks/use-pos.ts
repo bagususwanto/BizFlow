@@ -76,3 +76,10 @@ export function useCreatePosPayment() {
     },
   });
 }
+
+export function usePosAccounts() {
+  return useQuery({
+    queryKey: ['pos', 'accounts'],
+    queryFn: posPaymentsService.getAccounts,
+  });
+}

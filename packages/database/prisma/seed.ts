@@ -746,6 +746,52 @@ async function main() {
     },
   });
 
+  // Create default variants for products without variants
+  const airMineralDefault = await prisma.productVariant.upsert({
+    where: { sku: 'PRD-003-DEFAULT' },
+    update: {},
+    create: {
+      productId: productAirMineral.id,
+      sku: 'PRD-003-DEFAULT',
+      barcode: '899000000003',
+      name: 'Default',
+      attributes: JSON.stringify({}),
+      costPrice: 2000,
+      sellPrice: 4000,
+      isActive: true,
+    },
+  });
+
+  const snackDefault = await prisma.productVariant.upsert({
+    where: { sku: 'PRD-004-DEFAULT' },
+    update: {},
+    create: {
+      productId: productSnack.id,
+      sku: 'PRD-004-DEFAULT',
+      barcode: '899000000004',
+      name: 'Default',
+      attributes: JSON.stringify({}),
+      costPrice: 6000,
+      sellPrice: 10000,
+      isActive: true,
+    },
+  });
+
+  const serviceInstallDefault = await prisma.productVariant.upsert({
+    where: { sku: 'SRV-001-DEFAULT' },
+    update: {},
+    create: {
+      productId: serviceInstall.id,
+      sku: 'SRV-001-DEFAULT',
+      barcode: null,
+      name: 'Default',
+      attributes: JSON.stringify({}),
+      costPrice: 0,
+      sellPrice: 150000,
+      isActive: true,
+    },
+  });
+
   console.log('✅ Dummy variants created');
 
   // ============================

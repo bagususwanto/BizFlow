@@ -43,4 +43,8 @@ export const posPaymentsService = {
       `/pos/payments/summary?${queryString}`,
     );
   },
+
+  getAccounts: async () => {
+    return apiClient.get<ApiResponse<any[]>>('/pos/payments/accounts');
+  },
 };

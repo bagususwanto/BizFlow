@@ -34,18 +34,20 @@ export interface SearchProductsParams {
 }
 
 export interface CreateTransactionPayload {
+  outletId: string;
   items: {
     productId: string;
-    variantId?: string;
+    variantId: string; // Required by backend
     quantity: number;
-    price: number;
+    unitPrice: number; // Changed from price to match backend
     note?: string;
   }[];
-  payment?: {
+  payments: {
     method: string; // 'cash', 'qris', etc.
     amount: number;
     reference?: string;
-  };
+    accountId: string; // Required by backend
+  }[];
   customerId?: string;
   notes?: string;
 }
@@ -79,5 +81,9 @@ export const posTransactionsService = {
 
   deleteHeldTransaction: async (id: string) => {
     return apiClient.delete<ApiResponse<any>>(`/pos/transactions/held/${id}`);
+  },
+
+  getTransaction: async (id: string) => {
+    return apiClient.get<ApiResponse<any>>(`/pos/transactions/${id}`);
   },
 };

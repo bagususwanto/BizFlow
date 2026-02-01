@@ -515,6 +515,23 @@ export class PaymentsService {
   }
 
   /**
+   * Get all active accounts for payment methods
+   */
+  async getAccounts() {
+    const accounts = await this.prisma.account.findMany({
+      where: { isActive: true },
+      select: {
+        id: true,
+        name: true,
+        code: true,
+        type: true,
+      },
+    });
+
+    return successResponse(accounts);
+  }
+
+  /**
    * Generate unique payment number with format: PAY-YYYYMMDD-XXX
    */
   private async generatePaymentNumber(): Promise<string> {

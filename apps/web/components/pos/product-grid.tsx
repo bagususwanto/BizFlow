@@ -78,8 +78,26 @@ export function ProductGrid() {
                 <CardContent className="p-3">
                   <div className="mb-2 aspect-square w-full overflow-hidden rounded-md bg-muted">
                     {/* Placeholder for image */}
-                    <div className="flex h-full w-full items-center justify-center bg-secondary text-secondary-foreground text-xs font-semibold">
-                      {product.name.substring(0, 2).toUpperCase()}
+                    {product.imageUrl ? (
+                      <img
+                        src={`${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/v[0-9]+$/, '')}/uploads/${product.imageUrl}`}
+                        alt={product.name}
+                        className="h-full w-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          e.currentTarget.nextElementSibling?.classList.remove(
+                            'hidden',
+                          );
+                        }}
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-secondary text-secondary-foreground text-xs font-semibold">
+                        {(product.name || '?').substring(0, 2).toUpperCase()}
+                      </div>
+                    )}
+                    {/* Fallback for error or empty (image hidden on error, this shows up) */}
+                    <div className="hidden h-full w-full items-center justify-center bg-secondary text-secondary-foreground text-xs font-semibold absolute inset-0">
+                      {(product.name || '?').substring(0, 2).toUpperCase()}
                     </div>
                   </div>
                   <div className="space-y-1">

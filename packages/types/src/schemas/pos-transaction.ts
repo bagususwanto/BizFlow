@@ -113,7 +113,7 @@ export type QueryPOSTransactionsValues = z.infer<
 // ========================================
 
 export const searchProductsSchema = z.object({
-  query: z.string().min(1, { message: 'Query pencarian wajib diisi' }),
+  query: z.string().default(''),
   warehouseId: z.string().optional(),
   limit: z.coerce.number().int().min(1).max(50).default(20),
 });

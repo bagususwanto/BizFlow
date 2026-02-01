@@ -6,7 +6,6 @@ import { ScrollArea } from '@bizflow/ui';
 import { Separator } from '@bizflow/ui';
 import { Trash2, Plus, Minus, CreditCard, User } from 'lucide-react';
 import { cn } from '@bizflow/ui';
-import { useAuthStore } from '@/stores/auth.store';
 import { useState } from 'react';
 import { CustomerSelector } from './customer-selector';
 import { PaymentModal } from './payment-modal';
@@ -60,8 +59,30 @@ export function CartSection() {
             <div className="p-4 space-y-4">
               {items.map((item) => (
                 <div key={item.id} className="flex gap-4 group">
-                  <div className="h-14 w-14 rounded-md bg-muted flex-shrink-0 flex items-center justify-center text-xs font-bold text-muted-foreground">
-                    {item.name.substring(0, 2).toUpperCase()}
+                  <div className="h-14 w-14 rounded-md bg-muted shrink-0 flex items-center justify-center text-xs font-bold text-muted-foreground overflow-hidden relative">
+                    {item.imageUrl ? (
+                      <img
+                        src={`${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/v[0-9]+$/, '')}/uploads/${item.imageUrl}`}
+                        alt={item.name}
+                        className="h-full w-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          e.currentTarget.nextElementSibling?.classList.remove(
+                            'hidden',
+                          );
+                        }}
+                      />
+                    ) : (
+                      (item.name || item.displayName || '?')
+                        .substring(0, 2)
+                        .toUpperCase()
+                    )}
+                    {/* Fallback for error or empty (image hidden on error, this shows up) */}
+                    <div className="hidden h-full w-full items-center justify-center bg-muted text-muted-foreground text-xs font-bold absolute inset-0">
+                      {(item.name || item.displayName || '?')
+                        .substring(0, 2)
+                        .toUpperCase()}
+                    </div>
                   </div>
                   <div className="flex-1 min-w-0 flex flex-col justify-between">
                     <div className="flex justify-between items-start gap-2">

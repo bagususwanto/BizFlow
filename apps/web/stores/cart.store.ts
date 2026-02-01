@@ -6,10 +6,12 @@ export interface CartItem {
   productId: string;
   variantId?: string;
   name: string;
+  displayName?: string;
   price: number;
   quantity: number;
   unit?: string;
   stock?: number; // Available stock for validation
+  imageUrl?: string | null;
 }
 
 export interface Customer {
@@ -74,6 +76,7 @@ export const useCartStore = create<CartState>()(
                   quantity,
                   unit: product.unit,
                   stock: product.stock,
+                  imageUrl: product.imageUrl,
                 },
               ],
             };

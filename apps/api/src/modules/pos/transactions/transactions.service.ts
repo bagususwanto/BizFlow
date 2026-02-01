@@ -24,33 +24,43 @@ export class TransactionsService {
   async searchProducts(dto: SearchProductsValues, warehouseId?: string) {
     const { query, limit } = dto;
 
-    // Search in products and variants
-    const products = await this.prisma.product.findMany({
-      where: {
-        isActive: true,
-        OR: [
-          { name: { contains: query } },
-          { sku: { contains: query } },
-          { barcode: { contains: query } },
-          {
-            variants: {
-              some: {
-                OR: [
-                  { name: { contains: query } },
-                  { sku: { contains: query } },
-                  { barcode: { contains: query } },
-                ],
-              },
+    const whereClause: any = {
+      isActive: true,
+    };
+
+    if (query) {
+      whereClause.OR = [
+        { name: { contains: query } },
+        { sku: { contains: query } },
+        { barcode: { contains: query } },
+        {
+          variants: {
+            some: {
+              OR: [
+                { name: { contains: query } },
+                { sku: { contains: query } },
+                { barcode: { contains: query } },
+              ],
             },
           },
-        ],
-      },
+        },
+      ];
+    }
+
+    // Search in products and variants
+    const products = await this.prisma.product.findMany({
+      where: whereClause,
       include: {
         category: {
           select: { id: true, name: true },
         },
         unit: {
           select: { id: true, name: true, symbol: true },
+        },
+        images: {
+          take: 1,
+          orderBy: { order: 'asc' },
+          select: { url: true },
         },
         variants: {
           where: { isActive: true },
@@ -74,6 +84,8 @@ export class TransactionsService {
     // Map to POS-friendly format
     // @ts-expect-error - TypeScript has issues with union types in flatMap, but this is functionally correct
     const results = products.flatMap((product) => {
+      const imageUrl = product.images[0]?.url || null;
+
       if (product.variants.length > 0) {
         // Product has variants, return each variant
         return product.variants.map((variant) => {
@@ -89,6 +101,7 @@ export class TransactionsService {
             productName: product.name,
             variantName: variant.name,
             displayName: `${product.name} - ${variant.name}`,
+            name: `${product.name} - ${variant.name}`,
             sku: variant.sku,
             barcode: variant.barcode,
             price: Number(variant.sellPrice),
@@ -97,6 +110,7 @@ export class TransactionsService {
             unit: product.unit,
             category: product.category,
             isService: product.isService,
+            imageUrl: imageUrl,
           };
         });
       } else {
@@ -109,6 +123,7 @@ export class TransactionsService {
             productName: product.name,
             variantName: null,
             displayName: product.name,
+            name: product.name,
             sku: product.sku,
             barcode: product.barcode,
             price: Number(product.sellPrice),
@@ -117,6 +132,7 @@ export class TransactionsService {
             unit: product.unit,
             category: product.category,
             isService: product.isService,
+            imageUrl: imageUrl,
           },
         ];
       }
@@ -127,6 +143,7 @@ export class TransactionsService {
       productName: string;
       variantName: string | null;
       displayName: string;
+      name: string;
       sku: string;
       barcode: string | null;
       price: number;
@@ -135,6 +152,7 @@ export class TransactionsService {
       unit: { id: string; name: string; symbol: string };
       category: { id: string; name: string };
       isService: boolean;
+      imageUrl: string | null;
     }>;
 
     return successResponse(results);

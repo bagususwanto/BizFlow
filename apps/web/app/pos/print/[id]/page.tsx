@@ -16,22 +16,10 @@ export default function ReceiptPrintPage() {
     null,
   );
   const [loading, setLoading] = useState(true);
+  const [paperSize, setPaperSize] = useState<'58mm' | '80mm'>('58mm');
 
   useEffect(() => {
     if (id) {
-      // Create a dedicated getTransactionById in service if needed, logic here assumes similar usage
-      // Reusing logic via apiClient if needed, or if findAll supports id filtering.
-      // Actually standard transaction service should have findById.
-      // The posTransactionsService in frontend might not exposed it yet.
-      // Let's assume we can fetch it.
-
-      // Temporary: fetching via standard endpoint if available or implementing fetch
-      // Since posTransactionsService currently has: searchProducts, createTransaction, hold...
-      // but not getTransactionById. We should add it.
-      // For now I will mock fetch or assume I added it.
-
-      // Let's add getTransaction to posTransactionsService quickly in next step.
-      // Here I will use the service assuming it exists.
       posTransactionsService
         .getTransaction(id)
         .then((res) => {
@@ -39,8 +27,6 @@ export default function ReceiptPrintPage() {
           // Auto print after small delay to ensure rendering
           setTimeout(() => {
             window.print();
-            // Optional: Close window after print
-            // window.close();
           }, 500);
         })
         .catch((err) => {
@@ -65,13 +51,45 @@ export default function ReceiptPrintPage() {
   return (
     <div className="flex justify-center min-h-screen bg-gray-100 p-8 print:p-0 print:bg-white print:block">
       <div className="hidden print:block">
-        <ReceiptTemplate transaction={transaction} width="58mm" />
+        <ReceiptTemplate transaction={transaction} width={paperSize} />
       </div>
       {/* Preview on screen */}
-      <div className="print:hidden shadow-lg">
-        <ReceiptTemplate transaction={transaction} width="58mm" />
-        <div className="mt-4 text-center text-sm text-gray-500">
-          Tekan Cmd+P / Ctrl+P untuk mencetak jika dialog tidak muncul.
+      <div className="print:hidden flex flex-col items-center gap-4">
+        <div className="bg-white p-4 rounded-lg shadow-sm w-full max-w-xs flex justify-center gap-2">
+          <button
+            onClick={() => setPaperSize('58mm')}
+            className={`px-3 py-1 text-sm rounded-md border ${
+              paperSize === '58mm'
+                ? 'bg-black text-white border-black'
+                : 'bg-white text-gray-600 border-gray-200'
+            }`}
+          >
+            58mm
+          </button>
+          <button
+            onClick={() => setPaperSize('80mm')}
+            className={`px-3 py-1 text-sm rounded-md border ${
+              paperSize === '80mm'
+                ? 'bg-black text-white border-black'
+                : 'bg-white text-gray-600 border-gray-200'
+            }`}
+          >
+            80mm
+          </button>
+        </div>
+
+        <div className="shadow-lg bg-white">
+          <ReceiptTemplate transaction={transaction} width={paperSize} />
+        </div>
+
+        <div className="text-center text-sm text-gray-500">
+          <p>Tekan Cmd+P / Ctrl+P untuk mencetak</p>
+          <button
+            onClick={() => window.print()}
+            className="mt-2 text-blue-600 hover:underline font-medium"
+          >
+            Print Sekarang
+          </button>
         </div>
       </div>
     </div>

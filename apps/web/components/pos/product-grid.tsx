@@ -76,64 +76,95 @@ export function ProductGrid({ categoryId }: ProductGridProps) {
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {products.map((product) => (
-              <Card
-                key={product.id}
-                className="cursor-pointer transition-all hover:bg-accent hover:border-primary/50 active:scale-95"
-                onClick={() => addItem({ ...product, price: product.price })}
-              >
-                <CardContent className="p-3">
-                  <div className="mb-2 aspect-square w-full overflow-hidden rounded-md bg-muted">
-                    {/* Placeholder for image */}
-                    {product.imageUrl ? (
-                      <img
-                        src={`${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/v[0-9]+$/, '')}/uploads/${product.imageUrl}`}
-                        alt={product.name}
-                        className="h-full w-full object-cover"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none';
-                          e.currentTarget.nextElementSibling?.classList.remove(
-                            'hidden',
-                          );
-                        }}
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-secondary text-secondary-foreground text-xs font-semibold">
+            {products.map((product) => {
+              const isService = product.isService;
+              const stock = product.stock || 0;
+              const isOutOfStock = !isService && stock <= 0;
+
+              return (
+                <Card
+                  key={product.id}
+                  className={cn(
+                    'transition-all',
+                    isOutOfStock
+                      ? 'opacity-50 cursor-not-allowed bg-muted'
+                      : 'cursor-pointer hover:bg-accent hover:border-primary/50 active:scale-95',
+                  )}
+                  onClick={() => {
+                    if (!isOutOfStock) {
+                      addItem({ ...product, price: product.price });
+                    }
+                  }}
+                >
+                  <CardContent className="p-3">
+                    <div className="mb-2 aspect-square w-full overflow-hidden rounded-md bg-muted relative">
+                      {/* Placeholder for image */}
+                      {product.imageUrl ? (
+                        <img
+                          src={`${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/v[0-9]+$/, '')}/uploads/${product.imageUrl}`}
+                          alt={product.name}
+                          className={cn(
+                            'h-full w-full object-cover',
+                            isOutOfStock && 'grayscale',
+                          )}
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.nextElementSibling?.classList.remove(
+                              'hidden',
+                            );
+                          }}
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center bg-secondary text-secondary-foreground text-xs font-semibold">
+                          {(product.name || '?').substring(0, 2).toUpperCase()}
+                        </div>
+                      )}
+
+                      {/* Fallback for error or empty */}
+                      <div className="hidden h-full w-full items-center justify-center bg-secondary text-secondary-foreground text-xs font-semibold absolute inset-0">
                         {(product.name || '?').substring(0, 2).toUpperCase()}
                       </div>
-                    )}
-                    {/* Fallback for error or empty (image hidden on error, this shows up) */}
-                    <div className="hidden h-full w-full items-center justify-center bg-secondary text-secondary-foreground text-xs font-semibold absolute inset-0">
-                      {(product.name || '?').substring(0, 2).toUpperCase()}
-                    </div>
-                  </div>
-                  <div className="space-y-1">
-                    <h3 className="line-clamp-2 text-sm font-medium leading-tight min-h-[2.5em]">
-                      {product.name}
-                    </h3>
-                    <div className="flex items-center justify-between">
-                      <p className="font-semibold text-primary">
-                        {new Intl.NumberFormat('id-ID', {
-                          style: 'currency',
-                          currency: 'IDR',
-                          maximumFractionDigits: 0,
-                        }).format(Number(product.price) || 0)}
-                      </p>
-                      {product.stock !== undefined && (
-                        <Badge
-                          variant={
-                            product.stock > 0 ? 'secondary' : 'destructive'
-                          }
-                          className="text-[10px] px-1 h-5"
-                        >
-                          {product.stock}
-                        </Badge>
+
+                      {/* Out of Stock Overlay */}
+                      {isOutOfStock && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-[1px]">
+                          <Badge
+                            variant="destructive"
+                            className="font-bold border-2 border-background shadow-sm"
+                          >
+                            HABIS
+                          </Badge>
+                        </div>
                       )}
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                    <div className="space-y-1">
+                      <h3 className="line-clamp-2 text-sm font-medium leading-tight min-h-[2.5em]">
+                        {product.name}
+                      </h3>
+                      <div className="flex items-center justify-between">
+                        <p className="font-semibold text-primary">
+                          {new Intl.NumberFormat('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR',
+                            maximumFractionDigits: 0,
+                          }).format(Number(product.price) || 0)}
+                        </p>
+                        {product.stock !== undefined && (
+                          <Badge
+                            variant={
+                              product.stock > 0 ? 'secondary' : 'destructive'
+                            }
+                            className="text-[10px] px-1 h-5"
+                          >
+                            {product.stock}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         )}
       </div>

@@ -216,35 +216,38 @@ export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-4 gap-2">
-          <Button
-            variant="outline"
-            className="col-span-1 border-destructive text-destructive hover:bg-destructive/10"
-            onClick={clearCart}
-            disabled={items.length === 0}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
+        <div className="space-y-2">
+          <div className="grid grid-cols-4 gap-2">
+            <Button
+              variant="outline"
+              className="col-span-1 border-destructive text-destructive hover:bg-destructive/10"
+              onClick={clearCart}
+              disabled={items.length === 0}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              className="col-span-3 border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300 justify-start"
+              onClick={() => setIsHoldDialogOpen(true)}
+              disabled={items.length === 0}
+            >
+              <PauseCircle className="h-4 w-4 mr-2" />
+              Simpan
+              <span className="opacity-50 text-xs font-mono font-normal ml-auto">
+                [F9]
+              </span>
+            </Button>
+          </div>
           <Button
             size="lg"
-            className="col-span-2 font-semibold text-lg"
+            className="w-full font-semibold text-lg"
             disabled={items.length === 0}
             onClick={() => setIsPaymentOpen(true)}
           >
             Bayar
             <span className="opacity-50 text-sm ml-2 font-normal font-mono">
               [F4]
-            </span>
-          </Button>
-          <Button
-            variant="outline"
-            className="col-span-1 border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300"
-            onClick={() => setIsHoldDialogOpen(true)}
-            disabled={items.length === 0}
-          >
-            <PauseCircle className="h-4 w-4 mr-2" />
-            <span className="opacity-50 text-xs font-mono font-normal">
-              [F9]
             </span>
           </Button>
         </div>

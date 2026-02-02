@@ -21,9 +21,15 @@ export interface Customer {
   phone?: string;
 }
 
+export interface Discount {
+  type: 'percent' | 'fixed';
+  value: number;
+}
+
 interface CartState {
   items: CartItem[];
   customer: Customer | null;
+  discount: Discount | null;
   heldTransactionId: string | null; // If resuming a held transaction
 
   // Actions
@@ -31,11 +37,17 @@ interface CartState {
   removeItem: (itemId: string) => void;
   updateQuantity: (itemId: string, quantity: number) => void;
   setCustomer: (customer: Customer | null) => void;
+  setDiscount: (discount: Discount | null) => void;
   clearCart: () => void;
   setHeldTransaction: (id: string | null) => void;
-  setCart: (items: CartItem[], customer: Customer | null) => void;
+  setCart: (
+    items: CartItem[],
+    customer: Customer | null,
+    discount?: Discount | null,
+  ) => void;
 
   // Getters
+  getSubtotal: () => number;
   getTotal: () => number;
   getItemCount: () => number;
 }
@@ -45,6 +57,7 @@ export const useCartStore = create<CartState>()(
     (set, get) => ({
       items: [],
       customer: null,
+      discount: null,
       heldTransactionId: null,
 
       addItem: (product, quantity = 1) => {
@@ -106,21 +119,47 @@ export const useCartStore = create<CartState>()(
 
       setCustomer: (customer) => set({ customer }),
 
+      setDiscount: (discount) => set({ discount }),
+
       clearCart: () =>
-        set({ items: [], customer: null, heldTransactionId: null }),
+        set({
+          items: [],
+          customer: null,
+          discount: null,
+          heldTransactionId: null,
+        }),
 
       setHeldTransaction: (id) => set({ heldTransactionId: id }),
 
-      setCart: (items: CartItem[], customer: Customer | null) => {
-        set({ items, customer, heldTransactionId: null });
+      setCart: (items, customer, discount = null) => {
+        set({ items, customer, discount, heldTransactionId: null });
       },
 
-      getTotal: () => {
+      getSubtotal: () => {
         const state = get();
         return state.items.reduce(
           (total, item) => total + item.price * item.quantity,
           0,
         );
+      },
+
+      getTotal: () => {
+        const state = get();
+        const subtotal = state.items.reduce(
+          (total, item) => total + item.price * item.quantity,
+          0,
+        );
+
+        if (!state.discount) return subtotal;
+
+        let discountAmount = 0;
+        if (state.discount.type === 'percent') {
+          discountAmount = (subtotal * state.discount.value) / 100;
+        } else {
+          discountAmount = state.discount.value;
+        }
+
+        return Math.max(0, subtotal - discountAmount);
       },
 
       getItemCount: () => {
@@ -134,6 +173,7 @@ export const useCartStore = create<CartState>()(
       partialize: (state) => ({
         items: state.items,
         customer: state.customer,
+        discount: state.discount,
         heldTransactionId: state.heldTransactionId,
       }), // select what to persist
     },

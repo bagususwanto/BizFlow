@@ -32,7 +32,7 @@ interface PaymentModalProps {
 
 export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
   const { user } = useAuthStore();
-  const { items, customer, clearCart } = useCartStore();
+  const { items, customer, clearCart, discount } = useCartStore();
   const { mutate: createTransaction, isPending } = useCreateTransaction();
   const { data: accountsData } = usePosAccounts();
   const accounts = accountsData?.data || [];
@@ -113,6 +113,8 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
         },
       ],
       customerId: customer?.id,
+      discountPercent: discount?.type === 'percent' ? discount.value : 0,
+      discountAmount: discount?.type === 'fixed' ? discount.value : 0,
       notes,
     };
 

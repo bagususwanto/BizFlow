@@ -11,12 +11,15 @@ import {
   CreditCard,
   User,
   PauseCircle,
+  Tag,
+  Edit,
 } from 'lucide-react';
 import { cn } from '@bizflow/ui';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { CustomerSelector } from './customer-selector';
 import { PaymentModal } from './payment-modal';
 import { HoldTransactionDialog } from './hold-transaction-dialog';
+import { DiscountDialog } from './discount-dialog';
 import { useHoldTransaction } from '@/hooks/use-pos';
 
 export interface CartSectionHandle {
@@ -26,11 +29,20 @@ export interface CartSectionHandle {
 }
 
 export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
-  const { items, removeItem, updateQuantity, getTotal, clearCart, customer } =
-    useCartStore();
+  const {
+    items,
+    updateQuantity,
+    getTotal,
+    clearCart,
+    customer,
+    discount,
+    getSubtotal,
+  } = useCartStore();
+
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [isCustomerOpen, setIsCustomerOpen] = useState(false);
   const [isHoldDialogOpen, setIsHoldDialogOpen] = useState(false);
+  const [isDiscountDialogOpen, setIsDiscountDialogOpen] = useState(false);
 
   const holdTransaction = useHoldTransaction();
 
@@ -60,6 +72,7 @@ export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
     });
   };
 
+  const subtotal = getSubtotal();
   const total = getTotal();
 
   return (
@@ -130,7 +143,7 @@ export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
                         .substring(0, 2)
                         .toUpperCase()
                     )}
-                    {/* Fallback for error or empty (image hidden on error, this shows up) */}
+                    {/* Fallback for error or empty */}
                     <div className="hidden h-full w-full items-center justify-center bg-muted text-muted-foreground text-xs font-bold absolute inset-0">
                       {(item.name || item.displayName || '?')
                         .substring(0, 2)
@@ -192,15 +205,57 @@ export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
               {new Intl.NumberFormat('id-ID', {
                 style: 'currency',
                 currency: 'IDR',
-              }).format(total)}
+                maximumFractionDigits: 0,
+              }).format(subtotal)}
             </span>
           </div>
+
+          <div className="flex justify-between text-sm items-center h-6">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <span>Diskon</span>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-5 w-5 text-muted-foreground hover:text-primary"
+                onClick={() => setIsDiscountDialogOpen(true)}
+                disabled={items.length === 0}
+              >
+                {discount ? (
+                  <Edit className="h-3 w-3" />
+                ) : (
+                  <Tag className="h-3 w-3" />
+                )}
+              </Button>
+              {discount && (
+                <span className="text-xs bg-muted px-1.5 rounded">
+                  {discount.type === 'percent' ? `${discount.value}%` : 'Tetap'}
+                </span>
+              )}
+            </div>
+            <span
+              className={
+                discount
+                  ? 'text-destructive font-medium'
+                  : 'text-muted-foreground'
+              }
+            >
+              {discount
+                ? `- ${new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    maximumFractionDigits: 0,
+                  }).format(subtotal - total)}`
+                : '-'}
+            </span>
+          </div>
+
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Pajak (11%)</span>
             <span>
               {new Intl.NumberFormat('id-ID', {
                 style: 'currency',
                 currency: 'IDR',
+                maximumFractionDigits: 0,
               }).format(0)}
             </span>
           </div>
@@ -211,6 +266,7 @@ export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
               {new Intl.NumberFormat('id-ID', {
                 style: 'currency',
                 currency: 'IDR',
+                maximumFractionDigits: 0,
               }).format(total)}
             </span>
           </div>
@@ -268,6 +324,10 @@ export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
         onOpenChange={setIsHoldDialogOpen}
         onConfirm={handleHoldTransaction}
         isLoading={holdTransaction.isPending}
+      />
+      <DiscountDialog
+        open={isDiscountDialogOpen}
+        onOpenChange={setIsDiscountDialogOpen}
       />
     </div>
   );

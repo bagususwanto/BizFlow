@@ -49,11 +49,16 @@ export const ProductGrid = forwardRef<ProductGridHandle, ProductGridProps>(
             <Input
               ref={searchInputRef}
               placeholder="Cari produk (Nama, SKU, Barcode)..."
-              className="pl-9"
+              className="pl-9 pr-12"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               autoFocus
             />
+            <div className="absolute right-2 top-2.5 pointer-events-none hidden sm:block">
+              <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                F2
+              </kbd>
+            </div>
           </div>
           <Button variant="outline" size="icon" onClick={() => refetch()}>
             <RefreshCw className={cn('h-4 w-4', isLoading && 'animate-spin')} />

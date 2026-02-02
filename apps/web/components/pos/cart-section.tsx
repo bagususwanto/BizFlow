@@ -76,7 +76,16 @@ export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
         >
           <span className="flex items-center gap-2">
             <User className="h-4 w-4" />
-            {customer ? customer.name : 'Pilih Pelanggan'}
+            {customer ? (
+              customer.name
+            ) : (
+              <span>
+                Pilih Pelanggan{' '}
+                <span className="opacity-50 text-xs ml-1 font-mono font-normal">
+                  [F3]
+                </span>
+              </span>
+            )}
           </span>
           {customer && (
             <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
@@ -223,6 +232,9 @@ export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
             onClick={() => setIsPaymentOpen(true)}
           >
             Bayar
+            <span className="opacity-50 text-sm ml-2 font-normal font-mono">
+              [F4]
+            </span>
           </Button>
           <Button
             variant="outline"
@@ -230,7 +242,10 @@ export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
             onClick={() => setIsHoldDialogOpen(true)}
             disabled={items.length === 0}
           >
-            <PauseCircle className="h-4 w-4" />
+            <PauseCircle className="h-4 w-4 mr-2" />
+            <span className="opacity-50 text-xs font-mono font-normal">
+              [F9]
+            </span>
           </Button>
         </div>
       </div>

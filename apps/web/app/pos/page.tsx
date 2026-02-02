@@ -84,7 +84,10 @@ export default function PosPage() {
 
   return (
     <>
-      <PosHeader onOpenHeldList={() => setIsHeldListOpen(true)} />
+      <PosHeader
+        onOpenHeldList={() => setIsHeldListOpen(true)}
+        onHelpClick={() => setIsHelpOpen(true)}
+      />
       <div className="flex flex-1 overflow-hidden">
         <div className="flex-1 bg-muted/10 flex flex-col overflow-hidden">
           <div className="px-4 pt-4 shrink-0">

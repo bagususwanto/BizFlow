@@ -8,6 +8,7 @@ import {
   History,
   ArrowLeft,
   Clock,
+  Keyboard,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@bizflow/ui';
@@ -26,9 +27,10 @@ import { useHeldTransactions } from '@/hooks/use-pos';
 
 interface PosHeaderProps {
   onOpenHeldList?: () => void;
+  onHelpClick?: () => void;
 }
 
-export function PosHeader({ onOpenHeldList }: PosHeaderProps) {
+export function PosHeader({ onOpenHeldList, onHelpClick }: PosHeaderProps) {
   const user = useAuthStore((state) => state.user);
   const [isOnline, setIsOnline] = useState(true);
   const { data: heldTransactions } = useHeldTransactions();
@@ -74,6 +76,18 @@ export function PosHeader({ onOpenHeldList }: PosHeaderProps) {
       </div>
 
       <div className="flex items-center gap-2">
+        {onHelpClick && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-2 text-muted-foreground mr-1 hidden sm:flex"
+            onClick={onHelpClick}
+          >
+            <Keyboard className="h-4 w-4" />
+            <span className="text-xs">Shortcuts (F1)</span>
+          </Button>
+        )}
+
         {onOpenHeldList && (
           <Button
             variant="outline"
@@ -115,6 +129,12 @@ export function PosHeader({ onOpenHeldList }: PosHeaderProps) {
               <DropdownMenuItem onClick={onOpenHeldList}>
                 <Clock className="mr-2 h-4 w-4" />
                 Pending Transactions
+              </DropdownMenuItem>
+            )}
+            {onHelpClick && (
+              <DropdownMenuItem onClick={onHelpClick}>
+                <Keyboard className="mr-2 h-4 w-4" />
+                Keyboard Shortcuts
               </DropdownMenuItem>
             )}
             <DropdownMenuSeparator />

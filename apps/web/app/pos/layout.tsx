@@ -17,7 +17,7 @@ export default function PosLayout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (hydrated && !isLoading && !accessToken) {
-      router.push('/auth/login');
+      router.push('/login');
     }
   }, [hydrated, accessToken, isLoading, router]);
 

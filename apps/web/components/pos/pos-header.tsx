@@ -135,7 +135,7 @@ export function PosHeader({ onOpenHeldList, onHelpClick }: PosHeaderProps) {
             </Link>
             <DropdownMenuSeparator />
             <Link
-              href="/auth/login"
+              href="/login"
               onClick={() => useAuthStore.getState().logout()}
             >
               <DropdownMenuItem className="text-destructive focus:text-destructive">

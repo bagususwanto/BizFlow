@@ -222,6 +222,22 @@ export class TransactionsService {
       throw new BadRequestException('Beberapa produk tidak ditemukan');
     }
 
+    // Get warehouse ID for stock operations
+    const warehouseId = await this.getDefaultWarehouseId();
+
+    // Prepare items with service flag for stock validation
+    const itemsWithServiceFlag = dto.items.map((item) => {
+      const variant = variants.find((v) => v.id === item.variantId);
+      return {
+        variantId: item.variantId,
+        quantity: item.quantity,
+        isService: variant?.product.isService || false,
+      };
+    });
+
+    // Validate stock availability before creating transaction
+    await this.validateStockAvailability(itemsWithServiceFlag, warehouseId);
+
     // Calculate totals
     const subtotal = dto.items.reduce((sum, item) => {
       const itemSubtotal = item.quantity * item.unitPrice - item.discountAmount;
@@ -336,8 +352,13 @@ export class TransactionsService {
       }
 
       // Deduct stock for non-service items
-      // TODO: Implement stock deduction logic
-      // This will be handled in a separate stock service
+      await this.deductStockAndCreateMovement(
+        itemsWithServiceFlag,
+        warehouseId,
+        order.id,
+        userId,
+        tx,
+      );
 
       return order;
     });
@@ -600,6 +621,154 @@ export class TransactionsService {
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
     });
+  }
+
+  /**
+   * Validate stock availability for transaction items
+   * @throws BadRequestException if insufficient stock
+   */
+  private async validateStockAvailability(
+    items: Array<{ variantId: string; quantity: number; isService: boolean }>,
+    warehouseId: string,
+  ): Promise<void> {
+    // Filter out service items (they don't require stock)
+    const physicalItems = items.filter((item) => !item.isService);
+
+    if (physicalItems.length === 0) {
+      return; // All items are services, no stock validation needed
+    }
+
+    // Get current stock levels
+    const stocks = await this.prisma.stock.findMany({
+      where: {
+        variantId: { in: physicalItems.map((item) => item.variantId) },
+        warehouseId,
+      },
+      include: {
+        variant: {
+          include: {
+            product: {
+              select: { name: true },
+            },
+          },
+        },
+      },
+    });
+
+    // Check each item for sufficient stock
+    const insufficientStock: string[] = [];
+
+    for (const item of physicalItems) {
+      const stock = stocks.find((s) => s.variantId === item.variantId);
+
+      if (!stock) {
+        const variant = await this.prisma.productVariant.findUnique({
+          where: { id: item.variantId },
+          include: { product: true },
+        });
+        insufficientStock.push(
+          `${variant?.product.name || 'Unknown'} (Stok tidak ditemukan)`,
+        );
+        continue;
+      }
+
+      const availableQty = Number(stock.quantity) - Number(stock.reservedQty);
+      if (availableQty < item.quantity) {
+        insufficientStock.push(
+          `${stock.variant.product.name} (Tersedia: ${availableQty}, Dibutuhkan: ${item.quantity})`,
+        );
+      }
+    }
+
+    if (insufficientStock.length > 0) {
+      throw new BadRequestException(
+        `Stok tidak mencukupi untuk: ${insufficientStock.join(', ')}`,
+      );
+    }
+  }
+
+  /**
+   * Deduct stock and create stock movement records
+   */
+  private async deductStockAndCreateMovement(
+    items: Array<{
+      variantId: string;
+      quantity: number;
+      isService: boolean;
+    }>,
+    warehouseId: string,
+    orderId: string,
+    userId: string,
+    tx: any, // Prisma transaction client
+  ): Promise<void> {
+    // Filter out service items
+    const physicalItems = items.filter((item) => !item.isService);
+
+    for (const item of physicalItems) {
+      // Update stock quantity
+      await tx.stock.upsert({
+        where: {
+          variantId_warehouseId: {
+            variantId: item.variantId,
+            warehouseId,
+          },
+        },
+        update: {
+          quantity: {
+            decrement: item.quantity,
+          },
+        },
+        create: {
+          variantId: item.variantId,
+          warehouseId,
+          quantity: -item.quantity, // Negative if starting from zero
+          reservedQty: 0,
+        },
+      });
+
+      // Create stock movement record
+      await tx.stockMovement.create({
+        data: {
+          variantId: item.variantId,
+          warehouseId,
+          type: 'SALE',
+          quantity: -item.quantity, // Negative for deduction
+          referenceType: 'SALES_ORDER',
+          referenceId: orderId,
+          notes: `POS Sale - Order ${orderId}`,
+          createdBy: userId,
+        },
+      });
+    }
+  }
+
+  /**
+   * Get default warehouse ID
+   * Returns the first active warehouse marked as default, or the first active warehouse
+   */
+  private async getDefaultWarehouseId(): Promise<string> {
+    const warehouse = await this.prisma.warehouse.findFirst({
+      where: { isActive: true, isDefault: true },
+      select: { id: true },
+    });
+
+    if (warehouse) {
+      return warehouse.id;
+    }
+
+    // Fallback to first active warehouse
+    const firstWarehouse = await this.prisma.warehouse.findFirst({
+      where: { isActive: true },
+      select: { id: true },
+    });
+
+    if (!firstWarehouse) {
+      throw new NotFoundException(
+        'Tidak ada gudang aktif. Silakan buat gudang terlebih dahulu.',
+      );
+    }
+
+    return firstWarehouse.id;
   }
 
   /**

@@ -35,9 +35,13 @@ export class TransactionsService {
 
   /**
    * Search products for POS by name, SKU, or barcode
-   * Returns products with stock information
+   * Returns products with stock information and customer-specific pricing
    */
-  async searchProducts(dto: SearchProductsValues, warehouseId?: string) {
+  async searchProducts(
+    dto: SearchProductsValues,
+    warehouseId?: string,
+    customerId?: string,
+  ) {
     const { query, limit, categoryId } = dto;
 
     const whereClause: any = {
@@ -48,6 +52,16 @@ export class TransactionsService {
     if (categoryId) {
       const categoryIds = await this.getCategoryIdsRecursive(categoryId);
       whereClause.categoryId = { in: categoryIds };
+    }
+
+    // Get customer's price level if customerId provided
+    let customerPriceLevel: string | null = null;
+    if (customerId) {
+      const customer = await this.prisma.customer.findUnique({
+        where: { id: customerId },
+        select: { priceLevelId: true },
+      });
+      customerPriceLevel = customer?.priceLevelId || null;
     }
 
     if (query) {
@@ -99,6 +113,9 @@ export class TransactionsService {
             },
           },
         },
+        priceLevels: customerPriceLevel
+          ? { where: { name: customerPriceLevel } }
+          : undefined,
       },
       take: limit,
     });
@@ -108,6 +125,14 @@ export class TransactionsService {
     const results = products.flatMap((product) => {
       const imageUrl = product.images[0]?.url || null;
 
+      // Get customer price if available
+      const customerPrice =
+        customerPriceLevel &&
+        product.priceLevels &&
+        product.priceLevels.length > 0
+          ? Number(product.priceLevels[0].price)
+          : null;
+
       if (product.variants.length > 0) {
         // Product has variants, return each variant
         return product.variants.map((variant) => {
@@ -115,6 +140,9 @@ export class TransactionsService {
             (sum, stock) => sum + Number(stock.quantity),
             0,
           );
+
+          // Use customer price or variant's default price
+          const effectivePrice = customerPrice || Number(variant.sellPrice);
 
           return {
             id: variant.id,
@@ -126,7 +154,7 @@ export class TransactionsService {
             name: `${product.name} - ${variant.name}`,
             sku: variant.sku,
             barcode: variant.barcode,
-            price: Number(variant.sellPrice),
+            price: effectivePrice,
             costPrice: Number(variant.costPrice),
             stock: totalStock,
             unit: product.unit,
@@ -238,7 +266,7 @@ export class TransactionsService {
     // Validate stock availability before creating transaction
     await this.validateStockAvailability(itemsWithServiceFlag, warehouseId);
 
-    // Calculate totals
+    // Calculate totals for credit limit check
     const subtotal = dto.items.reduce((sum, item) => {
       const itemSubtotal = item.quantity * item.unitPrice - item.discountAmount;
       return sum + itemSubtotal;
@@ -252,6 +280,27 @@ export class TransactionsService {
       ? (afterDiscount * dto.taxPercent) / 100
       : 0;
     const total = afterDiscount + taxAmount;
+
+    // Validate credit limit if customer is provided
+    if (dto.customerId) {
+      const customer = await this.prisma.customer.findUnique({
+        where: { id: dto.customerId },
+        select: { creditLimit: true, name: true },
+      });
+
+      if (customer && Number(customer.creditLimit) > 0) {
+        const outstanding = await this.getCustomerOutstandingBalance(
+          dto.customerId,
+        );
+        const creditLimit = Number(customer.creditLimit);
+
+        if (outstanding + total > creditLimit) {
+          throw new BadRequestException(
+            `Limit kredit ${customer.name} terlampaui. Limit: Rp ${creditLimit.toLocaleString('id-ID')}, Outstanding: Rp ${outstanding.toLocaleString('id-ID')}, Total transaksi baru: Rp ${total.toLocaleString('id-ID')}`,
+          );
+        }
+      }
+    }
 
     // Validate payment amount
     const totalPayment = dto.payments.reduce(
@@ -621,6 +670,29 @@ export class TransactionsService {
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
     });
+  }
+
+  /**
+   * Calculate customer's outstanding balance (unpaid + partial orders)
+   */
+  private async getCustomerOutstandingBalance(
+    customerId: string,
+  ): Promise<number> {
+    const orders = await this.prisma.salesOrder.findMany({
+      where: {
+        customerId,
+        paymentStatus: { in: ['unpaid', 'partial'] },
+      },
+      select: {
+        total: true,
+        paidAmount: true,
+      },
+    });
+
+    return orders.reduce((sum, order) => {
+      const outstanding = Number(order.total) - Number(order.paidAmount);
+      return sum + outstanding;
+    }, 0);
   }
 
   /**

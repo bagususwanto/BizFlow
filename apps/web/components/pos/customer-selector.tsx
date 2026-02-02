@@ -34,7 +34,7 @@ export function CustomerSelector({
     queryKey: ['customers', 'search', debouncedSearch],
     queryFn: async () => {
       const response = await apiClient.get<any>(
-        `/core/customers?search=${debouncedSearch}&pageSize=10`,
+        `/master-data/customers?search=${debouncedSearch}&pageSize=10`,
       );
       return response.data || [];
     },

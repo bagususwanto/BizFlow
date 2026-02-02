@@ -17,6 +17,8 @@ import { Search, User, Check, Plus } from 'lucide-react';
 import { useDebounce } from '@/hooks/use-debounce';
 import { Avatar, AvatarFallback } from '@bizflow/ui';
 
+import { QuickAddCustomerDialog } from './quick-add-customer-dialog';
+
 interface CustomerSelectorProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -28,6 +30,7 @@ export function CustomerSelector({
 }: CustomerSelectorProps) {
   const { customer, setCustomer } = useCartStore();
   const [search, setSearch] = useState('');
+  const [showQuickAdd, setShowQuickAdd] = useState(false);
   const debouncedSearch = useDebounce(search, 300);
 
   const { data: customers = [], isLoading } = useQuery({
@@ -49,6 +52,11 @@ export function CustomerSelector({
       phone: cust.phone,
     });
     onOpenChange(false);
+  };
+
+  const handleQuickAddSuccess = (newCustomer: any) => {
+    handleSelect(newCustomer);
+    setShowQuickAdd(false);
   };
 
   const clearSelection = () => {
@@ -129,10 +137,20 @@ export function CustomerSelector({
           </div>
         </ScrollArea>
 
-        <Button variant="outline" className="w-full gap-2">
+        <Button
+          variant="outline"
+          className="w-full gap-2"
+          onClick={() => setShowQuickAdd(true)}
+        >
           <Plus className="h-4 w-4" /> Tambah Pelanggan Baru
         </Button>
       </DialogContent>
+
+      <QuickAddCustomerDialog
+        open={showQuickAdd}
+        onOpenChange={setShowQuickAdd}
+        onSuccess={handleQuickAddSuccess}
+      />
     </Dialog>
   );
 }

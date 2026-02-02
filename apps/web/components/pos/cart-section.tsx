@@ -18,7 +18,6 @@ import { CustomerSelector } from './customer-selector';
 import { PaymentModal } from './payment-modal';
 import { HoldTransactionDialog } from './hold-transaction-dialog';
 import { useHoldTransaction } from '@/hooks/use-pos';
-import { useAuth } from '@/hooks/use-auth';
 
 export function CartSection() {
   const { items, removeItem, updateQuantity, getTotal, clearCart, customer } =
@@ -28,25 +27,12 @@ export function CartSection() {
   const [isHoldDialogOpen, setIsHoldDialogOpen] = useState(false);
 
   const holdTransaction = useHoldTransaction();
-  const { user } = useAuth(); // If needed for outletId (usually user.activeWarehouseId)
-  // Wait, payload needs outletId?
-  // createTransaction endpoint uses user.activeWarehouseId from token?
-  // Let's check holdTransaction service payload.
-
-  // Actually holdTransaction endpoint takes DTO: items, customerId, note.
-  // OutletId is handled by backend from user context usually.
-  // Checking hold-transaction.dto.ts (Step 910 lists it).
-  // Assuming backend handles it or we need to pass it.
-  // Let's check useHoldTransaction hook. It calls posTransactionsService.holdTransaction.
-  // posTransactionsService.holdTransaction calls /pos/transactions/hold with data.
-  // Let's assume backend needs plain data.
 
   const handleHoldTransaction = (note: string) => {
     // Construct payload
     const payload = {
       items: items.map((item) => ({
-        productId: item.productId,
-        variantId: item.variantId,
+        variantId: item.variantId || item.id,
         quantity: item.quantity,
         unitPrice: item.price,
       })),

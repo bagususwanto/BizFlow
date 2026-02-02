@@ -131,12 +131,6 @@ export function PosHeader({ onOpenHeldList, onHelpClick }: PosHeaderProps) {
                 Riwayat Retur
               </DropdownMenuItem>
             </Link>
-            {onOpenHeldList && (
-              <DropdownMenuItem onClick={onOpenHeldList}>
-                <Clock className="mr-2 h-4 w-4" />
-                Pending Transactions
-              </DropdownMenuItem>
-            )}
             {onHelpClick && (
               <DropdownMenuItem onClick={onHelpClick}>
                 <Keyboard className="mr-2 h-4 w-4" />

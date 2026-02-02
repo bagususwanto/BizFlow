@@ -12,13 +12,22 @@ import { Skeleton } from '@bizflow/ui';
 import { Badge } from '@bizflow/ui';
 import { cn } from '@bizflow/ui';
 
-export function ProductGrid() {
+// Removed internal search state to lift it up or use props if preferred.
+// Actually, if I lift state to PosPage, ProductGrid should accept query and categoryId as props.
+
+interface ProductGridProps {
+  categoryId?: string;
+  // If we want key based re-mount or plain prop
+}
+
+export function ProductGrid({ categoryId }: ProductGridProps) {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 300);
   const { addItem } = useCartStore();
 
   const { data, isLoading, isError, refetch } = usePosProducts({
     query: debouncedSearch,
+    categoryId, // Added this
   });
 
   const products = data?.data || [];

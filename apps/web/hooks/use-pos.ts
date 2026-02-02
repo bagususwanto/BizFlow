@@ -8,6 +8,7 @@ import {
   posPaymentsService,
   CreatePaymentPayload,
 } from '@/services/pos-payments.service';
+import { categoriesService } from '@/services/categories.service';
 import { toast } from 'sonner';
 
 // Products Hook
@@ -20,6 +21,14 @@ export function usePosProducts(params: SearchProductsParams) {
     enabled: !params.query || params.query.length >= 2 || !!params.categoryId,
   });
 }
+
+export function usePosCategories() {
+  return useQuery({
+    queryKey: ['pos', 'categories'],
+    queryFn: categoriesService.getActiveList,
+  });
+}
+
 // Held Transactions Hook
 export function useHeldTransactions() {
   return useQuery({

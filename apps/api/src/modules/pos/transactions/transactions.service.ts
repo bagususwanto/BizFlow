@@ -18,15 +18,36 @@ export class TransactionsService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
+   * Get category IDs recursively (includes parent and all direct children)
+   */
+  private async getCategoryIdsRecursive(categoryId: string): Promise<string[]> {
+    const categories = await this.prisma.category.findMany({
+      where: {
+        OR: [{ id: categoryId }, { parentId: categoryId }],
+        isActive: true,
+      },
+      select: { id: true },
+    });
+
+    return categories.map((c) => c.id);
+  }
+
+  /**
    * Search products for POS by name, SKU, or barcode
    * Returns products with stock information
    */
   async searchProducts(dto: SearchProductsValues, warehouseId?: string) {
-    const { query, limit } = dto;
+    const { query, limit, categoryId } = dto;
 
     const whereClause: any = {
       isActive: true,
     };
+
+    // Support hierarchical category filtering
+    if (categoryId) {
+      const categoryIds = await this.getCategoryIdsRecursive(categoryId);
+      whereClause.categoryId = { in: categoryIds };
+    }
 
     if (query) {
       whereClause.OR = [

@@ -121,22 +121,18 @@ export function PosHeader({ onOpenHeldList, onHelpClick }: PosHeaderProps) {
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>Menu Kasir</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <History className="mr-2 h-4 w-4" />
-              Riwayat Transaksi
-            </DropdownMenuItem>
+            <Link href="/pos/transactions">
+              <DropdownMenuItem>
+                <History className="mr-2 h-4 w-4" />
+                Riwayat Transaksi
+              </DropdownMenuItem>
+            </Link>
             <Link href="/pos/returns">
               <DropdownMenuItem>
                 <History className="mr-2 h-4 w-4" />
                 Riwayat Retur
               </DropdownMenuItem>
             </Link>
-            {onHelpClick && (
-              <DropdownMenuItem onClick={onHelpClick}>
-                <Keyboard className="mr-2 h-4 w-4" />
-                Keyboard Shortcuts
-              </DropdownMenuItem>
-            )}
             <DropdownMenuSeparator />
             <Link
               href="/auth/login"

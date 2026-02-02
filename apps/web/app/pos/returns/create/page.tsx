@@ -46,6 +46,7 @@ export default function CreateReturnPage() {
     search: searchQuery,
     page: 1,
     pageSize: 5,
+    enabled: !!searchQuery,
   });
 
   const { mutate: createReturn, isPending } = useCreateReturn();

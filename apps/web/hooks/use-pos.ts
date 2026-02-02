@@ -113,6 +113,6 @@ export function usePosTransactions(params: any) {
   return useQuery({
     queryKey: ['pos', 'transactions', params],
     queryFn: () => posTransactionsService.getTransactions(params),
-    enabled: !!params.search,
+    enabled: params.enabled,
   });
 }

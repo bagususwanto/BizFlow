@@ -1,10 +1,10 @@
 'use client';
 
 import { PosHeader } from '@/components/pos/pos-header';
-import { ProductGrid } from '@/components/pos/product-grid';
-import { CartSection } from '@/components/pos/cart-section';
+import { ProductGrid, ProductGridHandle } from '@/components/pos/product-grid';
+import { CartSection, CartSectionHandle } from '@/components/pos/cart-section';
 import { CategoryFilter } from '@/components/pos/category-filter';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { HeldTransactionsList } from '@/components/pos/held-transactions-list';
 import { useCartStore } from '@/stores/cart.store';
 import {
@@ -12,16 +12,39 @@ import {
   useDeleteHeldTransaction,
 } from '@/hooks/use-pos';
 import { toast } from 'sonner';
+import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts';
+import { KeyboardShortcutsDialog } from '@/components/pos/keyboard-shortcuts-dialog';
 
 export default function PosPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
     undefined,
   );
   const [isHeldListOpen, setIsHeldListOpen] = useState(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
   const setCart = useCartStore((state) => state.setCart);
+
+  const activeCategoryRef = useRef<string | undefined>(selectedCategory);
+  activeCategoryRef.current = selectedCategory;
+
+  const productGridRef = useRef<ProductGridHandle>(null);
+  const cartSectionRef = useRef<CartSectionHandle>(null);
 
   const resumeTransaction = useResumeTransaction();
   const deleteHeldTransaction = useDeleteHeldTransaction();
+
+  // Keyboard Shortcuts Hook
+  useKeyboardShortcuts({
+    onHelp: () => setIsHelpOpen(true),
+    onSearchFocus: () => productGridRef.current?.focusSearch(),
+    onCustomerClick: () => cartSectionRef.current?.openCustomerSelector(),
+    onPayment: () => cartSectionRef.current?.openPaymentModal(),
+    onHold: () => cartSectionRef.current?.openHoldDialog(),
+    onCancel: () => {
+      // Close help if open
+      if (isHelpOpen) setIsHelpOpen(false);
+      // Additional cancel logic can be added here if needed
+    },
+  });
 
   const handleResume = (transaction: any) => {
     // 1. Map items to CartItems
@@ -71,11 +94,11 @@ export default function PosPage() {
             />
           </div>
           <div className="p-4 flex-1 overflow-hidden">
-            <ProductGrid categoryId={selectedCategory} />
+            <ProductGrid ref={productGridRef} categoryId={selectedCategory} />
           </div>
         </div>
         <div className="w-[30%] min-w-[320px] max-w-[450px] border-l bg-background">
-          <CartSection />
+          <CartSection ref={cartSectionRef} />
         </div>
       </div>
 
@@ -85,6 +108,7 @@ export default function PosPage() {
         onResume={handleResume}
         onDelete={handleDelete}
       />
+      <KeyboardShortcutsDialog open={isHelpOpen} onOpenChange={setIsHelpOpen} />
     </>
   );
 }

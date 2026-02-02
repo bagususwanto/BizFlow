@@ -13,13 +13,19 @@ import {
   PauseCircle,
 } from 'lucide-react';
 import { cn } from '@bizflow/ui';
-import { useState } from 'react';
+import { forwardRef, useImperativeHandle, useState } from 'react';
 import { CustomerSelector } from './customer-selector';
 import { PaymentModal } from './payment-modal';
 import { HoldTransactionDialog } from './hold-transaction-dialog';
 import { useHoldTransaction } from '@/hooks/use-pos';
 
-export function CartSection() {
+export interface CartSectionHandle {
+  openPaymentModal: () => void;
+  openCustomerSelector: () => void;
+  openHoldDialog: () => void;
+}
+
+export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
   const { items, removeItem, updateQuantity, getTotal, clearCart, customer } =
     useCartStore();
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
@@ -27,6 +33,12 @@ export function CartSection() {
   const [isHoldDialogOpen, setIsHoldDialogOpen] = useState(false);
 
   const holdTransaction = useHoldTransaction();
+
+  useImperativeHandle(ref, () => ({
+    openPaymentModal: () => setIsPaymentOpen(true),
+    openCustomerSelector: () => setIsCustomerOpen(true),
+    openHoldDialog: () => setIsHoldDialogOpen(true),
+  }));
 
   const handleHoldTransaction = (note: string) => {
     // Construct payload
@@ -241,4 +253,6 @@ export function CartSection() {
       />
     </div>
   );
-}
+});
+
+CartSection.displayName = 'CartSection';

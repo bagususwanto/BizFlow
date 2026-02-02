@@ -72,7 +72,23 @@ export function useHoldTransaction() {
 
 export function useResumeTransaction() {
   return useMutation({
-    mutationFn: posTransactionsService.resumeHeldTransaction,
+    mutationFn: (id: string) =>
+      posTransactionsService.resumeHeldTransaction(id),
+  });
+}
+
+export function useDeleteHeldTransaction() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: posTransactionsService.deleteHeldTransaction,
+    onSuccess: () => {
+      toast.success('Transaksi tersimpan dihapus');
+      queryClient.invalidateQueries({ queryKey: ['pos', 'held-transactions'] });
+    },
+    onError: (error: any) => {
+      toast.error(error.message || 'Gagal menghapus transaksi');
+    },
   });
 }
 

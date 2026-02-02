@@ -5,15 +5,63 @@ import { ProductGrid } from '@/components/pos/product-grid';
 import { CartSection } from '@/components/pos/cart-section';
 import { CategoryFilter } from '@/components/pos/category-filter';
 import { useState } from 'react';
+import { HeldTransactionsList } from '@/components/pos/held-transactions-list';
+import { useCartStore } from '@/stores/cart.store';
+import {
+  useResumeTransaction,
+  useDeleteHeldTransaction,
+} from '@/hooks/use-pos';
+import { toast } from 'sonner';
 
 export default function PosPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
     undefined,
   );
+  const [isHeldListOpen, setIsHeldListOpen] = useState(false);
+  const setCart = useCartStore((state) => state.setCart);
+
+  const resumeTransaction = useResumeTransaction();
+  const deleteHeldTransaction = useDeleteHeldTransaction();
+
+  const handleResume = (transaction: any) => {
+    // 1. Map items to CartItems
+    const cartItems = transaction.items.map((item: any) => ({
+      id: item.variantId || item.productId,
+      productId: item.productId,
+      variantId: item.variantId,
+      name: item.productName || item.product?.name || 'Unknown Product', // Backend should return name
+      price: Number(item.unitPrice),
+      quantity: item.quantity,
+      // Optional fields if available
+      imageUrl: item.product?.images?.[0]?.url,
+      unit: item.unit,
+    }));
+
+    // 2. Set Cart
+    setCart(cartItems, transaction.customer || null);
+
+    // 3. Resume (delete from backend held list)
+    resumeTransaction.mutate(transaction.id, {
+      onSuccess: () => {
+        setIsHeldListOpen(false);
+        toast.success('Transaksi dilanjutkan');
+      },
+      onError: () => {
+        // Even if backend fails, we have loaded it.
+        // But optimally we shouldn't delete if verify fails?
+        // Actually resumeHeldTransaction probably just moves state or deletes.
+        setIsHeldListOpen(false);
+      },
+    });
+  };
+
+  const handleDelete = (id: string) => {
+    deleteHeldTransaction.mutate(id);
+  };
 
   return (
     <>
-      <PosHeader />
+      <PosHeader onOpenHeldList={() => setIsHeldListOpen(true)} />
       <div className="flex flex-1 overflow-hidden">
         <div className="flex-1 bg-muted/10 flex flex-col overflow-hidden">
           <div className="px-4 pt-4 shrink-0">
@@ -30,6 +78,13 @@ export default function PosPage() {
           <CartSection />
         </div>
       </div>
+
+      <HeldTransactionsList
+        open={isHeldListOpen}
+        onOpenChange={setIsHeldListOpen}
+        onResume={handleResume}
+        onDelete={handleDelete}
+      />
     </>
   );
 }

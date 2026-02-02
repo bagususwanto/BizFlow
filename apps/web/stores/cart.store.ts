@@ -33,6 +33,7 @@ interface CartState {
   setCustomer: (customer: Customer | null) => void;
   clearCart: () => void;
   setHeldTransaction: (id: string | null) => void;
+  setCart: (items: CartItem[], customer: Customer | null) => void;
 
   // Getters
   getTotal: () => number;
@@ -109,6 +110,10 @@ export const useCartStore = create<CartState>()(
         set({ items: [], customer: null, heldTransactionId: null }),
 
       setHeldTransaction: (id) => set({ heldTransactionId: id }),
+
+      setCart: (items: CartItem[], customer: Customer | null) => {
+        set({ items, customer, heldTransactionId: null });
+      },
 
       getTotal: () => {
         const state = get();

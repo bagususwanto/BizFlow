@@ -11,6 +11,7 @@ import {
   HttpStatus,
   UseInterceptors,
 } from '@nestjs/common';
+import { SalesOrder } from '@bizflow/database';
 
 import { JwtAuthGuard, PermissionsGuard } from '../../../common/guards';
 import { CurrentUser } from '../../../common/decorators';
@@ -93,6 +94,7 @@ export class TransactionsController {
    * Hold transaction
    * POST /pos/transactions/hold
    */
+
   @Post('hold')
   @HttpCode(HttpStatus.OK)
   @Permissions(Permission.Pos.Create as PermissionType)
@@ -105,7 +107,7 @@ export class TransactionsController {
   async holdTransaction(
     @Body() dto: HoldTransactionDto,
     @CurrentUser() user: JwtPayload,
-  ) {
+  ): Promise<SalesOrder> {
     return this.transactionsService.holdTransaction(dto, user.sub);
   }
 

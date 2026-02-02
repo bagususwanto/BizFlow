@@ -1,6 +1,14 @@
 'use client';
 
-import { Menu, Wifi, WifiOff, LogOut, History, ArrowLeft } from 'lucide-react';
+import {
+  Menu,
+  Wifi,
+  WifiOff,
+  LogOut,
+  History,
+  ArrowLeft,
+  Clock,
+} from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@bizflow/ui';
 import {
@@ -14,10 +22,17 @@ import {
 import { useAuthStore } from '@/stores/auth.store';
 import { Badge } from '@bizflow/ui';
 import { useState, useEffect } from 'react';
+import { useHeldTransactions } from '@/hooks/use-pos';
 
-export function PosHeader() {
+interface PosHeaderProps {
+  onOpenHeldList?: () => void;
+}
+
+export function PosHeader({ onOpenHeldList }: PosHeaderProps) {
   const user = useAuthStore((state) => state.user);
   const [isOnline, setIsOnline] = useState(true);
+  const { data: heldTransactions } = useHeldTransactions();
+  const heldCount = heldTransactions?.data?.length || 0;
 
   useEffect(() => {
     setIsOnline(navigator.onLine);
@@ -59,6 +74,23 @@ export function PosHeader() {
       </div>
 
       <div className="flex items-center gap-2">
+        {onOpenHeldList && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-2 mr-2 relative"
+            onClick={onOpenHeldList}
+          >
+            <Clock className="h-4 w-4" />
+            <span className="hidden sm:inline">Transaksi Tersimpan</span>
+            {heldCount > 0 && (
+              <Badge className="ml-1 h-5 min-w-5 px-1 py-0 justify-center flex items-center bg-orange-500 hover:bg-orange-600">
+                {heldCount}
+              </Badge>
+            )}
+          </Button>
+        )}
+
         <div className="hidden text-right text-sm sm:block">
           <p className="font-medium">{user?.username || 'Cashier'}</p>
           <p className="text-xs text-muted-foreground">
@@ -79,10 +111,12 @@ export function PosHeader() {
               <History className="mr-2 h-4 w-4" />
               Riwayat Transaksi
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              <History className="mr-2 h-4 w-4" />
-              Pending Transactions (Hold)
-            </DropdownMenuItem>
+            {onOpenHeldList && (
+              <DropdownMenuItem onClick={onOpenHeldList}>
+                <Clock className="mr-2 h-4 w-4" />
+                Pending Transactions
+              </DropdownMenuItem>
+            )}
             <DropdownMenuSeparator />
             <Link
               href="/auth/login"

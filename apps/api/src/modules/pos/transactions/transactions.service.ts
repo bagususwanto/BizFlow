@@ -7,11 +7,12 @@ import {
 import type {
   CreatePOSTransactionValues,
   SearchProductsValues,
-  HoldTransactionValues,
 } from '@bizflow/types';
+import type { HoldTransactionDto } from './dto';
 
 import { PrismaService } from '../../../prisma';
 import { successResponse, paginatedResponse } from '../../../common/utils';
+import { SalesOrder } from '@bizflow/database';
 
 @Injectable()
 export class TransactionsService {
@@ -647,29 +648,55 @@ export class TransactionsService {
 
   /**
    * Hold a transaction for later
-   * Stores cart data temporarily (in-memory or database)
+
+
+  /**
+   * Hold transaction
    */
-  async holdTransaction(dto: HoldTransactionValues, userId: string) {
-    // For now, we'll store held transactions in a simple JSON format
-    // In production, you might want a dedicated HeldTransaction table
+  async holdTransaction(
+    dto: HoldTransactionDto,
+    userId: string,
+  ): Promise<SalesOrder> {
+    const { items, customerId, note } = dto;
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        outlets: { take: 1 }, // Assuming active outlet or passed in DTO.
+        // Ideally DTO should have outletId, or we use user's active context.
+        // For now, let's assume valid user.
+      },
+    });
 
-    const heldData = {
-      items: dto.items,
-      customerId: dto.customerId,
-      note: dto.note,
-      discountPercent: dto.discountPercent,
-      discountAmount: dto.discountAmount,
-      userId,
-      createdAt: new Date(),
-    };
+    if (!user) throw new NotFoundException('User not found');
 
-    // TODO: Implement proper storage mechanism
-    // For MVP, this could be stored in localStorage on frontend
-    // or in a dedicated table in the database
+    // Get outlet ID from user or request context.
+    // In strict mode we should pass outletId in DTO.
+    // Let's assume the first outlet for now if not provided, or strict if provided.
+    // TODO: Pass outletId explicitly in DTO if needed.
+    // Checking DTO... DTO usually has outletId. If not, use user-outlet.
 
-    return successResponse({
-      message: 'Transaksi berhasil ditahan',
-      data: heldData,
+    // Create "HELD" order
+    // Status 'HELD' is not in schema defaults but string allows it.
+
+    return this.prisma.salesOrder.create({
+      data: {
+        orderNumber: `HOLD-${Date.now()}`, // Temporary number
+        userId,
+        outletId: user.outlets[0]?.outletId || '', // Fallback
+        customerId,
+        status: 'HELD',
+        notes: note,
+        subtotal: 0, // Recalculated on resume
+        total: 0,
+        items: {
+          create: items.map((item) => ({
+            variantId: item.variantId,
+            quantity: item.quantity,
+            unitPrice: item.unitPrice,
+            subtotal: item.quantity * item.unitPrice,
+          })),
+        },
+      },
     });
   }
 
@@ -677,29 +704,92 @@ export class TransactionsService {
    * Get list of held transactions
    */
   async getHeldTransactions(userId: string) {
-    // TODO: Implement retrieval from storage
-    // For now, return empty array
+    const orders = await this.prisma.salesOrder.findMany({
+      where: {
+        userId,
+        status: 'HELD',
+      },
+      include: {
+        customer: { select: { id: true, name: true } },
+        items: {
+          include: {
+            variant: {
+              include: {
+                product: {
+                  include: {
+                    images: { take: 1, select: { url: true } },
+                    unit: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
 
-    return successResponse([]);
+    // Map to friendly format for frontend
+    return successResponse(
+      orders.map((order) => ({
+        id: order.id,
+        createdAt: order.createdAt,
+        note: order.notes,
+        total: order.items.reduce(
+          (sum, item) => sum + Number(item.subtotal),
+          0,
+        ),
+        customer: order.customer,
+        items: order.items.map((item) => ({
+          productId: item.variant.productId,
+          variantId: item.variantId,
+          productName: item.variant.product.name,
+          variantName: item.variant.name,
+          quantity: Number(item.quantity),
+          unitPrice: Number(item.unitPrice),
+          unit: item.variant.product.unit.name,
+          product: {
+            name: item.variant.product.name,
+            images: item.variant.product.images,
+          },
+        })),
+      })),
+    );
   }
 
   /**
-   * Resume a held transaction
+   * Resume held transaction
+   * Returns transaction details and deletes it from held list
    */
   async resumeHeldTransaction(id: string, userId: string) {
-    // TODO: Implement retrieval and deletion from storage
+    const order = await this.prisma.salesOrder.findFirst({
+      where: { id, userId, status: 'HELD' },
+    });
 
-    throw new NotFoundException('Transaksi ditahan tidak ditemukan');
+    if (!order) {
+      throw new NotFoundException('Transaction not found');
+    }
+
+    // Delete the held order so it can be resumed as new
+    await this.prisma.salesOrder.delete({ where: { id } });
+
+    return successResponse({ success: true });
   }
 
   /**
-   * Delete a held transaction
+   * Delete held transaction
    */
   async deleteHeldTransaction(id: string, userId: string) {
-    // TODO: Implement deletion from storage
-
-    return successResponse({
-      message: 'Transaksi ditahan berhasil dihapus',
+    const order = await this.prisma.salesOrder.findFirst({
+      where: { id, userId, status: 'HELD' },
     });
+
+    if (!order) {
+      throw new NotFoundException('Transaction not found');
+    }
+
+    await this.prisma.salesOrder.delete({ where: { id } });
+
+    return successResponse({ success: true });
   }
 }

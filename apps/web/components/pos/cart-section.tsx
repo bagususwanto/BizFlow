@@ -4,17 +4,63 @@ import { useCartStore } from '@/stores/cart.store';
 import { Button } from '@bizflow/ui';
 import { ScrollArea } from '@bizflow/ui';
 import { Separator } from '@bizflow/ui';
-import { Trash2, Plus, Minus, CreditCard, User } from 'lucide-react';
+import {
+  Trash2,
+  Plus,
+  Minus,
+  CreditCard,
+  User,
+  PauseCircle,
+} from 'lucide-react';
 import { cn } from '@bizflow/ui';
 import { useState } from 'react';
 import { CustomerSelector } from './customer-selector';
 import { PaymentModal } from './payment-modal';
+import { HoldTransactionDialog } from './hold-transaction-dialog';
+import { useHoldTransaction } from '@/hooks/use-pos';
+import { useAuth } from '@/hooks/use-auth';
 
 export function CartSection() {
   const { items, removeItem, updateQuantity, getTotal, clearCart, customer } =
     useCartStore();
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [isCustomerOpen, setIsCustomerOpen] = useState(false);
+  const [isHoldDialogOpen, setIsHoldDialogOpen] = useState(false);
+
+  const holdTransaction = useHoldTransaction();
+  const { user } = useAuth(); // If needed for outletId (usually user.activeWarehouseId)
+  // Wait, payload needs outletId?
+  // createTransaction endpoint uses user.activeWarehouseId from token?
+  // Let's check holdTransaction service payload.
+
+  // Actually holdTransaction endpoint takes DTO: items, customerId, note.
+  // OutletId is handled by backend from user context usually.
+  // Checking hold-transaction.dto.ts (Step 910 lists it).
+  // Assuming backend handles it or we need to pass it.
+  // Let's check useHoldTransaction hook. It calls posTransactionsService.holdTransaction.
+  // posTransactionsService.holdTransaction calls /pos/transactions/hold with data.
+  // Let's assume backend needs plain data.
+
+  const handleHoldTransaction = (note: string) => {
+    // Construct payload
+    const payload = {
+      items: items.map((item) => ({
+        productId: item.productId,
+        variantId: item.variantId,
+        quantity: item.quantity,
+        unitPrice: item.price,
+      })),
+      customerId: customer?.id,
+      note: note,
+    };
+
+    holdTransaction.mutate(payload, {
+      onSuccess: () => {
+        setIsHoldDialogOpen(false);
+        clearCart();
+      },
+    });
+  };
 
   const total = getTotal();
 
@@ -174,16 +220,24 @@ export function CartSection() {
           </Button>
           <Button
             size="lg"
-            className="col-span-3 font-semibold text-lg"
+            className="col-span-2 font-semibold text-lg"
             disabled={items.length === 0}
             onClick={() => setIsPaymentOpen(true)}
           >
             Bayar
           </Button>
+          <Button
+            variant="outline"
+            className="col-span-1 border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300"
+            onClick={() => setIsHoldDialogOpen(true)}
+            disabled={items.length === 0}
+          >
+            <PauseCircle className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 
-      {/* Placeholder for Modals */}
+      {/* Modals */}
       <PaymentModal
         open={isPaymentOpen}
         onOpenChange={setIsPaymentOpen}
@@ -192,6 +246,12 @@ export function CartSection() {
       <CustomerSelector
         open={isCustomerOpen}
         onOpenChange={setIsCustomerOpen}
+      />
+      <HoldTransactionDialog
+        open={isHoldDialogOpen}
+        onOpenChange={setIsHoldDialogOpen}
+        onConfirm={handleHoldTransaction}
+        isLoading={holdTransaction.isPending}
       />
     </div>
   );

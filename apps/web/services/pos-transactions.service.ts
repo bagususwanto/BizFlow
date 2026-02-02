@@ -1,5 +1,6 @@
 import { ApiResponse, PaginatedResponse, Product } from '@bizflow/types';
 import { apiClient } from '@/lib/fetch-client';
+import { buildSearchParams } from '@/lib/utils';
 
 export interface PosProduct {
   id: string;
@@ -85,5 +86,12 @@ export const posTransactionsService = {
 
   getTransaction: async (id: string) => {
     return apiClient.get<ApiResponse<any>>(`/pos/transactions/${id}`);
+  },
+
+  getTransactions: async (params: any) => {
+    const searchParams = buildSearchParams(params).toString();
+    return apiClient.get<ApiResponse<PaginatedResponse<any>>>(
+      `/pos/transactions?${searchParams}`,
+    );
   },
 };

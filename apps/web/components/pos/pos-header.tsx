@@ -125,6 +125,12 @@ export function PosHeader({ onOpenHeldList, onHelpClick }: PosHeaderProps) {
               <History className="mr-2 h-4 w-4" />
               Riwayat Transaksi
             </DropdownMenuItem>
+            <Link href="/pos/returns">
+              <DropdownMenuItem>
+                <History className="mr-2 h-4 w-4" />
+                Riwayat Retur
+              </DropdownMenuItem>
+            </Link>
             {onOpenHeldList && (
               <DropdownMenuItem onClick={onOpenHeldList}>
                 <Clock className="mr-2 h-4 w-4" />

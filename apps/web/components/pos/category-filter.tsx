@@ -2,7 +2,7 @@
 
 import { cn } from '@bizflow/ui';
 import { usePosCategories } from '@/hooks/use-pos';
-import { Skeleton } from '@bizflow/ui';
+import { Skeleton, Button } from '@bizflow/ui';
 
 interface CategoryFilterProps {
   selectedId: string | undefined;
@@ -24,31 +24,33 @@ export function CategoryFilter({ selectedId, onSelect }: CategoryFilterProps) {
 
   return (
     <div className="flex gap-2 pb-2 overflow-x-auto no-scrollbar">
-      <button
+      <Button
         onClick={() => onSelect(undefined)}
+        variant={!selectedId ? 'default' : 'ghost'}
+        size="sm"
         className={cn(
-          'px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors shrink-0',
-          !selectedId
-            ? 'bg-primary text-primary-foreground'
-            : 'bg-muted text-muted-foreground hover:bg-muted/80',
+          'rounded-full px-4',
+          !selectedId ? '' : 'bg-muted text-muted-foreground hover:bg-muted/80',
         )}
       >
         Semua
-      </button>
+      </Button>
 
       {categories?.map((category) => (
-        <button
+        <Button
           key={category.id}
           onClick={() => onSelect(category.id)}
+          variant={selectedId === category.id ? 'default' : 'ghost'}
+          size="sm"
           className={cn(
-            'px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors shrink-0',
+            'rounded-full px-4',
             selectedId === category.id
-              ? 'bg-primary text-primary-foreground'
+              ? ''
               : 'bg-muted text-muted-foreground hover:bg-muted/80',
           )}
         >
           {category.name}
-        </button>
+        </Button>
       ))}
     </div>
   );

@@ -65,15 +65,15 @@ export default function ReturnDetailPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'approved':
-        return 'bg-green-100 text-green-800';
+        return 'bg-success/20 text-success';
       case 'rejected':
-        return 'bg-red-100 text-red-800';
+        return 'bg-destructive/20 text-destructive';
       case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-warning/20 text-warning-foreground';
       case 'completed':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-info/20 text-info';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -120,7 +120,7 @@ export default function ReturnDetailPage() {
                   Tolak
                 </Button>
                 <Button
-                  className="bg-green-600 hover:bg-green-700"
+                  className="bg-success hover:bg-success/90"
                   onClick={() => setShowApprove(true)}
                 >
                   <Check className="mr-2 h-4 w-4" />

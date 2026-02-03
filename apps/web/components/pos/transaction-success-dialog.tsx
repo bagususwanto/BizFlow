@@ -45,10 +45,10 @@ export function TransactionSuccessDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md text-center">
         <DialogHeader>
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 mb-4">
-            <CheckCircle2 className="h-10 w-10 text-green-600" />
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-success/20 mb-4">
+            <CheckCircle2 className="h-10 w-10 text-success" />
           </div>
-          <DialogTitle className="text-center text-2xl font-bold text-green-600">
+          <DialogTitle className="text-center text-2xl font-bold text-success">
             Transaksi Berhasil!
           </DialogTitle>
         </DialogHeader>
@@ -74,7 +74,7 @@ export function TransactionSuccessDialog({
                 <div className="border-t border-dashed border-border my-2" />
                 <div className="flex justify-between items-center">
                   <span className="text-base font-bold">Kembalian</span>
-                  <span className="text-xl font-bold text-green-600">
+                  <span className="text-xl font-bold text-success">
                     {formatCurrency(change)}
                   </span>
                 </div>

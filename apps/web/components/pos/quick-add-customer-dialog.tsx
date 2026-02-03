@@ -95,7 +95,7 @@ export function QuickAddCustomerDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Nama Lengkap <span className="text-red-500">*</span>
+                    Nama Lengkap <span className="text-destructive">*</span>
                   </FormLabel>
                   <FormControl>
                     <Input placeholder="Nama pelanggan" {...field} />

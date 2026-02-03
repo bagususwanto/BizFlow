@@ -49,7 +49,7 @@ export default function ReceiptPrintPage() {
   }
 
   return (
-    <div className="flex justify-center min-h-screen bg-gray-100 p-8 print:p-0 print:bg-white print:block">
+    <div className="flex justify-center min-h-screen bg-muted/20 p-8 print:p-0 print:bg-white print:block">
       <div className="hidden print:block">
         <ReceiptTemplate transaction={transaction} width={paperSize} />
       </div>
@@ -60,8 +60,8 @@ export default function ReceiptPrintPage() {
             onClick={() => setPaperSize('58mm')}
             className={`px-3 py-1 text-sm rounded-md border ${
               paperSize === '58mm'
-                ? 'bg-black text-white border-black'
-                : 'bg-white text-gray-600 border-gray-200'
+                ? 'bg-primary text-primary-foreground border-primary'
+                : 'bg-background text-muted-foreground border-border'
             }`}
           >
             58mm
@@ -70,8 +70,8 @@ export default function ReceiptPrintPage() {
             onClick={() => setPaperSize('80mm')}
             className={`px-3 py-1 text-sm rounded-md border ${
               paperSize === '80mm'
-                ? 'bg-black text-white border-black'
-                : 'bg-white text-gray-600 border-gray-200'
+                ? 'bg-primary text-primary-foreground border-primary'
+                : 'bg-background text-muted-foreground border-border'
             }`}
           >
             80mm
@@ -82,11 +82,11 @@ export default function ReceiptPrintPage() {
           <ReceiptTemplate transaction={transaction} width={paperSize} />
         </div>
 
-        <div className="text-center text-sm text-gray-500">
+        <div className="text-center text-sm text-muted-foreground">
           <p>Tekan Cmd+P / Ctrl+P untuk mencetak</p>
           <button
             onClick={() => window.print()}
-            className="mt-2 text-blue-600 hover:underline font-medium"
+            className="mt-2 text-info hover:underline font-medium"
           >
             Print Sekarang
           </button>

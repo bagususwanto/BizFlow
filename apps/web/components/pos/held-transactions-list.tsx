@@ -48,7 +48,7 @@ export function HeldTransactionsList({
         <ScrollArea className="h-[calc(100vh-100px)] mt-4 pr-4">
           <div className="space-y-4">
             {transactions.length === 0 ? (
-              <div className="text-center text-gray-500 py-10">
+              <div className="text-center text-muted-foreground py-10">
                 Belum ada transaksi yang disimpan.
               </div>
             ) : (
@@ -59,7 +59,7 @@ export function HeldTransactionsList({
                 >
                   <div className="flex justify-between items-start">
                     <div>
-                      <div className="flex items-center gap-2 text-sm text-gray-500 mb-1">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                         <Clock className="h-3 w-3" />
                         <span>
                           {formatDistanceToNow(new Date(tx.createdAt), {
@@ -69,7 +69,7 @@ export function HeldTransactionsList({
                         </span>
                       </div>
                       {tx.note && (
-                        <p className="text-sm font-medium italic text-gray-700">
+                        <p className="text-sm font-medium italic text-foreground">
                           "{tx.note}"
                         </p>
                       )}
@@ -90,13 +90,13 @@ export function HeldTransactionsList({
                   </div>
 
                   {tx.customer && (
-                    <div className="flex items-center gap-2 text-sm text-blue-600 bg-blue-50 px-2 py-1 rounded w-fit">
+                    <div className="flex items-center gap-2 text-sm text-info bg-info/10 px-2 py-1 rounded w-fit">
                       <User className="h-3 w-3" />
                       {tx.customer.name}
                     </div>
                   )}
 
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-muted-foreground">
                     {tx.items.length} item • {tx.items[0]?.name}
                     {tx.items.length > 1 && ` + ${tx.items.length - 1} lainnya`}
                   </div>
@@ -105,7 +105,7 @@ export function HeldTransactionsList({
                     <Button
                       variant="outline"
                       size="sm"
-                      className="flex-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                      className="flex-1 text-destructive hover:text-destructive/90 hover:bg-destructive/10"
                       onClick={() => onDelete(tx.id)}
                     >
                       <Trash2 className="h-4 w-4 mr-2" />

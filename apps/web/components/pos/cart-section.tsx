@@ -284,7 +284,7 @@ export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
             </Button>
             <Button
               variant="outline"
-              className="col-span-3 border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300 justify-start"
+              className="col-span-3 border-warning/30 text-warning hover:bg-warning/10 hover:border-warning/50 justify-start"
               onClick={() => setIsHoldDialogOpen(true)}
               disabled={items.length === 0}
             >

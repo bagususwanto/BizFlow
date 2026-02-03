@@ -98,7 +98,7 @@ export function PosHeader({ onOpenHeldList, onHelpClick }: PosHeaderProps) {
             <Clock className="h-4 w-4" />
             <span className="hidden sm:inline">Transaksi Tersimpan</span>
             {heldCount > 0 && (
-              <Badge className="ml-1 h-5 min-w-5 px-1 py-0 justify-center flex items-center bg-orange-500 hover:bg-orange-600">
+              <Badge className="ml-1 h-5 min-w-5 px-1 py-0 justify-center flex items-center bg-warning hover:bg-warning/90">
                 {heldCount}
               </Badge>
             )}

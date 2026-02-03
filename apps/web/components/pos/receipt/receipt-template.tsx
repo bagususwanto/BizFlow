@@ -49,10 +49,12 @@ export function ReceiptTemplate({
         <h1 className="font-bold text-xl uppercase mb-1">
           {transaction.outlet?.name}
         </h1>
-        <p className="text-[10px] text-gray-600 mb-px">
+        <p className="text-[10px] text-muted-foreground mb-px">
           Jl. Contoh No. 123, Jakarta
         </p>
-        <p className="text-[10px] text-gray-600">Telp: 0812-3456-7890</p>
+        <p className="text-[10px] text-muted-foreground">
+          Telp: 0812-3456-7890
+        </p>
       </div>
 
       <div className="border-t-2 border-dashed border-black my-2" />
@@ -83,7 +85,7 @@ export function ReceiptTemplate({
                 (item.variantName ? ` - ${item.variantName}` : '')}
             </div>
             <div className="flex justify-between pl-0 text-[10px]">
-              <span className="text-gray-600">
+              <span className="text-muted-foreground">
                 {item.quantity} x {formatNumber(item.unitPrice)}
               </span>
               <span className="font-medium">
@@ -103,7 +105,7 @@ export function ReceiptTemplate({
           <span>{formatNumber(Number(transaction.subtotal))}</span>
         </div>
         {Number(transaction.discountAmount) > 0 && (
-          <div className="flex justify-between text-red-600">
+          <div className="flex justify-between text-destructive">
             <span>Diskon</span>
             <span>-{formatNumber(Number(transaction.discountAmount))}</span>
           </div>
@@ -145,7 +147,7 @@ export function ReceiptTemplate({
       {/* Footer */}
       <div className="text-center mt-6">
         <p className="font-bold text-[11px] mb-1">TERIMA KASIH</p>
-        <p className="text-[10px] text-gray-600">
+        <p className="text-[10px] text-muted-foreground">
           Barang yang sudah dibeli tidak dapat ditukar/dikembalikan
         </p>
       </div>

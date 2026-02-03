@@ -221,7 +221,7 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
                     <div className="flex justify-between items-center bg-muted p-3 rounded-md">
                       <span className="font-medium">Kembalian</span>
                       <span
-                        className={`text-lg font-bold ${change < 0 ? 'text-destructive' : 'text-green-600'}`}
+                        className={`text-lg font-bold ${change < 0 ? 'text-destructive' : 'text-success'}`}
                       >
                         {formatCurrency(change)}
                       </span>

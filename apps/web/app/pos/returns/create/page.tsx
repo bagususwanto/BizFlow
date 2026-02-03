@@ -311,9 +311,9 @@ export default function CreateReturnPage() {
 
 function Badge({ variant, children }: any) {
   const styles = {
-    success: 'bg-green-100 text-green-800 hover:bg-green-100/80',
-    secondary: 'bg-gray-100 text-gray-800 hover:bg-gray-100/80',
-    destructive: 'bg-red-100 text-red-800 hover:bg-red-100/80',
+    success: 'bg-success/20 text-success hover:bg-success/30',
+    secondary: 'bg-muted text-muted-foreground hover:bg-muted/80',
+    destructive: 'bg-destructive/20 text-destructive hover:bg-destructive/30',
   };
   return (
     <span

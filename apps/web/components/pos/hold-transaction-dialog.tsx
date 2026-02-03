@@ -40,13 +40,13 @@ export function HoldTransactionDialog({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <div className="flex items-center gap-2">
-            <PauseCircle className="h-6 w-6 text-orange-500" />
+            <PauseCircle className="h-6 w-6 text-warning" />
             <DialogTitle>Simpan Transaksi</DialogTitle>
           </div>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 py-2">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             Transaksi saat ini akan disimpan sementara dan keranjang akan
             dikosongkan. Anda dapat melanjutkannya nanti melalui menu "Transaksi
             Tersimpan".

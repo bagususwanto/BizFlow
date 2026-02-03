@@ -183,29 +183,16 @@ export class ProductsService {
   }
 
   private async buildSummary() {
-    const [
-      totalProducts,
-      activeProducts,
-      inactiveProducts,
-      serviceProducts,
-      lowStockProducts,
-    ] = await Promise.all([
+    const [totalProducts, activeProducts, serviceProducts] = await Promise.all([
       this.prisma.product.count(),
       this.prisma.product.count({ where: { isActive: true } }),
-      this.prisma.product.count({ where: { isActive: false } }),
       this.prisma.product.count({ where: { isService: true } }),
-      this.prisma.$queryRaw<{ count: bigint }[]>`
-        SELECT COUNT(*) as count FROM Product 
-        WHERE isActive = 1 AND isService = 0 AND minStock > 0
-      `.then((result) => Number(result[0]?.count || 0)),
     ]);
 
     return {
       totalProducts,
       activeProducts,
-      inactiveProducts,
       serviceProducts,
-      lowStockProducts,
     };
   }
 

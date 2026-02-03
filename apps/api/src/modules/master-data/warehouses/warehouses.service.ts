@@ -97,23 +97,17 @@ export class WarehousesService {
   }
 
   private async buildSummary() {
-    const [
-      totalWarehouses,
-      activeWarehouses,
-      inactiveWarehouses,
-      defaultWarehouse,
-    ] = await Promise.all([
-      this.prisma.warehouse.count(),
-      this.prisma.warehouse.count({ where: { isActive: true } }),
-      this.prisma.warehouse.count({ where: { isActive: false } }),
-      this.prisma.warehouse.findFirst({ where: { isDefault: true } }),
-    ]);
+    const [totalWarehouses, activeWarehouses, inactiveWarehouses] =
+      await Promise.all([
+        this.prisma.warehouse.count(),
+        this.prisma.warehouse.count({ where: { isActive: true } }),
+        this.prisma.warehouse.count({ where: { isActive: false } }),
+      ]);
 
     return {
       totalWarehouses,
       activeWarehouses,
       inactiveWarehouses,
-      defaultWarehouse: defaultWarehouse?.name,
     };
   }
 

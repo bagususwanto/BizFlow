@@ -219,7 +219,7 @@ function ProductsContent() {
                 akan dihapus secara permanen. Tindakan ini tidak dapat
                 dibatalkan.
               </p>
-              <p className="mt-2 text-sm text-yellow-600">
+              <p className="mt-2 text-sm text-warning">
                 Peringatan: Jika produk masih memiliki riwayat transaksi (stok,
                 mutasi, dll), sistem akan menolak penghapusan permanen.
               </p>

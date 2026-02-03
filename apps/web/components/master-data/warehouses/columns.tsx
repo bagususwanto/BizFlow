@@ -73,7 +73,11 @@ export const getColumns = ({
     accessorKey: 'isDefault',
     header: 'Default',
     cell: ({ row }) =>
-      row.original.isDefault ? <Badge variant="default">Default</Badge> : null,
+      row.original.isDefault ? (
+        <Badge variant="default" className="text-info-foreground bg-info">
+          Default
+        </Badge>
+      ) : null,
     meta: {
       title: 'Default',
     },

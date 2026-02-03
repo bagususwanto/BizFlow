@@ -37,7 +37,7 @@ export default function EditCategoryPage({
 
   if (isError || !category) {
     return (
-      <div className="flex h-full w-full items-center justify-center p-8 text-red-500">
+      <div className="flex h-full w-full items-center justify-center p-8 text-destructive">
         Gagal memuat data kategori
       </div>
     );

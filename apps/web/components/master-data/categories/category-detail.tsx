@@ -154,7 +154,7 @@ export function CategoryDetail({
                         akan dihapus secara permanen. Tindakan ini tidak dapat
                         dibatalkan.
                       </p>
-                      <p className="mt-2 text-sm text-yellow-600">
+                      <p className="mt-2 text-sm text-warning">
                         Peringatan: Jika kategori masih memiliki produk atau
                         sub-kategori aktif, sistem akan menolak penghapusan
                         permanen.
@@ -245,7 +245,7 @@ export function CategoryDetail({
         {/* Sub-categories List */}
         <div className="space-y-3">
           <h4 className="text-sm font-semibold leading-none flex items-center gap-2">
-            <Folder className="h-4 w-4 text-blue-500" />
+            <Folder className="h-4 w-4 text-info" />
             Sub-kategori
           </h4>
 
@@ -260,8 +260,8 @@ export function CategoryDetail({
                   key={child.id}
                   className="flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
                 >
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30">
-                    <Folder className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-info/20">
+                    <Folder className="h-4 w-4 text-info" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{child.name}</p>

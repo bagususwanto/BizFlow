@@ -238,7 +238,7 @@ export function VariantList({ productId }: VariantListProps) {
                 akan dihapus secara permanen. Tindakan ini tidak dapat
                 dibatalkan.
               </p>
-              <p className="mt-2 text-sm text-yellow-600">
+              <p className="mt-2 text-sm text-warning">
                 Peringatan: Varian yang memiliki riwayat stok atau transaksi
                 tidak dapat dihapus permanen.
               </p>

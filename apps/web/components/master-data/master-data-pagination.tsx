@@ -86,7 +86,7 @@ export function MasterDataPagination({
           <>
             <Separator orientation="vertical" className="h-4" />
             <div className="flex items-center gap-2">
-              <Box className="h-4 w-4 text-blue-500" />
+              <Box className="h-4 w-4 text-info" />
               <span>
                 Dasar:{' '}
                 <span className="font-medium text-foreground">
@@ -101,7 +101,7 @@ export function MasterDataPagination({
           <>
             <Separator orientation="vertical" className="h-4" />
             <div className="flex items-center gap-2">
-              <Box className="h-4 w-4 text-orange-500" />
+              <Box className="h-4 w-4 text-warning" />
               <span>
                 Turunan:{' '}
                 <span className="font-medium text-foreground">
@@ -116,7 +116,7 @@ export function MasterDataPagination({
           <>
             <Separator orientation="vertical" className="h-4" />
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-green-500" />
+              <CheckCircle2 className="h-4 w-4 text-success" />
               <span>
                 Aktif:{' '}
                 <span className="font-medium text-foreground">{active}</span>
@@ -129,7 +129,7 @@ export function MasterDataPagination({
           <>
             <Separator orientation="vertical" className="h-4" />
             <div className="flex items-center gap-2">
-              <XCircle className="h-4 w-4 text-red-500" />
+              <XCircle className="h-4 w-4 text-destructive" />
               <span>
                 Non-aktif:{' '}
                 <span className="font-medium text-foreground">{inactive}</span>

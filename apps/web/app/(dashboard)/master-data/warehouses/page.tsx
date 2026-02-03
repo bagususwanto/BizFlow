@@ -193,7 +193,7 @@ function WarehousesContent() {
                 </span>{' '}
                 akan dihapus secara permanen.
               </p>
-              <p className="mt-2 text-sm text-yellow-600">
+              <p className="mt-2 text-sm text-warning">
                 Peringatan: Jika gudang masih memiliki riwayat transaksi (stok,
                 mutasi, dll), sistem akan menolak penghapusan permanen.
               </p>

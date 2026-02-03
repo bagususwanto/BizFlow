@@ -8,7 +8,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { useOutlets } from '@/hooks';
 import { getColumns } from '@/components/core/outlets/columns';
-import { SettingsPage } from '@/components/settings/settings-page';
+import { DataListPage } from '@/components/shared/data-list-page';
 import { Outlet } from '@/services/outlets.service';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 
@@ -104,7 +104,7 @@ function OutletsContent() {
 
   return (
     <>
-      <SettingsPage
+      <DataListPage
         title="Outlet"
         description="Kelola data outlet dan cabang perusahaan."
         createLink="/settings/outlets/create"
@@ -128,11 +128,6 @@ function OutletsContent() {
               }
             : undefined
         }
-        summaryLabels={{
-          total: 'Total Outlet:',
-          active: 'Aktif:',
-          inactive: 'Non-aktif:',
-        }}
         // Sorting
         sortBy={sortBy}
         sortOrder={sortOrder}

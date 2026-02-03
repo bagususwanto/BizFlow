@@ -10,7 +10,8 @@ import { getColumns } from '@/components/core/roles/columns';
 import { ErrorState } from '@/components/common/error-state';
 import { useRoles, useDebounce } from '@/hooks';
 import { Role, rolesService } from '@/services/roles.service';
-import { SettingsPage } from '@/components/settings/settings-page';
+import { DataListPage } from '@/components/shared/data-list-page';
+import { Box } from 'lucide-react';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 
 function RolesContent() {
@@ -101,7 +102,7 @@ function RolesContent() {
 
   return (
     <>
-      <SettingsPage
+      <DataListPage
         title="Peran & Akses"
         description="Kelola hak akses pengguna aplikasi sesuai perannya."
         createLink="/settings/roles/create"
@@ -126,9 +127,17 @@ function RolesContent() {
               }
             : undefined
         }
-        summaryLabels={{
-          total: 'Total Peran:',
-        }}
+        summaryConfig={[
+          { key: 'total', label: 'Total', icon: Box },
+          {
+            key: 'systemRoles',
+            label: 'System',
+            icon: Box,
+            className: 'text-info',
+          },
+          { key: 'customRoles', label: 'Custom', icon: Box },
+          { key: 'totalUsersAssigned', label: 'Users Assigned', icon: Box },
+        ]}
         // Sorting
         sortBy={sortBy}
         sortOrder={sortOrder}

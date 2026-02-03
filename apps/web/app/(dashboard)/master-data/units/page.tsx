@@ -2,10 +2,10 @@
 
 import { Suspense, useCallback, useState, useMemo } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Loader2 } from 'lucide-react';
+import { Box, Loader2 } from 'lucide-react';
 import { useUnits } from '@/hooks/use-units';
 import { UnitsQuery, UnitOfMeasure } from '@/services/units.service';
-import { MasterDataPage } from '@/components/master-data/master-data-page';
+import { DataListPage } from '@/components/shared/data-list-page';
 import { getColumns } from '@/components/master-data/units/columns';
 import { ErrorState } from '@/components/common/error-state';
 import {
@@ -112,7 +112,7 @@ function UnitsContent() {
 
   return (
     <>
-      <MasterDataPage
+      <DataListPage
         title="Satuan"
         description="Manajemen satuan produk (Unit of Measure)."
         createLink="/master-data/units/create"
@@ -136,6 +136,21 @@ function UnitsContent() {
               }
             : undefined
         }
+        summaryConfig={[
+          { key: 'total', label: 'Total', icon: Box },
+          {
+            key: 'baseUnits',
+            label: 'Dasar',
+            icon: Box,
+            className: 'text-info',
+          },
+          {
+            key: 'derivedUnits',
+            label: 'Turunan',
+            icon: Box,
+            className: 'text-warning',
+          },
+        ]}
         // Sorting
         sortBy={sortBy}
         sortOrder={sortOrder}

@@ -7,8 +7,8 @@ import { AuditLogDetailSheet } from '@/components/audit-logs/audit-log-detail-sh
 import { ErrorState } from '@/components/common/error-state';
 import { useAuditLogs, useDebounce } from '@/hooks';
 import { AuditLog } from '@/services/audit-logs.service';
-import { Download, Loader2 } from 'lucide-react';
-import { SettingsPage } from '@/components/settings/settings-page';
+import { Download, Loader2, Box } from 'lucide-react';
+import { DataListPage } from '@/components/shared/data-list-page';
 import { getColumns } from '@/components/audit-logs/columns';
 import { AVAILABLE_MODULES, AVAILABLE_ACTIONS } from '@bizflow/types';
 
@@ -112,7 +112,7 @@ function AuditLogsContent() {
 
   return (
     <>
-      <SettingsPage
+      <DataListPage
         title="Audit Logs"
         description="Monitor dan pelacakan aktivitas pengguna dalam sistem."
         data={data}
@@ -125,9 +125,6 @@ function AuditLogsContent() {
         totalItems={metaData.totalItems}
         onPageChange={(p) => updateUrl({ page: p })}
         onPageSizeChange={(s) => updateUrl({ pageSize: s, page: 1 })}
-        summaryLabels={{
-          total: 'Total Log:',
-        }}
         summary={
           summary
             ? {
@@ -140,6 +137,7 @@ function AuditLogsContent() {
               }
             : undefined
         }
+        summaryConfig={[{ key: 'total', label: 'Total Log', icon: Box }]}
         // Sorting
         sortBy={sortBy}
         sortOrder={sortOrder}
@@ -178,6 +176,7 @@ function AuditLogsContent() {
           },
         ]}
         // Date Range
+        showDateRange={true}
         startDate={startDate}
         endDate={endDate}
         onDateRangeChange={handleDateRangeChange}

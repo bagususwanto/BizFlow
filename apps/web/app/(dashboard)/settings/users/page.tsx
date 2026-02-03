@@ -21,7 +21,7 @@ import { ErrorState } from '@/components/common/error-state';
 import { useUsers, useRoles } from '@/hooks';
 import { usersService, UserWithUsage } from '@/services/users.service';
 import { User } from '@bizflow/types';
-import { SettingsPage } from '@/components/settings/settings-page';
+import { DataListPage } from '@/components/shared/data-list-page';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 
 function UsersContent() {
@@ -208,7 +208,7 @@ function UsersContent() {
 
   return (
     <>
-      <SettingsPage
+      <DataListPage
         title="Pengguna"
         description="Manajemen pengguna yang terdaftar di sistem."
         createLink="/settings/users/create"
@@ -232,11 +232,6 @@ function UsersContent() {
               }
             : undefined
         }
-        summaryLabels={{
-          total: 'Total Pengguna:',
-          active: 'Aktif:',
-          inactive: 'Non-aktif:',
-        }}
         // Sorting
         sortBy={sortBy}
         sortOrder={sortOrder}

@@ -7,7 +7,7 @@ import { Loader2 } from 'lucide-react';
 import { useCustomers } from '@/hooks/use-customers';
 import { CustomersQuery } from '@/services/customers.service';
 import { Customer } from '@bizflow/types';
-import { MasterDataPage } from '@/components/master-data/master-data-page';
+import { DataListPage } from '@/components/shared/data-list-page';
 import { getColumns } from '@/components/master-data/customers/columns';
 import { ErrorState } from '@/components/common/error-state';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
@@ -108,7 +108,7 @@ function CustomersContent() {
 
   return (
     <>
-      <MasterDataPage
+      <DataListPage
         title="Pelanggan"
         description="Manajemen data pelanggan dan credit limit."
         createLink="/master-data/customers/create"

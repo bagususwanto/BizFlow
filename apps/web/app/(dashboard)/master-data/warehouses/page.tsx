@@ -6,7 +6,7 @@ import { Loader2 } from 'lucide-react';
 import { useWarehouses } from '@/hooks/use-warehouses';
 import { WarehousesQuery } from '@/services/warehouses.service';
 import { Warehouse } from '@bizflow/types';
-import { MasterDataPage } from '@/components/master-data/master-data-page';
+import { DataListPage } from '@/components/shared/data-list-page';
 import { getColumns } from '@/components/master-data/warehouses/columns';
 import { ErrorState } from '@/components/common/error-state';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
@@ -106,7 +106,7 @@ function WarehousesContent() {
 
   return (
     <>
-      <MasterDataPage
+      <DataListPage
         title="Gudang"
         description="Manajemen data gudang penyimpanan."
         createLink="/master-data/warehouses/create"

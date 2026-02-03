@@ -14,7 +14,7 @@ import {
   CategoriesTree,
   CategoryDetail,
 } from '@/components/master-data/categories';
-import { MasterDataPage } from '@/components/master-data/master-data-page';
+import { DataListPage } from '@/components/shared/data-list-page';
 import { CategoryWithRelations } from '@bizflow/types';
 import { ColumnDef } from '@tanstack/react-table';
 
@@ -107,7 +107,7 @@ function CategoriesContent() {
   const dummyColumns: ColumnDef<CategoryWithRelations>[] = [];
 
   return (
-    <MasterDataPage<CategoryWithRelations>
+    <DataListPage<CategoryWithRelations>
       title="Kategori Produk"
       description="Kelola struktur kategori produk Anda."
       createLink="/master-data/categories/create"

@@ -1,22 +1,8 @@
 'use client';
 
-import { Suspense, useState, ReactNode } from 'react';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  Button,
-} from '@bizflow/ui';
-import {
-  Loader2,
-  Trash2,
-  Box,
-  CheckCircle2,
-  LayoutGrid,
-  Plus,
-} from 'lucide-react';
+import { useState, ReactNode } from 'react';
+import { Card, CardContent, CardHeader, CardTitle, Button } from '@bizflow/ui';
+import { Trash2, Plus } from 'lucide-react';
 import Link from 'next/link';
 import {
   ColumnDef,
@@ -24,16 +10,12 @@ import {
   RowSelectionState,
   OnChangeFn,
 } from '@tanstack/react-table';
-import { DataTable } from '@/components/ui/data-table'; // Verify path
-import { LoadingState } from '@/components/common/loading-state';
-import { MasterDataToolbar, FilterConfig } from './master-data-toolbar';
-import {
-  MasterDataPagination,
-  PaginationSummary,
-} from './master-data-pagination';
-import { DeleteConfirmDialog } from '../shared/delete-confirm-dialog';
+import { DataTable } from '@/components/ui/data-table';
+import { DataListToolbar, FilterConfig } from './data-list-toolbar';
+import { DataListPagination, SummaryItemConfig } from './data-list-pagination';
+import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 
-interface MasterDataPageProps<TData> {
+export interface DataListPageProps<TData> {
   title: string;
   description: string;
 
@@ -57,6 +39,12 @@ interface MasterDataPageProps<TData> {
   onFilterChange?: (key: string, value: string) => void;
   onReset?: () => void;
 
+  // Date Range (Optional)
+  showDateRange?: boolean;
+  startDate?: Date;
+  endDate?: Date;
+  onDateRangeChange?: (startDate?: Date, endDate?: Date) => void;
+
   // Pagination
   page: number;
   pageSize: number;
@@ -64,22 +52,26 @@ interface MasterDataPageProps<TData> {
   totalItems: number;
   onPageChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
-  summary?: PaginationSummary; // Generic Summary
+  summary?: Record<string, any>; // Generic Summary Data
+  summaryConfig?: SummaryItemConfig[]; // Custom config for summary display
 
   // Actions
   createLink?: string;
   createLabel?: string;
-  onDelete?: (id: string) => void;
+  onDelete?: (id: string) => void; // Single delete callback (if handling via row action)
   isDeleting?: boolean;
   onBulkDelete?: (ids: string[]) => void;
   isBulkDeleting?: boolean;
   onRefresh?: () => void;
+  extraActions?: ReactNode;
+
+  headerAction?: ReactNode; // Extra actions in the page header (e.g. Sync button)
 
   // Custom Rendering (Optional)
   renderCustomView?: (props: any) => ReactNode;
 }
 
-export function MasterDataPage<
+export function DataListPage<
   TData extends { id: string; isActive?: boolean; name?: string },
 >({
   title,
@@ -98,6 +90,10 @@ export function MasterDataPage<
   filterValues,
   onFilterChange,
   onReset,
+  showDateRange,
+  startDate,
+  endDate,
+  onDateRangeChange,
   page,
   pageSize,
   totalPages,
@@ -105,6 +101,7 @@ export function MasterDataPage<
   onPageChange,
   onPageSizeChange,
   summary,
+  summaryConfig,
   createLink,
   createLabel,
   onDelete,
@@ -112,14 +109,15 @@ export function MasterDataPage<
   onBulkDelete,
   isBulkDeleting,
   onRefresh,
+  extraActions,
+  headerAction,
   renderCustomView,
-}: MasterDataPageProps<TData>) {
+}: DataListPageProps<TData>) {
   // Local State for interactive table features
   const [columnVisibility, setColumnVisibility] = useState<
     Record<string, boolean>
   >({});
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-  const [itemToDelete, setItemToDelete] = useState<TData | null>(null);
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
 
   // Sorting Logic
@@ -147,14 +145,6 @@ export function MasterDataPage<
     }
   };
 
-  // Single Delete Wrapper
-  const handleDelete = () => {
-    if (itemToDelete && onDelete) {
-      onDelete(itemToDelete.id);
-      setItemToDelete(null);
-    }
-  };
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -162,14 +152,17 @@ export function MasterDataPage<
           <h2 className="text-2xl font-bold tracking-tight">{title}</h2>
           <p className="text-muted-foreground">{description}</p>
         </div>
-        {createLink && (
-          <Button asChild>
-            <Link href={createLink}>
-              <Plus className="mr-2 h-4 w-4" />
-              {createLabel || 'Tambah Baru'}
-            </Link>
-          </Button>
-        )}
+        <div className="flex items-center gap-2">
+          {headerAction}
+          {createLink && (
+            <Button asChild>
+              <Link href={createLink}>
+                <Plus className="mr-2 h-4 w-4" />
+                {createLabel || 'Tambah Baru'}
+              </Link>
+            </Button>
+          )}
+        </div>
       </div>
 
       <Card>
@@ -178,13 +171,17 @@ export function MasterDataPage<
           {/* <CardDescription>Manajemen data {title}</CardDescription> */}
         </CardHeader>
         <CardContent className="space-y-6">
-          <MasterDataToolbar
+          <DataListToolbar
             search={search}
             onSearchChange={onSearchChange}
             searchPlaceholder={searchPlaceholder}
             filters={filters}
             filterValues={filterValues}
             onFilterChange={onFilterChange}
+            showDateRange={showDateRange}
+            startDate={startDate}
+            endDate={endDate}
+            onDateRangeChange={onDateRangeChange}
             onReset={onReset}
             columns={columns
               .filter(
@@ -212,22 +209,24 @@ export function MasterDataPage<
               })}
             columnVisibility={columnVisibility}
             onColumnVisibilityChange={setColumnVisibility}
-            // createLink/createLabel removed from here as we moved it up
             extraActions={
-              Object.keys(rowSelection).length > 0 && onBulkDelete ? (
-                <div className="flex items-center gap-2 rounded-md bg-muted px-4 py-2">
-                  <span className="text-sm font-medium">
-                    {Object.keys(rowSelection).length} dipilih
-                  </span>
-                  <button
-                    onClick={() => setShowBulkDeleteDialog(true)}
-                    className="text-destructive hover:text-destructive/80 text-sm font-medium flex items-center"
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Hapus
-                  </button>
-                </div>
-              ) : null
+              <>
+                {extraActions}
+                {Object.keys(rowSelection).length > 0 && onBulkDelete ? (
+                  <div className="flex items-center gap-2 rounded-md bg-muted px-4 py-2">
+                    <span className="text-sm font-medium">
+                      {Object.keys(rowSelection).length} dipilih
+                    </span>
+                    <button
+                      onClick={() => setShowBulkDeleteDialog(true)}
+                      className="text-destructive hover:text-destructive/80 text-sm font-medium flex items-center"
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Hapus
+                    </button>
+                  </div>
+                ) : null}
+              </>
             }
           />
 
@@ -257,7 +256,7 @@ export function MasterDataPage<
                 getRowId={getRowId}
               />
 
-              <MasterDataPagination
+              <DataListPagination
                 page={page}
                 pageSize={pageSize}
                 totalPages={totalPages}
@@ -265,16 +264,16 @@ export function MasterDataPage<
                 onPageChange={onPageChange}
                 onPageSizeChange={onPageSizeChange}
                 summary={summary}
+                summaryConfig={summaryConfig}
               />
             </>
           )}
         </CardContent>
       </Card>
 
-      {/* Bulk Delete Dialog */}
       <DeleteConfirmDialog
         open={showBulkDeleteDialog}
-        onOpenChange={setShowBulkDeleteDialog}
+        onOpenChange={(open) => !open && setShowBulkDeleteDialog(false)}
         title={`Hapus ${Object.keys(rowSelection).length} item?`}
         description={
           <>
@@ -282,7 +281,7 @@ export function MasterDataPage<
               Tindakan ini tidak dapat dibatalkan. Data yang dipilih akan
               dihapus permanen atau dinonaktifkan.
             </p>
-            <p className="mt-2 text-sm text-warning">
+            <p className="mt-2 text-sm text-yellow-600">
               Peringatan: Data yang sedang digunakan atau memiliki riwayat
               aktivitas mungkin tidak dapat dihapus.
             </p>

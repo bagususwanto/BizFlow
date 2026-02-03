@@ -1,6 +1,12 @@
 'use client';
 
-import { ChevronDown, Search, Settings2, Plus, X } from 'lucide-react';
+import {
+  Search,
+  Settings2,
+  Plus,
+  X,
+  Calendar as CalendarIcon,
+} from 'lucide-react';
 import Link from 'next/link';
 import {
   Button,
@@ -14,8 +20,15 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Calendar,
 } from '@bizflow/ui';
 import { ReactNode } from 'react';
+import { format } from 'date-fns';
+import { id } from 'date-fns/locale';
+import { cn } from '@/lib/utils';
 
 export interface FilterConfig {
   key: string;
@@ -25,7 +38,7 @@ export interface FilterConfig {
   width?: string;
 }
 
-interface MasterDataToolbarProps {
+export interface DataListToolbarProps {
   // Search
   search?: string;
   onSearchChange?: (value: string) => void;
@@ -35,6 +48,12 @@ interface MasterDataToolbarProps {
   filters?: FilterConfig[];
   filterValues?: Record<string, string>;
   onFilterChange?: (key: string, value: string) => void;
+
+  // Date Range
+  showDateRange?: boolean;
+  startDate?: Date;
+  endDate?: Date;
+  onDateRangeChange?: (startDate?: Date, endDate?: Date) => void;
 
   // Column Visibility
   columns?: { id: string; label: string }[];
@@ -50,13 +69,17 @@ interface MasterDataToolbarProps {
   extraActions?: ReactNode;
 }
 
-export function MasterDataToolbar({
+export function DataListToolbar({
   search = '',
   onSearchChange,
   searchPlaceholder = 'Cari...',
   filters = [],
   filterValues = {},
   onFilterChange,
+  showDateRange = false,
+  startDate,
+  endDate,
+  onDateRangeChange,
   columns = [],
   columnVisibility = {},
   onColumnVisibilityChange,
@@ -64,7 +87,7 @@ export function MasterDataToolbar({
   createLink,
   createLabel = 'Tambah Baru',
   extraActions,
-}: MasterDataToolbarProps) {
+}: DataListToolbarProps) {
   const isFiltered =
     search !== '' ||
     Object.keys(filterValues).some(
@@ -72,14 +95,15 @@ export function MasterDataToolbar({
         filterValues[key] !== 'all' &&
         filterValues[key] !== undefined &&
         filterValues[key] !== '',
-    );
+    ) ||
+    (showDateRange && (startDate !== undefined || endDate !== undefined));
 
   return (
     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-      <div className="flex flex-1 flex-col gap-2 md:flex-row md:items-center">
+      <div className="flex flex-1 flex-col gap-2 md:flex-row md:items-center md:flex-wrap lg:flex-nowrap">
         {/* Search */}
         {onSearchChange && (
-          <div className="relative w-full md:w-[300px]">
+          <div className="relative w-full md:w-auto md:flex-1 md:min-w-[200px] lg:w-[300px] lg:flex-none">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder={searchPlaceholder}
@@ -97,9 +121,9 @@ export function MasterDataToolbar({
             value={filterValues[filter.key] ?? filter.defaultValue ?? 'all'}
             onValueChange={(value) => onFilterChange?.(filter.key, value)}
           >
-            <SelectTrigger className={filter.width || 'w-full md:w-[200px]'}>
+            <SelectTrigger className={filter.width || 'w-full md:w-[180px]'}>
               <div className="flex items-center">
-                <span className="mr-2 hidden lg:inline-block">
+                <span className="mr-2 hidden lg:inline-block whitespace-nowrap">
                   {filter.label}:
                 </span>
                 <SelectValue placeholder={`Pilih ${filter.label}`} />
@@ -115,6 +139,49 @@ export function MasterDataToolbar({
             </SelectContent>
           </Select>
         ))}
+
+        {/* Date Range Picker */}
+        {showDateRange && onDateRangeChange && (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={'outline'}
+                className={cn(
+                  'w-full md:w-auto md:min-w-[220px] justify-start text-left font-normal',
+                  !startDate && 'text-muted-foreground',
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {startDate ? (
+                  endDate ? (
+                    <>
+                      {format(startDate, 'dd/MM/yyyy')} -{' '}
+                      {format(endDate, 'dd/MM/yyyy')}
+                    </>
+                  ) : (
+                    format(startDate, 'dd/MM/yyyy')
+                  )
+                ) : (
+                  <span>Pilih Tanggal</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                initialFocus
+                mode="range"
+                defaultMonth={startDate}
+                selected={{
+                  from: startDate,
+                  to: endDate,
+                }}
+                onSelect={(range) => onDateRangeChange(range?.from, range?.to)}
+                numberOfMonths={2}
+                locale={id}
+              />
+            </PopoverContent>
+          </Popover>
+        )}
 
         {/* Reset Button */}
         {isFiltered && onReset && (

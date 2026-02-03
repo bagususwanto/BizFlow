@@ -9,7 +9,7 @@ import {
   ProductWithRelations,
 } from '@/services/products.service'; // Fixed import
 import { QueryProductsValues } from '@bizflow/types';
-import { MasterDataPage } from '@/components/master-data/master-data-page';
+import { DataListPage } from '@/components/shared/data-list-page';
 import { getColumns } from '@/components/master-data/products/columns';
 import { ErrorState } from '@/components/common/error-state';
 import { useActiveCategories } from '@/hooks/use-categories';
@@ -127,7 +127,7 @@ function ProductsContent() {
 
   return (
     <>
-      <MasterDataPage
+      <DataListPage
         title="Produk"
         description="Manajemen katalog produk dan jasa."
         createLink="/master-data/products/create"

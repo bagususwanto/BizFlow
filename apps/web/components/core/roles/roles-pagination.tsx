@@ -51,7 +51,7 @@ export function RolesPagination({
             </div>
             <Separator orientation="vertical" className="h-4" />
             <div className="flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-blue-500" />
+              <ShieldCheck className="h-4 w-4 text-info" />
               <span>
                 Sistem:{' '}
                 <span className="font-medium text-foreground">
@@ -61,7 +61,7 @@ export function RolesPagination({
             </div>
             <Separator orientation="vertical" className="h-4" />
             <div className="flex items-center gap-2">
-              <UserCog className="h-4 w-4 text-green-500" />
+              <UserCog className="h-4 w-4 text-success" />
               <span>
                 Kustom:{' '}
                 <span className="font-medium text-foreground">

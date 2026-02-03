@@ -42,7 +42,7 @@ function StatusBadge({ status }: { status: StockStatus }) {
       );
     case 'low':
       return (
-        <Badge className="bg-yellow-500 hover:bg-yellow-600 text-black">
+        <Badge className="bg-warning hover:bg-warning/90 text-warning-foreground">
           Low Stock
         </Badge>
       );

@@ -308,7 +308,7 @@ function UsersContent() {
                 akan dihapus secara permanen. Tindakan ini tidak dapat
                 dibatalkan.
               </p>
-              <p className="mt-2 text-sm text-yellow-600">
+              <p className="mt-2 text-sm text-warning">
                 Peringatan: Jika user masih memiliki riwayat aktivitas
                 (transaksi, log, dll), sistem akan menolak penghapusan permanen.
               </p>

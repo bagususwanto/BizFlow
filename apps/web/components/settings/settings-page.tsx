@@ -299,7 +299,7 @@ export function SettingsPage<
               Tindakan ini tidak dapat dibatalkan. Data yang dipilih akan
               dihapus permanen atau dinonaktifkan.
             </p>
-            <p className="mt-2 text-sm text-yellow-600">
+            <p className="mt-2 text-sm text-warning">
               Peringatan: Data yang sedang digunakan atau memiliki riwayat
               aktivitas mungkin tidak dapat dihapus.
             </p>

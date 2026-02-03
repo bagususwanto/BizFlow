@@ -146,10 +146,10 @@ export function AuditLogDetailSheet({
 
                 {newValueParsed && (
                   <div className="space-y-2">
-                    <span className="text-xs font-medium text-green-600 dark:text-green-400">
+                    <span className="text-xs font-medium text-success">
                       Nilai Baru (New Value)
                     </span>
-                    <pre className="rounded-md bg-green-500/10 p-4 text-xs overflow-auto max-h-60 border border-green-500/20 text-green-900 dark:text-green-100">
+                    <pre className="rounded-md bg-success/10 p-4 text-xs overflow-auto max-h-60 border border-success/20 text-success">
                       {typeof newValueParsed === 'object'
                         ? JSON.stringify(newValueParsed, null, 2)
                         : newValueParsed}

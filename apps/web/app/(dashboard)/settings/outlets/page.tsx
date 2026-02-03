@@ -200,7 +200,7 @@ function OutletsContent() {
                 akan dihapus secara permanen. Tindakan ini tidak dapat
                 dibatalkan.
               </p>
-              <p className="mt-2 text-sm text-yellow-600">
+              <p className="mt-2 text-sm text-warning">
                 Peringatan: Jika outlet masih memiliki riwayat transaksi (stok,
                 penjualan, dll), sistem akan menolak penghapusan permanen.
               </p>

@@ -71,8 +71,8 @@ export function ForgotPasswordForm() {
       <Card className="w-full max-w-sm">
         <CardHeader>
           <div className="flex items-center justify-center w-full mb-4">
-            <div className="rounded-full bg-green-100 p-3">
-              <CheckCircle2 className="h-6 w-6 text-green-600" />
+            <div className="rounded-full bg-success/20 p-3">
+              <CheckCircle2 className="h-6 w-6 text-success" />
             </div>
           </div>
           <CardTitle className="text-2xl text-center">Cek Email Anda</CardTitle>

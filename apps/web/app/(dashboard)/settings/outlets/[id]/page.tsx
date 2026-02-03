@@ -34,7 +34,7 @@ export default function EditOutletPage({
 
   if (isError || !outlet) {
     return (
-      <div className="flex h-full w-full items-center justify-center p-8 text-red-500">
+      <div className="flex h-full w-full items-center justify-center p-8 text-destructive">
         Gagal memuat data outlet
       </div>
     );

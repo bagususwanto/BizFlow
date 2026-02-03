@@ -51,7 +51,7 @@ export function AuditLogsPagination({
             </div>
             <Separator orientation="vertical" className="h-4" />
             <div className="flex items-center gap-2">
-              <Activity className="h-4 w-4 text-blue-500" />
+              <Activity className="h-4 w-4 text-info" />
               <span>
                 Hari Ini:{' '}
                 <span className="font-medium text-foreground">
@@ -61,7 +61,7 @@ export function AuditLogsPagination({
             </div>
             <Separator orientation="vertical" className="h-4" />
             <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-green-500" />
+              <Users className="h-4 w-4 text-success" />
               <span>
                 Pengguna Aktif:{' '}
                 <span className="font-medium text-foreground">
@@ -73,7 +73,7 @@ export function AuditLogsPagination({
               <>
                 <Separator orientation="vertical" className="h-4" />
                 <div className="flex items-center gap-2">
-                  <BarChart className="h-4 w-4 text-orange-500" />
+                  <BarChart className="h-4 w-4 text-warning" />
                   <span>
                     Modul Teratas:{' '}
                     <span className="font-medium text-foreground capitalize">

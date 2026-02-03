@@ -80,7 +80,7 @@ export function SettingsPagination({
               <>
                 <Separator orientation="vertical" className="h-4" />
                 <div className="flex items-center gap-2">
-                  <Shield className="h-4 w-4 text-blue-500" />
+                  <Shield className="h-4 w-4 text-info" />
                   <span>
                     Sistem:{' '}
                     <span className="font-medium text-foreground">
@@ -94,7 +94,7 @@ export function SettingsPagination({
               <>
                 <Separator orientation="vertical" className="h-4" />
                 <div className="flex items-center gap-2">
-                  <UserCog className="h-4 w-4 text-orange-500" />
+                  <UserCog className="h-4 w-4 text-warning" />
                   <span>
                     Kustom:{' '}
                     <span className="font-medium text-foreground">
@@ -108,7 +108,7 @@ export function SettingsPagination({
               <>
                 <Separator orientation="vertical" className="h-4" />
                 <div className="flex items-center gap-2">
-                  <Users className="h-4 w-4 text-green-500" />
+                  <Users className="h-4 w-4 text-success" />
                   <span>
                     Pengguna Terkait:{' '}
                     <span className="font-medium text-foreground">
@@ -122,7 +122,7 @@ export function SettingsPagination({
               <>
                 <Separator orientation="vertical" className="h-4" />
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  <CheckCircle2 className="h-4 w-4 text-success" />
                   <span>
                     {summaryLabels?.active || 'Aktif:'}{' '}
                     <span className="font-medium text-foreground">
@@ -136,7 +136,7 @@ export function SettingsPagination({
               <>
                 <Separator orientation="vertical" className="h-4" />
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-red-500" />
+                  <CheckCircle2 className="h-4 w-4 text-destructive" />
                   <span>
                     {summaryLabels?.inactive || 'Non-aktif:'}{' '}
                     <span className="font-medium text-foreground">

@@ -182,7 +182,7 @@ function RolesContent() {
               </span>{' '}
               akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.
             </p>
-            <p className="mt-2 text-sm text-yellow-600">
+            <p className="mt-2 text-sm text-warning">
               Peringatan: Jika role masih digunakan oleh user, sistem akan
               menolak penghapusan permanen.
             </p>

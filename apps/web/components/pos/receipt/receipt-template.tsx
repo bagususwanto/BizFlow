@@ -13,7 +13,7 @@ export interface PosTransactionResult {
   outlet: { id: string; name: string };
   user?: { name: string };
   cashier?: { name: string };
-  payments?: { method: string; amount: number }[];
+  payments?: { method: string; amount: number; reference?: string | null }[];
   items: {
     id: string;
     productName: string;
@@ -126,14 +126,27 @@ export function ReceiptTemplate({
 
       {/* Payment */}
       <div className="space-y-1 mb-4 text-[11px]">
-        <div className="flex justify-between">
-          <span>Bayar ({transaction.payments?.[0]?.method})</span>
-          <span>
-            {formatNumber(Number(transaction.payments?.[0]?.amount || 0))}
-          </span>
-        </div>
+        {transaction.payments && transaction.payments.length > 0 ? (
+          transaction.payments.map((payment, index) => (
+            <div key={index} className="flex justify-between">
+              <span className="capitalize">
+                Bayar ({payment.method})
+                {payment.reference && ` Ref: ${payment.reference}`}
+              </span>
+              <span>{formatNumber(Number(payment.amount))}</span>
+            </div>
+          ))
+        ) : (
+          <div className="flex justify-between">
+            <span>Bayar ({transaction.payments?.[0]?.method || '-'})</span>
+            <span>
+              {formatNumber(Number(transaction.payments?.[0]?.amount || 0))}
+            </span>
+          </div>
+        )}
+
         {Number(transaction.paidAmount) - Number(transaction.total) >= 0 && (
-          <div className="flex justify-between font-bold">
+          <div className="flex justify-between font-bold border-t border-dashed border-black pt-1 mt-1">
             <span>Kembali</span>
             <span>
               {formatNumber(

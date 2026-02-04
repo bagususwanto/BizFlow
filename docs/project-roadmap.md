@@ -140,9 +140,9 @@ Referensi: [01-pos.md](file:///Users/bagus/Project/personal/BizFlow/docs/user-fl
 | Task                                           | Status | Priority |
 | ---------------------------------------------- | ------ | -------- |
 | Quick sale dengan barcode scanner              | [ ]    | High     |
-| Product search (nama/SKU)                      | [ ]    | High     |
-| Cart management (add, edit qty, remove)        | [ ]    | High     |
-| Multiple payment (cash, QRIS, transfer, split) | [ ]    | High     |
+| Product search (nama/SKU)                      | [x]    | High     |
+| Cart management (add, edit qty, remove)        | [x]    | High     |
+| Multiple payment (cash, QRIS, transfer, split) | [x]    | High     |
 | Customer selection untuk loyalty               | [ ]    | Medium   |
 | Hold transaction (simpan sementara)            | [ ]    | Medium   |
 | Discount (item, transaksi, promo)              | [ ]    | Medium   |

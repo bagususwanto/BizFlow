@@ -57,6 +57,10 @@ export const navigationConfig = {
           title: 'Gudang',
           url: '/master-data/warehouses',
         },
+        {
+          title: 'Promosi',
+          url: '/master-data/promotions',
+        },
       ],
     },
     {

@@ -19,8 +19,10 @@ import { forwardRef, useImperativeHandle, useState } from 'react';
 import { CustomerSelector } from './customer-selector';
 import { PaymentModal } from './payment-modal';
 import { HoldTransactionDialog } from './hold-transaction-dialog';
+import { ItemDiscountDialog } from './item-discount-dialog';
 import { DiscountDialog } from './discount-dialog';
 import { useHoldTransaction } from '@/hooks/use-pos';
+import { CartItem } from '@/stores/cart.store';
 
 export interface CartSectionHandle {
   openPaymentModal: () => void;
@@ -43,6 +45,8 @@ export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
   const [isCustomerOpen, setIsCustomerOpen] = useState(false);
   const [isHoldDialogOpen, setIsHoldDialogOpen] = useState(false);
   const [isDiscountDialogOpen, setIsDiscountDialogOpen] = useState(false);
+  const [selectedItemForDiscount, setSelectedItemForDiscount] =
+    useState<CartItem | null>(null);
 
   const holdTransaction = useHoldTransaction();
 
@@ -155,16 +159,57 @@ export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
                       <p className="text-sm font-medium line-clamp-2 leading-tight">
                         {item.name}
                       </p>
-                      <p className="text-sm font-semibold tabular-nums">
-                        {new Intl.NumberFormat('id-ID').format(
-                          item.price * item.quantity,
+                      <div className="flex flex-col items-end">
+                        {/* Original price strikethrough if discounted */}
+                        {(item.discountPercent || item.discountAmount) && (
+                          <span className="text-xs text-muted-foreground line-through decoration-destructive">
+                            {new Intl.NumberFormat('id-ID').format(
+                              item.price * item.quantity,
+                            )}
+                          </span>
                         )}
-                      </p>
+                        <p className="text-sm font-semibold tabular-nums">
+                          {(() => {
+                            let itemTotal = item.price * item.quantity;
+                            if (item.discountPercent) {
+                              itemTotal -=
+                                (itemTotal * item.discountPercent) / 100;
+                            } else if (item.discountAmount) {
+                              itemTotal -= item.discountAmount * item.quantity;
+                            }
+                            return new Intl.NumberFormat('id-ID').format(
+                              itemTotal,
+                            );
+                          })()}
+                        </p>
+                      </div>
                     </div>
                     <div className="flex items-center justify-between">
-                      <p className="text-xs text-muted-foreground">
-                        @ {new Intl.NumberFormat('id-ID').format(item.price)}
-                      </p>
+                      <div className="flex items-center gap-1">
+                        <p className="text-xs text-muted-foreground">
+                          @ {new Intl.NumberFormat('id-ID').format(item.price)}
+                        </p>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className={cn(
+                            'h-5 w-5 ml-1',
+                            item.discountPercent || item.discountAmount
+                              ? 'text-destructive hover:text-destructive'
+                              : 'text-muted-foreground/50 hover:text-primary',
+                          )}
+                          onClick={() => setSelectedItemForDiscount(item)}
+                        >
+                          <Tag className="h-3 w-3" />
+                        </Button>
+                        {(item.discountPercent || item.discountAmount) && (
+                          <span className="text-[10px] bg-destructive/10 text-destructive px-1 rounded">
+                            {item.discountPercent
+                              ? `-${item.discountPercent}%`
+                              : `-${new Intl.NumberFormat('id-ID').format(item.discountAmount!)}`}
+                          </span>
+                        )}
+                      </div>
 
                       <div className="flex items-center gap-1 bg-muted rounded-md border">
                         <button
@@ -328,6 +373,11 @@ export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
       <DiscountDialog
         open={isDiscountDialogOpen}
         onOpenChange={setIsDiscountDialogOpen}
+      />
+      <ItemDiscountDialog
+        open={!!selectedItemForDiscount}
+        onOpenChange={(open) => !open && setSelectedItemForDiscount(null)}
+        item={selectedItemForDiscount}
       />
     </div>
   );

@@ -12,6 +12,8 @@ export interface CartItem {
   unit?: string;
   stock?: number; // Available stock for validation
   imageUrl?: string | null;
+  discountPercent?: number;
+  discountAmount?: number;
 }
 
 export interface Customer {
@@ -36,6 +38,10 @@ interface CartState {
   addItem: (product: any, quantity?: number) => void;
   removeItem: (itemId: string) => void;
   updateQuantity: (itemId: string, quantity: number) => void;
+  setItemDiscount: (
+    itemId: string,
+    discount: { type: 'percent' | 'fixed'; value: number } | null,
+  ) => void;
   setCustomer: (customer: Customer | null) => void;
   setDiscount: (discount: Discount | null) => void;
   clearCart: () => void;
@@ -117,6 +123,27 @@ export const useCartStore = create<CartState>()(
         });
       },
 
+      setItemDiscount: (itemId, discount) => {
+        set((state) => ({
+          items: state.items.map((item) => {
+            if (item.id !== itemId) return item;
+
+            if (!discount) {
+              const { discountPercent, discountAmount, ...rest } = item;
+              return rest;
+            }
+
+            return {
+              ...item,
+              discountPercent:
+                discount.type === 'percent' ? discount.value : undefined,
+              discountAmount:
+                discount.type === 'fixed' ? discount.value : undefined,
+            };
+          }),
+        }));
+      },
+
       setCustomer: (customer) => set({ customer }),
 
       setDiscount: (discount) => set({ discount }),
@@ -137,18 +164,20 @@ export const useCartStore = create<CartState>()(
 
       getSubtotal: () => {
         const state = get();
-        return state.items.reduce(
-          (total, item) => total + item.price * item.quantity,
-          0,
-        );
+        return state.items.reduce((total, item) => {
+          let itemTotal = item.price * item.quantity;
+          if (item.discountPercent) {
+            itemTotal -= (itemTotal * item.discountPercent) / 100;
+          } else if (item.discountAmount) {
+            itemTotal -= item.discountAmount * item.quantity;
+          }
+          return total + itemTotal;
+        }, 0);
       },
 
       getTotal: () => {
         const state = get();
-        const subtotal = state.items.reduce(
-          (total, item) => total + item.price * item.quantity,
-          0,
-        );
+        const subtotal = state.getSubtotal(); // Use the calculated subtotal which includes item discounts
 
         if (!state.discount) return subtotal;
 

@@ -133,6 +133,8 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
       variantId: item.variantId || item.id,
       quantity: item.quantity,
       unitPrice: item.price,
+      discountPercent: item.discountPercent,
+      discountAmount: item.discountAmount,
     }));
 
     const commonPayload = {

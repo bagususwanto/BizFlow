@@ -42,6 +42,8 @@ export interface CreateTransactionPayload {
     quantity: number;
     unitPrice: number; // Changed from price to match backend
     note?: string;
+    discountPercent?: number;
+    discountAmount?: number;
   }[];
   payments: {
     method: string; // 'cash', 'qris', etc.

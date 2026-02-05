@@ -14,6 +14,7 @@ import { ProductsModule } from './modules/master-data/products';
 import { UnitsModule } from './modules/master-data/units';
 import { CustomersModule } from './modules/master-data/customers';
 import { WarehousesModule } from './modules/master-data/warehouses';
+import { PromotionsModule } from './modules/master-data/promotions';
 
 import { TransactionsModule } from './modules/pos/transactions';
 import { PaymentsModule } from './modules/pos/payments';
@@ -43,6 +44,7 @@ import { AppController } from './app.controller';
     UnitsModule,
     CustomersModule,
     WarehousesModule,
+    PromotionsModule,
     // POS modules
     TransactionsModule,
     PaymentsModule,

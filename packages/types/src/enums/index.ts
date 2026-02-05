@@ -38,6 +38,7 @@ export enum Module {
   SUPPLIERS = 'suppliers',
   CUSTOMERS = 'customers',
   WAREHOUSES = 'warehouses',
+  PROMOTIONS = 'promotions',
 
   // Business modules
   POS = 'pos',
@@ -123,6 +124,12 @@ export const Permission = {
     Create: 'warehouses:create',
     Update: 'warehouses:update',
     Delete: 'warehouses:delete',
+  },
+  Promotions: {
+    Read: 'promotions:read',
+    Create: 'promotions:create',
+    Update: 'promotions:update',
+    Delete: 'promotions:delete',
   },
 
   // ========================================

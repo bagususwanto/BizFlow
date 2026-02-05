@@ -7,6 +7,7 @@ export * from './pos-transaction';
 export * from './payment';
 export * from './return';
 export * from './product';
+export * from './promotion';
 export * from './role';
 export * from './unit';
 export * from './user';

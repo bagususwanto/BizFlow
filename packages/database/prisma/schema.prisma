@@ -260,6 +260,29 @@ model Warehouse {
   goodsReceives    GoodsReceive[]
 }
 
+model Promotion {
+  id          String   @id @default(cuid())
+  code        String?  @unique
+  name        String
+  description String?
+  type        String   // 'percentage', 'fixed', 'buy_x_get_y'
+  value       Decimal?
+  minPurchase Decimal?
+  maxDiscount Decimal?
+  applyTo     String   // 'all', 'category', 'product'
+  targetIds   String?  // JSON array
+  startDate   DateTime
+  endDate     DateTime
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([code])
+  @@index([isActive])
+  @@index([startDate, endDate])
+}
+
+
 model Stock {
   id          String   @id @default(cuid())
   variantId   String

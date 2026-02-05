@@ -13,10 +13,14 @@ import type { HoldTransactionDto } from './dto';
 import { PrismaService } from '../../../prisma';
 import { successResponse, paginatedResponse } from '../../../common/utils';
 import { SalesOrder } from '@bizflow/database';
+import { PromotionsService } from '../../master-data/promotions';
 
 @Injectable()
 export class TransactionsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly promotionsService: PromotionsService,
+  ) {}
 
   /**
    * Get category IDs recursively (includes parent and all direct children)
@@ -266,16 +270,44 @@ export class TransactionsService {
     // Validate stock availability before creating transaction
     await this.validateStockAvailability(itemsWithServiceFlag, warehouseId);
 
-    // Calculate totals for credit limit check
+    // Calculate subtotal (including item-level discounts)
     const subtotal = dto.items.reduce((sum, item) => {
-      const itemSubtotal = item.quantity * item.unitPrice - item.discountAmount;
-      return sum + itemSubtotal;
+      let itemTotal = item.quantity * item.unitPrice;
+      // Apply item-level discount
+      if (item.discountPercent) {
+        itemTotal -= (itemTotal * item.discountPercent) / 100;
+      } else if (item.discountAmount) {
+        itemTotal -= item.discountAmount * item.quantity;
+      }
+      return sum + itemTotal;
     }, 0);
 
-    const discountAmount =
-      dto.discountAmount ||
-      (dto.discountPercent ? (subtotal * dto.discountPercent) / 100 : 0);
-    const afterDiscount = subtotal - discountAmount;
+    // Auto-apply best promotion if no manual discount provided
+    let finalDiscountAmount = 0;
+    let appliedPromoId: string | null = null;
+
+    if (!dto.discountAmount && !dto.discountPercent) {
+      const { promo, discount } =
+        await this.promotionsService.calculateBestPromotion(
+          dto.items.map((item) => ({
+            productId: item.variantId, // Using variantId as productId for promo matching
+            quantity: item.quantity,
+          })),
+          subtotal,
+        );
+
+      if (promo && discount > 0) {
+        finalDiscountAmount = discount;
+        appliedPromoId = promo.id;
+      }
+    } else {
+      // Use manual discount
+      finalDiscountAmount =
+        dto.discountAmount ||
+        (dto.discountPercent ? (subtotal * dto.discountPercent) / 100 : 0);
+    }
+
+    const afterDiscount = subtotal - finalDiscountAmount;
     const taxAmount = dto.taxPercent
       ? (afterDiscount * dto.taxPercent) / 100
       : 0;
@@ -331,7 +363,7 @@ export class TransactionsService {
           paymentStatus: totalPayment >= total ? 'paid' : 'partial',
           subtotal,
           discountPercent: dto.discountPercent || 0,
-          discountAmount,
+          discountAmount: finalDiscountAmount,
           taxPercent: dto.taxPercent || 0,
           taxAmount,
           total,

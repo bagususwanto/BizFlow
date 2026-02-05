@@ -15,6 +15,9 @@ import { toast } from 'sonner';
 import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts';
 import { KeyboardShortcutsDialog } from '@/components/pos/keyboard-shortcuts-dialog';
 
+import { useActivePromotions } from '@/hooks/use-promotions';
+import { useEffect } from 'react';
+
 export default function PosPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
     undefined,
@@ -22,6 +25,19 @@ export default function PosPage() {
   const [isHeldListOpen, setIsHeldListOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const setCart = useCartStore((state) => state.setCart);
+
+  // Inject promotions hook
+  const { data: promotions } = useActivePromotions();
+  const setActivePromotions = useCartStore(
+    (state) => state.setActivePromotions,
+  );
+
+  // Sync promotions to store
+  useEffect(() => {
+    if (promotions?.data) {
+      setActivePromotions(promotions.data);
+    }
+  }, [promotions, setActivePromotions]);
 
   const activeCategoryRef = useRef<string | undefined>(selectedCategory);
   activeCategoryRef.current = selectedCategory;
@@ -58,6 +74,7 @@ export default function PosPage() {
       // Optional fields if available
       imageUrl: item.product?.images?.[0]?.url,
       unit: item.unit,
+      categoryId: item.product?.category?.id, // Ensure categoryId is captured if available
     }));
 
     // 2. Set Cart

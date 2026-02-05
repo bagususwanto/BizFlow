@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { Promotion } from '@/services/promotions.service';
 
 export interface CartItem {
   id: string; // product id or variant id
@@ -14,6 +15,7 @@ export interface CartItem {
   imageUrl?: string | null;
   discountPercent?: number;
   discountAmount?: number;
+  categoryId?: string;
 }
 
 export interface Customer {
@@ -33,6 +35,7 @@ interface CartState {
   customer: Customer | null;
   discount: Discount | null;
   heldTransactionId: string | null; // If resuming a held transaction
+  activePromotions: Promotion[];
 
   // Actions
   addItem: (product: any, quantity?: number) => void;
@@ -51,10 +54,15 @@ interface CartState {
     customer: Customer | null,
     discount?: Discount | null,
   ) => void;
+  setActivePromotions: (promotions: Promotion[]) => void;
 
   // Getters
   getSubtotal: () => number;
   getTotal: () => number;
+  getAppliedPromotion: () => {
+    promo: Promotion;
+    discountAmount: number;
+  } | null;
   getItemCount: () => number;
 }
 
@@ -65,6 +73,7 @@ export const useCartStore = create<CartState>()(
       customer: null,
       discount: null,
       heldTransactionId: null,
+      activePromotions: [],
 
       addItem: (product, quantity = 1) => {
         set((state) => {
@@ -97,6 +106,7 @@ export const useCartStore = create<CartState>()(
                   unit: product.unit,
                   stock: product.stock,
                   imageUrl: product.imageUrl,
+                  categoryId: product.category?.id || product.categoryId,
                 },
               ],
             };
@@ -162,6 +172,9 @@ export const useCartStore = create<CartState>()(
         set({ items, customer, discount, heldTransactionId: null });
       },
 
+      setActivePromotions: (promotions) =>
+        set({ activePromotions: promotions }),
+
       getSubtotal: () => {
         const state = get();
         return state.items.reduce((total, item) => {
@@ -175,20 +188,74 @@ export const useCartStore = create<CartState>()(
         }, 0);
       },
 
-      getTotal: () => {
+      getAppliedPromotion: () => {
         const state = get();
-        const subtotal = state.getSubtotal(); // Use the calculated subtotal which includes item discounts
+        if (state.discount) return null;
 
-        if (!state.discount) return subtotal;
+        const subtotal = state.getSubtotal();
+        const promos = state.activePromotions || [];
 
-        let discountAmount = 0;
-        if (state.discount.type === 'percent') {
-          discountAmount = (subtotal * state.discount.value) / 100;
-        } else {
-          discountAmount = state.discount.value;
+        let bestPromo: Promotion | null = null;
+        let maxDiscount = 0;
+
+        for (const promo of promos) {
+          if (promo.minPurchase && subtotal < Number(promo.minPurchase)) {
+            continue;
+          }
+
+          if (promo.applyTo === 'category' || promo.applyTo === 'product') {
+            const targetIds = promo.targetIds
+              ? JSON.parse(promo.targetIds)
+              : [];
+            const hasMatch = state.items.some((item) =>
+              promo.applyTo === 'category'
+                ? targetIds.includes(item.categoryId)
+                : targetIds.includes(item.productId),
+            );
+            if (!hasMatch) continue;
+          }
+
+          let discount = 0;
+          if (promo.type === 'percentage') {
+            discount = (subtotal * Number(promo.value!)) / 100;
+            if (promo.maxDiscount) {
+              discount = Math.min(discount, Number(promo.maxDiscount));
+            }
+          } else if (promo.type === 'fixed') {
+            discount = Number(promo.value!);
+          }
+
+          if (discount > maxDiscount) {
+            maxDiscount = discount;
+            bestPromo = promo;
+          }
         }
 
-        return Math.max(0, subtotal - discountAmount);
+        return bestPromo
+          ? { promo: bestPromo, discountAmount: maxDiscount }
+          : null;
+      },
+
+      getTotal: () => {
+        const state = get();
+        const subtotal = state.getSubtotal();
+
+        if (state.discount) {
+          let discountAmount = 0;
+          if (state.discount.type === 'percent') {
+            discountAmount = (subtotal * state.discount.value) / 100;
+          } else {
+            discountAmount = state.discount.value;
+          }
+          return Math.max(0, subtotal - discountAmount);
+        }
+
+        const bestPromo = state.getAppliedPromotion();
+        if (bestPromo) {
+          return Math.max(0, subtotal - bestPromo.discountAmount);
+        }
+
+        return subtotal;
       },
 
       getItemCount: () => {
@@ -204,7 +271,7 @@ export const useCartStore = create<CartState>()(
         customer: state.customer,
         discount: state.discount,
         heldTransactionId: state.heldTransactionId,
-      }), // select what to persist
+      }),
     },
   ),
 );

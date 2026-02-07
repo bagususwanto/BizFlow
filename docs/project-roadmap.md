@@ -143,12 +143,12 @@ Referensi: [01-pos.md](file:///Users/bagus/Project/personal/BizFlow/docs/user-fl
 | Product search (nama/SKU)                      | [x]    | High     |
 | Cart management (add, edit qty, remove)        | [x]    | High     |
 | Multiple payment (cash, QRIS, transfer, split) | [x]    | High     |
-| Customer selection untuk loyalty               | [ ]    | Medium   |
-| Hold transaction (simpan sementara)            | [ ]    | Medium   |
-| Discount (item, transaksi, promo)              | [ ]    | Medium   |
-| Print struk (thermal 58mm, 80mm)               | [ ]    | High     |
-| Keyboard shortcuts                             | [ ]    | Medium   |
-| Return/Refund processing                       | [ ]    | Medium   |
+| Customer selection                             | [x]    | Medium   |
+| Hold transaction (simpan sementara)            | [x]    | Medium   |
+| Discount (item, transaksi, promo)              | [x]    | Medium   |
+| Print struk (thermal 58mm, 80mm)               | [/]    | High     |
+| Keyboard shortcuts                             | [x]    | Medium   |
+| Return/Refund processing                       | [x]    | Medium   |
 
 **API Endpoints**: `/api/v1/pos/*`
 
@@ -444,4 +444,4 @@ Referensi: [07-cash-bank-management.md](file:///Users/bagus/Project/personal/Biz
 
 ---
 
-_Last updated: 2026-01-14_
+_Last updated: 2026-02-06_

@@ -5,6 +5,7 @@ import { PrismaModule } from './prisma';
 import { AuthModule } from './modules/core/auth';
 import { AuditLogModule } from './modules/core/audit-log';
 import { OutletsModule } from './modules/core/outlets';
+import { PrintersModule } from './modules/core/printers';
 import { RolesModule } from './modules/core/roles';
 import { SettingsModule } from './modules/core/settings';
 import { UsersModule } from './modules/core/users';
@@ -35,6 +36,7 @@ import { AppController } from './app.controller';
     AuditLogModule,
     AuthModule,
     OutletsModule,
+    PrintersModule,
     RolesModule,
     SettingsModule,
     UsersModule,

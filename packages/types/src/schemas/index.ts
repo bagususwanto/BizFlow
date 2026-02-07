@@ -5,6 +5,7 @@ export * from './customer';
 export * from './outlet';
 export * from './pos-transaction';
 export * from './payment';
+export * from './printer';
 export * from './return';
 export * from './product';
 export * from './promotion';

@@ -27,8 +27,26 @@ model Outlet {
 
   salesOrders SalesOrder[]
   users       UserOutlet[]
+  printers    Printer[]
 
   @@index([code])
+}
+
+model Printer {
+  id        String   @id @default(cuid())
+  name      String
+  type      String   // 'network' | 'usb'
+  address   String?  // IP:port for network, device path for USB
+  width     Int      @default(58) // 58 or 80 mm
+  isDefault Boolean  @default(false)
+  isActive  Boolean  @default(true)
+  outletId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  outlet Outlet @relation(fields: [outletId], references: [id], onDelete: Cascade)
+
+  @@index([outletId])
 }
 
 // ========================================

@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@bizflow/database": "workspace:^",
+    "@bizflow/printer": "workspace:^",
     "@bizflow/types": "workspace:^",
     "@nestjs/common": "^11.1.11",
     "@nestjs/config": "^4.0.2",
@@ -23,6 +24,7 @@
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.1.11",
+    "@nestjs/swagger": "^11.2.6",
     "bcryptjs": "^3.0.3",
     "multer": "^2.0.2",
     "nestjs-zod": "^5.1.1",

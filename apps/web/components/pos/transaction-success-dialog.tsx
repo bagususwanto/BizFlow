@@ -34,12 +34,83 @@ export function TransactionSuccessDialog({
 
   if (!transaction) return null;
 
-  const handlePrint = () => {
+  const handlePrint = async () => {
+    // Debug logging
+    console.log('🖨️ Print button clicked');
+    console.log('electronAPI available:', !!(window as any).electronAPI);
+    console.log('Default printer:', defaultPrinter);
+
     // 1. If Electron app & USB printer -> Use Electron IPC
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if ((window as any).electronAPI && defaultPrinter?.type === 'usb') {
-      // (window as any).electronAPI.printReceipt(transaction);
-      toast.info('Fitur print USB via Desktop App akan segera hadir');
+      try {
+        // Format receipt data for Electron
+        const receiptData = {
+          header: {
+            companyName: transaction.outlet?.name || 'BizFlow',
+            address: undefined, // Can be added from outlet data if available
+            phone: undefined,
+          },
+          orderNumber: transaction.orderNumber,
+          orderDate: transaction.orderDate,
+          cashier:
+            transaction.cashier?.name || transaction.user?.name || 'Kasir',
+          customer: transaction.customer
+            ? {
+                name: transaction.customer.name,
+                phone: transaction.customer.phone || undefined,
+              }
+            : undefined,
+          items: transaction.items.map((item) => ({
+            name: item.variantName
+              ? `${item.productName} - ${item.variantName}`
+              : item.productName,
+            quantity: Number(item.quantity),
+            unitPrice: Number(item.unitPrice),
+            subtotal: Number(item.subtotal),
+            discount: item.discountAmount
+              ? Number(item.discountAmount)
+              : undefined,
+          })),
+          subtotal: Number(transaction.subtotal),
+          discount: transaction.discountAmount
+            ? Number(transaction.discountAmount)
+            : undefined,
+          tax: transaction.taxAmount
+            ? Number(transaction.taxAmount)
+            : undefined,
+          total: Number(transaction.total),
+          payments:
+            transaction.payments?.map((p) => ({
+              method: p.method,
+              amount: Number(p.amount),
+              reference: p.reference || undefined,
+            })) || [],
+          change: Math.max(
+            0,
+            Number(transaction.paidAmount) - Number(transaction.total),
+          ),
+          footer: {
+            message:
+              'Barang yang sudah dibeli tidak dapat ditukar/dikembalikan',
+            thankYou: 'TERIMA KASIH',
+          },
+        };
+
+        const result = await (window as any).electronAPI.printReceipt({
+          receiptData,
+          printerName: defaultPrinter.address || defaultPrinter.name,
+          width: defaultPrinter.width || 58,
+        });
+
+        if (result.success) {
+          toast.success('Struk berhasil dicetak');
+        } else {
+          toast.error(`Gagal mencetak: ${result.error || 'Unknown error'}`);
+        }
+      } catch (error: any) {
+        toast.error(`Error: ${error.message || 'Gagal mencetak'}`);
+      }
       return;
     }
 

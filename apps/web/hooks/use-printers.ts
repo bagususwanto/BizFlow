@@ -94,6 +94,7 @@ export function useUpdatePrinter(id: string) {
     mutationFn: (data: any) => printersService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['printers'] });
+      queryClient.invalidateQueries({ queryKey: ['printer', id] });
       toast.success('Printer berhasil diperbarui');
     },
     onError: (error: any) => {

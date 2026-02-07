@@ -1,5 +1,4 @@
-'use client';
-
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
@@ -63,6 +62,21 @@ export function PrinterForm({ initialData, isEdit = false }: PrinterFormProps) {
     },
   });
 
+  // Reset form when initialData changes (important for async data loading)
+  useEffect(() => {
+    if (initialData) {
+      form.reset({
+        name: initialData.name,
+        type: initialData.type,
+        address: initialData.address || '',
+        width: initialData.width,
+        isDefault: initialData.isDefault,
+        isActive: initialData.isActive,
+        outletId: initialData.outletId,
+      });
+    }
+  }, [initialData, form]);
+
   const { isSubmitting } = form.formState;
   const isLoading = isCreating || isUpdating || isSubmitting;
   const watchType = form.watch('type');
@@ -111,7 +125,7 @@ export function PrinterForm({ initialData, isEdit = false }: PrinterFormProps) {
                 <FormLabel required>Outlet</FormLabel>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value as string}
+                  value={field.value as string}
                   disabled={isEdit || isLoadingOutlets}
                 >
                   <FormControl>
@@ -143,7 +157,7 @@ export function PrinterForm({ initialData, isEdit = false }: PrinterFormProps) {
                 <FormLabel required>Tipe Koneksi</FormLabel>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value as string}
+                  value={field.value as string}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -168,7 +182,7 @@ export function PrinterForm({ initialData, isEdit = false }: PrinterFormProps) {
                 <FormLabel required>Lebar Kertas</FormLabel>
                 <Select
                   onValueChange={(val) => field.onChange(parseInt(val))}
-                  defaultValue={field.value ? String(field.value) : '58'}
+                  value={field.value ? String(field.value) : '58'}
                 >
                   <FormControl>
                     <SelectTrigger>

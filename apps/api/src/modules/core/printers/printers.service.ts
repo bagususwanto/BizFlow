@@ -1,17 +1,26 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import type {
   CreatePrinterValues,
   UpdatePrinterValues,
   QueryPrintersValues,
 } from '@bizflow/types';
 import * as net from 'net';
+import { TransactionsService } from '../../pos/transactions/transactions.service';
+import { buildReceipt, type ReceiptData } from '@bizflow/printer';
 
 import { PrismaService } from '../../../prisma';
 import { successResponse } from '../../../common/utils';
 
 @Injectable()
 export class PrintersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly transactionsService: TransactionsService,
+  ) {}
 
   /**
    * Find all printers with optional filters
@@ -332,64 +341,40 @@ export class PrintersService {
   }
 
   /**
-   * Print receipt for a transaction
+   * Print transaction receipt
    */
-  async printReceipt(
-    transactionId: string,
-    printerId?: string,
-    outletId?: string,
-  ) {
-    // Get printer - either specified or default
-    let printer;
-    if (printerId) {
-      printer = await this.prisma.printer.findUnique({
-        where: { id: printerId },
-      });
-    } else if (outletId) {
-      printer = await this.getDefaultPrinter(outletId);
-    }
+  async printTransaction(id: string, transactionId: string) {
+    // 1. Get printer
+    const printer = await this.prisma.printer.findUnique({
+      where: { id },
+      include: { outlet: true },
+    });
 
     if (!printer) {
       throw new NotFoundException('Printer tidak ditemukan');
     }
 
-    // Get transaction data
-    const transaction = await this.prisma.salesOrder.findUnique({
-      where: { id: transactionId },
-      include: {
-        customer: {
-          select: { name: true, phone: true },
-        },
-        outlet: {
-          select: { name: true, address: true, phone: true },
-        },
-        user: {
-          select: { name: true },
-        },
-        items: {
-          include: {
-            variant: {
-              include: {
-                product: {
-                  select: { name: true },
-                },
-              },
-            },
-          },
-        },
-        payments: true,
-      },
-    });
+    if (printer.type !== 'network') {
+      throw new BadRequestException(
+        'Server hanya dapat mencetak ke Network Printer. Gunakan Desktop App untuk USB Printer.',
+      );
+    }
+
+    if (!printer.address) {
+      throw new BadRequestException('Alamat IP printer belum dikonfigurasi');
+    }
+
+    // 2. Get transaction
+    const transactionRes =
+      await this.transactionsService.findById(transactionId);
+    const transaction = transactionRes.data;
 
     if (!transaction) {
       throw new NotFoundException('Transaksi tidak ditemukan');
     }
 
-    // Build receipt data
-    const { buildReceipt } = await import('@bizflow/printer');
-    type ReceiptDataType = import('@bizflow/printer').ReceiptData;
-
-    const receiptData: ReceiptDataType = {
+    // 3. Build receipt data
+    const receiptData: ReceiptData = {
       header: {
         companyName: transaction.outlet?.name || 'BizFlow',
         address: transaction.outlet?.address || undefined,
@@ -397,64 +382,84 @@ export class PrintersService {
       },
       orderNumber: transaction.orderNumber,
       orderDate: transaction.orderDate,
-      cashier: transaction.user?.name || 'Kasir',
+      cashier: transaction.cashier?.name || 'Kasir',
       customer: transaction.customer
         ? {
             name: transaction.customer.name,
             phone: transaction.customer.phone || undefined,
           }
         : undefined,
-      items: transaction.items.map((item) => ({
-        name: item.variant?.product?.name || 'Item',
-        quantity: Number(item.quantity),
-        unitPrice: Number(item.unitPrice),
-        subtotal: Number(item.subtotal),
-        discount: Number(item.discountAmount) || undefined,
+      items: transaction.items.map((item: any) => ({
+        name: item.variantName
+          ? `${item.productName} - ${item.variantName}`
+          : item.productName,
+        quantity:
+          typeof item.quantity === 'number'
+            ? item.quantity
+            : Number(item.quantity),
+        unitPrice:
+          typeof item.unitPrice === 'number'
+            ? item.unitPrice
+            : Number(item.unitPrice),
+        subtotal:
+          typeof item.subtotal === 'number'
+            ? item.subtotal
+            : Number(item.subtotal),
+        discount:
+          typeof item.discountAmount === 'number'
+            ? item.discountAmount
+            : Number(item.discountAmount),
       })),
-      subtotal: Number(transaction.subtotal),
-      discount: transaction.discountAmount
-        ? Number(transaction.discountAmount)
-        : undefined,
-      tax: transaction.taxAmount ? Number(transaction.taxAmount) : undefined,
-      total: Number(transaction.total),
-      payments: transaction.payments.map((p) => ({
-        method: p.paymentMethod,
-        amount: Number(p.amount),
+      subtotal:
+        typeof transaction.subtotal === 'number'
+          ? transaction.subtotal
+          : Number(transaction.subtotal),
+      discount:
+        typeof transaction.discountAmount === 'number'
+          ? transaction.discountAmount
+          : Number(transaction.discountAmount),
+      tax:
+        typeof transaction.taxAmount === 'number'
+          ? transaction.taxAmount
+          : Number(transaction.taxAmount),
+      total:
+        typeof transaction.total === 'number'
+          ? transaction.total
+          : Number(transaction.total),
+      payments: transaction.payments.map((p: any) => ({
+        method: p.method,
+        amount: typeof p.amount === 'number' ? p.amount : Number(p.amount),
         reference: p.reference || undefined,
       })),
-      change:
-        Number(transaction.paidAmount) - Number(transaction.total) > 0
-          ? Number(transaction.paidAmount) - Number(transaction.total)
-          : undefined,
+      change: Math.max(
+        0,
+        (typeof transaction.paidAmount === 'number'
+          ? transaction.paidAmount
+          : Number(transaction.paidAmount)) -
+          (typeof transaction.total === 'number'
+            ? transaction.total
+            : Number(transaction.total)),
+      ),
       footer: {
+        message: 'Barang yang sudah dibeli tidak dapat ditukar/dikembalikan',
         thankYou: 'TERIMA KASIH',
       },
     };
 
-    // Build ESC/POS data
-    const receiptBuffer = buildReceipt(receiptData, printer.width as 58 | 80);
+    // 4. Generate ESC/POS commands
+    // Import dynamically just in case, or use static import if available (which we added)
+    // Using static buildReceipt from import
+    const buffer = buildReceipt(receiptData, printer.width as 58 | 80);
 
-    // Send to printer
-    if (printer.type === 'network' && printer.address) {
-      const result = await this.sendToNetworkPrinter(
-        printer.address,
-        receiptBuffer,
+    // 5. Send to printer
+    const sendResult = await this.sendToNetworkPrinter(printer.address, buffer);
+
+    if (!sendResult.success) {
+      throw new BadRequestException(
+        `Gagal mencetak: ${sendResult.error || 'Unknown error'}`,
       );
-
-      if (result.success) {
-        return successResponse({ printed: true });
-      } else {
-        throw new Error(`Gagal mencetak struk: ${result.error}`);
-      }
-    } else if (printer.type === 'usb') {
-      // Return data for Electron to handle
-      return successResponse({
-        type: 'usb',
-        printerId: printer.id,
-        receiptData: receiptBuffer.toString('base64'),
-      });
     }
 
-    throw new Error('Konfigurasi printer tidak valid');
+    return successResponse({ message: 'Print job sent successfully' });
   }
 }

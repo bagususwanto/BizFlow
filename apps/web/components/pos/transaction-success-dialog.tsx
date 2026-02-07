@@ -11,6 +11,8 @@ import {
 import { CheckCircle2, Printer, ArrowRight } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
 import { PosTransactionResult } from './receipt/receipt-template';
+import { useDefaultPrinter, usePrintTransaction } from '@/hooks/use-printers';
+import { toast } from 'sonner';
 
 interface TransactionSuccessDialogProps {
   open: boolean;
@@ -25,10 +27,32 @@ export function TransactionSuccessDialog({
   transaction,
   onNewTransaction,
 }: TransactionSuccessDialogProps) {
+  const { data: defaultPrinter, isLoading: isLoadingPrinter } =
+    useDefaultPrinter(transaction?.outlet?.id);
+  const { mutate: printTransaction, isPending: isPrinting } =
+    usePrintTransaction();
+
   if (!transaction) return null;
 
   const handlePrint = () => {
-    // Open print window
+    // 1. If Electron app & USB printer -> Use Electron IPC
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if ((window as any).electronAPI && defaultPrinter?.type === 'usb') {
+      // (window as any).electronAPI.printReceipt(transaction);
+      toast.info('Fitur print USB via Desktop App akan segera hadir');
+      return;
+    }
+
+    // 2. If Network printer -> Use API
+    if (defaultPrinter?.type === 'network') {
+      printTransaction({
+        printerId: defaultPrinter.id,
+        transactionId: transaction.id,
+      });
+      return;
+    }
+
+    // 3. Fallback -> Browser Print
     window.open(
       `/pos/print/${transaction.id}`,
       'PrintReceipt',
@@ -89,9 +113,10 @@ export function TransactionSuccessDialog({
             variant="outline"
             className="flex-1 gap-2 h-12 text-base"
             onClick={handlePrint}
+            disabled={isPrinting || isLoadingPrinter}
           >
             <Printer className="h-5 w-5" />
-            Cetak Struk
+            {isPrinting ? 'Mencetak...' : 'Cetak Struk'}
           </Button>
           <Button
             size="lg"

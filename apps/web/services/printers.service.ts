@@ -89,6 +89,15 @@ class PrintersService {
       {},
     );
   }
+
+  async printTransaction(
+    id: string,
+    transactionId: string,
+  ): Promise<ApiResponse<void>> {
+    return apiClient.post<ApiResponse<void>>(`/core/printers/${id}/print`, {
+      transactionId,
+    });
+  }
 }
 
 export const printersService = new PrintersService();

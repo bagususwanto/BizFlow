@@ -144,13 +144,12 @@ export class PrintersController {
   /**
    * Print receipt for transaction
    */
-  @Post('print-receipt')
-  @Permissions(Permission.Pos.Read)
-  async printReceipt(@Body() dto: PrintReceiptDto) {
-    return this.printersService.printReceipt(
-      dto.transactionId,
-      dto.printerId,
-      dto.outletId,
-    );
+  @Post(':id/print')
+  @Permissions(Permission.Settings.Update as PermissionType)
+  async printTransaction(
+    @Param('id') id: string,
+    @Body() body: { transactionId: string },
+  ) {
+    return this.printersService.printTransaction(id, body.transactionId);
   }
 }

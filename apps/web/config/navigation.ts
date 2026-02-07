@@ -191,10 +191,10 @@ export const navigationConfig = {
           title: 'Audit Log',
           url: '/settings/audit-logs',
         },
-        // {
-        //   title: 'Printer',
-        //   url: '/settings/printer',
-        // },
+        {
+          title: 'Printer',
+          url: '/settings/printers',
+        },
         // {
         //   title: 'Backup',
         //   url: '/settings/backup',

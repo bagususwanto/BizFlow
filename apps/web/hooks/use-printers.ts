@@ -117,3 +117,42 @@ export function useUpdatePrinter(id: string) {
     },
   });
 }
+
+export function usePrintTransaction() {
+  return useMutation({
+    mutationFn: ({
+      printerId,
+      transactionId,
+    }: {
+      printerId: string;
+      transactionId: string;
+    }) => printersService.printTransaction(printerId, transactionId),
+    onSuccess: () => {
+      toast.success('Print job berhasil dikirim');
+    },
+    onError: (error: any) => {
+      toast.error(error instanceof Error ? error.message : 'Gagal mencetak');
+    },
+  });
+}
+
+export function useDefaultPrinter(outletId?: string) {
+  const token = useAuthStore((state) => state.accessToken);
+
+  return useQuery({
+    queryKey: ['printers', 'default', outletId],
+    queryFn: async () => {
+      if (!outletId) return null;
+      const res = await printersService.getAll({
+        outletId,
+        isDefault: true,
+        isActive: true,
+        page: 1,
+        limit: 1,
+      } as any);
+      return res.data[0] || null;
+    },
+    enabled: !!token && !!outletId,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+}

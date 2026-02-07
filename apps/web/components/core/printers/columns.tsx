@@ -2,13 +2,7 @@
 
 import Link from 'next/link';
 import { ColumnDef } from '@tanstack/react-table';
-import {
-  MoreHorizontal,
-  Edit,
-  Trash2,
-  Printer as PrinterIcon,
-  LayoutTemplate,
-} from 'lucide-react';
+import { MoreHorizontal, Edit, Trash2 } from 'lucide-react';
 
 import { DataTableColumnHeader } from '@/components/ui/data-table-column-header';
 
@@ -27,14 +21,10 @@ import type { Printer } from '@/services/printers.service';
 
 interface PrintersColumnsProps {
   onDelete: (printer: Printer) => void;
-  onTestPrint: (printer: Printer) => void;
-  onOpenDrawer: (printer: Printer) => void;
 }
 
 export const getColumns = ({
   onDelete,
-  onTestPrint,
-  onOpenDrawer,
 }: PrintersColumnsProps): ColumnDef<Printer>[] => [
   {
     id: 'select',
@@ -165,15 +155,7 @@ export const getColumns = ({
                 Edit
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onTestPrint(printer)}>
-              <PrinterIcon className="mr-2 h-4 w-4" />
-              Test Print
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onOpenDrawer(printer)}>
-              <LayoutTemplate className="mr-2 h-4 w-4" />
-              Buka Laci Uang
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
+
             <DropdownMenuItem
               className="text-destructive focus:text-destructive"
               onClick={() => onDelete(printer)}

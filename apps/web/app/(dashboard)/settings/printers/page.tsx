@@ -34,8 +34,7 @@ function PrintersContent() {
     isLoading,
     deletePrinter,
     isDeleting,
-    testPrint,
-    openDrawer,
+
     bulkDeletePrinters,
     isBulkDeleting,
     refetch,
@@ -80,10 +79,8 @@ function PrintersContent() {
     () =>
       getColumns({
         onDelete: setPrinterToDelete,
-        onTestPrint: (p) => testPrint(p.id),
-        onOpenDrawer: (p) => openDrawer(p.id),
       }),
-    [testPrint, openDrawer],
+    [setPrinterToDelete],
   );
 
   const data = printers || [];

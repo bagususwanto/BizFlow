@@ -18,6 +18,7 @@ export class PrintersService {
    */
   async findAll(query?: QueryPrintersValues) {
     const {
+      search,
       outletId,
       type,
       isActive,
@@ -25,10 +26,7 @@ export class PrintersService {
       sortOrder = 'asc',
     } = query || {};
 
-    const where: Record<string, unknown> = {};
-    if (outletId) where.outletId = outletId;
-    if (type) where.type = type;
-    if (isActive !== undefined) where.isActive = isActive;
+    const where = this.buildWhereClause(search, outletId, type, isActive);
 
     // Build orderBy based on sortBy and sortOrder
     const orderBy: any[] = [];
@@ -70,6 +68,36 @@ export class PrintersService {
         inactive,
       },
     };
+  }
+
+  private buildWhereClause(
+    search?: string,
+    outletId?: string,
+    type?: 'network' | 'usb',
+    isActive?: boolean,
+  ) {
+    const where: {
+      OR?: Array<{
+        name?: { contains: string };
+        address?: { contains: string };
+      }>;
+      outletId?: string;
+      type?: 'network' | 'usb';
+      isActive?: boolean;
+    } = {};
+
+    if (search) {
+      where.OR = [
+        { name: { contains: search } },
+        { address: { contains: search } },
+      ];
+    }
+
+    if (outletId) where.outletId = outletId;
+    if (type) where.type = type;
+    if (isActive !== undefined) where.isActive = isActive;
+
+    return where;
   }
 
   /**

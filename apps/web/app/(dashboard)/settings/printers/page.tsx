@@ -40,7 +40,7 @@ function PrintersContent() {
   } = usePrinters({
     page,
     pageSize,
-    // search, // Backend implementation needed for search (currently supported)
+    search,
     isActive:
       status === 'active' ? true : status === 'inactive' ? false : undefined,
     sortBy,

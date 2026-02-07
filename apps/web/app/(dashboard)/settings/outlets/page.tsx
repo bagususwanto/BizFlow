@@ -1,9 +1,7 @@
 'use client';
 
 import { Suspense, useCallback, useState, useMemo } from 'react';
-import { Button, Card, CardContent, CardHeader, CardTitle } from '@bizflow/ui';
-import { Plus, Loader2 } from 'lucide-react';
-import Link from 'next/link';
+import { Loader2 } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { useOutlets } from '@/hooks';

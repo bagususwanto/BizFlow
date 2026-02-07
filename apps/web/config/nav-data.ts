@@ -11,6 +11,7 @@ import {
   Building2,
   Database,
   FolderTree,
+  Printer,
 } from 'lucide-react';
 
 export const navData = [
@@ -87,6 +88,12 @@ export const navData = [
         href: '/settings/outlets',
         icon: Building2,
         permission: 'outlets:read',
+      },
+      {
+        title: 'Printers',
+        href: '/settings/printers',
+        icon: Printer,
+        permission: 'settings:read',
       },
       {
         title: 'License',

@@ -16,8 +16,8 @@ export class PrintersService {
   /**
    * Find all printers with optional filters
    */
-  async findAll(query: QueryPrintersValues = {}) {
-    const { outletId, type, isActive } = query;
+  async findAll(query?: QueryPrintersValues) {
+    const { outletId, type, isActive } = query || {};
 
     const where: Record<string, unknown> = {};
     if (outletId) where.outletId = outletId;

@@ -78,6 +78,16 @@ export type UpdatePrinterValues = z.infer<typeof updatePrinterSchema>;
 // ========================================
 
 export const queryPrintersSchema = z.object({
+  // Pagination
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).default(10),
+
+  // Sorting
+  sortBy: z.enum(['name', 'createdAt', 'updatedAt']).default('name'),
+  sortOrder: z.enum(['asc', 'desc']).default('asc'),
+
+  // Filters
+  search: z.string().optional(),
   outletId: z.string().optional(),
   type: z.enum(['network', 'usb']).optional(),
   isActive: z.preprocess((val) => {

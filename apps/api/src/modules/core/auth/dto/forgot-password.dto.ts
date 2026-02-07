@@ -1,4 +1,6 @@
 import { createZodDto } from 'nestjs-zod';
 import { forgotPasswordSchema } from '@bizflow/types';
 
-export class ForgotPasswordDto extends createZodDto(forgotPasswordSchema) {}
+export class ForgotPasswordDto extends createZodDto(forgotPasswordSchema) {
+  email!: string;
+}

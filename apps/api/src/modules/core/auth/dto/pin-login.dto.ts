@@ -1,4 +1,7 @@
 import { createZodDto } from 'nestjs-zod';
 import { pinLoginSchema } from '@bizflow/types';
 
-export class PinLoginDto extends createZodDto(pinLoginSchema) {}
+export class PinLoginDto extends createZodDto(pinLoginSchema) {
+  userId!: string;
+  pin!: string;
+}

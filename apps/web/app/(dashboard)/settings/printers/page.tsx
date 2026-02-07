@@ -36,6 +36,8 @@ function PrintersContent() {
     isDeleting,
     testPrint,
     openDrawer,
+    bulkDeletePrinters,
+    isBulkDeleting,
     refetch,
   } = usePrinters({
     page,
@@ -131,6 +133,13 @@ function PrintersContent() {
         search={search}
         onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
         searchPlaceholder="Cari printer..."
+        // Actions
+        onBulkDelete={(ids) => {
+          bulkDeletePrinters(ids, {
+            onSuccess: () => refetch(),
+          });
+        }}
+        isBulkDeleting={isBulkDeleting}
         // Filters
         filterValues={{ status }}
         onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}

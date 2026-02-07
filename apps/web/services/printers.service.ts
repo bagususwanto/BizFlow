@@ -73,6 +73,12 @@ class PrintersService {
     return apiClient.delete<ApiResponse<void>>(`/core/printers/${id}`);
   }
 
+  async bulkDelete(ids: string[]): Promise<ApiResponse<void>> {
+    return apiClient.post<ApiResponse<void>>(`/core/printers/bulk-delete`, {
+      ids,
+    });
+  }
+
   async testPrint(id: string): Promise<ApiResponse<void>> {
     return apiClient.post<ApiResponse<void>>(`/core/printers/${id}/test`, {});
   }

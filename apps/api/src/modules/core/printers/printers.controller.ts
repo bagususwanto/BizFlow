@@ -109,6 +109,21 @@ export class PrintersController {
   }
 
   /**
+   * Bulk delete printers
+   */
+  @Post('bulk-delete')
+  @Permissions(Permission.Settings.Update as PermissionType)
+  @AuditLog({
+    module: Module.SETTINGS,
+    action: AuditAction.DELETE,
+    entityType: 'printer (bulk)',
+  })
+  @HttpCode(HttpStatus.OK)
+  async bulkDelete(@Body() body: { ids: string[] }) {
+    return this.printersService.bulkDelete(body.ids);
+  }
+
+  /**
    * Test print to printer
    */
   @Post(':id/test')

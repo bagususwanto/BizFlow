@@ -46,6 +46,19 @@ export function usePrinters(params?: QueryPrintersValues) {
     },
   });
 
+  const bulkDeleteMutation = useMutation({
+    mutationFn: (ids: string[]) => printersService.bulkDelete(ids),
+    onSuccess: (data) => {
+      toast.success(
+        (data as any).message || 'Printer terpilih berhasil dihapus',
+      );
+      queryClient.invalidateQueries({ queryKey: ['printers'] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+
   return {
     printers: query.data?.data || [],
     meta: query.data?.meta,
@@ -54,6 +67,8 @@ export function usePrinters(params?: QueryPrintersValues) {
     isError: query.isError,
     deletePrinter: deleteMutation.mutate,
     isDeleting: deleteMutation.isPending,
+    bulkDeletePrinters: bulkDeleteMutation.mutate,
+    isBulkDeleting: bulkDeleteMutation.isPending,
     testPrint: testPrintMutation.mutate,
     isTesting: testPrintMutation.isPending,
     openDrawer: openDrawerMutation.mutate,

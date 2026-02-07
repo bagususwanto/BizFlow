@@ -201,6 +201,26 @@ export class PrintersService {
   }
 
   /**
+   * Bulk delete printers
+   */
+  async bulkDelete(ids: string[]) {
+    if (!ids.length) {
+      return successResponse({ count: 0 });
+    }
+
+    const result = await this.prisma.printer.deleteMany({
+      where: {
+        id: { in: ids },
+      },
+    });
+
+    return successResponse({
+      message: `${result.count} printer berhasil dihapus`,
+      count: result.count,
+    });
+  }
+
+  /**
    * Get default printer for outlet
    */
   async getDefaultPrinter(outletId: string) {

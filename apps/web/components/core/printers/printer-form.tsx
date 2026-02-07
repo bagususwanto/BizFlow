@@ -81,6 +81,14 @@ export function PrinterForm({ initialData, isEdit = false }: PrinterFormProps) {
   const isLoading = isCreating || isUpdating || isSubmitting;
   const watchType = form.watch('type');
 
+  // Reset address field when type changes (network vs USB have different formats)
+  useEffect(() => {
+    // Only reset if editing and type has changed from initial value
+    if (initialData && watchType !== initialData.type) {
+      form.setValue('address', '');
+    }
+  }, [watchType, initialData, form]);
+
   const onSubmit = async (data: CreatePrinterValues | UpdatePrinterValues) => {
     try {
       if (isEdit && initialData) {

@@ -94,7 +94,7 @@ export default function CreateReturnPage() {
 
   return (
     <div className="flex flex-col h-screen bg-muted/10">
-      <PosHeader />
+      <PosHeader backHref="/pos/returns" backLabel="Riwayat Retur" />
 
       <div className="flex-1 p-6 space-y-6 overflow-auto max-w-4xl mx-auto w-full">
         <div className="flex items-center gap-4">

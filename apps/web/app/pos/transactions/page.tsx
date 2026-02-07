@@ -40,7 +40,7 @@ export default function PosTransactionsPage() {
 
   return (
     <div className="flex flex-col h-screen bg-muted/10">
-      <PosHeader onHelpClick={() => {}} />
+      <PosHeader onHelpClick={() => {}} backHref="/pos" backLabel="POS" />
 
       <div className="flex-1 p-6 overflow-auto">
         <DataListPage

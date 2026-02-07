@@ -51,7 +51,7 @@ export default function ReturnDetailPage() {
   if (!ret) {
     return (
       <div className="flex bg-muted/10 h-screen flex-col">
-        <PosHeader />
+        <PosHeader backHref="/pos/returns" backLabel="Riwayat Retur" />
         <div className="flex-1 flex items-center justify-center flex-col gap-4">
           <p className="text-muted-foreground">Retur tidak ditemukan.</p>
           <Link href="/pos/returns">
@@ -79,7 +79,7 @@ export default function ReturnDetailPage() {
 
   return (
     <div className="flex flex-col h-screen bg-muted/10">
-      <PosHeader />
+      <PosHeader backHref="/pos/returns" backLabel="Riwayat Retur" />
 
       <div className="flex-1 p-6 space-y-6 overflow-auto max-w-5xl mx-auto w-full">
         <div className="flex items-center justify-between">

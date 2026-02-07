@@ -9,6 +9,7 @@ import {
   ArrowLeft,
   Clock,
   Keyboard,
+  Undo2,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@bizflow/ui';
@@ -28,9 +29,16 @@ import { useHeldTransactions } from '@/hooks/use-pos';
 interface PosHeaderProps {
   onOpenHeldList?: () => void;
   onHelpClick?: () => void;
+  backHref?: string;
+  backLabel?: string;
 }
 
-export function PosHeader({ onOpenHeldList, onHelpClick }: PosHeaderProps) {
+export function PosHeader({
+  onOpenHeldList,
+  onHelpClick,
+  backHref,
+  backLabel,
+}: PosHeaderProps) {
   const user = useAuthStore((state) => state.user);
   const [isOnline, setIsOnline] = useState(true);
   const { data: heldTransactions } = useHeldTransactions();
@@ -54,10 +62,10 @@ export function PosHeader({ onOpenHeldList, onHelpClick }: PosHeaderProps) {
   return (
     <header className="flex h-14 shrink-0 items-center justify-between border-b bg-background px-4">
       <div className="flex items-center gap-4">
-        <Link href="/">
+        <Link href={backHref || '/'}>
           <Button variant="ghost" size="sm" className="gap-2">
             <ArrowLeft className="h-4 w-4" />
-            <span className="hidden sm:inline">Dashboard</span>
+            <span className="hidden sm:inline">{backLabel || 'Dashboard'}</span>
           </Button>
         </Link>
         <div className="h-4 w-px bg-border" />
@@ -129,7 +137,7 @@ export function PosHeader({ onOpenHeldList, onHelpClick }: PosHeaderProps) {
             </Link>
             <Link href="/pos/returns">
               <DropdownMenuItem>
-                <History className="mr-2 h-4 w-4" />
+                <Undo2 className="mr-2 h-4 w-4" />
                 Riwayat Retur
               </DropdownMenuItem>
             </Link>

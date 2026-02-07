@@ -22,8 +22,9 @@ function PrintersContent() {
   const status = searchParams.get('status') || 'all';
   const sortBy =
     (searchParams.get('sortBy') as 'name' | 'createdAt' | 'updatedAt') ||
-    'name';
-  const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'asc';
+    undefined;
+  const sortOrder =
+    (searchParams.get('sortOrder') as 'asc' | 'desc') || undefined;
   // const type = searchParams.get('type') || 'all'; // TODO: Enable if backend supports filtering by type
 
   const {

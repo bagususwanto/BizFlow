@@ -17,12 +17,32 @@ export class PrintersService {
    * Find all printers with optional filters
    */
   async findAll(query?: QueryPrintersValues) {
-    const { outletId, type, isActive } = query || {};
+    const {
+      outletId,
+      type,
+      isActive,
+      sortBy = 'name',
+      sortOrder = 'asc',
+    } = query || {};
 
     const where: Record<string, unknown> = {};
     if (outletId) where.outletId = outletId;
     if (type) where.type = type;
     if (isActive !== undefined) where.isActive = isActive;
+
+    // Build orderBy based on sortBy and sortOrder
+    const orderBy: any[] = [];
+    if (sortBy === 'name') {
+      orderBy.push({ name: sortOrder });
+    } else if (sortBy === 'createdAt') {
+      orderBy.push({ createdAt: sortOrder });
+    } else if (sortBy === 'updatedAt') {
+      orderBy.push({ updatedAt: sortOrder });
+    }
+    // Always add default sorting as secondary
+    if (sortBy !== 'name') {
+      orderBy.push({ name: 'asc' });
+    }
 
     const printers = await this.prisma.printer.findMany({
       where,
@@ -31,12 +51,24 @@ export class PrintersService {
           select: { id: true, name: true },
         },
       },
-      orderBy: [{ isDefault: 'desc' }, { name: 'asc' }],
+      orderBy,
     });
+
+    // Calculate summary
+    const [total, active, inactive] = await Promise.all([
+      this.prisma.printer.count({ where }),
+      this.prisma.printer.count({ where: { ...where, isActive: true } }),
+      this.prisma.printer.count({ where: { ...where, isActive: false } }),
+    ]);
 
     return {
       data: printers,
-      meta: { totalItems: printers.length },
+      meta: { totalItems: total },
+      summary: {
+        total,
+        active,
+        inactive,
+      },
     };
   }
 

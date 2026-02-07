@@ -31,6 +31,11 @@ export interface PrintersResponse {
     totalItems: number;
     totalPages: number;
   };
+  summary: {
+    total: number;
+    active: number;
+    inactive: number;
+  };
 }
 
 class PrintersService {

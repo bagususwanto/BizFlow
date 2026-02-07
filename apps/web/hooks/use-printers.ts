@@ -49,6 +49,7 @@ export function usePrinters(params?: QueryPrintersValues) {
   return {
     printers: query.data?.data || [],
     meta: query.data?.meta,
+    summary: query.data?.summary,
     isLoading: query.isLoading,
     isError: query.isError,
     deletePrinter: deleteMutation.mutate,

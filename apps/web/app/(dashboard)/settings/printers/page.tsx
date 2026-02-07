@@ -20,11 +20,16 @@ function PrintersContent() {
   const pageSize = Number(searchParams.get('pageSize')) || 10;
   const search = searchParams.get('search') || '';
   const status = searchParams.get('status') || 'all';
+  const sortBy =
+    (searchParams.get('sortBy') as 'name' | 'createdAt' | 'updatedAt') ||
+    'name';
+  const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'asc';
   // const type = searchParams.get('type') || 'all'; // TODO: Enable if backend supports filtering by type
 
   const {
     printers,
     meta,
+    summary,
     isLoading,
     deletePrinter,
     isDeleting,
@@ -37,8 +42,8 @@ function PrintersContent() {
     // search, // Backend implementation needed for search (currently supported)
     isActive:
       status === 'active' ? true : status === 'inactive' ? false : undefined,
-    sortBy: 'name',
-    sortOrder: 'asc',
+    sortBy,
+    sortOrder,
     // type: type !== 'all' ? (type as 'network' | 'usb') : undefined,
   });
 
@@ -103,7 +108,24 @@ function PrintersContent() {
         totalItems={metaData.totalItems}
         onPageChange={(p) => updateUrl({ page: p })}
         onPageSizeChange={(s) => updateUrl({ pageSize: s, page: 1 })}
-        // Sorting (Not implemented on backend cleanly for all fields yet, skipping for now)
+        summary={
+          summary
+            ? {
+                total: summary.total,
+                active: summary.active,
+                inactive: summary.inactive,
+              }
+            : undefined
+        }
+        // Sorting
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        onSortChange={(field) => {
+          // Toggle sort order if clicking the same field
+          const newOrder =
+            field === sortBy && sortOrder === 'asc' ? 'desc' : 'asc';
+          updateUrl({ sortBy: field, sortOrder: newOrder, page: 1 });
+        }}
         // Search
         search={search}
         onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
@@ -134,17 +156,38 @@ function PrintersContent() {
       <DeleteConfirmDialog
         open={!!printerToDelete}
         onOpenChange={(open) => !open && setPrinterToDelete(null)}
-        title="Hapus Printer?"
-        description={
-          <>
-            Printer{' '}
-            <span className="font-medium text-foreground">
-              {printerToDelete?.name}
-            </span>{' '}
-            akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.
-          </>
+        title={
+          printerToDelete?.isActive
+            ? 'Non-aktifkan Printer?'
+            : 'Aktifkan Printer?'
         }
-        confirmLabel="Hapus Permanen"
+        description={
+          printerToDelete?.isActive ? (
+            <>
+              Printer{' '}
+              <span className="font-medium text-foreground">
+                {printerToDelete?.name}
+              </span>{' '}
+              akan dinonaktifkan. Data printer tetap tersimpan.
+            </>
+          ) : (
+            <>
+              <p>
+                Printer{' '}
+                <span className="font-medium text-foreground">
+                  {printerToDelete?.name}
+                </span>{' '}
+                akan dihapus secara permanen. Tindakan ini tidak dapat
+                dibatalkan.
+              </p>
+              <p className="mt-2 text-sm text-warning">
+                Peringatan: Jika printer masih memiliki riwayat transaksi,
+                sistem akan menolak penghapusan permanen.
+              </p>
+            </>
+          )
+        }
+        confirmLabel={printerToDelete?.isActive ? 'Non-aktifkan' : 'Aktifkan'}
         isDeleting={isDeleting}
         onConfirm={() => {
           if (printerToDelete) {

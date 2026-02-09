@@ -455,7 +455,9 @@ export class StockService {
         where.createdAt.gte = new Date(dateFrom);
       }
       if (dateTo) {
-        where.createdAt.lte = new Date(dateTo);
+        const endOfDay = new Date(dateTo);
+        endOfDay.setHours(23, 59, 59, 999);
+        where.createdAt.lte = endOfDay;
       }
     }
 
@@ -492,17 +494,18 @@ export class StockService {
     // Calculate opening balance (movements before dateFrom)
     let openingBalance = 0;
     if (dateFrom) {
-      const openingMovements = await this.prisma.stockMovement.findMany({
+      const aggregations = await this.prisma.stockMovement.aggregate({
+        _sum: {
+          quantity: true,
+        },
         where: {
           variantId,
           ...(warehouseId && { warehouseId }),
           createdAt: { lt: new Date(dateFrom) },
         },
       });
-      openingBalance = openingMovements.reduce(
-        (sum, m) => sum + Number(m.quantity),
-        0,
-      );
+
+      openingBalance = Number(aggregations._sum.quantity) || 0;
     }
 
     // Get movements within date range

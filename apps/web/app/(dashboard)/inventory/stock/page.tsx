@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useMemo } from 'react';
+import { Suspense, useMemo, useState } from 'react';
 import { useStocks } from '@/hooks/use-stock';
 import { useWarehouses } from '@/hooks/use-warehouses';
 import { useActiveCategories } from '@/hooks/use-categories';
@@ -8,7 +8,9 @@ import { columns } from './columns';
 import { useDebounce } from '@/hooks/use-debounce';
 import { DataListPage } from '@/components/shared/data-list-page';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import { Loader2, Box, Layers, Warehouse } from 'lucide-react';
+import { Loader2, Box, Layers, Warehouse, History } from 'lucide-react';
+import { Button } from '@bizflow/ui';
+import { StockCardDialog } from '../movements/stock-card-dialog';
 
 function StockContent() {
   const router = useRouter();
@@ -82,60 +84,91 @@ function StockContent() {
     [data?.summary],
   );
 
+  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
+    null,
+  );
+
+  const columnsWithActions = useMemo(() => {
+    const actionColumn = {
+      id: 'actions',
+      header: '',
+      cell: ({ row }: any) => (
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setSelectedVariantId(row.original.variantId)}
+          title="Lihat Kartu Stok"
+        >
+          <History className="h-4 w-4" />
+        </Button>
+      ),
+    };
+    return [...columns, actionColumn];
+  }, []);
+
   return (
-    <DataListPage
-      title="Stok Overview"
-      description="Monitor stok barang di semua gudang"
-      data={data?.data || []}
-      columns={columns}
-      isLoading={isLoading}
-      // Pagination
-      page={page}
-      pageSize={pageSize}
-      totalPages={totalPages}
-      totalItems={totalItems}
-      onPageChange={(p) => updateUrl({ page: p })}
-      onPageSizeChange={(s) => updateUrl({ pageSize: s, page: 1 })}
-      // Sorting
-      sortBy={sortBy}
-      sortOrder={sortOrder}
-      onSortChange={(field) => {
-        if (sortBy === field) {
-          updateUrl({ sortOrder: sortOrder === 'asc' ? 'desc' : 'asc' });
-        } else {
-          updateUrl({ sortBy: field, sortOrder: 'asc' });
-        }
-      }}
-      // Search
-      search={search}
-      onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
-      searchPlaceholder="Cari produk atau SKU..."
-      // Filters
-      filterValues={{ warehouseId, categoryId }}
-      onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
-      onReset={() => router.push(pathname)}
-      filters={[
-        {
-          key: 'warehouseId',
-          label: 'Gudang',
-          options:
-            warehouses?.map((w) => ({ label: w.name, value: w.id })) || [],
-          width: 'w-full md:w-[200px]',
-        },
-        {
-          key: 'categoryId',
-          label: 'Kategori',
-          options:
-            categories?.map((c) => ({ label: c.name, value: c.id })) || [],
-          width: 'w-full md:w-[200px]',
-        },
-      ]}
-      // Summary
-      summary={data?.summary}
-      summaryConfig={summaryConfig}
-      // Actions
-      onRefresh={refetch}
-    />
+    <>
+      <DataListPage
+        title="Stok Overview"
+        description="Monitor stok barang di semua gudang"
+        data={data?.data || []}
+        columns={columnsWithActions}
+        isLoading={isLoading}
+        // Pagination
+        page={page}
+        pageSize={pageSize}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        onPageChange={(p) => updateUrl({ page: p })}
+        onPageSizeChange={(s) => updateUrl({ pageSize: s, page: 1 })}
+        // Sorting
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        onSortChange={(field) => {
+          if (sortBy === field) {
+            updateUrl({ sortOrder: sortOrder === 'asc' ? 'desc' : 'asc' });
+          } else {
+            updateUrl({ sortBy: field, sortOrder: 'asc' });
+          }
+        }}
+        // Search
+        search={search}
+        onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
+        searchPlaceholder="Cari produk atau SKU..."
+        // Filters
+        filterValues={{ warehouseId, categoryId }}
+        onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
+        onReset={() => router.push(pathname)}
+        filters={[
+          {
+            key: 'warehouseId',
+            label: 'Gudang',
+            options:
+              warehouses?.map((w) => ({ label: w.name, value: w.id })) || [],
+            width: 'w-full md:w-[200px]',
+          },
+          {
+            key: 'categoryId',
+            label: 'Kategori',
+            options:
+              categories?.map((c) => ({ label: c.name, value: c.id })) || [],
+            width: 'w-full md:w-[200px]',
+          },
+        ]}
+        // Summary
+        summary={data?.summary}
+        summaryConfig={summaryConfig}
+        // Actions
+        onRefresh={refetch}
+      />
+
+      <StockCardDialog
+        open={!!selectedVariantId}
+        onOpenChange={(open) => !open && setSelectedVariantId(null)}
+        variantId={selectedVariantId}
+        warehouseId={warehouseId !== 'all' ? warehouseId : undefined}
+      />
+    </>
   );
 }
 

@@ -1,6 +1,4 @@
-'use client';
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -14,12 +12,29 @@ import {
   TableBody,
   TableCell,
   Badge,
+  Button,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  Calendar,
 } from '@bizflow/ui';
 import { useStockCard } from '@/hooks/use-stock-movements';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
-import { Loader2, ArrowDown, ArrowUp, ArrowRight } from 'lucide-react';
+import {
+  Loader2,
+  ArrowDown,
+  ArrowUp,
+  ArrowRight,
+  Calendar as CalendarIcon,
+} from 'lucide-react';
 import { StockMovement } from '@/services/stock.service';
+import { cn } from '@/lib/utils';
+
+type DateRange = {
+  from: Date | undefined;
+  to?: Date | undefined;
+};
 
 interface StockCardDialogProps {
   variantId: string | null;
@@ -34,10 +49,19 @@ export function StockCardDialog({
   onOpenChange,
   warehouseId,
 }: StockCardDialogProps) {
-  // defaulting to showing all history for now
-  // In real app we might want to default to `dateFrom` = start of month
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+
+  // Reset filter when dialog opens/closes or variant changes
+  useEffect(() => {
+    if (!open) {
+      setDateRange(undefined);
+    }
+  }, [open, variantId]);
+
   const { data, isLoading } = useStockCard(variantId || '', {
     warehouseId: warehouseId !== 'all' ? warehouseId : undefined,
+    dateFrom: dateRange?.from ? dateRange.from.toISOString() : undefined,
+    dateTo: dateRange?.to ? dateRange.to.toISOString() : undefined,
   });
 
   const variantName = data?.variant
@@ -48,12 +72,52 @@ export function StockCardDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[80vh] flex flex-col">
-        <DialogHeader>
-          <DialogTitle>{variantName}</DialogTitle>
-          <DialogDescription>
-            Riwayat pergerakan stok dan saldo berjalan
-          </DialogDescription>
+      <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
+        <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+          <div className="space-y-1">
+            <DialogTitle>{variantName}</DialogTitle>
+            <DialogDescription>
+              Riwayat pergerakan stok dan saldo berjalan
+            </DialogDescription>
+          </div>
+          <div className="flex items-center gap-2 mr-4">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  id="date"
+                  variant={'outline'}
+                  className={cn(
+                    'w-[260px] justify-start text-left font-normal',
+                    !dateRange && 'text-muted-foreground',
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {dateRange?.from ? (
+                    dateRange.to ? (
+                      <>
+                        {format(dateRange.from, 'dd MMM yyyy', { locale: id })}{' '}
+                        - {format(dateRange.to, 'dd MMM yyyy', { locale: id })}
+                      </>
+                    ) : (
+                      format(dateRange.from, 'dd MMM yyyy', { locale: id })
+                    )
+                  ) : (
+                    <span>Pilih Tanggal</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="end">
+                <Calendar
+                  mode="range"
+                  defaultMonth={dateRange?.from}
+                  selected={dateRange}
+                  onSelect={setDateRange}
+                  numberOfMonths={2}
+                  className="min-w-[400px]"
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
         </DialogHeader>
 
         {isLoading ? (
@@ -61,7 +125,7 @@ export function StockCardDialog({
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
           </div>
         ) : (
-          <div className="flex-1 overflow-auto">
+          <div className="flex-1 overflow-auto min-h-0">
             <div className="grid grid-cols-3 gap-4 mb-4">
               <div className="rounded-lg border p-3 text-center">
                 <div className="text-sm font-medium text-muted-foreground">

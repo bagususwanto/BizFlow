@@ -10,6 +10,7 @@ export const columns: ColumnDef<StockItem>[] = [
   {
     accessorKey: 'variant.product.name',
     header: 'Produk',
+    meta: { title: 'Produk' },
     cell: ({ row }) => {
       const variant = row.original.variant;
       const product = variant.product;
@@ -30,6 +31,7 @@ export const columns: ColumnDef<StockItem>[] = [
   {
     accessorKey: 'variant.sku',
     header: 'SKU',
+    meta: { title: 'SKU' },
     cell: ({ row }) => (
       <span className="font-mono text-xs">{row.original.variant.sku}</span>
     ),
@@ -37,6 +39,7 @@ export const columns: ColumnDef<StockItem>[] = [
   {
     accessorKey: 'variant.product.category.name',
     header: 'Kategori',
+    meta: { title: 'Kategori' },
     cell: ({ row }) => (
       <Badge variant="outline">
         {row.original.variant.product.category.name}
@@ -46,6 +49,7 @@ export const columns: ColumnDef<StockItem>[] = [
   {
     accessorKey: 'warehouse.name',
     header: 'Gudang',
+    meta: { title: 'Gudang' },
     cell: ({ row }) => (
       <div className="flex flex-col">
         <span>{row.original.warehouse.name}</span>
@@ -58,6 +62,7 @@ export const columns: ColumnDef<StockItem>[] = [
   {
     accessorKey: 'quantity',
     header: () => <div className="text-right">Total Stok</div>,
+    meta: { title: 'Total Stok' },
     cell: ({ row }) => {
       const unit = row.original.variant.product.unit.symbol;
       return (
@@ -70,6 +75,7 @@ export const columns: ColumnDef<StockItem>[] = [
   {
     accessorKey: 'reservedQty',
     header: () => <div className="text-right">Dipesan</div>,
+    meta: { title: 'Dipesan' },
     cell: ({ row }) => {
       const unit = row.original.variant.product.unit.symbol;
       return (
@@ -82,6 +88,7 @@ export const columns: ColumnDef<StockItem>[] = [
   {
     accessorKey: 'availableQty',
     header: () => <div className="text-right">Tersedia</div>,
+    meta: { title: 'Tersedia' },
     cell: ({ row }) => {
       const unit = row.original.variant.product.unit.symbol;
       const available = row.original.availableQty;
@@ -98,6 +105,7 @@ export const columns: ColumnDef<StockItem>[] = [
   {
     accessorKey: 'updatedAt',
     header: 'Update Terakhir',
+    meta: { title: 'Update Terakhir' },
     cell: ({ row }) => (
       <span className="text-xs text-muted-foreground">
         {format(new Date(row.original.updatedAt), 'dd MMM yyyy HH:mm', {

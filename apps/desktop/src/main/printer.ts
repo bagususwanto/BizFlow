@@ -51,23 +51,26 @@ export function registerPrinterHandlers() {
   /**
    * Get list of available system printers
    */
-  ipcMain.handle('get-system-printers', async () => {
+  ipcMain.handle('get-system-printers', async (event) => {
     try {
-      // This will list all system printers
-      // On Windows: uses win32 API
-      // On macOS: uses CUPS
-      // On Linux: uses CUPS
-      const printer = new ThermalPrinter({
-        type: PrinterTypes.EPSON,
-        interface: 'printer:dummy', // Dummy interface just to access methods
-      });
+      // Use Electron's built-in printer enumeration
+      // This works cross-platform (Windows, macOS, Linux)
+      // @ts-ignore - getPrinters exists on WebContents at runtime in Electron
+      const printers = event.sender.getPrinters();
 
-      // Note: node-thermal-printer doesn't have a built-in method to list printers
-      // We'll return a placeholder for now
-      // In production, you might want to use 'printer' npm package or platform-specific APIs
+      // Transform to our expected format
+      const formattedPrinters = printers.map((printer: any) => ({
+        name: printer.name,
+        displayName: printer.displayName || printer.name,
+        description: printer.description || '',
+        status: printer.status || 0,
+        isDefault: printer.isDefault || false,
+        options: printer.options || {},
+      }));
+
       return {
         success: true,
-        printers: [], // TODO: Implement actual printer discovery
+        printers: formattedPrinters,
       };
     } catch (error: any) {
       console.error('Get printers error:', error);

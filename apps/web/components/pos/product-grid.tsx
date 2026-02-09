@@ -11,6 +11,8 @@ import { useDebounce } from '@/hooks/use-debounce';
 import { Skeleton } from '@bizflow/ui';
 import { Badge } from '@bizflow/ui';
 import { cn } from '@bizflow/ui';
+import { useBarcodeScanner } from '@/hooks/use-barcode-scanner';
+import { toast } from 'sonner';
 
 export interface ProductGridHandle {
   focusSearch: () => void;
@@ -39,6 +41,42 @@ export const ProductGrid = forwardRef<ProductGridHandle, ProductGridProps>(
     });
 
     const products = data?.data || [];
+
+    // Barcode scanner integration for quick sale
+    useBarcodeScanner({
+      onScan: (barcode) => {
+        // Search for product by barcode
+        const product = products.find(
+          (p) => p.barcode === barcode || p.sku === barcode,
+        );
+
+        if (product) {
+          // Check if out of stock
+          const isService = product.isService;
+          const stock = product.stock || 0;
+          const isOutOfStock = !isService && stock <= 0;
+
+          if (isOutOfStock) {
+            toast.error(`${product.name} habis stok`);
+            return;
+          }
+
+          // Add to cart
+          addItem({ ...product, price: product.price });
+          toast.success(`${product.name} ditambahkan ke keranjang`, {
+            description: barcode,
+          });
+        } else {
+          // Product not found, try searching
+          setSearch(barcode);
+          toast.info('Produk tidak ditemukan, mencari...', {
+            description: barcode,
+          });
+        }
+      },
+      minLength: 3, // Minimum barcode length
+      timeThreshold: 50, // Fast typing detection for scanner
+    });
 
     return (
       <div className="flex h-full flex-col gap-4">

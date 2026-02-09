@@ -1030,6 +1030,86 @@ async function main() {
 
   console.log('✅ App settings created:', defaultSettings.length, 'settings');
 
+  // ============================
+  // Create secondary warehouse
+  // ============================
+  const storeWarehouse = await prisma.warehouse.upsert({
+    where: { code: 'WH-STORE' },
+    update: {},
+    create: {
+      code: 'WH-STORE',
+      name: 'Toko Cabang',
+      address: 'Jl. Cabang No. 456',
+      isDefault: false,
+      isActive: true,
+    },
+  });
+
+  console.log('✅ Secondary warehouse created:', storeWarehouse.name);
+
+  // ============================
+  // Create dummy stock
+  // ============================
+
+  // Stock for Main Warehouse
+  const mainStocks = [
+    { variantId: mouseBlack.id, quantity: 50 },
+    { variantId: mouseGrey.id, quantity: 30 },
+    { variantId: keyboardBlue.id, quantity: 20 },
+    { variantId: keyboardRed.id, quantity: 15 },
+    { variantId: airMineralDefault.id, quantity: 100 },
+    { variantId: snackDefault.id, quantity: 50 },
+  ];
+
+  for (const stock of mainStocks) {
+    await prisma.stock.upsert({
+      where: {
+        variantId_warehouseId: {
+          variantId: stock.variantId,
+          warehouseId: mainWarehouse.id,
+        },
+      },
+      update: {
+        quantity: stock.quantity,
+      },
+      create: {
+        variantId: stock.variantId,
+        warehouseId: mainWarehouse.id,
+        quantity: stock.quantity,
+      },
+    });
+  }
+
+  // Stock for Store Warehouse
+  const storeStocks = [
+    { variantId: mouseBlack.id, quantity: 10 },
+    { variantId: mouseGrey.id, quantity: 5 },
+    { variantId: keyboardBlue.id, quantity: 5 },
+    { variantId: airMineralDefault.id, quantity: 50 },
+    { variantId: snackDefault.id, quantity: 20 },
+  ];
+
+  for (const stock of storeStocks) {
+    await prisma.stock.upsert({
+      where: {
+        variantId_warehouseId: {
+          variantId: stock.variantId,
+          warehouseId: storeWarehouse.id,
+        },
+      },
+      update: {
+        quantity: stock.quantity,
+      },
+      create: {
+        variantId: stock.variantId,
+        warehouseId: storeWarehouse.id,
+        quantity: stock.quantity,
+      },
+    });
+  }
+
+  console.log('✅ Dummy stocks created');
+
   console.log('\n🎉 Database seeded successfully!');
   console.log('\n📋 Default credentials:');
   console.log('   Username: admin');

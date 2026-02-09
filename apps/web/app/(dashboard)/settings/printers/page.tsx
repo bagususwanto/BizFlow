@@ -37,6 +37,8 @@ function PrintersContent() {
 
     bulkDeletePrinters,
     isBulkDeleting,
+    testPrint,
+    isTesting,
     refetch,
   } = usePrinters({
     page,
@@ -75,10 +77,15 @@ function PrintersContent() {
     router.push(`${pathname}?${queryString}`);
   };
 
+  const handleTestPrint = (printer: Printer) => {
+    testPrint(printer.id);
+  };
+
   const columns = useMemo(
     () =>
       getColumns({
         onDelete: setPrinterToDelete,
+        onTestPrint: handleTestPrint,
       }),
     [setPrinterToDelete],
   );

@@ -11,7 +11,9 @@ export const queryStockSchema = z.object({
   warehouseId: z.string().optional(),
   categoryId: z.string().optional(),
   hasStock: z.coerce.boolean().optional(),
-  sortBy: z.enum(['name', 'quantity', 'warehouse', 'sku']).optional(),
+  sortBy: z
+    .enum(['name', 'quantity', 'warehouse', 'sku', 'updatedAt'])
+    .optional(),
   sortOrder: z.enum(['asc', 'desc']).optional(),
 });
 

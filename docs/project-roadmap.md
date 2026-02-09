@@ -162,10 +162,10 @@ Referensi: [06-inventory-management.md](file:///Users/bagus/Project/personal/Biz
 
 | Task                             | Status | Priority |
 | -------------------------------- | ------ | -------- |
-| Stock overview per produk/lokasi | [ ]    | High     |
-| Auto deduct stock on sale        | [ ]    | High     |
+| Stock overview per produk/lokasi | [x]    | High     |
+| Auto deduct stock on sale        | [x]    | High     |
 | Stock movement tracking (in/out) | [ ]    | High     |
-| Low stock alert                  | [ ]    | Medium   |
+| Low stock alert                  | [x]    | Medium   |
 
 **API Endpoints**: `/api/v1/inventory/stock/*`
 

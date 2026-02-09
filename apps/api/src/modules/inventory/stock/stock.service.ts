@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { QueryStockValues } from '@bizflow/types';
+import {
+  QueryStockValues,
+  QueryStockMovementValues,
+  QueryStockCardValues,
+} from '@bizflow/types';
 
 import { PrismaService } from '../../../prisma';
 import { successResponse, paginatedResponse } from '../../../common/utils';
@@ -284,5 +288,268 @@ export class StockService {
       totalWarehouses,
       totalVariantsWithStock: totalVariantsWithStock.length,
     };
+  }
+
+  /**
+   * Get all stock movements with pagination and filters
+   */
+  async findAllMovements(query: QueryStockMovementValues) {
+    const {
+      page = 1,
+      pageSize = 10,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+      search,
+      warehouseId,
+      variantId,
+      type,
+      dateFrom,
+      dateTo,
+    } = query;
+
+    const pageNum = Number(page) || 1;
+    const sizeNum = Number(pageSize) || 10;
+    const skip = (pageNum - 1) * sizeNum;
+
+    const where: any = {};
+
+    // Filter by warehouse
+    if (warehouseId) {
+      where.warehouseId = warehouseId;
+    }
+
+    // Filter by variant
+    if (variantId) {
+      where.variantId = variantId;
+    }
+
+    // Filter by type
+    if (type) {
+      where.type = type;
+    }
+
+    // Filter by date range
+    if (dateFrom || dateTo) {
+      where.createdAt = {};
+      if (dateFrom) {
+        where.createdAt.gte = new Date(dateFrom);
+      }
+      if (dateTo) {
+        where.createdAt.lte = new Date(dateTo);
+      }
+    }
+
+    // Search by product name or SKU
+    if (search) {
+      where.variant = {
+        OR: [
+          { name: { contains: search } },
+          { sku: { contains: search } },
+          {
+            product: {
+              name: { contains: search },
+            },
+          },
+          {
+            product: {
+              sku: { contains: search },
+            },
+          },
+        ],
+      };
+    }
+
+    // Build orderBy
+    const orderBy: any = {};
+    if (sortBy === 'createdAt') {
+      orderBy.createdAt = sortOrder;
+    } else if (sortBy === 'type') {
+      orderBy.type = sortOrder;
+    } else if (sortBy === 'quantity') {
+      orderBy.quantity = sortOrder;
+    } else {
+      orderBy.createdAt = sortOrder;
+    }
+
+    const [totalItems, movements] = await Promise.all([
+      this.prisma.stockMovement.count({ where }),
+      this.prisma.stockMovement.findMany({
+        where,
+        include: {
+          variant: {
+            select: {
+              id: true,
+              sku: true,
+              name: true,
+              product: {
+                select: {
+                  id: true,
+                  name: true,
+                  sku: true,
+                  unit: {
+                    select: {
+                      symbol: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          warehouse: {
+            select: {
+              id: true,
+              code: true,
+              name: true,
+            },
+          },
+        },
+        orderBy,
+        skip,
+        take: sizeNum,
+      }),
+    ]);
+
+    const totalPages = Math.ceil(totalItems / sizeNum);
+
+    // Map to response format
+    const mappedMovements = movements.map((movement) => ({
+      id: movement.id,
+      variantId: movement.variantId,
+      warehouseId: movement.warehouseId,
+      type: movement.type,
+      quantity: Number(movement.quantity),
+      referenceType: movement.referenceType,
+      referenceId: movement.referenceId,
+      notes: movement.notes,
+      createdAt: movement.createdAt,
+      createdBy: movement.createdBy,
+      variant: movement.variant,
+      warehouse: movement.warehouse,
+    }));
+
+    return paginatedResponse(mappedMovements, {
+      page: pageNum,
+      pageSize: sizeNum,
+      totalItems,
+      totalPages,
+    });
+  }
+
+  /**
+   * Get stock card for a specific variant (movement history with running balance)
+   */
+  async findStockCard(variantId: string, query: QueryStockCardValues) {
+    const { warehouseId, dateFrom, dateTo } = query;
+
+    const where: any = { variantId };
+
+    // Filter by warehouse
+    if (warehouseId) {
+      where.warehouseId = warehouseId;
+    }
+
+    // Filter by date range
+    if (dateFrom || dateTo) {
+      where.createdAt = {};
+      if (dateFrom) {
+        where.createdAt.gte = new Date(dateFrom);
+      }
+      if (dateTo) {
+        where.createdAt.lte = new Date(dateTo);
+      }
+    }
+
+    // Get variant info
+    const variant = await this.prisma.productVariant.findUnique({
+      where: { id: variantId },
+      include: {
+        product: {
+          select: {
+            id: true,
+            name: true,
+            sku: true,
+            unit: {
+              select: {
+                id: true,
+                name: true,
+                symbol: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!variant) {
+      return successResponse({
+        variant: null,
+        openingBalance: 0,
+        closingBalance: 0,
+        movements: [],
+      });
+    }
+
+    // Calculate opening balance (movements before dateFrom)
+    let openingBalance = 0;
+    if (dateFrom) {
+      const openingMovements = await this.prisma.stockMovement.findMany({
+        where: {
+          variantId,
+          ...(warehouseId && { warehouseId }),
+          createdAt: { lt: new Date(dateFrom) },
+        },
+      });
+      openingBalance = openingMovements.reduce(
+        (sum, m) => sum + Number(m.quantity),
+        0,
+      );
+    }
+
+    // Get movements within date range
+    const movements = await this.prisma.stockMovement.findMany({
+      where,
+      include: {
+        warehouse: {
+          select: {
+            id: true,
+            code: true,
+            name: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    // Calculate running balance
+    let runningBalance = openingBalance;
+    const movementsWithBalance = movements.map((movement) => {
+      const qty = Number(movement.quantity);
+      runningBalance += qty;
+
+      return {
+        id: movement.id,
+        type: movement.type,
+        quantity: qty,
+        balance: runningBalance,
+        referenceType: movement.referenceType,
+        referenceId: movement.referenceId,
+        notes: movement.notes,
+        warehouse: movement.warehouse,
+        createdAt: movement.createdAt,
+        createdBy: movement.createdBy,
+      };
+    });
+
+    return successResponse({
+      variant: {
+        id: variant.id,
+        sku: variant.sku,
+        name: variant.name,
+        product: variant.product,
+      },
+      openingBalance,
+      closingBalance: runningBalance,
+      movements: movementsWithBalance,
+    });
   }
 }

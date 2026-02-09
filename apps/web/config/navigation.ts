@@ -73,6 +73,10 @@ export const navigationConfig = {
           url: '/inventory/stock',
         },
         {
+          title: 'Riwayat Stok',
+          url: '/inventory/movements',
+        },
+        {
           title: 'Penyesuaian',
           url: '/inventory/adjustments',
         },

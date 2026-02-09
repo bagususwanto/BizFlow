@@ -14,3 +14,4 @@ export * from './unit';
 export * from './user';
 export * from './settings';
 export * from './warehouse';
+export * from './stock';

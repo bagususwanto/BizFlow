@@ -17,9 +17,14 @@ async function bootstrap() {
   // Global prefix for all routes
   app.setGlobalPrefix('api/v1');
 
+  // Parse comma-separated origins from environment variable
+  const allowedOrigins = process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(',').map((origin) => origin.trim())
+    : ['http://localhost:3001'];
+
   // Enable CORS
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3001',
+    origin: allowedOrigins,
     credentials: true,
   });
 

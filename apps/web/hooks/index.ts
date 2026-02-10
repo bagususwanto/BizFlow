@@ -8,6 +8,12 @@ export * from './use-auth-mutations';
 export * from './use-barcode-scanner';
 export * from './use-categories';
 export * from './use-customers';
+export * from './use-permissions';
+export * from './use-dashboard';
+export * from './use-sales-report';
+export * from './use-stock-report';
+// export * from './use-stock'; // Already likely exported or I should check if it exists
+// export * from './use-stock-movements'; // Same
 export * from './use-debounce';
 export * from './use-keyboard-shortcuts';
 export * from './use-outlets';

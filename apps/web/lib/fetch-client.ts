@@ -105,6 +105,33 @@ class FetchClient {
   async delete<T>(endpoint: string, options?: FetchOptions): Promise<T> {
     return this.request<T>(endpoint, { ...options, method: 'DELETE' });
   }
+
+  async getBlob(endpoint: string, options?: FetchOptions): Promise<Blob> {
+    const { accessToken } = useAuthStore.getState();
+
+    const headers: Record<string, string> = {
+      ...(options?.headers as Record<string, string>),
+    };
+
+    if (accessToken) {
+      headers['Authorization'] = `Bearer ${accessToken}`;
+    }
+
+    const config: RequestInit = {
+      ...options,
+      headers,
+      method: 'GET',
+    };
+
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Gagal mengunduh file');
+    }
+
+    return response.blob();
+  }
 }
 
 export const apiClient = new FetchClient();

@@ -179,10 +179,10 @@ Referensi: [08-reporting-analytics.md](file:///Users/bagus/Project/personal/BizF
 
 | Task                                        | Status | Priority |
 | ------------------------------------------- | ------ | -------- |
-| Dashboard ringkasan bisnis                  | [ ]    | High     |
-| Laporan penjualan (harian/mingguan/bulanan) | [ ]    | High     |
-| Laporan stok                                | [ ]    | High     |
-| Export PDF/Excel                            | [ ]    | High     |
+| Dashboard ringkasan bisnis                  | [x]    | High     |
+| Laporan penjualan (harian/mingguan/bulanan) | [x]    | High     |
+| Laporan stok                                | [x]    | High     |
+| Export PDF/Excel                            | [x]    | High     |
 
 **API Endpoints**: `/api/v1/reports/dashboard/*`, `/api/v1/reports/sales/*`, `/api/v1/reports/inventory/*`
 

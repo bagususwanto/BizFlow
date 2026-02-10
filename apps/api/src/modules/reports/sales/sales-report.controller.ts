@@ -15,11 +15,18 @@ export class SalesReportController {
   @Permissions(Permission.Reports.Read)
   async getReport(@Query() query: QuerySalesReportDto) {
     const data = await this.salesReportService.getReport(query);
-    return successResponse(data.details, {
-      page: data.meta.page,
-      pageSize: data.meta.pageSize,
-      totalItems: data.meta.totalItems,
-      totalPages: data.meta.totalPages,
-    });
+    return successResponse(
+      {
+        summary: data.summary,
+        dailyBreakdown: data.dailyBreakdown,
+        details: data.details,
+      },
+      {
+        page: data.meta.page,
+        pageSize: data.meta.pageSize,
+        totalItems: data.meta.totalItems,
+        totalPages: data.meta.totalPages,
+      },
+    );
   }
 }

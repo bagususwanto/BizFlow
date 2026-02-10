@@ -22,6 +22,11 @@ import { TransactionsModule } from './modules/pos/transactions';
 import { PaymentsModule } from './modules/pos/payments';
 import { ReturnsModule } from './modules/pos/returns';
 
+import { DashboardReportModule } from './modules/reports/dashboard';
+import { SalesReportModule } from './modules/reports/sales';
+import { StockReportModule } from './modules/reports/inventory';
+import { ExportModule } from './modules/reports/export';
+
 import { UploadModule } from './modules/upload';
 
 import { AppService } from './app.service';
@@ -54,6 +59,11 @@ import { AppController } from './app.controller';
     TransactionsModule,
     PaymentsModule,
     ReturnsModule,
+    // Reports modules
+    DashboardReportModule,
+    SalesReportModule,
+    StockReportModule,
+    ExportModule,
     // Upload module
     UploadModule,
   ],

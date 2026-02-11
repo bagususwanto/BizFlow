@@ -18,6 +18,7 @@ import {
   ShoppingCart,
   Percent,
   TrendingUp,
+  X,
 } from 'lucide-react';
 import {
   Button,
@@ -99,6 +100,20 @@ function SalesReportContent() {
     router.push(`${pathname}?${newSearchParams.toString()}`, { scroll: false });
   };
 
+  const isFiltered =
+    period !== 'today' || outletId !== 'all' || categoryId !== 'all';
+
+  const onReset = () => {
+    updateUrl({
+      period: 'today',
+      outletId: 'all',
+      categoryId: 'all',
+      startDate: null,
+      endDate: null,
+      page: 1,
+    });
+  };
+
   const handleExport = async (format: 'excel' | 'pdf') => {
     try {
       toast.promise(
@@ -166,7 +181,7 @@ function SalesReportContent() {
       </div>
       {/* Filters */}
       <Card>
-        <CardContent className="p-4 grid gap-4 grid-cols-1 md:grid-cols-4">
+        <CardContent className="p-4 grid gap-4 grid-cols-1 md:grid-cols-4 items-end">
           <div className="space-y-2">
             <label className="text-sm font-medium">Periode</label>
             <Select
@@ -234,7 +249,17 @@ function SalesReportContent() {
             </Select>
           </div>
 
-          {/* Apply Button or just auto-apply */}
+          {/* Reset Button */}
+          {isFiltered && (
+            <Button
+              variant="ghost"
+              onClick={onReset}
+              className="w-full md:w-auto"
+            >
+              Reset
+              <X className="ml-2 h-4 w-4" />
+            </Button>
+          )}
         </CardContent>
       </Card>
       {/* Summary Cards */}

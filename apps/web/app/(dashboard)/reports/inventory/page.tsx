@@ -15,6 +15,7 @@ import {
   AlertTriangle,
   XCircle,
   Filter,
+  X,
 } from 'lucide-react';
 import {
   Button,
@@ -85,6 +86,22 @@ function StockReportContent() {
       }
     }
     router.push(`${pathname}?${newSearchParams.toString()}`, { scroll: false });
+  };
+
+  const isFiltered =
+    warehouseId !== 'all' ||
+    categoryId !== 'all' ||
+    lowStockOnly ||
+    search !== '';
+
+  const onReset = () => {
+    updateUrl({
+      warehouseId: 'all',
+      categoryId: 'all',
+      lowStockOnly: false,
+      search: '',
+      page: 1,
+    });
   };
 
   const handleExport = async (format: 'excel' | 'pdf') => {
@@ -272,6 +289,16 @@ function StockReportContent() {
               }
             />
             <Label htmlFor="low-stock">Hanya Stok Menipis/Habis</Label>
+            {isFiltered && (
+              <Button
+                variant="ghost"
+                onClick={onReset}
+                className="h-8 px-2 lg:px-3 ml-2"
+              >
+                Reset
+                <X className="ml-2 h-4 w-4" />
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>

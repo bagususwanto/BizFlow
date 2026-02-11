@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+
 import { useDashboard } from '@/hooks/use-dashboard';
 import { usePermissions } from '@/hooks/use-permissions';
 import {
@@ -92,13 +94,19 @@ function DashboardSkeleton() {
 }
 
 export default function DashboardPage() {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { hasPermission } = usePermissions();
   const { data, isLoading, refetch, isRefetching } = useDashboard();
 
   // If user doesn't have permission, show access denied or redirect
   // For now, assuming middleware or layout handles major auth blocks,
   // but we can show a friendly message here.
-  if (!hasPermission(Permission.Reports.Read) && !isLoading) {
+  if (isMounted && !hasPermission(Permission.Reports.Read) && !isLoading) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center p-4">
         <AlertTriangle className="h-12 w-12 text-destructive mb-4" />
@@ -110,7 +118,7 @@ export default function DashboardPage() {
     );
   }
 
-  if (isLoading) {
+  if (!isMounted || isLoading) {
     return (
       <div className="flex flex-1 flex-col gap-4 p-4 md:p-8 pt-6">
         <div className="flex items-center justify-between space-y-2">
@@ -127,7 +135,7 @@ export default function DashboardPage() {
   const recentTransactions = data?.recentTransactions || [];
 
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4 md:p-8 pt-6">
+    <div className="flex flex-1 flex-col space-y-6">
       <div className="flex items-center justify-between space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
         <div className="flex items-center space-x-2">

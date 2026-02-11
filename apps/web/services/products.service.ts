@@ -73,8 +73,12 @@ class ProductsService {
   async getLowStock(params?: { page?: number; pageSize?: number }): Promise<{
     data: {
       id: string;
+      variantId: string;
+      warehouseId: string;
       sku: string;
       name: string;
+      variantName: string;
+      warehouseName: string;
       category: string;
       unit: string;
       minStock: number;

@@ -84,7 +84,7 @@ function StockReportContent() {
         newSearchParams.set(key, String(value));
       }
     }
-    router.push(`${pathname}?${newSearchParams.toString()}`);
+    router.push(`${pathname}?${newSearchParams.toString()}`, { scroll: false });
   };
 
   const handleExport = async (format: 'excel' | 'pdf') => {
@@ -296,7 +296,11 @@ function StockReportContent() {
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious
-                    onClick={() => page > 1 && updateUrl({ page: page - 1 })}
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (page > 1) updateUrl({ page: page - 1 });
+                    }}
                     className={
                       page <= 1
                         ? 'pointer-events-none opacity-50'
@@ -311,8 +315,12 @@ function StockReportContent() {
                     return (
                       <PaginationItem key={p}>
                         <PaginationLink
+                          href="#"
                           isActive={page === p}
-                          onClick={() => updateUrl({ page: p })}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            updateUrl({ page: p });
+                          }}
                           className="cursor-pointer"
                         >
                           {p}
@@ -330,10 +338,12 @@ function StockReportContent() {
 
                 <PaginationItem>
                   <PaginationNext
-                    onClick={() =>
-                      page < data.meta.totalPages &&
-                      updateUrl({ page: page + 1 })
-                    }
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (page < data.meta.totalPages)
+                        updateUrl({ page: page + 1 });
+                    }}
                     className={
                       page >= data.meta.totalPages
                         ? 'pointer-events-none opacity-50'

@@ -320,79 +320,85 @@ export class ProductsService {
   }
 
   /**
-   * Get low stock products (stock less than minStock)
-   * Calculates total stock across all warehouses and variants
-   * Uses raw SQL for efficient database-level pagination and aggregation
+   * Get low stock products (stock less than or equal to minStock)
+   * Checks per-variant per-warehouse to match Stock Report logic
+   * Returns unique products (grouped by product, not by variant/warehouse)
+   */
+  /**
+   * Get low stock products (stock less than or equal to minStock)
+   * Checks per-variant per-warehouse to match Stock Report logic
+   * Returns flat list of low stock items
    */
   async findLowStock(page = 1, pageSize = 10) {
     const skip = (page - 1) * pageSize;
 
-    // Base query for low stock products with aggregation
-    const baseQuery = `
-      FROM Product p
-      LEFT JOIN Category c ON p.categoryId = c.id
-      LEFT JOIN UnitOfMeasure u ON p.unitId = u.id
-      LEFT JOIN ProductVariant pv ON pv.productId = p.id
-      LEFT JOIN Stock s ON s.variantId = pv.id
-      WHERE 
-        p.isActive = 1 
-        AND p.isService = 0 
-        AND p.minStock > 0
-      GROUP BY p.id
-      HAVING COALESCE(SUM(s.quantity), 0) <= p.minStock
-    `;
-
-    // Count query for total items
-    const countResult = await this.prisma.$queryRawUnsafe<[{ total: bigint }]>(`
-      SELECT COUNT(*) as total FROM (
-        SELECT p.id ${baseQuery}
-      ) as subquery
-    `);
-    const totalItems = Number(countResult[0]?.total || 0);
-    const totalPages = Math.ceil(totalItems / pageSize);
-
-    // Data query with pagination
-    const products = await this.prisma.$queryRawUnsafe<
-      {
-        id: string;
-        sku: string;
-        name: string;
-        minStock: number;
-        categoryName: string | null;
-        unitSymbol: string | null;
-        currentStock: number;
-      }[]
-    >(`
-      SELECT 
-        p.id, 
-        p.sku, 
-        p.name, 
-        p.minStock,
-        c.name as categoryName,
-        u.symbol as unitSymbol,
-        COALESCE(SUM(s.quantity), 0) as currentStock
-      ${baseQuery}
-      ORDER BY p.name ASC
-      LIMIT ${pageSize} OFFSET ${skip}
-    `);
-
-    return successResponse(
-      products.map((p) => ({
-        id: p.id,
-        sku: p.sku,
-        name: p.name,
-        category: p.categoryName ?? '-',
-        unit: p.unitSymbol ?? '-',
-        minStock: p.minStock,
-        currentStock: Number(p.currentStock || 0),
-      })),
-      {
-        page,
-        pageSize,
-        totalItems,
-        totalPages,
+    // Get all stock records where quantity <= product.minStock
+    // This matches the Stock Report logic (per-variant-per-warehouse)
+    const allLowStocks = await this.prisma.stock.findMany({
+      where: {
+        variant: {
+          product: {
+            isActive: true,
+            isService: false,
+            minStock: { gt: 0 },
+          },
+        },
       },
-    );
+      include: {
+        variant: {
+          include: {
+            product: {
+              include: {
+                category: {
+                  select: { name: true },
+                },
+                unit: {
+                  select: { symbol: true },
+                },
+              },
+            },
+          },
+        },
+        warehouse: {
+          select: { name: true },
+        },
+      },
+    });
+
+    // Filter where quantity <= minStock (low stock check per warehouse)
+    // Map to flat structure suitable for table
+    const lowStockRecords = allLowStocks
+      .filter((stock) => {
+        const quantity = Number(stock.quantity);
+        const minStock = Number(stock.variant.product.minStock);
+        return quantity <= minStock;
+      })
+      .map((stock) => ({
+        id: stock.variant.productId, // Keep product ID for reference if needed
+        variantId: stock.variantId,
+        warehouseId: stock.warehouseId,
+        sku: stock.variant.sku,
+        name: stock.variant.product.name,
+        variantName: stock.variant.name,
+        warehouseName: stock.warehouse.name,
+        category: stock.variant.product.category?.name ?? '-',
+        unit: stock.variant.product.unit?.symbol ?? '-',
+        minStock: stock.variant.product.minStock,
+        currentStock: Number(stock.quantity),
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    // Pagination
+    const totalItems = lowStockRecords.length;
+    const totalPages = Math.ceil(totalItems / pageSize);
+    const paginatedData = lowStockRecords.slice(skip, skip + pageSize);
+
+    return successResponse(paginatedData, {
+      page,
+      pageSize,
+      totalItems,
+      totalPages,
+    });
   }
 
   /**

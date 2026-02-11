@@ -263,7 +263,7 @@ export default function DashboardPage() {
             </p>
             {stockAlerts?.count ? (
               <Link
-                href="/reports/inventory?lowStockOnly=true"
+                href="/dashboard/stock-alerts"
                 className="text-xs text-red-600 hover:underline mt-2 inline-block"
               >
                 Lihat detail &rarr;

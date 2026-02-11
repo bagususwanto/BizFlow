@@ -1,7 +1,7 @@
 'use client';
 
 import { Badge, Button, Checkbox } from '@bizflow/ui';
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingBag } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { ColumnDef, RowSelectionState } from '@tanstack/react-table';
@@ -9,9 +9,13 @@ import { DataTable } from '@/components/ui/data-table';
 import { toast } from 'sonner';
 
 interface StockAlertItem {
-  id: string;
+  id: string; // Product ID
+  variantId: string;
+  warehouseId: string;
   sku: string;
-  name: string;
+  name: string; // Product name
+  variantName: string; // Variant name
+  warehouseName: string;
   category: string;
   unit: string;
   minStock: number;
@@ -95,19 +99,31 @@ export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
         accessorKey: 'name',
         header: 'Produk',
         cell: ({ row }) => (
-          <span className="font-medium">{row.original.name}</span>
+          <div className="flex flex-col">
+            <span className="font-medium">{row.original.name}</span>
+            <span className="text-xs text-muted-foreground">
+              {row.original.variantName}
+            </span>
+            <span className="text-[10px] text-muted-foreground">
+              {row.original.sku}
+            </span>
+          </div>
         ),
       },
       {
-        accessorKey: 'sku',
-        header: 'SKU',
+        accessorKey: 'warehouseName',
+        header: 'Gudang',
+        cell: ({ row }) => <span>{row.original.warehouseName}</span>,
       },
       {
         accessorKey: 'currentStock',
         header: () => <div className="text-right">Stok</div>,
         cell: ({ row }) => (
           <div className="text-right">
-            {row.original.currentStock} {row.original.unit}
+            <span className="font-medium">{row.original.currentStock}</span>{' '}
+            <span className="text-muted-foreground text-xs">
+              {row.original.unit}
+            </span>
           </div>
         ),
       },
@@ -129,11 +145,11 @@ export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
               className="h-8"
               onClick={() =>
                 router.push(
-                  `/purchases/orders/create?productId=${row.original.id}`,
+                  `/purchases/orders/create?variantId=${row.original.variantId}&warehouseId=${row.original.warehouseId}`,
                 )
               }
             >
-              <ShoppingCart className="mr-2 h-4 w-4" />
+              <ShoppingBag className="mr-2 h-4 w-4" />
               PO
             </Button>
           </div>
@@ -170,7 +186,7 @@ export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
             <span className="text-sm font-medium">{selectedCount} Dipilih</span>
           </div>
           <Button size="sm" className="ml-auto h-8" onClick={handleBulkPO}>
-            <ShoppingCart className="mr-2 h-4 w-4" />
+            <ShoppingBag className="mr-2 h-4 w-4" />
             Buat Purchase Order
           </Button>
         </div>
@@ -183,7 +199,7 @@ export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
         enableRowSelection={true}
         rowSelection={rowSelection}
         onRowSelectionChange={setRowSelection}
-        getRowId={(row) => row.id}
+        getRowId={(row) => `${row.variantId}-${row.warehouseId}`}
       />
     </div>
   );

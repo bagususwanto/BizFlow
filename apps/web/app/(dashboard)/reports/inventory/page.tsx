@@ -112,7 +112,7 @@ function StockReportContent() {
   const summary = data?.summary;
 
   return (
-    <div className="flex flex-col gap-4 p-4 md:p-8 pt-6">
+    <div className="flex flex-col space-y-6">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Laporan Stok</h2>

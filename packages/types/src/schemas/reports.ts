@@ -33,7 +33,10 @@ export type QuerySalesReportValues = z.infer<typeof querySalesReportSchema>;
 export const queryStockReportSchema = z.object({
   warehouseId: z.string().optional(),
   categoryId: z.string().optional(),
-  lowStockOnly: z.coerce.boolean().optional(),
+  lowStockOnly: z
+    .enum(['true', 'false'])
+    .optional()
+    .transform((val) => val === 'true'),
   page: z.coerce.number().int().positive().optional(),
   pageSize: z.coerce.number().int().positive().optional(),
 });

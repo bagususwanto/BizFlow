@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BizFlow Server - License Activation</title>
+    <link rel="stylesheet" href="license.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🔑 License Activation</h1>
+        <p class="subtitle">Activate your BizFlow Server license</p>
+      </div>
+
+      <div id="activation-form" class="card">
+        <div class="form-group">
+          <label for="license-key">License Key</label>
+          <input
+            type="text"
+            id="license-key"
+            placeholder="XXXXX-XXXXX-XXXXX-XXXXX"
+            maxlength="23"
+          />
+          <small>Format: XXXXX-XXXXX-XXXXX-XXXXX</small>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="your@email.com" />
+        </div>
+
+        <div class="form-group">
+          <label>Device ID</label>
+          <div class="device-id" id="device-id">Loading...</div>
+          <small>This device will be bound to your license</small>
+        </div>
+
+        <button id="activate-btn" class="btn-primary">Activate License</button>
+
+        <div id="message" class="message"></div>
+      </div>
+
+      <div id="license-info" class="card" style="display: none">
+        <h2>✅ License Active</h2>
+
+        <div class="info-row">
+          <span class="label">License Key:</span>
+          <span id="info-key" class="value"></span>
+        </div>
+
+        <div class="info-row">
+          <span class="label">Email:</span>
+          <span id="info-email" class="value"></span>
+        </div>
+
+        <div class="info-row">
+          <span class="label">Activated:</span>
+          <span id="info-activated" class="value"></span>
+        </div>
+
+        <div class="info-row">
+          <span class="label">Expires:</span>
+          <span id="info-expires" class="value"></span>
+        </div>
+
+        <div class="info-row">
+          <span class="label">Status:</span>
+          <span id="info-status" class="value"></span>
+        </div>
+
+        <button id="deactivate-btn" class="btn-danger">
+          Deactivate License
+        </button>
+      </div>
+    </div>
+
+    <script src="license.js"></script>
+  </body>
+</html>

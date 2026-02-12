@@ -10,6 +10,8 @@ export function createTray(
   onStopServer: () => void,
   onStartServer: () => void,
   onRestartServer: () => void,
+  onViewLogs: () => void,
+  onBackup: () => void,
 ): Tray | null {
   console.log('[TRAY] Electron version:', process.versions.electron);
 
@@ -57,6 +59,8 @@ export function createTray(
       onStopServer,
       onStartServer,
       onRestartServer,
+      onViewLogs,
+      onBackup,
     );
 
     // Double-click to show main window
@@ -76,6 +80,8 @@ export function updateTrayStatus(
   onStopServer: () => void,
   onStartServer: () => void,
   onRestartServer: () => void,
+  onViewLogs: () => void,
+  onBackup: () => void,
 ): void {
   if (!tray) return;
 
@@ -113,6 +119,8 @@ export function updateTrayStatus(
     onStopServer,
     onStartServer,
     onRestartServer,
+    onViewLogs,
+    onBackup,
   );
 }
 
@@ -122,6 +130,8 @@ function updateTrayMenu(
   onStopServer: () => void,
   onStartServer: () => void,
   onRestartServer: () => void,
+  onViewLogs: () => void,
+  onBackup: () => void,
 ): void {
   if (!tray) return;
 
@@ -145,17 +155,13 @@ function updateTrayMenu(
     },
     {
       label: '📋 Lihat Logs',
-      enabled: false, // Will be enabled in Phase 4
-      click: () => {
-        // TODO: Open logs window
-      },
+      enabled: true,
+      click: onViewLogs,
     },
     {
       label: '💾 Backup Sekarang',
-      enabled: false, // Will be enabled in Phase 5
-      click: () => {
-        // TODO: Trigger backup
-      },
+      enabled: true,
+      click: onBackup,
     },
     { type: 'separator' },
     {

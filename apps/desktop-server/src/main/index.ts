@@ -1,4 +1,5 @@
 import { app, BrowserWindow, ipcMain, shell, dialog } from 'electron';
+import * as path from 'path';
 import { ServerManager } from './server-manager';
 import {
   createSplashWindow,
@@ -7,14 +8,20 @@ import {
   showMainWindow,
   createLogsWindow,
   getLogsWindow,
+  createLicenseWindow,
+  getLicenseWindow,
 } from './windows';
 import { createTray, updateTrayStatus, destroyTray } from './tray';
 import { ConfigManager } from './config';
 import { LogManager } from './log-manager';
+import { BackupManager } from './backup-manager';
+import { LicenseManager } from './license-manager';
 
 let serverManager: ServerManager;
 let configManager: ConfigManager;
 let logManager: LogManager;
+let backupManager: BackupManager;
+let licenseManager: LicenseManager;
 let isQuitting = false;
 
 app.whenReady().then(async () => {
@@ -31,6 +38,24 @@ app.whenReady().then(async () => {
 
   // Initialize server manager with config
   serverManager = new ServerManager(configManager);
+
+  // Initialize backup manager
+  const isDev = !app.isPackaged;
+  const dbPath = isDev
+    ? path.join(__dirname, '../../../../packages/database/prisma/dev.db')
+    : path.join(app.getPath('userData'), 'data', 'bizflow.db');
+
+  backupManager = new BackupManager(configManager, dbPath);
+  console.log('[BACKUP] Initialized');
+
+  // Start auto-backup if enabled
+  if (configManager.get('autoBackup')) {
+    backupManager.startAutoBackup();
+  }
+
+  // Initialize license manager
+  licenseManager = new LicenseManager();
+  console.log('[LICENSE] Initialized');
 
   // Create system tray
   const tray = createTray(
@@ -51,6 +76,19 @@ app.whenReady().then(async () => {
       // Restart server
       await serverManager.restartAll();
     },
+    () => {
+      // View logs
+      createLogsWindow();
+    },
+    async () => {
+      // Backup now
+      try {
+        await backupManager.createBackup();
+        console.log('[BACKUP] Manual backup created from tray');
+      } catch (error) {
+        console.error('[BACKUP] Manual backup failed:', error);
+      }
+    },
   );
 
   // Listen to server events
@@ -69,6 +107,14 @@ app.whenReady().then(async () => {
       async () => await serverManager.stopAll(),
       async () => await serverManager.startAll(),
       async () => await serverManager.restartAll(),
+      () => createLogsWindow(),
+      async () => {
+        try {
+          await backupManager.createBackup();
+        } catch (error) {
+          console.error('[BACKUP] Failed:', error);
+        }
+      },
     );
 
     // Send to main window if it exists
@@ -89,6 +135,14 @@ app.whenReady().then(async () => {
       async () => await serverManager.stopAll(),
       async () => await serverManager.startAll(),
       async () => await serverManager.restartAll(),
+      () => createLogsWindow(),
+      async () => {
+        try {
+          await backupManager.createBackup();
+        } catch (error) {
+          console.error('[BACKUP] Failed:', error);
+        }
+      },
     );
 
     // Close splash and show main window
@@ -116,10 +170,30 @@ app.whenReady().then(async () => {
 
   serverManager.on('api-error', (error: string) => {
     console.error('[API ERROR]', error);
+    logManager.addLog('ERROR', 'API', error);
   });
 
   serverManager.on('web-error', (error: string) => {
     console.error('[WEB ERROR]', error);
+    logManager.addLog('ERROR', 'WEB', error);
+  });
+
+  serverManager.on('api-log', (message: string) => {
+    const level = logManager.parseLogLevel(message);
+    logManager.addLog(level, 'API', message);
+  });
+
+  serverManager.on('web-log', (message: string) => {
+    const level = logManager.parseLogLevel(message);
+    logManager.addLog(level, 'WEB', message);
+  });
+
+  // Forward log events to logs window
+  logManager.on('log', (log) => {
+    const logsWin = getLogsWindow();
+    if (logsWin && !logsWin.isDestroyed()) {
+      logsWin.webContents.send('log-update', log);
+    }
   });
 
   // Start servers
@@ -182,6 +256,111 @@ ipcMain.handle('config:update', (_, updates: any) => {
 ipcMain.handle('config:reset', () => {
   configManager.reset();
   return { success: true };
+});
+
+// Logs IPC handlers
+ipcMain.handle('logs:getAll', () => {
+  return logManager.getAllLogs();
+});
+
+ipcMain.handle('logs:filter', (_, options) => {
+  return logManager.filter(options);
+});
+
+ipcMain.handle('logs:export', async () => {
+  const result = await dialog.showSaveDialog({
+    title: 'Export Logs',
+    defaultPath: `bizflow-logs-${new Date().toISOString().split('T')[0]}.txt`,
+    filters: [{ name: 'Text Files', extensions: ['txt'] }],
+  });
+
+  if (!result.canceled && result.filePath) {
+    await logManager.exportLogs(result.filePath);
+    return { success: true, path: result.filePath };
+  }
+
+  return { success: false };
+});
+
+ipcMain.handle('logs:clear', () => {
+  logManager.clearLogs();
+  return { success: true };
+});
+
+ipcMain.handle('logs:openFile', () => {
+  const filePath = logManager.getLogFilePath();
+  shell.openPath(filePath);
+  return { success: true };
+});
+
+ipcMain.handle('logs:getFilePath', () => {
+  return logManager.getLogFilePath();
+});
+
+// Backup IPC handlers
+ipcMain.handle('backup:create', async (_, customName?: string) => {
+  try {
+    const backupInfo = await backupManager.createBackup(customName);
+    return { success: true, backup: backupInfo };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('backup:restore', async (_, backupFilename: string) => {
+  try {
+    await backupManager.restoreBackup(backupFilename);
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('backup:list', async () => {
+  try {
+    const backups = await backupManager.listBackups();
+    return { success: true, backups };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('backup:delete', async (_, backupFilename: string) => {
+  try {
+    await backupManager.deleteBackup(backupFilename);
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('backup:getInfo', () => {
+  return {
+    backupDir: backupManager.getBackupDir(),
+    dbPath: backupManager.getDbPath(),
+  };
+});
+
+// License IPC handlers
+ipcMain.handle('license:activate', async (_, key: string, email: string) => {
+  return await licenseManager.activateLicense(key, email);
+});
+
+ipcMain.handle('license:deactivate', async () => {
+  await licenseManager.deactivateLicense();
+  return { success: true };
+});
+
+ipcMain.handle('license:getStatus', () => {
+  return licenseManager.getLicenseStatus();
+});
+
+ipcMain.handle('license:getInfo', () => {
+  return licenseManager.getLicenseInfo();
+});
+
+ipcMain.handle('license:getDeviceId', () => {
+  return licenseManager.getDeviceId();
 });
 
 ipcMain.handle('app:quit', () => {

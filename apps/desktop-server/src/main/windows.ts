@@ -110,3 +110,37 @@ export function createLogsWindow(): BrowserWindow {
 export function getLogsWindow(): BrowserWindow | null {
   return logsWindow;
 }
+
+let licenseWindow: BrowserWindow | null = null;
+
+export function createLicenseWindow(): BrowserWindow {
+  if (licenseWindow && !licenseWindow.isDestroyed()) {
+    licenseWindow.show();
+    licenseWindow.focus();
+    return licenseWindow;
+  }
+
+  licenseWindow = new BrowserWindow({
+    width: 600,
+    height: 700,
+    webPreferences: {
+      preload: path.join(__dirname, '../preload/index.js'),
+      nodeIntegration: false,
+      contextIsolation: true,
+    },
+    title: 'BizFlow Server - License',
+    parent: mainWindow || undefined,
+  });
+
+  licenseWindow.loadFile(path.join(__dirname, '../renderer/license.html'));
+
+  licenseWindow.on('closed', () => {
+    licenseWindow = null;
+  });
+
+  return licenseWindow;
+}
+
+export function getLicenseWindow(): BrowserWindow | null {
+  return licenseWindow;
+}

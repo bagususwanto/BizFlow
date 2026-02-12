@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BizFlow Server - Logs</title>
+    <link rel="stylesheet" href="logs.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <div class="header">
+        <h1>📋 Server Logs</h1>
+        <div class="header-actions">
+          <button class="btn btn-secondary" id="clear-btn">
+            🗑️ Clear Logs
+          </button>
+          <button class="btn btn-secondary" id="export-btn">💾 Export</button>
+          <button class="btn btn-secondary" id="open-file-btn">
+            📂 Buka File
+          </button>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="filters">
+        <div class="filter-group">
+          <label for="level-filter">Level:</label>
+          <select id="level-filter">
+            <option value="ALL">All</option>
+            <option value="INFO">INFO</option>
+            <option value="WARN">WARN</option>
+            <option value="ERROR">ERROR</option>
+            <option value="DEBUG">DEBUG</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="source-filter">Source:</label>
+          <select id="source-filter">
+            <option value="ALL">All</option>
+            <option value="API">API</option>
+            <option value="WEB">WEB</option>
+            <option value="SYSTEM">SYSTEM</option>
+          </select>
+        </div>
+
+        <div class="filter-group search-group">
+          <label for="search-input">Search:</label>
+          <input type="text" id="search-input" placeholder="Search logs..." />
+        </div>
+
+        <div class="filter-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="auto-scroll" checked />
+            Auto-scroll
+          </label>
+        </div>
+      </div>
+
+      <!-- Logs Display -->
+      <div class="logs-container" id="logs-container">
+        <div class="logs-empty" id="logs-empty">
+          <p>No logs yet. Logs will appear here in real-time.</p>
+        </div>
+        <div class="logs-list" id="logs-list"></div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <span id="log-count">0 logs</span>
+        <span id="log-file-path"></span>
+      </div>
+    </div>
+
+    <script src="logs.js"></script>
+  </body>
+</html>

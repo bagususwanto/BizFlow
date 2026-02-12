@@ -76,3 +76,37 @@ export function hideMainWindow(): void {
 export function getMainWindow(): BrowserWindow | null {
   return mainWindow;
 }
+
+let logsWindow: BrowserWindow | null = null;
+
+export function createLogsWindow(): BrowserWindow {
+  if (logsWindow && !logsWindow.isDestroyed()) {
+    logsWindow.show();
+    logsWindow.focus();
+    return logsWindow;
+  }
+
+  logsWindow = new BrowserWindow({
+    width: 1000,
+    height: 700,
+    webPreferences: {
+      preload: path.join(__dirname, '../preload/index.js'),
+      nodeIntegration: false,
+      contextIsolation: true,
+    },
+    title: 'BizFlow Server - Logs',
+    parent: mainWindow || undefined,
+  });
+
+  logsWindow.loadFile(path.join(__dirname, '../renderer/logs.html'));
+
+  logsWindow.on('closed', () => {
+    logsWindow = null;
+  });
+
+  return logsWindow;
+}
+
+export function getLogsWindow(): BrowserWindow | null {
+  return logsWindow;
+}

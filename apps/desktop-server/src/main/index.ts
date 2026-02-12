@@ -1,16 +1,20 @@
-import { app, BrowserWindow, ipcMain, shell } from 'electron';
+import { app, BrowserWindow, ipcMain, shell, dialog } from 'electron';
 import { ServerManager } from './server-manager';
 import {
   createSplashWindow,
   closeSplashWindow,
   createMainWindow,
   showMainWindow,
+  createLogsWindow,
+  getLogsWindow,
 } from './windows';
 import { createTray, updateTrayStatus, destroyTray } from './tray';
 import { ConfigManager } from './config';
+import { LogManager } from './log-manager';
 
 let serverManager: ServerManager;
 let configManager: ConfigManager;
+let logManager: LogManager;
 let isQuitting = false;
 
 app.whenReady().then(async () => {
@@ -20,6 +24,10 @@ app.whenReady().then(async () => {
   // Initialize config manager
   configManager = new ConfigManager();
   console.log('[CONFIG] Loaded config from', configManager.getConfigPath());
+
+  // Initialize log manager
+  logManager = new LogManager();
+  console.log('[LOG-MANAGER] Initialized');
 
   // Initialize server manager with config
   serverManager = new ServerManager(configManager);

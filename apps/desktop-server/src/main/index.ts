@@ -6,6 +6,7 @@ import {
   createMainWindow,
   showMainWindow,
 } from './windows';
+import { createTray, updateTrayStatus, destroyTray } from './tray';
 
 let serverManager: ServerManager;
 let isQuitting = false;
@@ -17,6 +18,27 @@ app.whenReady().then(async () => {
   // Initialize server manager
   serverManager = new ServerManager();
 
+  // Create system tray
+  const tray = createTray(
+    () => {
+      // Open browser
+      const status = serverManager.getStatus();
+      shell.openExternal(status.webUrl);
+    },
+    async () => {
+      // Stop server
+      await serverManager.stopAll();
+    },
+    async () => {
+      // Start server
+      await serverManager.startAll();
+    },
+    async () => {
+      // Restart server
+      await serverManager.restartAll();
+    },
+  );
+
   // Listen to server events
   serverManager.on('status-change', (message: string) => {
     console.log('[STATUS]', message);
@@ -26,6 +48,15 @@ app.whenReady().then(async () => {
   });
 
   serverManager.on('server-status', (status) => {
+    // Update tray
+    updateTrayStatus(
+      status,
+      () => shell.openExternal(status.webUrl),
+      async () => await serverManager.stopAll(),
+      async () => await serverManager.startAll(),
+      async () => await serverManager.restartAll(),
+    );
+
     // Send to main window if it exists
     const wins = BrowserWindow.getAllWindows();
     const mainWindow = wins.find((w) => w.title === 'BizFlow Server');
@@ -36,6 +67,15 @@ app.whenReady().then(async () => {
 
   serverManager.on('all-started', (status) => {
     console.log('[SUCCESS] All servers started', status);
+
+    // Update tray
+    updateTrayStatus(
+      status,
+      () => shell.openExternal(status.webUrl),
+      async () => await serverManager.stopAll(),
+      async () => await serverManager.startAll(),
+      async () => await serverManager.restartAll(),
+    );
 
     // Close splash and show main window
     setTimeout(() => {
@@ -125,6 +165,7 @@ app.on('before-quit', async (event) => {
     await serverManager.stopAll();
 
     setTimeout(() => {
+      destroyTray();
       app.quit();
     }, 2000);
   }
@@ -132,10 +173,9 @@ app.on('before-quit', async (event) => {
 
 app.on('window-all-closed', () => {
   // Keep app running in background (system tray)
-  // Don't quit on macOS
-  if (process.platform !== 'darwin' && !isQuitting) {
-    // On Windows/Linux, we'll keep running in tray
-    return;
+  // Don't quit unless explicitly requested
+  if (isQuitting) {
+    app.quit();
   }
 });
 

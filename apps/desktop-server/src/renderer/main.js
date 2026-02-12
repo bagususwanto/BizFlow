@@ -4,14 +4,11 @@ let uptimeInterval = null;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
-  // Load initial status
-  await loadServerStatus();
-
-  // Start uptime counter
-  startUptimeCounter();
-
   // Setup event listeners
   setupEventListeners();
+
+  // Load initial status
+  await loadServerStatus();
 
   // Listen for server status updates
   window.electronAPI?.on.serverStatus((status) => {
@@ -106,6 +103,24 @@ function setupEventListeners() {
   // Initial button setup (will be overridden by updateUI)
   const actionBtn = document.getElementById('stop-btn');
   actionBtn.onclick = handleStopServer;
+
+  // Minimize to tray
+  document.getElementById('minimize-btn').addEventListener('click', () => {
+    window.close(); // This will hide to tray based on window config
+  });
+
+  // Navigation buttons (placeholder for Phase 4, 5, 6)
+  document.getElementById('logs-btn').addEventListener('click', () => {
+    alert('Logs viewer akan diimplementasikan di Phase 4');
+  });
+
+  document.getElementById('backup-btn').addEventListener('click', () => {
+    alert('Backup/Restore akan diimplementasikan di Phase 5');
+  });
+
+  document.getElementById('settings-btn').addEventListener('click', () => {
+    alert('Settings akan diimplementasikan di Phase 6');
+  });
 }
 
 async function handleStopServer() {
@@ -133,22 +148,4 @@ async function handleStartServer() {
     alert('Gagal memulai server: ' + error.message);
     document.getElementById('stop-btn').disabled = false;
   }
-
-  // Minimize to tray
-  document.getElementById('minimize-btn').addEventListener('click', () => {
-    window.close(); // This will hide to tray based on window config
-  });
-
-  // Navigation buttons (placeholder for Phase 4, 5, 6)
-  document.getElementById('logs-btn').addEventListener('click', () => {
-    alert('Logs viewer akan diimplementasikan di Phase 4');
-  });
-
-  document.getElementById('backup-btn').addEventListener('click', () => {
-    alert('Backup/Restore akan diimplementasikan di Phase 5');
-  });
-
-  document.getElementById('settings-btn').addEventListener('click', () => {
-    alert('Settings akan diimplementasikan di Phase 6');
-  });
 }

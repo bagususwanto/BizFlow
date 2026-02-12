@@ -23,6 +23,15 @@ app.whenReady().then(async () => {
     splash.webContents.send('status-update', message);
   });
 
+  serverManager.on('server-status', (status) => {
+    // Send to main window if it exists
+    const wins = BrowserWindow.getAllWindows();
+    const mainWindow = wins.find((w) => w.title === 'BizFlow Server');
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send('server-status', status);
+    }
+  });
+
   serverManager.on('all-started', (status) => {
     console.log('[SUCCESS] All servers started', status);
 

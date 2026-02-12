@@ -98,12 +98,13 @@ export class ServerManager extends EventEmitter {
     this.apiProcess.on('exit', (code) => {
       this.status.api = 'stopped';
       this.emit('status-change', `API server exited with code ${code}`);
+      this.emit('server-status', this.getStatus());
     });
 
-    // Health check
     await this.healthCheck(this.status.apiUrl + '/api/v1/health', 30);
     this.status.api = 'running';
     this.emit('status-change', 'API server running');
+    this.emit('server-status', this.getStatus());
   }
 
   private async startWebServer(): Promise<void> {
@@ -155,12 +156,13 @@ export class ServerManager extends EventEmitter {
     this.webProcess.on('exit', (code) => {
       this.status.web = 'stopped';
       this.emit('status-change', `Web server exited with code ${code}`);
+      this.emit('server-status', this.getStatus());
     });
 
-    // Health check
     await this.healthCheck(this.status.webUrl, 30);
     this.status.web = 'running';
     this.emit('status-change', 'Web server running');
+    this.emit('server-status', this.getStatus());
   }
 
   private async healthCheck(url: string, maxRetries: number): Promise<void> {
@@ -223,6 +225,7 @@ export class ServerManager extends EventEmitter {
       this.status.web = 'stopped';
     }
 
+    this.emit('server-status', this.getStatus());
     this.emit('all-stopped');
   }
 

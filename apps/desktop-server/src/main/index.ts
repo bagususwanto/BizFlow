@@ -40,12 +40,23 @@ app.whenReady().then(async () => {
     // Close splash and show main window
     setTimeout(() => {
       closeSplashWindow();
-      const mainWindow = createMainWindow();
 
-      // Send initial status to main window
-      mainWindow.webContents.once('did-finish-load', () => {
-        mainWindow.webContents.send('server-status', status);
-      });
+      const existingMainWindow = BrowserWindow.getAllWindows().find(
+        (w) => w.title === 'BizFlow Server',
+      );
+
+      if (!existingMainWindow || existingMainWindow.isDestroyed()) {
+        const newMainWindow = createMainWindow();
+        // Send initial status to new main window
+        newMainWindow.webContents.once('did-finish-load', () => {
+          newMainWindow.webContents.send('server-status', status);
+        });
+      } else {
+        // Window already exists, just show it and send update
+        existingMainWindow.show();
+        existingMainWindow.focus();
+        existingMainWindow.webContents.send('server-status', status);
+      }
     }, 1000);
   });
 

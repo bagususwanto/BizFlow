@@ -1,0 +1,25 @@
+{
+  "name": "desktop-server",
+  "version": "1.0.0",
+  "description": "BizFlow Desktop Server - Electron wrapper untuk deployment on-premise",
+  "license": "MIT",
+  "author": "Bagus Uswanto",
+  "type": "commonjs",
+  "main": "dist/main/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc && electron .",
+    "start": "electron .",
+    "package": "electron-builder",
+    "package:win": "electron-builder --win",
+    "package:mac": "electron-builder --mac",
+    "package:linux": "electron-builder --linux"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^39.2.7",
+    "electron-builder": "^25.1.8",
+    "@types/node": "^22.10.5",
+    "typescript": "^5.7.3"
+  }
+}

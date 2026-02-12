@@ -203,7 +203,6 @@ Referensi: [09-desktop-app.md](file:///Users/bagus/Project/personal/BizFlow/docs
 | Backup/Restore functionality            | [ ]    | High     |
 | License activation flow                 | [ ]    | High     |
 | One-click installer (Windows/Mac/Linux) | [ ]    | High     |
-| Auto-update checker                     | [ ]    | Medium   |
 
 **Build Output**: `BizFlow-Setup-1.0.0.exe` (~150MB)
 

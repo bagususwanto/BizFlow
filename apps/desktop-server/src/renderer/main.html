@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BizFlow Server</title>
+    <link rel="stylesheet" href="main.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <header class="header">
+        <div class="header-title">
+          <span class="logo">🏪</span>
+          <h1>BizFlow Server</h1>
+        </div>
+      </header>
+
+      <!-- Status Section -->
+      <section class="status-section">
+        <div class="status-card">
+          <div class="status-row">
+            <span class="label">Status:</span>
+            <span class="status-indicator" id="status-indicator">
+              <span class="status-dot running"></span>
+              <span id="status-text">Running</span>
+            </span>
+          </div>
+          <div class="status-row">
+            <span class="label">Database:</span>
+            <span id="db-info">bizflow.db (24 MB)</span>
+          </div>
+          <div class="status-row">
+            <span class="label">Uptime:</span>
+            <span id="uptime">0 menit</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Access URLs Section -->
+      <section class="access-section">
+        <div class="access-card">
+          <div class="access-item">
+            <div class="access-label">📍 Akses Lokal:</div>
+            <div class="access-url" id="local-url">http://localhost:3001</div>
+          </div>
+          <div class="access-item">
+            <div class="access-label">📡 Akses dari Device Lain (WiFi):</div>
+            <div class="access-url" id="network-url">
+              http://192.168.1.10:3001
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Action -->
+      <section class="action-section">
+        <button class="btn btn-primary" id="open-browser">
+          🌐 Buka di Browser
+        </button>
+      </section>
+
+      <!-- Navigation Buttons -->
+      <section class="nav-section">
+        <button class="btn btn-secondary" id="logs-btn">📋 Logs</button>
+        <button class="btn btn-secondary" id="backup-btn">💾 Backup</button>
+        <button class="btn btn-secondary" id="settings-btn">⚙️ Settings</button>
+      </section>
+
+      <!-- Footer Actions -->
+      <footer class="footer">
+        <button class="btn btn-ghost" id="minimize-btn">
+          Minimize to Tray
+        </button>
+        <button class="btn btn-destructive" id="stop-btn">Stop Server</button>
+      </footer>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>

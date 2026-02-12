@@ -1,0 +1,46 @@
+appId: id.bizflow.server
+productName: BizFlow Server
+copyright: Copyright © 2026 BizFlow
+
+directories:
+  output: dist-installer
+  buildResources: resources
+
+files:
+  - dist/**/*
+  - resources/**/*
+  - package.json
+
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  icon: resources/icon.ico
+
+nsis:
+  oneClick: false
+  perMachine: true
+  allowToChangeInstallationDirectory: true
+  installerIcon: resources/icon.ico
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+
+mac:
+  target:
+    - target: dmg
+      arch: [x64, arm64]
+  icon: resources/icon.icns
+  category: public.app-category.business
+
+linux:
+  target:
+    - target: AppImage
+      arch: [x64]
+  icon: resources/icon.png
+  category: Office
+
+extraResources:
+  - from: ../api/dist
+    to: bin/api
+  - from: ../web/.next
+    to: bin/web

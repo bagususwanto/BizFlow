@@ -1,8 +1,9 @@
 import { ChildProcess, spawn } from 'child_process';
 import { EventEmitter } from 'events';
 import * as path from 'path';
-import * as net from 'net';
 import { app } from 'electron';
+import { PortManager } from './port-manager';
+import { ConfigManager } from './config';
 
 export interface ServerStatus {
   api: 'stopped' | 'starting' | 'running' | 'error';
@@ -18,6 +19,9 @@ export class ServerManager extends EventEmitter {
   private webProcess: ChildProcess | null = null;
   private apiPort = 3000;
   private webPort = 3001;
+  private config: ConfigManager;
+  private autoRestartEnabled = true;
+  private isManualStop = false;
   private status: ServerStatus = {
     api: 'stopped',
     web: 'stopped',
@@ -27,16 +31,34 @@ export class ServerManager extends EventEmitter {
     webUrl: 'http://localhost:3001',
   };
 
-  constructor() {
+  constructor(config: ConfigManager) {
     super();
+    this.config = config;
+    this.apiPort = config.get('apiPort');
+    this.webPort = config.get('webPort');
   }
 
   async startAll(): Promise<void> {
+    this.isManualStop = false;
     this.emit('status-change', 'Starting servers...');
 
-    // Check and find available ports
-    this.apiPort = await this.findAvailablePort(3000);
-    this.webPort = await this.findAvailablePort(3001);
+    // Check and find available ports using PortManager
+    const preferredApiPort = this.config.get('apiPort');
+    const preferredWebPort = this.config.get('webPort');
+
+    this.apiPort = await PortManager.findAvailablePort(preferredApiPort);
+    this.webPort = await PortManager.findAvailablePort(preferredWebPort);
+
+    if (this.apiPort !== preferredApiPort) {
+      console.log(
+        `[PORT] API port ${preferredApiPort} not available, using ${this.apiPort}`,
+      );
+    }
+    if (this.webPort !== preferredWebPort) {
+      console.log(
+        `[PORT] Web port ${preferredWebPort} not available, using ${this.webPort}`,
+      );
+    }
 
     this.status.apiPort = this.apiPort;
     this.status.webPort = this.webPort;
@@ -99,6 +121,18 @@ export class ServerManager extends EventEmitter {
       this.status.api = 'stopped';
       this.emit('status-change', `API server exited with code ${code}`);
       this.emit('server-status', this.getStatus());
+
+      // Auto-restart if not manually stopped and auto-restart is enabled
+      if (!this.isManualStop && this.autoRestartEnabled && code !== 0) {
+        console.log(
+          '[AUTO-RESTART] API server crashed, restarting in 3 seconds...',
+        );
+        setTimeout(() => {
+          this.startApiServer().catch((err) => {
+            console.error('[AUTO-RESTART] Failed to restart API:', err);
+          });
+        }, 3000);
+      }
     });
 
     await this.healthCheck(this.status.apiUrl + '/api/v1/health', 30);
@@ -157,6 +191,18 @@ export class ServerManager extends EventEmitter {
       this.status.web = 'stopped';
       this.emit('status-change', `Web server exited with code ${code}`);
       this.emit('server-status', this.getStatus());
+
+      // Auto-restart if not manually stopped and auto-restart is enabled
+      if (!this.isManualStop && this.autoRestartEnabled && code !== 0) {
+        console.log(
+          '[AUTO-RESTART] Web server crashed, restarting in 3 seconds...',
+        );
+        setTimeout(() => {
+          this.startWebServer().catch((err) => {
+            console.error('[AUTO-RESTART] Failed to restart Web:', err);
+          });
+        }, 3000);
+      }
     });
 
     await this.healthCheck(this.status.webUrl, 30);
@@ -182,35 +228,10 @@ export class ServerManager extends EventEmitter {
     );
   }
 
-  private async findAvailablePort(preferredPort: number): Promise<number> {
-    const isAvailable = await this.isPortAvailable(preferredPort);
-    if (isAvailable) {
-      return preferredPort;
-    }
-
-    // Try next 10 ports
-    for (let port = preferredPort + 1; port < preferredPort + 10; port++) {
-      if (await this.isPortAvailable(port)) {
-        return port;
-      }
-    }
-
-    throw new Error(`No available port found near ${preferredPort}`);
-  }
-
-  private isPortAvailable(port: number): Promise<boolean> {
-    return new Promise((resolve) => {
-      const server = net.createServer();
-      server.once('error', () => resolve(false));
-      server.once('listening', () => {
-        server.close();
-        resolve(true);
-      });
-      server.listen(port);
-    });
-  }
+  // Port checking methods removed - now using PortManager
 
   async stopAll(): Promise<void> {
+    this.isManualStop = true; // Prevent auto-restart
     this.emit('status-change', 'Stopping servers...');
 
     if (this.apiProcess) {
@@ -237,5 +258,14 @@ export class ServerManager extends EventEmitter {
 
   getStatus(): ServerStatus {
     return { ...this.status };
+  }
+
+  setAutoRestart(enabled: boolean): void {
+    this.autoRestartEnabled = enabled;
+    console.log(`[AUTO-RESTART] ${enabled ? 'Enabled' : 'Disabled'}`);
+  }
+
+  getAutoRestart(): boolean {
+    return this.autoRestartEnabled;
   }
 }

@@ -7,16 +7,22 @@ import {
   showMainWindow,
 } from './windows';
 import { createTray, updateTrayStatus, destroyTray } from './tray';
+import { ConfigManager } from './config';
 
 let serverManager: ServerManager;
+let configManager: ConfigManager;
 let isQuitting = false;
 
 app.whenReady().then(async () => {
   // Show splash screen
   const splash = createSplashWindow();
 
-  // Initialize server manager
-  serverManager = new ServerManager();
+  // Initialize config manager
+  configManager = new ConfigManager();
+  console.log('[CONFIG] Loaded config from', configManager.getConfigPath());
+
+  // Initialize server manager with config
+  serverManager = new ServerManager(configManager);
 
   // Create system tray
   const tray = createTray(
@@ -147,6 +153,26 @@ ipcMain.handle('server:restart', async () => {
 
 ipcMain.handle('app:open-browser', (_, url: string) => {
   shell.openExternal(url);
+  return { success: true };
+});
+
+// Config IPC handlers
+ipcMain.handle('config:get', () => {
+  return configManager.getConfig();
+});
+
+ipcMain.handle('config:set', (_, key: string, value: any) => {
+  configManager.set(key as any, value);
+  return { success: true };
+});
+
+ipcMain.handle('config:update', (_, updates: any) => {
+  configManager.update(updates);
+  return { success: true };
+});
+
+ipcMain.handle('config:reset', () => {
+  configManager.reset();
   return { success: true };
 });
 

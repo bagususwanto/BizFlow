@@ -62,7 +62,7 @@ export class ServerManager extends EventEmitter {
       : path.join(process.resourcesPath, 'bin/api/main.js');
 
     const dbPath = isDev
-      ? path.join(__dirname, '../../../packages/database/prisma/dev.db')
+      ? path.join(__dirname, '../../../../packages/database/prisma/dev.db')
       : path.join(app.getPath('userData'), 'data', 'bizflow.db');
 
     this.apiProcess = spawn('node', [apiPath], {
@@ -101,7 +101,7 @@ export class ServerManager extends EventEmitter {
     });
 
     // Health check
-    await this.healthCheck(this.status.apiUrl + '/health', 30);
+    await this.healthCheck(this.status.apiUrl + '/api/v1/health', 30);
     this.status.api = 'running';
     this.emit('status-change', 'API server running');
   }
@@ -115,16 +115,22 @@ export class ServerManager extends EventEmitter {
       ? path.join(__dirname, '../../../web')
       : path.join(process.resourcesPath, 'bin/web');
 
+    const nextBin = isDev
+      ? path.join(
+          __dirname,
+          '../../../../node_modules/.pnpm/node_modules/.bin/next',
+        )
+      : path.join(process.resourcesPath, 'bin/next');
+
     this.webProcess = spawn(
-      'npx',
-      ['next', 'start', webPath, '--port', this.webPort.toString()],
+      nextBin,
+      ['start', webPath, '--port', this.webPort.toString()],
       {
         env: {
           ...process.env,
           NEXT_PUBLIC_API_URL: this.status.apiUrl,
         },
         stdio: 'pipe',
-        shell: true,
       },
     );
 

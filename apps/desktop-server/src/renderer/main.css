@@ -234,3 +234,12 @@ h1 {
 .btn-destructive:hover {
   opacity: 0.9;
 }
+
+.btn-success {
+  background: var(--success);
+  color: var(--success-foreground);
+}
+
+.btn-success:hover {
+  opacity: 0.9;
+}

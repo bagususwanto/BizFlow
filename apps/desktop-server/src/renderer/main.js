@@ -41,9 +41,21 @@ function updateUI(status) {
   if (isRunning) {
     statusText.textContent = 'Running';
     statusDot.className = 'status-dot running';
+
+    // Update button to Stop
+    const actionBtn = document.getElementById('stop-btn');
+    actionBtn.textContent = 'Stop Server';
+    actionBtn.className = 'btn btn-destructive';
+    actionBtn.onclick = handleStopServer;
   } else {
     statusText.textContent = 'Stopped';
     statusDot.className = 'status-dot stopped';
+
+    // Update button to Start
+    const actionBtn = document.getElementById('stop-btn');
+    actionBtn.textContent = 'Start Server';
+    actionBtn.className = 'btn btn-success'; // Need to add this class in CSS
+    actionBtn.onclick = handleStartServer;
   }
 
   // Update URLs
@@ -91,16 +103,36 @@ function setupEventListeners() {
     });
 
   // Stop server
-  document.getElementById('stop-btn').addEventListener('click', async () => {
-    if (confirm('Apakah Anda yakin ingin menghentikan server?')) {
-      try {
-        await window.electronAPI.server.stop();
-        await loadServerStatus();
-      } catch (error) {
-        alert('Gagal menghentikan server: ' + error.message);
-      }
+  // Initial button setup (will be overridden by updateUI)
+  const actionBtn = document.getElementById('stop-btn');
+  actionBtn.onclick = handleStopServer;
+}
+
+async function handleStopServer() {
+  if (confirm('Apakah Anda yakin ingin menghentikan server?')) {
+    try {
+      await window.electronAPI.server.stop();
+      // Status update will come via event listener
+    } catch (error) {
+      alert('Gagal menghentikan server: ' + error.message);
     }
-  });
+  }
+}
+
+async function handleStartServer() {
+  try {
+    const actionBtn = document.getElementById('stop-btn');
+    actionBtn.textContent = 'Starting...';
+    actionBtn.disabled = true;
+
+    await window.electronAPI.server.start();
+    // Status update will come via event listener
+
+    actionBtn.disabled = false;
+  } catch (error) {
+    alert('Gagal memulai server: ' + error.message);
+    document.getElementById('stop-btn').disabled = false;
+  }
 
   // Minimize to tray
   document.getElementById('minimize-btn').addEventListener('click', () => {

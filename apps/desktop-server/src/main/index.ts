@@ -20,7 +20,9 @@ app.whenReady().then(async () => {
   // Listen to server events
   serverManager.on('status-change', (message: string) => {
     console.log('[STATUS]', message);
-    splash.webContents.send('status-update', message);
+    if (splash && !splash.isDestroyed()) {
+      splash.webContents.send('status-update', message);
+    }
   });
 
   serverManager.on('server-status', (status) => {

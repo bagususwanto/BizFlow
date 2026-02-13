@@ -7,8 +7,8 @@
   "type": "commonjs",
   "main": "dist/main/index.js",
   "scripts": {
-    "build": "tsc && mkdir -p dist/renderer && cp src/renderer/*.html src/renderer/*.css src/renderer/*.js dist/renderer/ && mkdir -p dist/renderer/assets && cp -r src/renderer/assets/* dist/renderer/assets/ && mkdir -p dist/resources && cp src/resources/*.svg dist/resources/",
-    "dev": "tsc && mkdir -p dist/renderer && cp src/renderer/*.html src/renderer/*.css src/renderer/*.js dist/renderer/ && mkdir -p dist/renderer/assets && cp -r src/renderer/assets/* dist/renderer/assets/ && mkdir -p dist/resources && cp src/resources/*.svg dist/resources/ && electron .",
+    "build": "tsc && mkdir -p dist/renderer && cp src/renderer/*.html src/renderer/*.css src/renderer/*.js dist/renderer/ && mkdir -p dist/renderer/assets && cp -r src/renderer/assets/* dist/renderer/assets/ && mkdir -p dist/resources && cp src/resources/*.png dist/resources/",
+    "dev": "tsc && mkdir -p dist/renderer && cp src/renderer/*.html src/renderer/*.css src/renderer/*.js dist/renderer/ && mkdir -p dist/renderer/assets && cp -r src/renderer/assets/* dist/renderer/assets/ && mkdir -p dist/resources && cp src/resources/*.png dist/resources/ && electron .",
     "start": "electron .",
     "prepackage": "node scripts/prepare-package.js",
     "package": "npm run prepackage && electron-builder",
@@ -22,6 +22,7 @@
     "electron-builder": "^25.1.8",
     "lucide": "^0.563.0",
     "lucide-static": "^0.563.0",
+    "sharp": "^0.34.5",
     "typescript": "^5.7.3"
   },
   "build": {

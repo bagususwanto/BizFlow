@@ -244,7 +244,23 @@ h1 {
   opacity: 0.9;
 }
 
-/* Icons */
+/* Icon Utility for Masking (Theme Support) */
+.icon,
+.icon-lg,
+.logo-icon,
+.step-icon {
+  display: inline-block;
+  background-color: currentColor; /* Adapts to text color */
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  filter: none !important; /* Remove previous filters */
+}
+
+/* Sizes */
 .icon {
   width: 16px;
   height: 16px;
@@ -259,5 +275,15 @@ h1 {
 .logo-icon {
   width: 32px;
   height: 32px;
-  color: var(--primary);
+  /* Logo usually needs primary color if distinct, or just currentColor */
+  background-color: var(--primary);
+}
+
+/* Remove the filter rules regarding white icons */
+.btn-primary .icon,
+.btn-primary .icon-lg,
+.btn-destructive .icon,
+.btn-destructive .icon-lg {
+  filter: none;
+  background-color: var(--primary-foreground);
 }

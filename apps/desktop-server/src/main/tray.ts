@@ -139,10 +139,15 @@ function updateTrayMenu(
   const resourcePath = path.join(__dirname, '../resources');
 
   const getMenuIcon = (name: string) => {
-    const iconPath = path.join(resourcePath, name);
-    return nativeImage
-      .createFromPath(iconPath)
-      .resize({ width: 16, height: 16 });
+    const iconPath = path.join(resourcePath, name.replace('.svg', '.png'));
+    const image = nativeImage.createFromPath(iconPath);
+
+    if (image.isEmpty()) {
+      console.error(`[TRAY] Failed to load icon: ${name} at ${iconPath}`);
+    }
+
+    image.setTemplateImage(true);
+    return image.resize({ width: 16, height: 16 });
   };
 
   const contextMenu = Menu.buildFromTemplate([

@@ -71,5 +71,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     logUpdate: (callback: (log: any) => void) => {
       ipcRenderer.on('log-update', (_, log) => callback(log));
     },
+    themeUpdate: (callback: (theme: string) => void) => {
+      ipcRenderer.on('theme-update', (_, theme) => callback(theme));
+    },
   },
 });

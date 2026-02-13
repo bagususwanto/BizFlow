@@ -1,6 +1,7 @@
 import { app } from 'electron';
 import * as fs from 'fs';
 import * as path from 'path';
+import { EventEmitter } from 'events';
 
 export interface AppConfig {
   // Server settings
@@ -39,11 +40,12 @@ const DEFAULT_CONFIG: AppConfig = {
   startMinimized: false,
 };
 
-export class ConfigManager {
+export class ConfigManager extends EventEmitter {
   private config: AppConfig;
   private configPath: string;
 
   constructor() {
+    super();
     this.configPath = path.join(app.getPath('userData'), 'config.json');
     this.config = this.loadConfig();
   }
@@ -106,16 +108,34 @@ export class ConfigManager {
    * Set specific config value
    */
   set<K extends keyof AppConfig>(key: K, value: AppConfig[K]): void {
-    this.config[key] = value;
-    this.saveConfig();
+    const oldValue = this.config[key];
+    if (oldValue !== value) {
+      this.config[key] = value;
+      this.saveConfig();
+      this.emit('change', { [key]: value }, this.config);
+    }
   }
 
   /**
    * Update multiple config values at once
    */
   update(updates: Partial<AppConfig>): void {
-    this.config = { ...this.config, ...updates };
-    this.saveConfig();
+    const changes: any = {};
+    let hasChanges = false;
+
+    for (const key of Object.keys(updates)) {
+      const k = key as keyof AppConfig;
+      if (this.config[k] !== updates[k]) {
+        (this.config as any)[k] = updates[k];
+        changes[k] = updates[k];
+        hasChanges = true;
+      }
+    }
+
+    if (hasChanges) {
+      this.saveConfig();
+      this.emit('change', changes, this.config);
+    }
   }
 
   /**
@@ -124,6 +144,7 @@ export class ConfigManager {
   reset(): void {
     this.config = { ...DEFAULT_CONFIG };
     this.saveConfig();
+    this.emit('change', DEFAULT_CONFIG, this.config);
   }
 
   /**

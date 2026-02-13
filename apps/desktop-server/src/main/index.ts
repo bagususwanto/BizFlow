@@ -59,6 +59,60 @@ app.whenReady().then(async () => {
   licenseManager = new LicenseManager();
   console.log('[LICENSE] Initialized');
 
+  // Listen for config changes
+  configManager.on('change', (changes, config) => {
+    console.log('[CONFIG] Settings changed:', Object.keys(changes));
+
+    // Handle Auto Start
+    if ('autoStart' in changes) {
+      app.setLoginItemSettings({
+        openAtLogin: config.autoStart,
+        openAsHidden: config.startMinimized,
+      });
+      console.log('[CONFIG] Auto-start updated:', config.autoStart);
+    }
+
+    // Handle Backup Settings
+    if (
+      'autoBackup' in changes ||
+      'backupInterval' in changes ||
+      'backupRetention' in changes
+    ) {
+      console.log('[CONFIG] Backup settings changed, restarting scheduler...');
+      if (config.autoBackup) {
+        backupManager.startAutoBackup();
+      } else {
+        backupManager.stopAutoBackup();
+      }
+    }
+
+    // Handle Theme (Send to all windows)
+    if ('theme' in changes) {
+      const wins = BrowserWindow.getAllWindows();
+      wins.forEach((win) => {
+        win.webContents.send('theme-update', config.theme);
+      });
+    }
+
+    // Handle Ports (Require restart)
+    if ('apiPort' in changes || 'webPort' in changes) {
+      dialog
+        .showMessageBox({
+          type: 'info',
+          title: 'Restart Required',
+          message:
+            'Port settings have been changed. You need to restart the server for these changes to take effect.',
+          buttons: ['Restart Now', 'Later'],
+        })
+        .then((result) => {
+          if (result.response === 0) {
+            app.relaunch();
+            app.exit(0);
+          }
+        });
+    }
+  });
+
   // Create system tray
   const tray = createTray(
     () => {

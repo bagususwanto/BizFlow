@@ -19,7 +19,39 @@ document.addEventListener('DOMContentLoaded', async () => {
   document
     .getElementById('deactivate-btn')
     .addEventListener('click', deactivateLicense);
+
+  // Theme handling
+  window.electronAPI.on.themeUpdate((theme) => applyTheme(theme));
+
+  // Apply initial theme
+  const config = await window.electronAPI.config.get();
+  applyTheme(config.theme);
 });
+
+function applyTheme(theme) {
+  const root = document.documentElement;
+  if (theme === 'system') {
+    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    root.style.setProperty('--bg-color', isDark ? '#1a1b1e' : '#ffffff');
+    root.style.setProperty('--card-bg', isDark ? '#25262b' : '#f8f9fa');
+    root.style.setProperty('--text-primary', isDark ? '#e6e6e6' : '#1f2937');
+    root.style.setProperty('--text-secondary', isDark ? '#909296' : '#6b7280');
+    root.style.setProperty('--border-color', isDark ? '#373a40' : '#e5e7eb');
+  } else if (theme === 'light') {
+    root.style.setProperty('--bg-color', '#ffffff');
+    root.style.setProperty('--card-bg', '#f8f9fa');
+    root.style.setProperty('--text-primary', '#1f2937');
+    root.style.setProperty('--text-secondary', '#6b7280');
+    root.style.setProperty('--border-color', '#e5e7eb');
+  } else {
+    // Dark theme (default)
+    root.style.removeProperty('--bg-color');
+    root.style.removeProperty('--card-bg');
+    root.style.removeProperty('--text-primary');
+    root.style.removeProperty('--text-secondary');
+    root.style.removeProperty('--border-color');
+  }
+}
 
 function setupTabs() {
   const tabs = document.querySelectorAll('.nav-item');

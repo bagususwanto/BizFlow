@@ -7,6 +7,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Setup event listeners
   setupEventListeners();
 
+  // Listen for theme updates
+  window.electronAPI?.on.themeUpdate((theme) => applyTheme(theme));
+
+  // Apply initial theme
+  try {
+    const config = await window.electronAPI.config.get();
+    applyTheme(config.theme);
+  } catch (err) {
+    console.error('Failed to load theme:', err);
+  }
+
   // Load initial status
   await loadServerStatus();
 
@@ -15,7 +26,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     serverStatus = status;
     updateUI(status);
   });
+
+  if (serverStatus) updateUI(serverStatus);
 });
+
+function applyTheme(theme) {
+  const root = document.documentElement;
+  // Simple Theme Implementation
+  // In a real app we would toggle CSS classes or load different CSS files
+  // For now we just use a data-attribute that CSS could target
+  document.documentElement.setAttribute('data-theme', theme);
+
+  if (theme === 'system') {
+    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // Update logical properties if needed
+  }
+}
 
 async function loadServerStatus() {
   try {

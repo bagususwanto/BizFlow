@@ -145,3 +145,37 @@ export function createLicenseWindow(): BrowserWindow {
 export function getLicenseWindow(): BrowserWindow | null {
   return licenseWindow;
 }
+
+let settingsWindow: BrowserWindow | null = null;
+
+export function createSettingsWindow(): BrowserWindow {
+  if (settingsWindow && !settingsWindow.isDestroyed()) {
+    settingsWindow.show();
+    settingsWindow.focus();
+    return settingsWindow;
+  }
+
+  settingsWindow = new BrowserWindow({
+    width: 900,
+    height: 700,
+    webPreferences: {
+      preload: path.join(__dirname, '../preload/index.js'),
+      nodeIntegration: false,
+      contextIsolation: true,
+    },
+    title: 'BizFlow Server - Settings',
+    parent: mainWindow || undefined,
+  });
+
+  settingsWindow.loadFile(path.join(__dirname, '../renderer/settings.html'));
+
+  settingsWindow.on('closed', () => {
+    settingsWindow = null;
+  });
+
+  return settingsWindow;
+}
+
+export function getSettingsWindow(): BrowserWindow | null {
+  return settingsWindow;
+}

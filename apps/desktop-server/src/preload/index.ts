@@ -11,6 +11,15 @@ contextBridge.exposeInMainWorld('electronAPI', {
     restart: () => ipcRenderer.invoke('server:restart'),
   },
 
+  // Config
+  config: {
+    get: () => ipcRenderer.invoke('config:get'),
+    set: (key: string, value: any) =>
+      ipcRenderer.invoke('config:set', key, value),
+    update: (updates: any) => ipcRenderer.invoke('config:update', updates),
+    reset: () => ipcRenderer.invoke('config:reset'),
+  },
+
   // App controls
   app: {
     openBrowser: (url: string) => ipcRenderer.invoke('app:open-browser', url),

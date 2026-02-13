@@ -8,6 +8,8 @@ import {
   showMainWindow,
   createLogsWindow,
   getLogsWindow,
+  createSettingsWindow,
+  getSettingsWindow,
   createLicenseWindow,
   getLicenseWindow,
 } from './windows';
@@ -262,8 +264,7 @@ ipcMain.handle('app:open-logs', () => {
 });
 
 ipcMain.handle('app:open-settings', () => {
-  // For now, settings opens the license window or a placeholder
-  createLicenseWindow();
+  createSettingsWindow();
   return { success: true };
 });
 

@@ -10,10 +10,11 @@
     "build": "tsc && mkdir -p dist/renderer && cp src/renderer/*.html src/renderer/*.css src/renderer/*.js dist/renderer/ && mkdir -p dist/resources && cp src/resources/*.svg dist/resources/",
     "dev": "tsc && mkdir -p dist/renderer && cp src/renderer/*.html src/renderer/*.css src/renderer/*.js dist/renderer/ && mkdir -p dist/resources && cp src/resources/*.svg dist/resources/ && electron .",
     "start": "electron .",
-    "package": "electron-builder",
-    "package:win": "electron-builder --win",
-    "package:mac": "electron-builder --mac",
-    "package:linux": "electron-builder --linux"
+    "prepackage": "node scripts/prepare-package.js",
+    "package": "npm run prepackage && electron-builder",
+    "package:win": "npm run prepackage && electron-builder --win",
+    "package:mac": "npm run prepackage && electron-builder --mac",
+    "package:linux": "npm run prepackage && electron-builder --linux"
   },
   "devDependencies": {
     "@types/node": "^22.10.5",
@@ -35,29 +36,18 @@
     ],
     "extraResources": [
       {
-        "from": "../../apps/api/dist",
+        "from": ".tmp-package/api",
         "to": "api",
         "filter": [
           "**/*"
         ]
       },
       {
-        "from": "../../apps/web/.next",
-        "to": "web/.next",
+        "from": ".tmp-package/web",
+        "to": "web",
         "filter": [
           "**/*"
         ]
-      },
-      {
-        "from": "../../apps/web/public",
-        "to": "web/public",
-        "filter": [
-          "**/*"
-        ]
-      },
-      {
-        "from": "../../apps/web/package.json",
-        "to": "web/package.json"
       },
       {
         "from": "../../packages/database/prisma",
@@ -71,16 +61,14 @@
       "category": "public.app-category.business",
       "target": [
         {
-          "target": "dmg",
+          "target": "dir",
           "arch": [
-            "x64",
             "arm64"
           ]
         },
         {
           "target": "zip",
           "arch": [
-            "x64",
             "arm64"
           ]
         }

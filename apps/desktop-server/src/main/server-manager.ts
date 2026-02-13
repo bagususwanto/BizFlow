@@ -1,5 +1,6 @@
 import { ChildProcess, spawn } from 'child_process';
 import { EventEmitter } from 'events';
+import * as fs from 'fs';
 import * as path from 'path';
 import { app } from 'electron';
 import { PortManager } from './port-manager';
@@ -81,21 +82,48 @@ export class ServerManager extends EventEmitter {
     const isDev = !app.isPackaged;
     const apiPath = isDev
       ? path.join(__dirname, '../../../api/dist/main.js')
-      : path.join(process.resourcesPath, 'bin/api/main.js');
+      : path.join(process.resourcesPath, 'api/main.js');
 
     const dbPath = isDev
       ? path.join(__dirname, '../../../../packages/database/prisma/dev.db')
       : path.join(app.getPath('userData'), 'data', 'bizflow.db');
 
-    this.apiProcess = spawn('node', [apiPath], {
+    console.log('[API] isDev:', isDev);
+    console.log('[API] Path:', apiPath);
+    console.log('[API] Exists:', fs.existsSync(apiPath));
+    console.log('[API] DB Path:', dbPath);
+
+    if (!fs.existsSync(apiPath)) {
+      throw new Error(`API entry point not found: ${apiPath}`);
+    }
+
+    // In production, ensure data directory exists
+    if (!isDev) {
+      const dataDir = path.dirname(dbPath);
+      if (!fs.existsSync(dataDir)) {
+        fs.mkdirSync(dataDir, { recursive: true });
+      }
+    }
+
+    // Use the Node.js binary path
+    const nodeBin = process.execPath;
+
+    this.apiProcess = spawn(nodeBin, [apiPath], {
       env: {
         ...process.env,
+        ELECTRON_RUN_AS_NODE: '1',
         PORT: this.apiPort.toString(),
         DATABASE_URL: `file:${dbPath}`,
         JWT_ACCESS_SECRET: 'bizflow-access-secret-change-in-production',
         JWT_REFRESH_SECRET: 'bizflow-refresh-secret-change-in-production',
         CORS_ORIGIN: this.status.webUrl,
+        NODE_PATH: isDev
+          ? undefined
+          : path.join(process.resourcesPath, 'api/node_modules'),
       },
+      cwd: isDev
+        ? path.dirname(apiPath)
+        : path.join(process.resourcesPath, 'api'),
       stdio: 'pipe',
     });
 
@@ -148,26 +176,57 @@ export class ServerManager extends EventEmitter {
     const isDev = !app.isPackaged;
     const webPath = isDev
       ? path.join(__dirname, '../../../web')
-      : path.join(process.resourcesPath, 'bin/web');
+      : path.join(process.resourcesPath, 'web');
 
-    const nextBin = isDev
-      ? path.join(
-          __dirname,
-          '../../../../node_modules/.pnpm/node_modules/.bin/next',
-        )
-      : path.join(process.resourcesPath, 'bin/next');
+    // Use the Node.js binary path
+    const nodeBin = process.execPath;
 
-    this.webProcess = spawn(
-      nextBin,
-      ['start', webPath, '--port', this.webPort.toString()],
-      {
+    console.log('[WEB] isDev:', isDev);
+    console.log('[WEB] Path:', webPath);
+    console.log('[WEB] Exists:', fs.existsSync(webPath));
+
+    if (isDev) {
+      // In dev mode, use next CLI
+      const nextBin = path.join(
+        __dirname,
+        '../../../../node_modules/.pnpm/node_modules/.bin/next',
+      );
+
+      this.webProcess = spawn(
+        nextBin,
+        ['start', webPath, '--port', this.webPort.toString()],
+        {
+          env: {
+            ...process.env,
+            NEXT_PUBLIC_API_URL: this.status.apiUrl,
+          },
+          stdio: 'pipe',
+        },
+      );
+    } else {
+      // In production, use standalone server.js
+      // Next.js standalone preserves monorepo structure: web/apps/web/server.js
+      const standaloneServer = path.join(webPath, 'apps', 'web', 'server.js');
+
+      console.log('[WEB] Standalone server:', standaloneServer);
+      console.log('[WEB] Standalone exists:', fs.existsSync(standaloneServer));
+
+      if (!fs.existsSync(standaloneServer)) {
+        throw new Error(`Web standalone server not found: ${standaloneServer}`);
+      }
+
+      this.webProcess = spawn(nodeBin, [standaloneServer], {
         env: {
           ...process.env,
+          ELECTRON_RUN_AS_NODE: '1',
+          PORT: this.webPort.toString(),
+          HOSTNAME: '0.0.0.0',
           NEXT_PUBLIC_API_URL: this.status.apiUrl,
         },
+        cwd: path.join(webPath, 'apps', 'web'),
         stdio: 'pipe',
-      },
-    );
+      });
+    }
 
     this.webProcess.stdout?.on('data', (data) => {
       const message = data.toString();

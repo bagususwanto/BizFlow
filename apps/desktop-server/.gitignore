@@ -2,6 +2,7 @@ node_modules
 dist
 dist-installer
 release
+.tmp-package
 *.log
 debug*.log
 .DS_Store

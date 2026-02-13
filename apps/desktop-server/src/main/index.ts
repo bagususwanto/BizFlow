@@ -198,10 +198,28 @@ app.whenReady().then(async () => {
 
   // Start servers
   try {
+    // Add timeout safety net (60 seconds)
+    const startupTimeout = setTimeout(() => {
+      console.error('[STARTUP TIMEOUT] Server startup took too long');
+      closeSplashWindow();
+      dialog.showErrorBox(
+        'Startup Timeout',
+        'Server startup took too long. Please check the logs for details.',
+      );
+    }, 60000);
+
     await serverManager.startAll();
+    clearTimeout(startupTimeout);
   } catch (error) {
     console.error('[STARTUP ERROR]', error);
-    splash.webContents.send('status-update', `Error: ${error}`);
+    closeSplashWindow();
+
+    // Show error dialog to user
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    dialog.showErrorBox(
+      'Server Startup Failed',
+      `Failed to start servers:\n\n${errorMessage}\n\nPlease check the logs for more details.`,
+    );
   }
 
   app.on('activate', () => {

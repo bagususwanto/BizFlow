@@ -113,6 +113,37 @@ app.whenReady().then(async () => {
     }
   });
 
+  // Helper for manual backup
+  const handleManualBackup = async () => {
+    try {
+      console.log('[BACKUP_DEBUG] Starting manual backup...');
+      const backupInfo = await backupManager.createBackup();
+      console.log('[BACKUP_DEBUG] Backup created:', backupInfo);
+
+      console.log('[BACKUP_DEBUG] Showing success dialog...');
+      const result = await dialog.showMessageBox({
+        type: 'info',
+        title: 'Backup Successful',
+        message: `Backup telah berhasil dibuat!`,
+        detail: `File: ${backupInfo.filename}\nUkuran: ${(backupInfo.size / 1024 / 1024).toFixed(2)} MB`,
+        buttons: ['OK', 'Buka Folder'],
+        defaultId: 0,
+        noLink: true,
+        normalizeAccessKeys: true,
+      });
+
+      if (result.response === 1) {
+        shell.openPath(backupManager.getBackupDir());
+      }
+    } catch (error) {
+      console.error('[BACKUP] Manual backup failed:', error);
+      dialog.showErrorBox(
+        'Backup Failed',
+        `Gagal membuat backup:\n\n${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
+  };
+
   // Create system tray
   const tray = createTray(
     () => {
@@ -136,15 +167,7 @@ app.whenReady().then(async () => {
       // View logs
       createLogsWindow();
     },
-    async () => {
-      // Backup now
-      try {
-        await backupManager.createBackup();
-        console.log('[BACKUP] Manual backup created from tray');
-      } catch (error) {
-        console.error('[BACKUP] Manual backup failed:', error);
-      }
-    },
+    handleManualBackup,
   );
 
   // Listen to server events
@@ -164,13 +187,7 @@ app.whenReady().then(async () => {
       async () => await serverManager.startAll(),
       async () => await serverManager.restartAll(),
       () => createLogsWindow(),
-      async () => {
-        try {
-          await backupManager.createBackup();
-        } catch (error) {
-          console.error('[BACKUP] Failed:', error);
-        }
-      },
+      handleManualBackup,
     );
 
     // Send to main window if it exists
@@ -192,13 +209,7 @@ app.whenReady().then(async () => {
       async () => await serverManager.startAll(),
       async () => await serverManager.restartAll(),
       () => createLogsWindow(),
-      async () => {
-        try {
-          await backupManager.createBackup();
-        } catch (error) {
-          console.error('[BACKUP] Failed:', error);
-        }
-      },
+      handleManualBackup,
     );
 
     // Close splash and show main window
@@ -385,8 +396,29 @@ ipcMain.handle('logs:getFilePath', () => {
 ipcMain.handle('backup:create', async (_, customName?: string) => {
   try {
     const backupInfo = await backupManager.createBackup(customName);
+
+    // Show success dialog
+    const result = await dialog.showMessageBox({
+      type: 'info',
+      title: 'Backup Successful',
+      message: `Backup telah berhasil dibuat!`,
+      detail: `File: ${backupInfo.filename}\nUkuran: ${(backupInfo.size / 1024 / 1024).toFixed(2)} MB`,
+      buttons: ['OK', 'Buka Folder'],
+      defaultId: 0,
+      noLink: true,
+      normalizeAccessKeys: true,
+    });
+
+    if (result.response === 1) {
+      shell.openPath(backupManager.getBackupDir());
+    }
+
     return { success: true, backup: backupInfo };
   } catch (error: any) {
+    dialog.showErrorBox(
+      'Backup Failed',
+      `Gagal membuat backup:\n\n${error.message}`,
+    );
     return { success: false, error: error.message };
   }
 });

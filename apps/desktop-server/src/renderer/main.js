@@ -209,16 +209,8 @@ function setupEventListeners() {
 
   document.getElementById('backup-btn').addEventListener('click', async () => {
     if (confirm('Create a new backup now?')) {
-      try {
-        const result = await window.electronAPI.backup.create();
-        if (result.success) {
-          alert('Backup created successfully!');
-        } else {
-          alert('Backup failed: ' + result.error);
-        }
-      } catch (error) {
-        alert('Backup failed: ' + error.message);
-      }
+      // IPC handle will show dialog
+      await window.electronAPI.backup.create();
     }
   });
 

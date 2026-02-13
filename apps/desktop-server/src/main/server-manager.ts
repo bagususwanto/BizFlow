@@ -48,7 +48,11 @@ export class ServerManager extends EventEmitter {
     const preferredWebPort = this.config.get('webPort');
 
     this.apiPort = await PortManager.findAvailablePort(preferredApiPort);
-    this.webPort = await PortManager.findAvailablePort(preferredWebPort);
+
+    // Ensure Web port is distinct from API port
+    // If API took the preferred Web port (or higher), start searching from API port + 1
+    const startWebPort = Math.max(preferredWebPort, this.apiPort + 1);
+    this.webPort = await PortManager.findAvailablePort(startWebPort);
 
     if (this.apiPort !== preferredApiPort) {
       console.log(

@@ -14,6 +14,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // App controls
   app: {
     openBrowser: (url: string) => ipcRenderer.invoke('app:open-browser', url),
+    openLogs: () => ipcRenderer.invoke('app:open-logs'),
+    openSettings: () => ipcRenderer.invoke('app:open-settings'),
     quit: () => ipcRenderer.invoke('app:quit'),
   },
 

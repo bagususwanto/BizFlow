@@ -109,18 +109,31 @@ function setupEventListeners() {
     window.close(); // This will hide to tray based on window config
   });
 
-  // Navigation buttons (placeholder for Phase 4, 5, 6)
-  document.getElementById('logs-btn').addEventListener('click', () => {
-    alert('Logs viewer akan diimplementasikan di Phase 4');
+  // Navigation buttons
+  document.getElementById('logs-btn').addEventListener('click', async () => {
+    await window.electronAPI.app.openLogs();
   });
 
-  document.getElementById('backup-btn').addEventListener('click', () => {
-    alert('Backup/Restore akan diimplementasikan di Phase 5');
+  document.getElementById('backup-btn').addEventListener('click', async () => {
+    if (confirm('Create a new backup now?')) {
+      try {
+        const result = await window.electronAPI.backup.create();
+        if (result.success) {
+          alert('Backup created successfully!');
+        } else {
+          alert('Backup failed: ' + result.error);
+        }
+      } catch (error) {
+        alert('Backup failed: ' + error.message);
+      }
+    }
   });
 
-  document.getElementById('settings-btn').addEventListener('click', () => {
-    alert('Settings akan diimplementasikan di Phase 6');
-  });
+  document
+    .getElementById('settings-btn')
+    .addEventListener('click', async () => {
+      await window.electronAPI.app.openSettings();
+    });
 }
 
 async function handleStopServer() {

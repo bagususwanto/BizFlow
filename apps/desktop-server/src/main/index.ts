@@ -256,6 +256,17 @@ ipcMain.handle('app:open-browser', (_, url: string) => {
   return { success: true };
 });
 
+ipcMain.handle('app:open-logs', () => {
+  createLogsWindow();
+  return { success: true };
+});
+
+ipcMain.handle('app:open-settings', () => {
+  // For now, settings opens the license window or a placeholder
+  createLicenseWindow();
+  return { success: true };
+});
+
 // Config IPC handlers
 ipcMain.handle('config:get', () => {
   return configManager.getConfig();

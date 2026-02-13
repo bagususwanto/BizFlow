@@ -136,49 +136,65 @@ function updateTrayMenu(
   if (!tray) return;
 
   const isRunning = status.api === 'running' && status.web === 'running';
+  const resourcePath = path.join(__dirname, '../resources');
+
+  const getMenuIcon = (name: string) => {
+    const iconPath = path.join(resourcePath, name);
+    return nativeImage
+      .createFromPath(iconPath)
+      .resize({ width: 16, height: 16 });
+  };
 
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: '🏪 BizFlow Server',
+      label: 'BizFlow Server',
       enabled: false,
+      icon: getMenuIcon('store.svg'),
     },
     { type: 'separator' },
     {
-      label: isRunning ? '● Server Running' : '○ Server Stopped',
+      label: isRunning ? 'Server Running' : 'Server Stopped',
       enabled: false,
+      icon: getMenuIcon(isRunning ? 'check-circle.svg' : 'circle.svg'),
     },
     { type: 'separator' },
     {
-      label: '🌐 Buka di Browser',
+      label: 'Buka di Browser',
       enabled: isRunning,
       click: onOpenBrowser,
+      icon: getMenuIcon('globe.svg'),
     },
     {
-      label: '📋 Lihat Logs',
+      label: 'Lihat Logs',
       enabled: true,
       click: onViewLogs,
+      icon: getMenuIcon('clipboard-list.svg'),
     },
     {
-      label: '💾 Backup Sekarang',
+      label: 'Backup Sekarang',
       enabled: true,
       click: onBackup,
+      icon: getMenuIcon('save.svg'),
     },
     { type: 'separator' },
     {
-      label: isRunning ? '⏸️  Stop Server' : '▶️  Start Server',
+      label: isRunning ? 'Stop Server' : 'Start Server',
       click: isRunning ? onStopServer : onStartServer,
+      icon: getMenuIcon(isRunning ? 'pause.svg' : 'play.svg'),
     },
     {
-      label: '🔄 Restart Server',
+      label: 'Restart Server',
       enabled: isRunning,
       click: onRestartServer,
+      icon: getMenuIcon('refresh-cw.svg'),
     },
     { type: 'separator' },
     {
-      label: '❌ Keluar',
+      label: 'Keluar',
       click: () => {
         app.quit();
       },
+      icon: getMenuIcon('log-out.svg'),
     },
   ]);
 

@@ -72,10 +72,10 @@ function showLicenseInfo(info) {
 
   const statusEl = document.getElementById('info-status');
   if (info.isValid) {
-    statusEl.textContent = '✅ Active';
+    statusEl.textContent = 'Active';
     statusEl.style.color = 'var(--accent-success)';
   } else {
-    statusEl.textContent = '❌ Invalid';
+    statusEl.textContent = 'Invalid';
     statusEl.style.color = 'var(--accent-danger)';
   }
 }

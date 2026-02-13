@@ -243,3 +243,21 @@ h1 {
 .btn-success:hover {
   opacity: 0.9;
 }
+
+/* Icons */
+.icon {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}
+
+.icon-lg {
+  width: 20px;
+  height: 20px;
+}
+
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  color: var(--primary);
+}

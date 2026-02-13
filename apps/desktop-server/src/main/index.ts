@@ -410,4 +410,4 @@ app.on('window-all-closed', () => {
   }
 });
 
-console.log('BizFlow Desktop Server started 🚀');
+console.log('BizFlow Desktop Server started');

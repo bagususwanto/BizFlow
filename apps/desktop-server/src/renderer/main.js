@@ -32,14 +32,44 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function applyTheme(theme) {
   const root = document.documentElement;
-  // Simple Theme Implementation
-  // In a real app we would toggle CSS classes or load different CSS files
-  // For now we just use a data-attribute that CSS could target
   document.documentElement.setAttribute('data-theme', theme);
+
+  const colors = {
+    dark: {
+      background: '#1a1b1e',
+      card: '#25262b',
+      foreground: '#e6e6e6',
+      mutedForeground: '#909296',
+      border: '#373a40',
+    },
+    light: {
+      background: '#ffffff',
+      card: '#f8f9fa',
+      foreground: '#1f2937',
+      mutedForeground: '#6b7280',
+      border: '#e5e7eb',
+    },
+  };
+
+  const setVariables = (mode) => {
+    const palette = colors[mode];
+    root.style.setProperty('--background', palette.background);
+    root.style.setProperty('--card', palette.card);
+    root.style.setProperty('--foreground', palette.foreground);
+    root.style.setProperty('--muted-foreground', palette.mutedForeground);
+    root.style.setProperty('--border', palette.border);
+    // Keep internal variables just in case
+    root.style.setProperty('--bg-color', palette.background);
+    root.style.setProperty('--card-bg', palette.card);
+  };
 
   if (theme === 'system') {
     const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    // Update logical properties if needed
+    setVariables(isDark ? 'dark' : 'light');
+  } else if (theme === 'light') {
+    setVariables('light');
+  } else {
+    setVariables('dark');
   }
 }
 

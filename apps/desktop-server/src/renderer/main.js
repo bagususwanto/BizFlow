@@ -37,28 +37,65 @@ function applyTheme(theme) {
   const colors = {
     dark: {
       background: '#1a1b1e',
-      card: '#25262b',
       foreground: '#e6e6e6',
+      card: '#25262b',
+      cardForeground: '#e6e6e6',
+      primary: '#3b82f6', // Bright blue for dark mode
+      primaryForeground: '#ffffff',
+      secondary: '#2c2e33',
+      secondaryForeground: '#e6e6e6',
+      muted: '#2c2e33',
       mutedForeground: '#909296',
+      destructive: '#ef4444',
+      destructiveForeground: '#ffffff',
       border: '#373a40',
+      success: '#22c55e',
+      successForeground: '#ffffff',
     },
     light: {
       background: '#ffffff',
-      card: '#f8f9fa',
       foreground: '#1f2937',
+      card: '#f8f9fa',
+      cardForeground: '#1f2937',
+      primary: '#2563eb', // Standard blue
+      primaryForeground: '#ffffff',
+      secondary: '#f3f4f6',
+      secondaryForeground: '#1f2937',
+      muted: '#f3f4f6',
       mutedForeground: '#6b7280',
+      destructive: '#dc2626',
+      destructiveForeground: '#ffffff',
       border: '#e5e7eb',
+      success: '#16a34a',
+      successForeground: '#ffffff',
     },
   };
 
   const setVariables = (mode) => {
     const palette = colors[mode];
     root.style.setProperty('--background', palette.background);
-    root.style.setProperty('--card', palette.card);
     root.style.setProperty('--foreground', palette.foreground);
+    root.style.setProperty('--card', palette.card);
+    root.style.setProperty('--card-foreground', palette.cardForeground);
+    root.style.setProperty('--primary', palette.primary);
+    root.style.setProperty('--primary-foreground', palette.primaryForeground);
+    root.style.setProperty('--secondary', palette.secondary);
+    root.style.setProperty(
+      '--secondary-foreground',
+      palette.secondaryForeground,
+    );
+    root.style.setProperty('--muted', palette.muted);
     root.style.setProperty('--muted-foreground', palette.mutedForeground);
+    root.style.setProperty('--destructive', palette.destructive);
+    root.style.setProperty(
+      '--destructive-foreground',
+      palette.destructiveForeground,
+    );
     root.style.setProperty('--border', palette.border);
-    // Keep internal variables just in case
+    root.style.setProperty('--success', palette.success);
+    root.style.setProperty('--success-foreground', palette.successForeground);
+
+    // Keep internal variables for backward compatibility
     root.style.setProperty('--bg-color', palette.background);
     root.style.setProperty('--card-bg', palette.card);
   };

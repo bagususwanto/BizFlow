@@ -121,9 +121,7 @@ export class ServerManager extends EventEmitter {
         JWT_ACCESS_SECRET: 'bizflow-access-secret-change-in-production',
         JWT_REFRESH_SECRET: 'bizflow-refresh-secret-change-in-production',
         CORS_ORIGIN: this.status.webUrl,
-        NODE_PATH: isDev
-          ? undefined
-          : path.join(process.resourcesPath, 'api/node_modules'),
+        // NODE_PATH removed - not needed with hoisted modules
       },
       cwd: isDev
         ? path.dirname(apiPath)

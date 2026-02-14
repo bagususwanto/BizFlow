@@ -6,6 +6,7 @@
 
 :root {
   /* Using tokens from global.css */
+  /* Light Mode Defaults (using oklch) */
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
   --card: oklch(1 0 0);
@@ -21,6 +22,23 @@
   --success: oklch(0.55 0.18 145);
   --success-foreground: oklch(0.98 0.01 145);
   --radius: 0.65rem;
+}
+
+[data-theme='dark'] {
+  --background: oklch(0.14 0.005 285.8);
+  --foreground: oklch(0.985 0.001 247.6);
+  --card: oklch(0.17 0.005 285.8);
+  --card-foreground: oklch(0.985 0.001 247.6);
+  --primary: oklch(0.488 0.243 264.376);
+  --primary-foreground: oklch(0.985 0.001 247.6);
+  --secondary: oklch(0.2 0.005 285.8);
+  --secondary-foreground: oklch(0.985 0.001 247.6);
+  --muted: oklch(0.2 0.005 285.8);
+  --muted-foreground: oklch(0.7 0.01 285.8);
+  --destructive: oklch(0.396 0.141 25.723);
+  --border: oklch(0.26 0.005 285.8);
+  --success: oklch(0.4 0.15 145);
+  --success-foreground: oklch(0.985 0.001 247.6);
 }
 
 body {

@@ -2,6 +2,7 @@ import { app, Menu, Tray, nativeImage } from 'electron';
 import * as path from 'path';
 import { showMainWindow } from './windows';
 import { ServerStatus } from './server-manager';
+import { TRAY_TRANSLATIONS } from './config';
 
 let tray: Tray | null = null;
 
@@ -12,6 +13,7 @@ export function createTray(
   onRestartServer: () => void,
   onViewLogs: () => void,
   onBackup: () => void,
+  language: 'id' | 'en' = 'id',
 ): Tray | null {
   console.log('[TRAY] Electron version:', process.versions.electron);
 
@@ -61,6 +63,7 @@ export function createTray(
       onRestartServer,
       onViewLogs,
       onBackup,
+      language,
     );
 
     // Double-click to show main window
@@ -82,6 +85,7 @@ export function updateTrayStatus(
   onRestartServer: () => void,
   onViewLogs: () => void,
   onBackup: () => void,
+  language: 'id' | 'en' = 'id',
 ): void {
   if (!tray) return;
 
@@ -121,6 +125,7 @@ export function updateTrayStatus(
     onRestartServer,
     onViewLogs,
     onBackup,
+    language,
   );
 }
 
@@ -132,11 +137,13 @@ function updateTrayMenu(
   onRestartServer: () => void,
   onViewLogs: () => void,
   onBackup: () => void,
+  language: 'id' | 'en' = 'id',
 ): void {
   if (!tray) return;
 
   const isRunning = status.api === 'running' && status.web === 'running';
   const resourcePath = path.join(__dirname, '../resources');
+  const t = TRAY_TRANSLATIONS[language] || TRAY_TRANSLATIONS.id;
 
   const getMenuIcon = (name: string) => {
     const iconPath = path.join(resourcePath, name.replace('.svg', '.png'));
@@ -158,44 +165,46 @@ function updateTrayMenu(
     },
     { type: 'separator' },
     {
-      label: isRunning ? 'Server Running' : 'Server Stopped',
+      label: isRunning
+        ? t['status.running'] || 'Server Running'
+        : t['status.stopped'] || 'Server Stopped',
       enabled: false,
       icon: getMenuIcon(isRunning ? 'check-circle.svg' : 'circle.svg'),
     },
     { type: 'separator' },
     {
-      label: 'Buka di Browser',
+      label: t['open.browser'],
       enabled: isRunning,
       click: onOpenBrowser,
       icon: getMenuIcon('globe.svg'),
     },
     {
-      label: 'Lihat Logs',
+      label: t['logs.view'],
       enabled: true,
       click: onViewLogs,
       icon: getMenuIcon('clipboard-list.svg'),
     },
     {
-      label: 'Backup Sekarang',
+      label: t['backup.create'],
       enabled: true,
       click: onBackup,
       icon: getMenuIcon('save.svg'),
     },
     { type: 'separator' },
     {
-      label: isRunning ? 'Stop Server' : 'Start Server',
+      label: isRunning ? t['server.stop'] : t['server.start'],
       click: isRunning ? onStopServer : onStartServer,
       icon: getMenuIcon(isRunning ? 'pause.svg' : 'play.svg'),
     },
     {
-      label: 'Restart Server',
+      label: t['server.restart'],
       enabled: isRunning,
       click: onRestartServer,
       icon: getMenuIcon('refresh-cw.svg'),
     },
     { type: 'separator' },
     {
-      label: 'Keluar',
+      label: t['quit'],
       click: () => {
         app.quit();
       },

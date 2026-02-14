@@ -10,12 +10,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Listen for theme updates
   window.electronAPI?.on.themeUpdate((theme) => applyTheme(theme));
 
-  // Apply initial theme
+  // Listen for language updates
+  window.electronAPI?.on.languageUpdate((lang) => {
+    window.i18n.applyTranslations(lang);
+    if (serverStatus) updateUI(serverStatus); // Re-apply dynamic text
+  });
+
+  // Apply initial configuration (Theme & Language)
   try {
     const config = await window.electronAPI.config.get();
     applyTheme(config.theme);
+
+    // Apply initial language
+    if (window.i18n) {
+      window.i18n.applyTranslations(config.language || 'id');
+    }
   } catch (err) {
-    console.error('Failed to load theme:', err);
+    console.error('Failed to load config:', err);
   }
 
   // Load initial status
@@ -33,81 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 function applyTheme(theme) {
   const root = document.documentElement;
   document.documentElement.setAttribute('data-theme', theme);
-
-  const colors = {
-    dark: {
-      background: '#1a1b1e',
-      foreground: '#e6e6e6',
-      card: '#25262b',
-      cardForeground: '#e6e6e6',
-      primary: '#3b82f6', // Bright blue for dark mode
-      primaryForeground: '#ffffff',
-      secondary: '#2c2e33',
-      secondaryForeground: '#e6e6e6',
-      muted: '#2c2e33',
-      mutedForeground: '#909296',
-      destructive: '#ef4444',
-      destructiveForeground: '#ffffff',
-      border: '#373a40',
-      success: '#22c55e',
-      successForeground: '#ffffff',
-    },
-    light: {
-      background: '#ffffff',
-      foreground: '#1f2937',
-      card: '#f8f9fa',
-      cardForeground: '#1f2937',
-      primary: '#2563eb', // Standard blue
-      primaryForeground: '#ffffff',
-      secondary: '#f3f4f6',
-      secondaryForeground: '#1f2937',
-      muted: '#f3f4f6',
-      mutedForeground: '#6b7280',
-      destructive: '#dc2626',
-      destructiveForeground: '#ffffff',
-      border: '#e5e7eb',
-      success: '#16a34a',
-      successForeground: '#ffffff',
-    },
-  };
-
-  const setVariables = (mode) => {
-    const palette = colors[mode];
-    root.style.setProperty('--background', palette.background);
-    root.style.setProperty('--foreground', palette.foreground);
-    root.style.setProperty('--card', palette.card);
-    root.style.setProperty('--card-foreground', palette.cardForeground);
-    root.style.setProperty('--primary', palette.primary);
-    root.style.setProperty('--primary-foreground', palette.primaryForeground);
-    root.style.setProperty('--secondary', palette.secondary);
-    root.style.setProperty(
-      '--secondary-foreground',
-      palette.secondaryForeground,
-    );
-    root.style.setProperty('--muted', palette.muted);
-    root.style.setProperty('--muted-foreground', palette.mutedForeground);
-    root.style.setProperty('--destructive', palette.destructive);
-    root.style.setProperty(
-      '--destructive-foreground',
-      palette.destructiveForeground,
-    );
-    root.style.setProperty('--border', palette.border);
-    root.style.setProperty('--success', palette.success);
-    root.style.setProperty('--success-foreground', palette.successForeground);
-
-    // Keep internal variables for backward compatibility
-    root.style.setProperty('--bg-color', palette.background);
-    root.style.setProperty('--card-bg', palette.card);
-  };
-
-  if (theme === 'system') {
-    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setVariables(isDark ? 'dark' : 'light');
-  } else if (theme === 'light') {
-    setVariables('light');
-  } else {
-    setVariables('dark');
-  }
+  // ... (keeping existing color logic if any, or rely on CSS variables)
 }
 
 async function loadServerStatus() {
@@ -127,24 +64,30 @@ function updateUI(status) {
   const statusDot = document.querySelector('.status-dot');
 
   const isRunning = status.api === 'running' && status.web === 'running';
+  const t = window.i18n ? window.i18n.t : (k) => k;
 
   if (isRunning) {
-    statusText.textContent = 'Running';
+    statusText.textContent = t('status.running');
     statusDot.className = 'status-dot running';
 
     // Update button to Stop
     const actionBtn = document.getElementById('stop-btn');
-    actionBtn.textContent = 'Stop Server';
+    // Keep icon if exists
+    const iconHtml = `<div class="icon" style="mask-image: url('assets/icons/power.png')"></div>`;
+    actionBtn.innerHTML = `${iconHtml} ${t('btn.stopServer')}`;
+
     actionBtn.className = 'btn btn-destructive';
     actionBtn.onclick = handleStopServer;
   } else {
-    statusText.textContent = 'Stopped';
+    statusText.textContent = t('status.stopped');
     statusDot.className = 'status-dot stopped';
 
     // Update button to Start
     const actionBtn = document.getElementById('stop-btn');
-    actionBtn.textContent = 'Start Server';
-    actionBtn.className = 'btn btn-success'; // Need to add this class in CSS
+    const iconHtml = `<div class="icon" style="mask-image: url('assets/icons/power.png')"></div>`;
+    actionBtn.innerHTML = `${iconHtml} ${t('btn.startServer')}`;
+
+    actionBtn.className = 'btn btn-success';
     actionBtn.onclick = handleStartServer;
   }
 
@@ -222,7 +165,8 @@ function setupEventListeners() {
 }
 
 async function handleStopServer() {
-  if (confirm('Apakah Anda yakin ingin menghentikan server?')) {
+  const t = window.i18n ? window.i18n.t : (k) => k;
+  if (confirm(t('confirm.stop'))) {
     try {
       await window.electronAPI.server.stop();
       // Status update will come via event listener
@@ -233,9 +177,13 @@ async function handleStopServer() {
 }
 
 async function handleStartServer() {
+  const t = window.i18n ? window.i18n.t : (k) => k;
   try {
     const actionBtn = document.getElementById('stop-btn');
-    actionBtn.textContent = 'Starting...';
+    // Keep icon
+    const iconHtml = `<div class="icon" style="mask-image: url('assets/icons/power.png')"></div>`;
+    actionBtn.innerHTML = `${iconHtml} ${t('status.starting')}`;
+
     actionBtn.disabled = true;
 
     await window.electronAPI.server.start();

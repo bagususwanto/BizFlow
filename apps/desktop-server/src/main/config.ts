@@ -26,6 +26,31 @@ export interface AppConfig {
   machineId?: string;
 }
 
+export const TRAY_TRANSLATIONS = {
+  en: {
+    'open.browser': 'Open in Browser',
+    'server.start': 'Start Server',
+    'server.stop': 'Stop Server',
+    'server.restart': 'Restart Server',
+    'logs.view': 'View Logs',
+    'backup.create': 'Backup Now',
+    'status.running': 'Server Running',
+    'status.stopped': 'Server Stopped',
+    quit: 'Quit',
+  },
+  id: {
+    'open.browser': 'Buka di Browser',
+    'server.start': 'Nyalakan Server',
+    'server.stop': 'Matikan Server',
+    'server.restart': 'Restart Server',
+    'logs.view': 'Lihat Logs',
+    'backup.create': 'Backup Sekarang',
+    'status.running': 'Server Berjalan',
+    'status.stopped': 'Server Berhenti',
+    quit: 'Keluar',
+  },
+};
+
 const DEFAULT_CONFIG: AppConfig = {
   apiPort: 3000,
   webPort: 3001,

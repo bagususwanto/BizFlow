@@ -74,5 +74,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     themeUpdate: (callback: (theme: string) => void) => {
       ipcRenderer.on('theme-update', (_, theme) => callback(theme));
     },
+    languageUpdate: (callback: (lang: string) => void) => {
+      ipcRenderer.on('language-update', (_, lang) => callback(lang));
+    },
   },
 });

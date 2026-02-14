@@ -94,6 +94,27 @@ app.whenReady().then(async () => {
       });
     }
 
+    // Handle Language (Send to all windows)
+    if ('language' in changes) {
+      const wins = BrowserWindow.getAllWindows();
+      wins.forEach((win) => {
+        win.webContents.send('language-update', config.language);
+      });
+
+      // Update Tray Language
+      const status = serverManager.getStatus();
+      updateTrayStatus(
+        status,
+        () => shell.openExternal(status.webUrl),
+        async () => await serverManager.stopAll(),
+        async () => await serverManager.startAll(),
+        async () => await serverManager.restartAll(),
+        () => createLogsWindow(),
+        handleManualBackup,
+        config.language,
+      );
+    }
+
     // Handle Ports (Require restart)
     if ('apiPort' in changes || 'webPort' in changes) {
       dialog
@@ -188,6 +209,7 @@ app.whenReady().then(async () => {
       async () => await serverManager.restartAll(),
       () => createLogsWindow(),
       handleManualBackup,
+      configManager.get('language'),
     );
 
     // Send to main window if it exists
@@ -210,6 +232,7 @@ app.whenReady().then(async () => {
       async () => await serverManager.restartAll(),
       () => createLogsWindow(),
       handleManualBackup,
+      configManager.get('language'),
     );
 
     // Close splash and show main window

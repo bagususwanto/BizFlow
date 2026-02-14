@@ -23,9 +23,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Theme handling
   window.electronAPI.on.themeUpdate((theme) => applyTheme(theme));
 
-  // Apply initial theme
+  // Language handling
+  window.electronAPI.on.languageUpdate((lang) => {
+    window.i18n.applyTranslations(lang);
+  });
+
+  // Apply initial theme and language
   const config = await window.electronAPI.config.get();
   applyTheme(config.theme);
+
+  if (window.i18n) {
+    window.i18n.applyTranslations(config.language || 'id');
+  }
 });
 
 function applyTheme(theme) {
@@ -121,9 +130,10 @@ async function loadConfig() {
 }
 
 async function saveConfig() {
+  const t = window.i18n ? window.i18n.t : (k) => k;
   const saveBtn = document.getElementById('save-btn');
   saveBtn.disabled = true;
-  saveBtn.textContent = 'Saving...';
+  saveBtn.textContent = t('btn.saving');
 
   try {
     const updates = {
@@ -149,24 +159,22 @@ async function saveConfig() {
     const result = await window.electronAPI.config.update(updates);
 
     if (result.success) {
-      showMessage(
-        'success',
-        'Settings saved successfully. Some changes may require restart.',
-      );
+      showMessage('success', t('msg.settingsSaved'));
     } else {
-      showMessage('error', 'Failed to save settings');
+      showMessage('error', t('msg.saveFailed'));
     }
   } catch (error) {
     console.error('Failed to save config:', error);
     showMessage('error', error.message);
   } finally {
     saveBtn.disabled = false;
-    saveBtn.textContent = 'Save Changes';
+    saveBtn.textContent = t('btn.save');
   }
 }
 
 // License Management
 async function loadLicenseInfo() {
+  const t = window.i18n ? window.i18n.t : (k) => k;
   try {
     const deviceId = await window.electronAPI.license.getDeviceId();
     document.getElementById('device-id').textContent = deviceId;
@@ -181,7 +189,7 @@ async function loadLicenseInfo() {
       document.getElementById('info-key').textContent = info.key;
       document.getElementById('info-email').textContent = info.email;
       document.getElementById('info-expires').textContent =
-        info.expires || 'Never';
+        info.expires || t('never');
     } else {
       document.getElementById('license-form').style.display = 'block';
       document.getElementById('license-active-view').style.display = 'none';
@@ -192,45 +200,47 @@ async function loadLicenseInfo() {
 }
 
 async function activateLicense() {
+  const t = window.i18n ? window.i18n.t : (k) => k;
   const btn = document.getElementById('activate-btn');
   const key = document.getElementById('licenseKey').value;
   const email = document.getElementById('email').value;
 
   if (!key || !email) {
-    showMessage('error', 'Please fill in all fields');
+    showMessage('error', t('msg.fillFields'));
     return;
   }
 
   btn.disabled = true;
-  btn.textContent = 'Activating...';
+  btn.textContent = t('btn.activating');
 
   try {
     const result = await window.electronAPI.license.activate(key, email);
 
     if (result.success) {
-      showMessage('success', 'License activated successfully');
+      showMessage('success', t('msg.activationSuccess'));
       await loadLicenseInfo();
     } else {
-      showMessage('error', result.error || 'Activation failed');
+      showMessage('error', result.error || t('msg.activationFailed'));
     }
   } catch (error) {
     showMessage('error', error.message);
   } finally {
     btn.disabled = false;
-    btn.textContent = 'Activate License';
+    btn.textContent = t('btn.activate');
   }
 }
 
 async function deactivateLicense() {
-  if (!confirm('Are you sure you want to deactivate this license?')) return;
+  const t = window.i18n ? window.i18n.t : (k) => k;
+  if (!confirm(t('confirm.deactivate'))) return;
 
   const btn = document.getElementById('deactivate-btn');
   btn.disabled = true;
-  btn.textContent = 'Deactivating...';
+  btn.textContent = t('btn.deactivating');
 
   try {
     await window.electronAPI.license.deactivate();
-    showMessage('success', 'License deactivated');
+    showMessage('success', t('msg.deactivated'));
 
     // Reset form
     document.getElementById('licenseKey').value = '';
@@ -241,6 +251,6 @@ async function deactivateLicense() {
     showMessage('error', 'Deactivation failed: ' + error.message);
   } finally {
     btn.disabled = false;
-    btn.textContent = 'Deactivate License';
+    btn.textContent = t('btn.deactivate');
   }
 }

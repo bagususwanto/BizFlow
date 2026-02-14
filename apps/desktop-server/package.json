@@ -10,13 +10,17 @@
     "build": "tsc && mkdir -p dist/renderer && cp src/renderer/*.html src/renderer/*.css src/renderer/*.js dist/renderer/ && mkdir -p dist/renderer/assets && cp -r src/renderer/assets/* dist/renderer/assets/ && mkdir -p dist/resources && cp src/resources/*.png dist/resources/",
     "dev": "tsc && mkdir -p dist/renderer && cp src/renderer/*.html src/renderer/*.css src/renderer/*.js dist/renderer/ && mkdir -p dist/renderer/assets && cp -r src/renderer/assets/* dist/renderer/assets/ && mkdir -p dist/resources && cp src/resources/*.png dist/resources/ && electron .",
     "start": "electron .",
+    "clean": "rm -rf release .tmp-package dist",
+    "prebuild": "pnpm build",
     "prepackage": "node scripts/prepare-package.js",
     "package": "npm run prepackage && electron-builder",
     "package:win": "npm run prepackage && electron-builder --win",
     "package:mac": "npm run prepackage && electron-builder --mac",
-    "package:linux": "npm run prepackage && electron-builder --linux"
+    "package:linux": "npm run prepackage && electron-builder --linux",
+    "postpackage": "ls -lh release/"
   },
   "devDependencies": {
+    "@electron/fuses": "^2.0.0",
     "@types/node": "^22.10.5",
     "electron": "^38.8.1",
     "electron-builder": "^25.1.8",
@@ -60,19 +64,29 @@
         ]
       }
     ],
+    "artifactName": "${productName}-${version}-${arch}.${ext}",
     "mac": {
       "category": "public.app-category.business",
       "target": [
         {
           "target": "dir",
           "arch": [
-            "arm64"
+            "arm64",
+            "x64"
+          ]
+        },
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
           ]
         },
         {
           "target": "zip",
           "arch": [
-            "arm64"
+            "arm64",
+            "x64"
           ]
         }
       ],
@@ -95,7 +109,7 @@
           "path": "/Applications"
         }
       ],
-      "title": "BizFlow Server ${version}",
+      "title": "${productName} ${version}",
       "icon": "build/icon.icns"
     },
     "win": {
@@ -114,7 +128,8 @@
           ]
         }
       ],
-      "icon": "build/icon.ico"
+      "icon": "build/icon.ico",
+      "artifactName": "${productName}-${version}-${arch}-portable.${ext}"
     },
     "nsis": {
       "oneClick": false,
@@ -126,7 +141,8 @@
       "installerIcon": "build/icon.ico",
       "uninstallerIcon": "build/icon.ico",
       "installerHeaderIcon": "build/icon.ico",
-      "deleteAppDataOnUninstall": false
+      "deleteAppDataOnUninstall": false,
+      "artifactName": "${productName}-Setup-${version}-${arch}.${ext}"
     },
     "linux": {
       "target": [
@@ -150,7 +166,8 @@
         }
       ],
       "category": "Office",
-      "icon": "build/icons"
+      "icon": "build/icons",
+      "artifactName": "${name}-${version}-${arch}.${ext}"
     }
   }
 }

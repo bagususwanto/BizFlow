@@ -43,10 +43,10 @@ pnpm package:mac
 
 **Output:**
 
-- `release/BizFlow Server-{version}-arm64.dmg` (Apple Silicon)
-- `release/BizFlow Server-{version}-x64.dmg` (Intel)
-- `release/BizFlow Server-{version}-arm64-mac.zip`
-- `release/BizFlow Server-{version}-mac.zip`
+- `release/BizFlow-Server-{version}-arm64.dmg`
+- `release/BizFlow-Server-{version}-x64.dmg`
+- `release/BizFlow-Server-{version}-arm64-mac.zip`
+- `release/BizFlow-Server-{version}-x64-mac.zip`
 
 **Requirements:**
 
@@ -64,8 +64,9 @@ pnpm package:win
 
 **Output:**
 
-- `release/BizFlow Server Setup {version}.exe` (Installer)
-- `release/BizFlow Server {version}.exe` (Portable)
+- `release/BizFlow-Server-Setup-{version}-x64.exe`
+- `release/BizFlow-Server-Setup-{version}-ia32.exe`
+- `release/BizFlow-Server-{version}-x64-portable.exe`
 
 **Requirements:**
 
@@ -83,9 +84,9 @@ pnpm package:linux
 
 **Output:**
 
-- `release/BizFlow Server-{version}.AppImage`
-- `release/bizflow-server_{version}_amd64.deb`
-- `release/bizflow-server-{version}.x86_64.rpm`
+- `release/desktop-server-{version}-x64.AppImage`
+- `release/desktop-server-{version}-x64.deb`
+- `release/desktop-server-{version}-x64.rpm`
 
 **Requirements:**
 
@@ -100,6 +101,15 @@ Build for all platforms (requires appropriate OS or CI):
 ```bash
 cd apps/desktop-server
 pnpm package
+```
+
+### Clean Build
+
+To remove previous build artifacts and start fresh:
+
+```bash
+cd apps/desktop-server
+pnpm clean
 ```
 
 ## Distribution

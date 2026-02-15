@@ -113,7 +113,6 @@ function showLicenseInfo(info) {
   activationForm.style.display = 'none';
   licenseInfo.style.display = 'block';
 
-  document.getElementById('info-key').textContent = info.key;
   document.getElementById('info-activated').textContent = new Date(
     info.activatedAt,
   ).toLocaleDateString();
@@ -184,6 +183,5 @@ deactivateBtn.addEventListener('click', async () => {
   }
 });
 
-// Initialize
 // Initialize
 initialize();

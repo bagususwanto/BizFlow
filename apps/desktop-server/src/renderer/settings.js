@@ -182,11 +182,10 @@ async function loadLicenseInfo() {
     const status = await window.electronAPI.license.getStatus();
     const info = await window.electronAPI.license.getInfo();
 
-    if (status.active) {
+    if (status === 'active') {
       document.getElementById('license-form').style.display = 'none';
       document.getElementById('license-active-view').style.display = 'block';
 
-      document.getElementById('info-key').textContent = info.key;
       document.getElementById('info-expires').textContent =
         info.expires || t('never');
     } else {

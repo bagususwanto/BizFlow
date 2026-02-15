@@ -13,6 +13,22 @@ licenseKeyInput.addEventListener('input', (e) => {
   e.target.value = value;
 });
 
+// Copy Device ID
+const copyBtn = document.getElementById('copy-btn');
+copyBtn.addEventListener('click', () => {
+  const deviceId = deviceIdEl.textContent;
+  if (deviceId && deviceId !== 'Loading...') {
+    navigator.clipboard.writeText(deviceId);
+
+    // Visual feedback
+    const originalContent = copyBtn.innerHTML;
+    copyBtn.innerHTML = '<span style="font-size: 12px">Copied!</span>';
+    setTimeout(() => {
+      copyBtn.innerHTML = originalContent;
+    }, 2000);
+  }
+});
+
 // Load device ID and license status
 async function loadLicenseStatus() {
   try {

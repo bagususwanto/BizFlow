@@ -193,3 +193,46 @@ body {
   margin-bottom: 1.5rem;
   color: var(--accent-success);
 }
+
+/* Copy button styles */
+.input-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.device-id {
+  flex: 1;
+  /* styles already in device-id but overriden here if needed, keeping simple */
+}
+
+.btn-secondary {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  width: auto; /* Override width: 100% from button defaults if any */
+}
+
+.btn-secondary:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--accent-primary);
+}
+
+.icon-sm {
+  width: 16px;
+  height: 16px;
+  background-color: currentColor;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+}

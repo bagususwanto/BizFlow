@@ -33,8 +33,18 @@
 
         <div class="form-group">
           <label>Device ID</label>
-          <div class="device-id" id="device-id">Loading...</div>
-          <small>This device will be bound to your license</small>
+          <div class="input-group">
+            <div class="device-id" id="device-id">Loading...</div>
+            <button id="copy-btn" class="btn-secondary" title="Copy Device ID">
+              <div
+                class="icon-sm"
+                style="mask-image: url('assets/icons/copy.png')"
+              ></div>
+            </button>
+          </div>
+          <small
+            >Share this ID with the administrator to get your license key</small
+          >
         </div>
 
         <button id="activate-btn" class="btn-primary">Activate License</button>
@@ -54,11 +64,6 @@
         <div class="info-row">
           <span class="label">License Key:</span>
           <span id="info-key" class="value"></span>
-        </div>
-
-        <div class="info-row">
-          <span class="label">Email:</span>
-          <span id="info-email" class="value"></span>
         </div>
 
         <div class="info-row">

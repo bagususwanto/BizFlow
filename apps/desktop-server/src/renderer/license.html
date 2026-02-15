@@ -9,30 +9,36 @@
   <body>
     <div class="container">
       <div class="header">
-        <h1>
+        <h1 data-i18n="license.title">
           <div
             class="icon-lg"
             style="mask-image: url('assets/icons/key.png')"
           ></div>
           License Activation
         </h1>
-        <p class="subtitle">Activate your BizFlow Server license</p>
+        <p class="subtitle" data-i18n="license.subtitle">
+          Activate your BizFlow Server license
+        </p>
       </div>
 
       <div id="activation-form" class="card">
         <div class="form-group">
-          <label for="license-key">License Key</label>
+          <label for="license-key" data-i18n="label.licenseKey"
+            >License Key</label
+          >
           <input
             type="text"
             id="license-key"
             placeholder="BZFL-XXXX-XXXX-XXXX-SIGNATURE..."
             style="font-family: monospace"
           />
-          <small>Format: BZFL-[MachineID]-[Signature]</small>
+          <small data-i18n="label.format"
+            >Format: BZFL-[MachineID]-[Signature]</small
+          >
         </div>
 
         <div class="form-group">
-          <label>Device ID</label>
+          <label data-i18n="label.deviceId">Device ID</label>
           <div class="input-group">
             <div class="device-id" id="device-id">Loading...</div>
             <button id="copy-btn" class="btn-secondary" title="Copy Device ID">
@@ -42,12 +48,14 @@
               ></div>
             </button>
           </div>
-          <small
+          <small data-i18n="label.shareId"
             >Share this ID with the administrator to get your license key</small
           >
         </div>
 
-        <button id="activate-btn" class="btn-primary">Activate License</button>
+        <button id="activate-btn" class="btn-primary" data-i18n="btn.activate">
+          Activate License
+        </button>
 
         <div id="message" class="message"></div>
       </div>
@@ -58,35 +66,40 @@
             class="icon"
             style="mask-image: url('assets/icons/check-circle.png')"
           ></div>
-          License Active
+          <span data-i18n="status.active">License Active</span>
         </h2>
 
         <div class="info-row">
-          <span class="label">License Key:</span>
+          <span class="label" data-i18n="label.licenseKey">License Key:</span>
           <span id="info-key" class="value"></span>
         </div>
 
         <div class="info-row">
-          <span class="label">Activated:</span>
+          <span class="label" data-i18n="label.activated">Activated:</span>
           <span id="info-activated" class="value"></span>
         </div>
 
         <div class="info-row">
-          <span class="label">Expires:</span>
+          <span class="label" data-i18n="label.expires">Expires:</span>
           <span id="info-expires" class="value"></span>
         </div>
 
         <div class="info-row">
-          <span class="label">Status:</span>
+          <span class="label" data-i18n="label.status">Status:</span>
           <span id="info-status" class="value"></span>
         </div>
 
-        <button id="deactivate-btn" class="btn-danger">
+        <button
+          id="deactivate-btn"
+          class="btn-danger"
+          data-i18n="btn.deactivate"
+        >
           Deactivate License
         </button>
       </div>
     </div>
 
+    <script src="i18n.js"></script>
     <script src="license.js"></script>
   </body>
 </html>

@@ -1,14 +1,20 @@
 :root {
-  --bg-primary: oklch(0.15 0.02 240);
-  --bg-secondary: oklch(0.2 0.02 240);
-  --bg-tertiary: oklch(0.25 0.02 240);
-  --text-primary: oklch(0.95 0.01 240);
-  --text-secondary: oklch(0.7 0.01 240);
-  --border-color: oklch(0.3 0.02 240);
+  /* Default Theme (Dark) - matching settings.js defaults */
+  --bg-color: #1a1b1e;
+  --card-bg: #25262b;
+  --text-primary: #e6e6e6;
+  --text-secondary: #909296;
+  --border-color: #373a40;
+
+  /* Accents */
   --accent-primary: oklch(0.6 0.2 240);
   --accent-success: oklch(0.7 0.15 150);
   --accent-danger: oklch(0.6 0.2 20);
   --accent-warning: oklch(0.7 0.15 80);
+
+  /* Additional UI vars */
+  --bg-tertiary: #2c2e33; /* Slightly lighter than card-bg for inputs */
+  --bg-hover: #373a40;
 }
 
 .icon,

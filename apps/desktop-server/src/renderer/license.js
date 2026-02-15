@@ -29,9 +29,55 @@ copyBtn.addEventListener('click', () => {
   }
 });
 
-// Load device ID and license status
-async function loadLicenseStatus() {
+// Theme handling
+function applyTheme(theme) {
+  const root = document.documentElement;
+  if (theme === 'system') {
+    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    root.style.setProperty('--bg-color', isDark ? '#1a1b1e' : '#ffffff');
+    root.style.setProperty('--card-bg', isDark ? '#25262b' : '#f8f9fa');
+    root.style.setProperty('--text-primary', isDark ? '#e6e6e6' : '#1f2937');
+    root.style.setProperty('--text-secondary', isDark ? '#909296' : '#6b7280');
+    root.style.setProperty('--border-color', isDark ? '#373a40' : '#e5e7eb');
+    root.style.setProperty('--bg-tertiary', isDark ? '#2C2E33' : '#f1f3f5');
+    root.style.setProperty('--bg-hover', isDark ? '#373A40' : '#e9ecef');
+  } else if (theme === 'light') {
+    root.style.setProperty('--bg-color', '#ffffff');
+    root.style.setProperty('--card-bg', '#f8f9fa');
+    root.style.setProperty('--text-primary', '#1f2937');
+    root.style.setProperty('--text-secondary', '#6b7280');
+    root.style.setProperty('--border-color', '#e5e7eb');
+    root.style.setProperty('--bg-tertiary', '#f1f3f5');
+    root.style.setProperty('--bg-hover', '#e9ecef');
+  } else {
+    // Dark theme (default)
+    root.style.removeProperty('--bg-color');
+    root.style.removeProperty('--card-bg');
+    root.style.removeProperty('--text-primary');
+    root.style.removeProperty('--text-secondary');
+    root.style.removeProperty('--border-color');
+    root.style.removeProperty('--bg-tertiary');
+    root.style.removeProperty('--bg-hover');
+  }
+}
+
+// Load device ID, license status, and config
+async function initialize() {
   try {
+    // Load Config (Theme & Language)
+    const config = await window.electronAPI.config.get();
+    applyTheme(config.theme);
+    if (window.i18n) {
+      window.i18n.applyTranslations(config.language || 'id');
+    }
+
+    // Listen for changes
+    window.electronAPI.on.themeUpdate((theme) => applyTheme(theme));
+    window.electronAPI.on.languageUpdate((lang) => {
+      if (window.i18n) window.i18n.applyTranslations(lang);
+    });
+
+    // Load License Data
     const deviceId = await window.electronAPI.license.getDeviceId();
     deviceIdEl.textContent = deviceId;
 
@@ -42,17 +88,17 @@ async function loadLicenseStatus() {
       showLicenseInfo(info);
     } else if (status === 'expired') {
       showMessage(
-        'License has expired. Please renew or activate a new license.',
+        window.i18n ? window.i18n.t('msg.expired') : 'License has expired',
         'error',
       );
     } else if (status === 'invalid') {
       showMessage(
-        'License is invalid. Please activate a valid license.',
+        window.i18n ? window.i18n.t('msg.invalid') : 'License is invalid',
         'error',
       );
     }
   } catch (error) {
-    console.error('Failed to load license status:', error);
+    console.error('Failed to initialize license window:', error);
   }
 }
 
@@ -139,4 +185,5 @@ deactivateBtn.addEventListener('click', async () => {
 });
 
 // Initialize
-loadLicenseStatus();
+// Initialize
+initialize();

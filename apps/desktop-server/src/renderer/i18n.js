@@ -94,6 +94,17 @@ const translations = {
     'msg.activationSuccess': 'License activated successfully',
     'msg.activationFailed': 'Activation failed',
     'msg.deactivated': 'License deactivated',
+
+    // License Screen Specific
+    'license.title': 'License Activation',
+    'license.subtitle': 'Activate your BizFlow Server license',
+    'label.format': 'Format: BZFL-[MachineID]-[Signature]',
+    'label.shareId':
+      'Share this ID with the administrator to get your license key',
+    'btn.copyId': 'Copy Device ID',
+    'msg.copied': 'Copied!',
+    'msg.expired': 'License has expired',
+    'msg.invalid': 'License is invalid',
   },
   id: {
     // General
@@ -186,6 +197,17 @@ const translations = {
     'msg.activationSuccess': 'Lisensi berhasil diaktifkan',
     'msg.activationFailed': 'Aktivasi gagal',
     'msg.deactivated': 'Lisensi dinonaktifkan',
+
+    // License Screen Specific
+    'license.title': 'Aktivasi Lisensi',
+    'license.subtitle': 'Aktifkan lisensi BizFlow Server Anda',
+    'label.format': 'Format: BZFL-[IDMesin]-[TandaTangan]',
+    'label.shareId':
+      'Bagikan ID ini ke administrator untuk mendapatkan kunci lisensi',
+    'btn.copyId': 'Salin ID Perangkat',
+    'msg.copied': 'Disalin!',
+    'msg.expired': 'Lisensi telah berakhir',
+    'msg.invalid': 'Lisensi tidak valid',
   },
 };
 

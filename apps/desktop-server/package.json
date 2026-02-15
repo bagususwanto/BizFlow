@@ -17,7 +17,9 @@
     "package:win": "npm run prepackage && electron-builder --win",
     "package:mac": "npm run prepackage && electron-builder --mac",
     "package:linux": "npm run prepackage && electron-builder --linux",
-    "postpackage": "ls -lh release/"
+    "postpackage": "ls -lh release/",
+    "generate-keys": "ts-node scripts/generate-keys.ts",
+    "generate-license": "ts-node scripts/generate-license.ts"
   },
   "devDependencies": {
     "@electron/fuses": "^2.0.0",

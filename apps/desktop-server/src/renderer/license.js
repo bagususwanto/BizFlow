@@ -10,17 +10,8 @@ const messageEl = document.getElementById('message');
 
 // Format license key input (auto-add dashes)
 licenseKeyInput.addEventListener('input', (e) => {
-  let value = e.target.value.replace(/-/g, '').toUpperCase();
-  let formatted = '';
-
-  for (let i = 0; i < value.length && i < 20; i++) {
-    if (i > 0 && i % 5 === 0) {
-      formatted += '-';
-    }
-    formatted += value[i];
-  }
-
-  e.target.value = formatted;
+  let value = e.target.value.replace(/[^A-Z0-9-]/gi, '').toUpperCase();
+  e.target.value = value;
 });
 
 // Load device ID and license status

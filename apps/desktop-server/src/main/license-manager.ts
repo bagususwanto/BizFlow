@@ -4,6 +4,10 @@ import * as path from 'path';
 import { EventEmitter } from 'events';
 import * as crypto from 'crypto';
 
+const PUBLIC_KEY = `-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEALpjWprmpAIBt0WS15WNjY28PiRVr/+PNhNRJkMrVfGk=
+-----END PUBLIC KEY-----`;
+
 export interface LicenseInfo {
   key: string;
   email: string;
@@ -37,8 +41,15 @@ export class LicenseManager extends EventEmitter {
    */
   private generateDeviceId(): string {
     const os = require('os');
-    const machineId = `${os.hostname()}-${os.platform()}-${os.arch()}`;
-    return crypto.createHash('sha256').update(machineId).digest('hex');
+    const machineId = `${os.hostname()}-${os.platform()}-${os.arch()}-${os.cpus()[0]?.model}`;
+    const hash = crypto.createHash('sha256').update(machineId).digest('hex');
+
+    // Return format: XXXX-XXXX-XXXX (first 12 chars)
+    return hash
+      .substring(0, 12)
+      .toUpperCase()
+      .replace(/(.{4})/g, '$1-')
+      .slice(0, 14);
   }
 
   /**
@@ -87,8 +98,45 @@ export class LicenseManager extends EventEmitter {
    */
   private validateLicenseKey(key: string): boolean {
     // Simple validation: key format should be XXXXX-XXXXX-XXXXX-XXXXX
-    const keyPattern = /^[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}$/;
-    return keyPattern.test(key);
+    // Key format: BZFL-[MACHINE_ID]-[SIGNATURE]
+    // Example: BZFL-7F3A-9B2C-4D1E-SIGNATURESTRING...
+    const parts = key.split('-');
+    if (parts.length < 5 || parts[0] !== 'BZFL') {
+      return false;
+    }
+
+    // Extract Machine ID from key (indices 1, 2, 3)
+    const keyMachineId = parts.slice(1, 4).join('-');
+
+    // Check if Machine ID matches this device
+    if (keyMachineId !== this.deviceId) {
+      console.log(
+        `[LICENSE] Key intended for ${keyMachineId}, but this is ${this.deviceId}`,
+      );
+      return false;
+    }
+
+    try {
+      // Reconstruct the data that was signed: "BZFL-MACHINE_ID"
+      const dataToVerify = `BZFL-${keyMachineId}`;
+
+      // The rest of the key is the signature (hex)
+      const signatureHex = parts.slice(4).join('');
+      const signature = Buffer.from(signatureHex, 'hex');
+
+      // Verify signature
+      const isVerified = crypto.verify(
+        null,
+        Buffer.from(dataToVerify),
+        PUBLIC_KEY,
+        signature,
+      );
+
+      return isVerified;
+    } catch (error) {
+      console.error('[LICENSE] Verification error:', error);
+      return false;
+    }
   }
 
   /**
@@ -101,27 +149,25 @@ export class LicenseManager extends EventEmitter {
   ): Promise<{ success: boolean; message: string }> {
     console.log('[LICENSE] Attempting to activate license:', key);
 
-    // Validate key format
+    // Real cryptographic validation
     if (!this.validateLicenseKey(key)) {
       return {
         success: false,
-        message:
-          'Invalid license key format. Expected: XXXXX-XXXXX-XXXXX-XXXXX',
+        message: 'Invalid license key. Please check the key and try again.',
       };
     }
 
-    // In production, you would:
-    // 1. Call license server API to validate key
-    // 2. Check if key is already activated on another device
-    // 3. Get expiry date from server
-    // For now, we'll simulate activation
+    // Check if key is already activated on another device (Mock check for now)
+    // In strict offline mode, the cryptographic check confirms it's for THIS device.
 
-    // Demo: Accept any valid format key
-    // In production, verify with server
-    const isLifetime = key.startsWith('LIFE-');
-    const expiresAt = isLifetime
-      ? null
-      : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000); // 1 year from now
+    // Logic for expiration embedded in signature?
+    // For this implementation, we assume valid signature = valid license.
+    // To support expiry, the signed data payload should include expiration date.
+    // For now, simpler: Valid signature = Lifetime (or handled by server side logic if online).
+    // Let's assume Lifetime for offline validated keys for now.
+
+    const isLifetime = true;
+    const expiresAt = null;
 
     this.licenseInfo = {
       key,
@@ -138,9 +184,7 @@ export class LicenseManager extends EventEmitter {
     console.log('[LICENSE] License activated successfully');
     return {
       success: true,
-      message: isLifetime
-        ? 'Lifetime license activated successfully!'
-        : `License activated successfully! Expires on ${expiresAt?.toLocaleDateString()}`,
+      message: 'License activated successfully!',
     };
   }
 

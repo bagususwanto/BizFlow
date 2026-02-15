@@ -187,7 +187,6 @@ async function loadLicenseInfo() {
       document.getElementById('license-active-view').style.display = 'block';
 
       document.getElementById('info-key').textContent = info.key;
-      document.getElementById('info-email').textContent = info.email;
       document.getElementById('info-expires').textContent =
         info.expires || t('never');
     } else {
@@ -203,9 +202,8 @@ async function activateLicense() {
   const t = window.i18n ? window.i18n.t : (k) => k;
   const btn = document.getElementById('activate-btn');
   const key = document.getElementById('licenseKey').value;
-  const email = document.getElementById('email').value;
 
-  if (!key || !email) {
+  if (!key) {
     showMessage('error', t('msg.fillFields'));
     return;
   }
@@ -214,7 +212,7 @@ async function activateLicense() {
   btn.textContent = t('btn.activating');
 
   try {
-    const result = await window.electronAPI.license.activate(key, email);
+    const result = await window.electronAPI.license.activate(key);
 
     if (result.success) {
       showMessage('success', t('msg.activationSuccess'));
@@ -244,7 +242,6 @@ async function deactivateLicense() {
 
     // Reset form
     document.getElementById('licenseKey').value = '';
-    document.getElementById('email').value = '';
 
     await loadLicenseInfo();
   } catch (error) {

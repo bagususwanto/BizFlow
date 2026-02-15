@@ -97,6 +97,15 @@ function updateUI(status) {
   // Get network IP (simplified - just show localhost for now)
   const networkUrl = status.webUrl.replace('localhost', getLocalIP());
   document.getElementById('network-url').textContent = networkUrl;
+
+  // Update DB Info
+  if (status.dbSize && status.dbPath) {
+    const dbName = status.dbPath.split(/[\\/]/).pop();
+    document.getElementById('db-info').textContent =
+      `${dbName} (${status.dbSize})`;
+  } else {
+    document.getElementById('db-info').textContent = 'Loading...';
+  }
 }
 
 function getLocalIP() {

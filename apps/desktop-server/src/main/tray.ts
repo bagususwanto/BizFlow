@@ -56,6 +56,8 @@ export function createTray(
         webPort: 3001,
         apiUrl: 'http://localhost:3000',
         webUrl: 'http://localhost:3001',
+        dbSize: 'Checking...',
+        dbPath: '',
       },
       onOpenBrowser,
       onStopServer,

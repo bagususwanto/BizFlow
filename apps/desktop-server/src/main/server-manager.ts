@@ -13,6 +13,8 @@ export interface ServerStatus {
   webPort: number;
   apiUrl: string;
   webUrl: string;
+  dbSize: string;
+  dbPath: string;
 }
 
 export class ServerManager extends EventEmitter {
@@ -30,6 +32,8 @@ export class ServerManager extends EventEmitter {
     webPort: 3001,
     apiUrl: 'http://localhost:3000',
     webUrl: 'http://localhost:3001',
+    dbSize: 'Checking...',
+    dbPath: '',
   };
 
   constructor(config: ConfigManager) {
@@ -37,6 +41,12 @@ export class ServerManager extends EventEmitter {
     this.config = config;
     this.apiPort = config.get('apiPort');
     this.webPort = config.get('webPort');
+
+    // Initialize dbPath
+    const isDev = !app.isPackaged;
+    this.status.dbPath = isDev
+      ? path.join(__dirname, '../../../../packages/database/prisma/dev.db')
+      : path.join(app.getPath('userData'), 'data', 'bizflow.db');
   }
 
   async startAll(): Promise<void> {
@@ -318,7 +328,26 @@ export class ServerManager extends EventEmitter {
   }
 
   getStatus(): ServerStatus {
+    // Update DB size before returning status
+    this.status.dbSize = this.getDbSize();
     return { ...this.status };
+  }
+
+  private getDbSize(): string {
+    try {
+      if (fs.existsSync(this.status.dbPath)) {
+        const stats = fs.statSync(this.status.dbPath);
+        const bytes = stats.size;
+        if (bytes < 1024 * 1024) {
+          return `${(bytes / 1024).toFixed(2)} KB`;
+        }
+        return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+      }
+      return 'Not Found';
+    } catch (error) {
+      console.error('[DB] Failed to get size:', error);
+      return 'Error';
+    }
   }
 
   setAutoRestart(enabled: boolean): void {

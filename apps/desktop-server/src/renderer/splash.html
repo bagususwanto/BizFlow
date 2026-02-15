@@ -50,7 +50,13 @@
       .logo-icon {
         width: 48px;
         height: 48px;
-        filter: brightness(0) invert(1);
+        background-color: oklch(0.97 0.014 254.604); /* White */
+        -webkit-mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-size: contain;
+        mask-repeat: no-repeat;
+        mask-position: center;
       }
 
       .status {

@@ -530,8 +530,8 @@ ipcMain.handle('backup:getInfo', () => {
 });
 
 // License IPC handlers
-ipcMain.handle('license:activate', async (_, key: string, email: string) => {
-  return await licenseManager.activateLicense(key, email);
+ipcMain.handle('license:activate', async (_, key: string) => {
+  return await licenseManager.activateLicense(key);
 });
 
 ipcMain.handle('license:deactivate', async () => {

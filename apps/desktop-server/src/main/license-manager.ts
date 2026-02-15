@@ -10,7 +10,6 @@ MCowBQYDK2VwAyEALpjWprmpAIBt0WS15WNjY28PiRVr/+PNhNRJkMrVfGk=
 
 export interface LicenseInfo {
   key: string;
-  email: string;
   activatedAt: Date;
   expiresAt: Date | null; // null = lifetime license
   isValid: boolean;
@@ -140,12 +139,10 @@ export class LicenseManager extends EventEmitter {
   }
 
   /**
-   * Activate license with key and email
-   * In production, this would call a license server API
+   * Activate license with key
    */
   async activateLicense(
     key: string,
-    email: string,
   ): Promise<{ success: boolean; message: string }> {
     console.log('[LICENSE] Attempting to activate license:', key);
 
@@ -157,21 +154,11 @@ export class LicenseManager extends EventEmitter {
       };
     }
 
-    // Check if key is already activated on another device (Mock check for now)
-    // In strict offline mode, the cryptographic check confirms it's for THIS device.
-
-    // Logic for expiration embedded in signature?
-    // For this implementation, we assume valid signature = valid license.
-    // To support expiry, the signed data payload should include expiration date.
-    // For now, simpler: Valid signature = Lifetime (or handled by server side logic if online).
-    // Let's assume Lifetime for offline validated keys for now.
-
     const isLifetime = true;
     const expiresAt = null;
 
     this.licenseInfo = {
       key,
-      email,
       activatedAt: new Date(),
       expiresAt,
       isValid: true,

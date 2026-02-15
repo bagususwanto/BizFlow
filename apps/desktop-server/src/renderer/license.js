@@ -2,7 +2,6 @@
 const activationForm = document.getElementById('activation-form');
 const licenseInfo = document.getElementById('license-info');
 const licenseKeyInput = document.getElementById('license-key');
-const emailInput = document.getElementById('email');
 const deviceIdEl = document.getElementById('device-id');
 const activateBtn = document.getElementById('activate-btn');
 const deactivateBtn = document.getElementById('deactivate-btn');
@@ -53,7 +52,6 @@ function showLicenseInfo(info) {
   licenseInfo.style.display = 'block';
 
   document.getElementById('info-key').textContent = info.key;
-  document.getElementById('info-email').textContent = info.email;
   document.getElementById('info-activated').textContent = new Date(
     info.activatedAt,
   ).toLocaleDateString();
@@ -73,32 +71,35 @@ function showLicenseInfo(info) {
 
 // Activate license
 activateBtn.addEventListener('click', async () => {
-  const key = licenseKeyInput.value.trim();
-  const email = emailInput.value.trim();
+  const licenseKey = licenseKeyInput.value; // Changed from licenseInput to licenseKeyInput
 
-  if (!key || !email) {
-    showMessage('Please enter both license key and email', 'error');
+  if (!licenseKey) {
+    showMessage('Please fill in the license key', 'error');
     return;
   }
 
   activateBtn.disabled = true;
-  activateBtn.textContent = 'Activating...';
+  showMessage('Activating...', 'info');
 
   try {
-    const result = await window.electronAPI.license.activate(key, email);
+    const result = await window.electronAPI.license.activate(licenseKey); // Changed invoke to license.activate
 
     if (result.success) {
       showMessage(result.message, 'success');
-      setTimeout(() => {
-        loadLicenseStatus();
-      }, 1500);
+
+      // Reload status
+      const info = await window.electronAPI.license.getInfo(); // Changed invoke to license.getInfo
+      showLicenseInfo(info); // Changed showActiveState to showLicenseInfo
     } else {
       showMessage(result.message, 'error');
+      activateBtn.disabled = false;
     }
   } catch (error) {
+    console.error(error);
     showMessage('Activation failed: ' + error.message, 'error');
-  } finally {
     activateBtn.disabled = false;
+  } finally {
+    // Added finally block to ensure button state reset
     activateBtn.textContent = 'Activate License';
   }
 });

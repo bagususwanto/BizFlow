@@ -27,115 +27,14 @@ let licenseManager: LicenseManager;
 let isQuitting = false;
 
 app.whenReady().then(async () => {
-  // Show splash screen
-  const splash = createSplashWindow();
-
-  // Initialize config manager
-  configManager = new ConfigManager();
-  console.log('[CONFIG] Loaded config from', configManager.getConfigPath());
-
-  // Initialize log manager
-  logManager = new LogManager();
-  console.log('[LOG-MANAGER] Initialized');
-
-  // Initialize server manager with config
-  serverManager = new ServerManager(configManager);
-
-  // Initialize backup manager
-  const isDev = !app.isPackaged;
-  const dbPath = isDev
-    ? path.join(__dirname, '../../../../packages/database/prisma/dev.db')
-    : path.join(app.getPath('userData'), 'data', 'bizflow.db');
-
-  backupManager = new BackupManager(configManager, dbPath);
-  console.log('[BACKUP] Initialized');
-
-  // Start auto-backup if enabled
-  if (configManager.get('autoBackup')) {
-    backupManager.startAutoBackup();
-  }
-
-  // Initialize license manager
-  licenseManager = new LicenseManager();
-  console.log('[LICENSE] Initialized');
-
-  // Listen for config changes
-  configManager.on('change', (changes, config) => {
-    console.log('[CONFIG] Settings changed:', Object.keys(changes));
-
-    // Handle Auto Start
-    if ('autoStart' in changes) {
-      app.setLoginItemSettings({
-        openAtLogin: config.autoStart,
-        openAsHidden: config.startMinimized,
-      });
-      console.log('[CONFIG] Auto-start updated:', config.autoStart);
-    }
-
-    // Handle Backup Settings
-    if (
-      'autoBackup' in changes ||
-      'backupInterval' in changes ||
-      'backupRetention' in changes
-    ) {
-      console.log('[CONFIG] Backup settings changed, restarting scheduler...');
-      if (config.autoBackup) {
-        backupManager.startAutoBackup();
-      } else {
-        backupManager.stopAutoBackup();
-      }
-    }
-
-    // Handle Theme (Send to all windows)
-    if ('theme' in changes) {
-      const wins = BrowserWindow.getAllWindows();
-      wins.forEach((win) => {
-        win.webContents.send('theme-update', config.theme);
-      });
-    }
-
-    // Handle Language (Send to all windows)
-    if ('language' in changes) {
-      const wins = BrowserWindow.getAllWindows();
-      wins.forEach((win) => {
-        win.webContents.send('language-update', config.language);
-      });
-
-      // Update Tray Language
-      const status = serverManager.getStatus();
-      updateTrayStatus(
-        status,
-        () => shell.openExternal(status.webUrl),
-        async () => await serverManager.stopAll(),
-        async () => await serverManager.startAll(),
-        async () => await serverManager.restartAll(),
-        () => createLogsWindow(),
-        handleManualBackup,
-        config.language,
-      );
-    }
-
-    // Handle Ports (Require restart)
-    if ('apiPort' in changes || 'webPort' in changes) {
-      dialog
-        .showMessageBox({
-          type: 'info',
-          title: 'Restart Required',
-          message:
-            'Port settings have been changed. You need to restart the server for these changes to take effect.',
-          buttons: ['Restart Now', 'Later'],
-        })
-        .then((result) => {
-          if (result.response === 0) {
-            app.relaunch();
-            app.exit(0);
-          }
-        });
-    }
-  });
-
   // Helper for manual backup
+  // Defined early to avoid hoisting issues
   const handleManualBackup = async () => {
+    // Only works if backupManager is initialized, which it will be when called
+    if (!backupManager) {
+      console.error('Backup manager not initialized');
+      return;
+    }
     try {
       console.log('[BACKUP_DEBUG] Starting manual backup...');
       const backupInfo = await backupManager.createBackup();
@@ -165,156 +64,306 @@ app.whenReady().then(async () => {
     }
   };
 
-  // Create system tray
-  const tray = createTray(
-    () => {
-      // Open browser
-      const status = serverManager.getStatus();
-      shell.openExternal(status.webUrl);
-    },
-    async () => {
-      // Stop server
-      await serverManager.stopAll();
-    },
-    async () => {
-      // Start server
-      await serverManager.startAll();
-    },
-    async () => {
-      // Restart server
-      await serverManager.restartAll();
-    },
-    () => {
-      // View logs
-      createLogsWindow();
-    },
-    handleManualBackup,
-  );
+  // Initialize config manager
+  configManager = new ConfigManager();
+  console.log('[CONFIG] Loaded config from', configManager.getConfigPath());
 
-  // Listen to server events
-  serverManager.on('status-change', (message: string) => {
-    console.log('[STATUS]', message);
-    if (splash && !splash.isDestroyed()) {
-      splash.webContents.send('status-update', message);
-    }
-  });
+  // Initialize log manager
+  logManager = new LogManager();
+  console.log('[LOG-MANAGER] Initialized');
 
-  serverManager.on('server-status', (status) => {
-    // Update tray
-    updateTrayStatus(
-      status,
-      () => shell.openExternal(status.webUrl),
-      async () => await serverManager.stopAll(),
-      async () => await serverManager.startAll(),
-      async () => await serverManager.restartAll(),
-      () => createLogsWindow(),
-      handleManualBackup,
-      configManager.get('language'),
-    );
+  // Initialize license manager
+  licenseManager = new LicenseManager();
+  console.log('[LICENSE] Initialized');
 
-    // Send to main window if it exists
-    const wins = BrowserWindow.getAllWindows();
-    const mainWindow = wins.find((w) => w.title === 'BizFlow Server');
-    if (mainWindow && !mainWindow.isDestroyed()) {
-      mainWindow.webContents.send('server-status', status);
-    }
-  });
+  // Check license
+  if (!licenseManager.isLicenseValid()) {
+    console.log('[LICENSE] No valid license found. Showing activation window.');
+    const licenseWin = createLicenseWindow();
 
-  serverManager.on('all-started', (status) => {
-    console.log('[SUCCESS] All servers started', status);
-
-    // Update tray
-    updateTrayStatus(
-      status,
-      () => shell.openExternal(status.webUrl),
-      async () => await serverManager.stopAll(),
-      async () => await serverManager.startAll(),
-      async () => await serverManager.restartAll(),
-      () => createLogsWindow(),
-      handleManualBackup,
-      configManager.get('language'),
-    );
-
-    // Close splash and show main window
-    setTimeout(() => {
-      closeSplashWindow();
-
-      const existingMainWindow = BrowserWindow.getAllWindows().find(
-        (w) => w.title === 'BizFlow Server',
-      );
-
-      if (!existingMainWindow || existingMainWindow.isDestroyed()) {
-        const newMainWindow = createMainWindow();
-        // Send initial status to new main window
-        newMainWindow.webContents.once('did-finish-load', () => {
-          newMainWindow.webContents.send('server-status', status);
-        });
-      } else {
-        // Window already exists, just show it and send update
-        existingMainWindow.show();
-        existingMainWindow.focus();
-        existingMainWindow.webContents.send('server-status', status);
+    // Wait for activation
+    licenseManager.once('license-activated', () => {
+      console.log('[LICENSE] Activated! Starting servers...');
+      if (licenseWin && !licenseWin.isDestroyed()) {
+        licenseWin.close();
       }
-    }, 1000);
-  });
+      startApp();
+    });
+  } else {
+    console.log('[LICENSE] Valid license found. Starting app...');
+    startApp();
+  }
 
-  serverManager.on('api-error', (error: string) => {
-    console.error('[API ERROR]', error);
-    logManager.addLog('ERROR', 'API', error);
-  });
+  function startApp() {
+    // Show splash screen
+    const splash = createSplashWindow();
 
-  serverManager.on('web-error', (error: string) => {
-    console.error('[WEB ERROR]', error);
-    logManager.addLog('ERROR', 'WEB', error);
-  });
+    // Initialize server manager with config
+    serverManager = new ServerManager(configManager);
 
-  serverManager.on('api-log', (message: string) => {
-    const level = logManager.parseLogLevel(message);
-    logManager.addLog(level, 'API', message);
-  });
+    // Initialize backup manager
+    const isDev = !app.isPackaged;
+    const dbPath = isDev
+      ? path.join(__dirname, '../../../../packages/database/prisma/dev.db')
+      : path.join(app.getPath('userData'), 'data', 'bizflow.db');
 
-  serverManager.on('web-log', (message: string) => {
-    const level = logManager.parseLogLevel(message);
-    logManager.addLog(level, 'WEB', message);
-  });
+    backupManager = new BackupManager(configManager, dbPath);
+    console.log('[BACKUP] Initialized');
 
-  // Forward log events to logs window
-  logManager.on('log', (log) => {
-    const logsWin = getLogsWindow();
-    if (logsWin && !logsWin.isDestroyed()) {
-      logsWin.webContents.send('log-update', log);
+    // Start auto-backup if enabled
+    if (configManager.get('autoBackup')) {
+      backupManager.startAutoBackup();
     }
-  });
 
-  // Start servers
-  try {
-    // Add timeout safety net (60 seconds)
-    const startupTimeout = setTimeout(() => {
-      console.error('[STARTUP TIMEOUT] Server startup took too long');
-      closeSplashWindow();
-      dialog.showErrorBox(
-        'Startup Timeout',
-        'Server startup took too long. Please check the logs for details.',
-      );
-    }, 60000);
+    setupEventListeners();
+    startServers(splash);
+  }
 
-    await serverManager.startAll();
-    clearTimeout(startupTimeout);
-  } catch (error) {
-    console.error('[STARTUP ERROR]', error);
-    closeSplashWindow();
+  function setupEventListeners() {
+    // Listen for config changes
+    configManager.on('change', (changes, config) => {
+      console.log('[CONFIG] Settings changed:', Object.keys(changes));
 
-    // Show error dialog to user
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    dialog.showErrorBox(
-      'Server Startup Failed',
-      `Failed to start servers:\n\n${errorMessage}\n\nPlease check the logs for more details.`,
+      // Handle Auto Start
+      if ('autoStart' in changes) {
+        app.setLoginItemSettings({
+          openAtLogin: config.autoStart,
+          openAsHidden: config.startMinimized,
+        });
+        console.log('[CONFIG] Auto-start updated:', config.autoStart);
+      }
+
+      // Handle Backup Settings
+      if (
+        'autoBackup' in changes ||
+        'backupInterval' in changes ||
+        'backupRetention' in changes
+      ) {
+        console.log(
+          '[CONFIG] Backup settings changed, restarting scheduler...',
+        );
+        if (config.autoBackup) {
+          backupManager.startAutoBackup();
+        } else {
+          backupManager.stopAutoBackup();
+        }
+      }
+
+      // Handle Theme (Send to all windows)
+      if ('theme' in changes) {
+        const wins = BrowserWindow.getAllWindows();
+        wins.forEach((win) => {
+          win.webContents.send('theme-update', config.theme);
+        });
+      }
+
+      // Handle Language (Send to all windows)
+      if ('language' in changes) {
+        const wins = BrowserWindow.getAllWindows();
+        wins.forEach((win) => {
+          win.webContents.send('language-update', config.language);
+        });
+
+        // Update Tray Language
+        const status = serverManager.getStatus();
+        updateTrayStatus(
+          status,
+          () => shell.openExternal(status.webUrl),
+          async () => await serverManager.stopAll(),
+          async () => await serverManager.startAll(),
+          async () => await serverManager.restartAll(),
+          () => createLogsWindow(),
+          handleManualBackup,
+          config.language,
+        );
+      }
+
+      // Handle Ports (Require restart)
+      if ('apiPort' in changes || 'webPort' in changes) {
+        dialog
+          .showMessageBox({
+            type: 'info',
+            title: 'Restart Required',
+            message:
+              'Port settings have been changed. You need to restart the server for these changes to take effect.',
+            buttons: ['Restart Now', 'Later'],
+          })
+          .then((result) => {
+            if (result.response === 0) {
+              app.relaunch();
+              app.exit(0);
+            }
+          });
+      }
+    });
+
+    // Create system tray
+    const tray = createTray(
+      () => {
+        // Open browser
+        const status = serverManager.getStatus();
+        shell.openExternal(status.webUrl);
+      },
+      async () => {
+        // Stop server
+        await serverManager.stopAll();
+      },
+      async () => {
+        // Start server
+        await serverManager.startAll();
+      },
+      async () => {
+        // Restart server
+        await serverManager.restartAll();
+      },
+      () => {
+        // View logs
+        createLogsWindow();
+      },
+      handleManualBackup,
     );
+
+    // Listen to server events
+    serverManager.on('status-change', (message: string) => {
+      console.log('[STATUS]', message);
+      const wins = BrowserWindow.getAllWindows();
+      const splash = wins.find((w) =>
+        w.webContents.getURL().includes('splash.html'),
+      );
+      if (splash && !splash.isDestroyed()) {
+        splash.webContents.send('status-update', message);
+      }
+    });
+
+    serverManager.on('server-status', (status) => {
+      // Update tray
+      updateTrayStatus(
+        status,
+        () => shell.openExternal(status.webUrl),
+        async () => await serverManager.stopAll(),
+        async () => await serverManager.startAll(),
+        async () => await serverManager.restartAll(),
+        () => createLogsWindow(),
+        handleManualBackup,
+        configManager.get('language'),
+      );
+
+      // Send to main window if it exists
+      const wins = BrowserWindow.getAllWindows();
+      const mainWindow = wins.find((w) => w.title === 'BizFlow Server');
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.webContents.send('server-status', status);
+      }
+    });
+
+    serverManager.on('all-started', (status) => {
+      console.log('[SUCCESS] All servers started', status);
+
+      // Update tray
+      updateTrayStatus(
+        status,
+        () => shell.openExternal(status.webUrl),
+        async () => await serverManager.stopAll(),
+        async () => await serverManager.startAll(),
+        async () => await serverManager.restartAll(),
+        () => createLogsWindow(),
+        handleManualBackup,
+        configManager.get('language'),
+      );
+
+      // Close splash and show main window
+      setTimeout(() => {
+        closeSplashWindow();
+
+        const existingMainWindow = BrowserWindow.getAllWindows().find(
+          (w) => w.title === 'BizFlow Server',
+        );
+
+        if (!existingMainWindow || existingMainWindow.isDestroyed()) {
+          const newMainWindow = createMainWindow();
+          // Send initial status to new main window
+          newMainWindow.webContents.once('did-finish-load', () => {
+            newMainWindow.webContents.send('server-status', status);
+          });
+        } else {
+          // Window already exists, just show it and send update
+          existingMainWindow.show();
+          existingMainWindow.focus();
+          existingMainWindow.webContents.send('server-status', status);
+        }
+      }, 1000);
+    });
+
+    serverManager.on('api-error', (error: string) => {
+      console.error('[API ERROR]', error);
+      logManager.addLog('ERROR', 'API', error);
+    });
+
+    serverManager.on('web-error', (error: string) => {
+      console.error('[WEB ERROR]', error);
+      logManager.addLog('ERROR', 'WEB', error);
+    });
+
+    serverManager.on('api-log', (message: string) => {
+      const level = logManager.parseLogLevel(message);
+      logManager.addLog(level, 'API', message);
+    });
+
+    serverManager.on('web-log', (message: string) => {
+      const level = logManager.parseLogLevel(message);
+      logManager.addLog(level, 'WEB', message);
+    });
+
+    // Forward log events to logs window
+    logManager.on('log', (log) => {
+      const logsWin = getLogsWindow();
+      if (logsWin && !logsWin.isDestroyed()) {
+        logsWin.webContents.send('log-update', log);
+      }
+    });
+  }
+
+  async function startServers(splash: BrowserWindow) {
+    // Start servers
+    try {
+      // Add timeout safety net (60 seconds)
+      const startupTimeout = setTimeout(() => {
+        console.error('[STARTUP TIMEOUT] Server startup took too long');
+        if (splash && !splash.isDestroyed()) {
+          splash.close();
+        }
+        dialog.showErrorBox(
+          'Startup Timeout',
+          'Server startup took too long. Please check the logs for details.',
+        );
+      }, 60000);
+
+      await serverManager.startAll();
+      clearTimeout(startupTimeout);
+    } catch (error) {
+      console.error('[STARTUP ERROR]', error);
+      if (splash && !splash.isDestroyed()) {
+        splash.close();
+      }
+
+      // Show error dialog to user
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      dialog.showErrorBox(
+        'Server Startup Failed',
+        `Failed to start servers:\n\n${errorMessage}\n\nPlease check the logs for more details.`,
+      );
+    }
   }
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-      createMainWindow();
+      // Check license again on activate if no windows are open
+      if (licenseManager && !licenseManager.isLicenseValid()) {
+        createLicenseWindow();
+      } else {
+        createMainWindow();
+      }
     } else {
       showMainWindow();
     }

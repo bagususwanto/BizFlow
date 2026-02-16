@@ -220,7 +220,7 @@ Referensi: [05-purchase-management.md](file:///Users/bagus/Project/personal/BizF
 
 | Task                            | Status | Priority |
 | ------------------------------- | ------ | -------- |
-| **Suppliers** - CRUD Supplier   | [ ]    | High     |
+| **Suppliers** - CRUD Supplier   | [x]    | High     |
 | **Orders** - Purchase Order     | [ ]    | High     |
 | **Orders** - PO status workflow | [ ]    | High     |
 | **Goods Receive** - Penerimaan  | [ ]    | High     |

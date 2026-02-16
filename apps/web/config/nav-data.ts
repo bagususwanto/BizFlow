@@ -59,6 +59,12 @@ export const navData = [
         permission: 'customers:read',
       },
       {
+        title: 'Pemasok',
+        href: '/master-data/suppliers',
+        icon: Truck,
+        permission: 'suppliers:read',
+      },
+      {
         title: 'Satuan',
         href: '/master-data/units',
         icon: Package,

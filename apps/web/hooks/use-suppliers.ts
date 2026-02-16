@@ -1,0 +1,119 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { suppliersService, SuppliersQuery } from '@/services/suppliers.service';
+import { useAuthStore } from '@/stores/auth.store';
+import { toast } from 'sonner';
+
+export function useSuppliers(params?: SuppliersQuery) {
+  const token = useAuthStore((state) => state.accessToken);
+  const queryClient = useQueryClient();
+
+  const query = useQuery({
+    queryKey: ['suppliers', params],
+    queryFn: () => suppliersService.getAll(params),
+    enabled: !!token,
+    placeholderData: (previousData) => previousData,
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => suppliersService.delete(id),
+    onSuccess: (response) => {
+      const message =
+        (response as any).data?.message || 'Supplier berhasil dihapus';
+      toast.success(message);
+      queryClient.invalidateQueries({ queryKey: ['suppliers'] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const bulkDeleteMutation = useMutation({
+    mutationFn: (ids: string[]) => suppliersService.bulkDelete(ids),
+    onSuccess: (response) => {
+      const message =
+        (response as any).data?.message || 'Supplier berhasil dihapus';
+      toast.success(message);
+      queryClient.invalidateQueries({ queryKey: ['suppliers'] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+
+  return {
+    suppliers: query.data?.data || [],
+    meta: query.data?.meta,
+    summary: query.data?.summary,
+    isLoading: query.isLoading,
+    isError: query.isError,
+    deleteSupplier: deleteMutation.mutate,
+    isDeleting: deleteMutation.isPending,
+    bulkDeleteSuppliers: bulkDeleteMutation.mutate,
+    isBulkDeleting: bulkDeleteMutation.isPending,
+    refetch: query.refetch,
+  };
+}
+
+export function useSupplier(id: string) {
+  const token = useAuthStore((state) => state.accessToken);
+
+  return useQuery({
+    queryKey: ['supplier', id],
+    queryFn: () => suppliersService.getById(id),
+    enabled: !!token && !!id,
+  });
+}
+
+export function useCreateSupplier() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: Parameters<typeof suppliersService.create>[0]) =>
+      suppliersService.create(data),
+    onSuccess: () => {
+      toast.success('Pemasok berhasil ditambahkan');
+      queryClient.invalidateQueries({ queryKey: ['suppliers'] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+}
+
+export function useUpdateSupplier(id: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: Parameters<typeof suppliersService.update>[1]) =>
+      suppliersService.update(id, data),
+    onSuccess: () => {
+      toast.success('Pemasok berhasil diperbarui');
+      queryClient.invalidateQueries({ queryKey: ['suppliers'] });
+      queryClient.invalidateQueries({ queryKey: ['supplier', id] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+}
+
+export function useActiveSuppliers() {
+  const token = useAuthStore((state) => state.accessToken);
+
+  return useQuery({
+    queryKey: ['suppliers', 'active'],
+    queryFn: () => suppliersService.getActiveList(),
+    enabled: !!token,
+  });
+}
+
+export function useGenerateSupplierCode() {
+  const token = useAuthStore((state) => state.accessToken);
+
+  return useQuery({
+    queryKey: ['supplier', 'generate-code'],
+    queryFn: () => suppliersService.generateCode(),
+    enabled: !!token,
+    staleTime: 0,
+  });
+}

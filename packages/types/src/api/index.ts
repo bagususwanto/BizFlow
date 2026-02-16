@@ -28,11 +28,23 @@ export interface ApiMeta {
   totalPages: number;
 }
 
+import { Warehouse } from '../entities/warehouse';
+import { Supplier } from '../entities/purchase';
+import { Stock } from '../entities/product';
+
 /**
  * Paginated response
  */
 export interface PaginatedResponse<T> extends ApiResponse<T[]> {
   meta: ApiMeta;
+}
+
+export interface SupplierListResponse extends PaginatedResponse<Supplier> {
+  summary?: {
+    totalSuppliers: number;
+    activeSuppliers: number;
+    inactiveSuppliers: number;
+  };
 }
 
 /**

@@ -1,61 +1,56 @@
 import { app, BrowserWindow } from 'electron';
-import * as path from 'path';
-import { registerPrinterHandlers } from './printer';
+import { windowService } from './services/window.service';
+import { registerPrinterHandlers } from './ipc/printer.handlers';
+import { logger } from './utils/logger';
 
-let mainWindow: BrowserWindow | null = null;
+const log = logger.child('Main');
 
-function createWindow() {
-  mainWindow = new BrowserWindow({
-    width: 1280,
-    height: 800,
-    webPreferences: {
-      preload: path.join(__dirname, '../preload/index.js'),
-      nodeIntegration: false,
-      contextIsolation: true,
-      sandbox: false, // Required for node-thermal-printer
-    },
-    title: 'BizFlow POS',
-  });
-
-  // Load the web app
-  // In development: localhost:3000 (when not packaged)
-  // In production: packaged files
-  const isDev = !app.isPackaged;
-  const url = isDev
-    ? 'http://localhost:3001'
-    : `file://${path.join(__dirname, '../../web/index.html')}`;
-
-  mainWindow.loadURL(url);
-
-  // Open DevTools in development
-  if (isDev) {
-    mainWindow.webContents.openDevTools();
-  }
-
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
-}
+/**
+ * Application entry point
+ * Orchestrates app lifecycle and initializes services
+ */
 
 // App lifecycle
 app.whenReady().then(() => {
+  log.info('App is ready, initializing...');
+
   // Register IPC handlers
   registerPrinterHandlers();
 
-  // Create window
-  createWindow();
+  // Create main window
+  windowService.createMainWindow();
 
+  // Handle macOS activate event
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
+      log.info('No windows found, recreating main window');
+      windowService.createMainWindow();
     }
   });
+
+  log.info('BizFlow Desktop App started successfully 🚀');
 });
 
+// Handle window close events
 app.on('window-all-closed', () => {
+  // On macOS, apps typically stay open until user quits explicitly
   if (process.platform !== 'darwin') {
+    log.info('All windows closed, quitting app');
     app.quit();
   }
 });
 
-console.log('BizFlow Desktop App started 🚀');
+// Handle before quit
+app.on('before-quit', () => {
+  log.info('App is quitting...');
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+  log.error('Uncaught exception', error);
+});
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  log.error('Unhandled rejection', { reason, promise });
+});

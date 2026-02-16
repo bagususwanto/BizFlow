@@ -18,7 +18,34 @@ export interface LicenseInfo {
 
 export type LicenseStatus = 'active' | 'expired' | 'invalid' | 'none';
 
+export interface LicenseManagerEvents {
+  'license-activated': (info: LicenseInfo) => void;
+  'license-deactivated': (info: LicenseInfo) => void;
+}
+
 export class LicenseManager extends EventEmitter {
+  // -- Typed emit/on overrides --
+  emit<K extends keyof LicenseManagerEvents>(
+    event: K,
+    ...args: Parameters<LicenseManagerEvents[K]>
+  ): boolean {
+    return super.emit(event, ...args);
+  }
+
+  on<K extends keyof LicenseManagerEvents>(
+    event: K,
+    listener: LicenseManagerEvents[K],
+  ): this {
+    return super.on(event, listener);
+  }
+
+  once<K extends keyof LicenseManagerEvents>(
+    event: K,
+    listener: LicenseManagerEvents[K],
+  ): this {
+    return super.once(event, listener);
+  }
+
   private licenseFilePath: string;
   private licenseInfo: LicenseInfo | null = null;
   private deviceId: string;

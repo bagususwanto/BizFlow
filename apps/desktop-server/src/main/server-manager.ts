@@ -2,9 +2,19 @@ import { ChildProcess, spawn } from 'child_process';
 import { EventEmitter } from 'events';
 import * as fs from 'fs';
 import * as path from 'path';
-import { app } from 'electron';
 import { PortManager } from './port-manager';
 import { ConfigManager } from './config';
+import {
+  isDev,
+  getApiEntryPath,
+  getApiCwd,
+  getWebPath,
+  getDbPath,
+  getNodeBin,
+  getNextBin,
+  getWebStandaloneServer,
+  getWebStandaloneCwd,
+} from './paths';
 
 export interface ServerStatus {
   api: 'stopped' | 'starting' | 'running' | 'error';
@@ -15,6 +25,21 @@ export interface ServerStatus {
   webUrl: string;
   dbSize: string;
   dbPath: string;
+}
+
+/**
+ * Typed event map for ServerManager.
+ * Provides compile-time safety for event names and payloads.
+ */
+export interface ServerManagerEvents {
+  'status-change': (message: string) => void;
+  'server-status': (status: ServerStatus) => void;
+  'all-started': (status: ServerStatus) => void;
+  'all-stopped': () => void;
+  'api-error': (error: string) => void;
+  'web-error': (error: string) => void;
+  'api-log': (message: string) => void;
+  'web-log': (message: string) => void;
 }
 
 export class ServerManager extends EventEmitter {
@@ -36,17 +61,36 @@ export class ServerManager extends EventEmitter {
     dbPath: '',
   };
 
+  // -- Typed emit/on overrides --
+  emit<K extends keyof ServerManagerEvents>(
+    event: K,
+    ...args: Parameters<ServerManagerEvents[K]>
+  ): boolean {
+    return super.emit(event, ...args);
+  }
+
+  on<K extends keyof ServerManagerEvents>(
+    event: K,
+    listener: ServerManagerEvents[K],
+  ): this {
+    return super.on(event, listener);
+  }
+
+  once<K extends keyof ServerManagerEvents>(
+    event: K,
+    listener: ServerManagerEvents[K],
+  ): this {
+    return super.once(event, listener);
+  }
+
   constructor(config: ConfigManager) {
     super();
     this.config = config;
     this.apiPort = config.get('apiPort');
     this.webPort = config.get('webPort');
 
-    // Initialize dbPath
-    const isDev = !app.isPackaged;
-    this.status.dbPath = isDev
-      ? path.join(__dirname, '../../../../packages/database/prisma/dev.db')
-      : path.join(app.getPath('userData'), 'data', 'bizflow.db');
+    // Initialize dbPath using centralized path utility
+    this.status.dbPath = getDbPath();
   }
 
   async startAll(): Promise<void> {
@@ -60,7 +104,6 @@ export class ServerManager extends EventEmitter {
     this.apiPort = await PortManager.findAvailablePort(preferredApiPort);
 
     // Ensure Web port is distinct from API port
-    // If API took the preferred Web port (or higher), start searching from API port + 1
     const startWebPort = Math.max(preferredWebPort, this.apiPort + 1);
     this.webPort = await PortManager.findAvailablePort(startWebPort);
 
@@ -80,10 +123,7 @@ export class ServerManager extends EventEmitter {
     this.status.apiUrl = `http://localhost:${this.apiPort}`;
     this.status.webUrl = `http://localhost:${this.webPort}`;
 
-    // Start API server
     await this.startApiServer();
-
-    // Start Web server
     await this.startWebServer();
 
     this.emit('all-started', this.status);
@@ -93,16 +133,11 @@ export class ServerManager extends EventEmitter {
     this.status.api = 'starting';
     this.emit('status-change', 'Starting API server...');
 
-    const isDev = !app.isPackaged;
-    const apiPath = isDev
-      ? path.join(__dirname, '../../../api/dist/main.js')
-      : path.join(process.resourcesPath, 'api/main.js');
+    const apiPath = getApiEntryPath();
+    const dbPath = getDbPath();
+    const nodeBin = getNodeBin();
 
-    const dbPath = isDev
-      ? path.join(__dirname, '../../../../packages/database/prisma/dev.db')
-      : path.join(app.getPath('userData'), 'data', 'bizflow.db');
-
-    console.log('[API] isDev:', isDev);
+    console.log('[API] isDev:', isDev());
     console.log('[API] Path:', apiPath);
     console.log('[API] Exists:', fs.existsSync(apiPath));
     console.log('[API] DB Path:', dbPath);
@@ -112,15 +147,12 @@ export class ServerManager extends EventEmitter {
     }
 
     // In production, ensure data directory exists
-    if (!isDev) {
+    if (!isDev()) {
       const dataDir = path.dirname(dbPath);
       if (!fs.existsSync(dataDir)) {
         fs.mkdirSync(dataDir, { recursive: true });
       }
     }
-
-    // Use the Node.js binary path
-    const nodeBin = process.execPath;
 
     this.apiProcess = spawn(nodeBin, [apiPath], {
       env: {
@@ -131,49 +163,14 @@ export class ServerManager extends EventEmitter {
         JWT_ACCESS_SECRET: 'bizflow-access-secret-change-in-production',
         JWT_REFRESH_SECRET: 'bizflow-refresh-secret-change-in-production',
         CORS_ORIGIN: this.status.webUrl,
-        // NODE_PATH removed - not needed with hoisted modules
       },
-      cwd: isDev
-        ? path.dirname(apiPath)
-        : path.join(process.resourcesPath, 'api'),
+      cwd: getApiCwd(),
       stdio: 'pipe',
     });
 
-    this.apiProcess.stdout?.on('data', (data) => {
-      const message = data.toString();
-      this.emit('api-log', message);
-      console.log('[API]', message);
-    });
-
-    this.apiProcess.stderr?.on('data', (data) => {
-      const message = data.toString();
-      this.emit('api-error', message);
-      console.error('[API ERROR]', message);
-    });
-
-    this.apiProcess.on('error', (error) => {
-      this.status.api = 'error';
-      this.emit('api-error', error.message);
-      this.emit('status-change', `API server error: ${error.message}`);
-    });
-
-    this.apiProcess.on('exit', (code) => {
-      this.status.api = 'stopped';
-      this.emit('status-change', `API server exited with code ${code}`);
-      this.emit('server-status', this.getStatus());
-
-      // Auto-restart if not manually stopped and auto-restart is enabled
-      if (!this.isManualStop && this.autoRestartEnabled && code !== 0) {
-        console.log(
-          '[AUTO-RESTART] API server crashed, restarting in 3 seconds...',
-        );
-        setTimeout(() => {
-          this.startApiServer().catch((err) => {
-            console.error('[AUTO-RESTART] Failed to restart API:', err);
-          });
-        }, 3000);
-      }
-    });
+    this.setupProcessListeners(this.apiProcess, 'api', () =>
+      this.startApiServer(),
+    );
 
     await this.healthCheck(this.status.apiUrl + '/api/v1/health', 30);
     this.status.api = 'running';
@@ -185,25 +182,14 @@ export class ServerManager extends EventEmitter {
     this.status.web = 'starting';
     this.emit('status-change', 'Starting Web server...');
 
-    const isDev = !app.isPackaged;
-    const webPath = isDev
-      ? path.join(__dirname, '../../../web')
-      : path.join(process.resourcesPath, 'web');
+    const webPath = getWebPath();
 
-    // Use the Node.js binary path
-    const nodeBin = process.execPath;
-
-    console.log('[WEB] isDev:', isDev);
+    console.log('[WEB] isDev:', isDev());
     console.log('[WEB] Path:', webPath);
     console.log('[WEB] Exists:', fs.existsSync(webPath));
 
-    if (isDev) {
-      // In dev mode, use next CLI
-      const nextBin = path.join(
-        __dirname,
-        '../../../../node_modules/.pnpm/node_modules/.bin/next',
-      );
-
+    if (isDev()) {
+      const nextBin = getNextBin();
       this.webProcess = spawn(
         nextBin,
         ['start', webPath, '--port', this.webPort.toString()],
@@ -216,9 +202,8 @@ export class ServerManager extends EventEmitter {
         },
       );
     } else {
-      // In production, use standalone server.js
-      // Next.js standalone preserves monorepo structure: web/apps/web/server.js
-      const standaloneServer = path.join(webPath, 'apps', 'web', 'server.js');
+      const standaloneServer = getWebStandaloneServer();
+      const nodeBin = getNodeBin();
 
       console.log('[WEB] Standalone server:', standaloneServer);
       console.log('[WEB] Standalone exists:', fs.existsSync(standaloneServer));
@@ -235,51 +220,67 @@ export class ServerManager extends EventEmitter {
           HOSTNAME: '0.0.0.0',
           NEXT_PUBLIC_API_URL: this.status.apiUrl,
         },
-        cwd: path.join(webPath, 'apps', 'web'),
+        cwd: getWebStandaloneCwd(),
         stdio: 'pipe',
       });
     }
 
-    this.webProcess.stdout?.on('data', (data) => {
-      const message = data.toString();
-      this.emit('web-log', message);
-      console.log('[WEB]', message);
-    });
-
-    this.webProcess.stderr?.on('data', (data) => {
-      const message = data.toString();
-      this.emit('web-error', message);
-      console.error('[WEB ERROR]', message);
-    });
-
-    this.webProcess.on('error', (error) => {
-      this.status.web = 'error';
-      this.emit('web-error', error.message);
-      this.emit('status-change', `Web server error: ${error.message}`);
-    });
-
-    this.webProcess.on('exit', (code) => {
-      this.status.web = 'stopped';
-      this.emit('status-change', `Web server exited with code ${code}`);
-      this.emit('server-status', this.getStatus());
-
-      // Auto-restart if not manually stopped and auto-restart is enabled
-      if (!this.isManualStop && this.autoRestartEnabled && code !== 0) {
-        console.log(
-          '[AUTO-RESTART] Web server crashed, restarting in 3 seconds...',
-        );
-        setTimeout(() => {
-          this.startWebServer().catch((err) => {
-            console.error('[AUTO-RESTART] Failed to restart Web:', err);
-          });
-        }, 3000);
-      }
-    });
+    this.setupProcessListeners(this.webProcess, 'web', () =>
+      this.startWebServer(),
+    );
 
     await this.healthCheck(this.status.webUrl, 30);
     this.status.web = 'running';
     this.emit('status-change', 'Web server running');
     this.emit('server-status', this.getStatus());
+  }
+
+  /**
+   * Set up stdout, stderr, error, and exit listeners for a child process.
+   * Eliminates duplicated listener wiring between API and Web servers.
+   */
+  private setupProcessListeners(
+    proc: ChildProcess,
+    type: 'api' | 'web',
+    restartFn: () => Promise<void>,
+  ): void {
+    const TAG = type.toUpperCase();
+
+    proc.stdout?.on('data', (data) => {
+      const message = data.toString();
+      this.emit(`${type}-log`, message);
+      console.log(`[${TAG}]`, message);
+    });
+
+    proc.stderr?.on('data', (data) => {
+      const message = data.toString();
+      this.emit(`${type}-error`, message);
+      console.error(`[${TAG} ERROR]`, message);
+    });
+
+    proc.on('error', (error) => {
+      this.status[type] = 'error';
+      this.emit(`${type}-error`, error.message);
+      this.emit('status-change', `${TAG} server error: ${error.message}`);
+    });
+
+    proc.on('exit', (code) => {
+      this.status[type] = 'stopped';
+      this.emit('status-change', `${TAG} server exited with code ${code}`);
+      this.emit('server-status', this.getStatus());
+
+      // Auto-restart if not manually stopped and auto-restart is enabled
+      if (!this.isManualStop && this.autoRestartEnabled && code !== 0) {
+        console.log(
+          `[AUTO-RESTART] ${TAG} server crashed, restarting in 3 seconds...`,
+        );
+        setTimeout(() => {
+          restartFn().catch((err) => {
+            console.error(`[AUTO-RESTART] Failed to restart ${TAG}:`, err);
+          });
+        }, 3000);
+      }
+    });
   }
 
   private async healthCheck(url: string, maxRetries: number): Promise<void> {
@@ -299,10 +300,8 @@ export class ServerManager extends EventEmitter {
     );
   }
 
-  // Port checking methods removed - now using PortManager
-
   async stopAll(): Promise<void> {
-    this.isManualStop = true; // Prevent auto-restart
+    this.isManualStop = true;
     this.emit('status-change', 'Stopping servers...');
 
     if (this.apiProcess) {
@@ -328,7 +327,6 @@ export class ServerManager extends EventEmitter {
   }
 
   getStatus(): ServerStatus {
-    // Update DB size before returning status
     this.status.dbSize = this.getDbSize();
     return { ...this.status };
   }

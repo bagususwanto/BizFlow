@@ -10,7 +10,27 @@ export interface LogEntry {
   message: string;
 }
 
+export interface LogManagerEvents {
+  log: (entry: LogEntry) => void;
+  'logs-cleared': () => void;
+}
+
 export class LogManager extends EventEmitter {
+  // -- Typed emit/on overrides --
+  emit<K extends keyof LogManagerEvents>(
+    event: K,
+    ...args: Parameters<LogManagerEvents[K]>
+  ): boolean {
+    return super.emit(event, ...args);
+  }
+
+  on<K extends keyof LogManagerEvents>(
+    event: K,
+    listener: LogManagerEvents[K],
+  ): this {
+    return super.on(event, listener);
+  }
+
   private logs: LogEntry[] = [];
   private maxLogsInMemory = 1000; // Ring buffer size
   private logFilePath: string;

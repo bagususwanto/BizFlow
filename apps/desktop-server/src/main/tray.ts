@@ -2,52 +2,70 @@ import { app, Menu, Tray, nativeImage } from 'electron';
 import * as path from 'path';
 import { showMainWindow } from './windows';
 import { ServerStatus } from './server-manager';
-import { TRAY_TRANSLATIONS } from './config';
+import { t, SupportedLanguage } from './i18n/translations';
 
 let tray: Tray | null = null;
 
+/**
+ * Named callbacks for tray menu actions.
+ * Replaces the previous 6-7 positional callback parameters.
+ */
+export interface TrayCallbacks {
+  onOpenBrowser: () => void;
+  onStopServer: () => void;
+  onStartServer: () => void;
+  onRestartServer: () => void;
+  onViewLogs: () => void;
+  onBackup: () => void;
+}
+
+const RESOURCE_DIR = path.join(__dirname, '../resources');
+
+/**
+ * Load a tray/menu icon from the resources directory.
+ * Falls back to buffer read and then system icon if path-based loading fails.
+ */
+function loadIcon(filename: string): Electron.NativeImage {
+  const iconPath = path.join(RESOURCE_DIR, filename.replace('.svg', '.png'));
+  let icon = nativeImage.createFromPath(iconPath);
+
+  if (icon.isEmpty()) {
+    try {
+      const fs = require('fs');
+      const buffer = fs.readFileSync(iconPath);
+      icon = nativeImage.createFromBuffer(buffer);
+    } catch (e) {
+      // Silent fallback
+    }
+  }
+
+  if (icon.isEmpty()) {
+    icon = nativeImage.createFromNamedImage('NSActionTemplate');
+  }
+
+  return icon;
+}
+
+/**
+ * Load a menu item icon (template image, resized to 16x16).
+ */
+function getMenuIcon(name: string): Electron.NativeImage {
+  const image = loadIcon(name);
+  image.setTemplateImage(true);
+  return image.resize({ width: 16, height: 16 });
+}
+
 export function createTray(
-  onOpenBrowser: () => void,
-  onStopServer: () => void,
-  onStartServer: () => void,
-  onRestartServer: () => void,
-  onViewLogs: () => void,
-  onBackup: () => void,
-  language: 'id' | 'en' = 'id',
+  callbacks: TrayCallbacks,
+  language: SupportedLanguage = 'id',
 ): Tray | null {
-  console.log('[TRAY] Electron version:', process.versions.electron);
-
-  const iconPath = path.join(__dirname, '../resources/icon-running.png');
-  console.log('[TRAY] Icon path:', iconPath);
-
   try {
-    let icon = nativeImage.createFromPath(iconPath);
-
-    if (icon.isEmpty()) {
-      console.error('[TRAY] Icon from path is empty. Trying buffer...');
-      try {
-        const fs = require('fs');
-        const buffer = fs.readFileSync(iconPath);
-        console.log('[TRAY] Read buffer size:', buffer.length);
-        icon = nativeImage.createFromBuffer(buffer);
-      } catch (e) {
-        console.error('[TRAY] Buffer read failed:', e);
-      }
-    }
-
-    if (icon.isEmpty()) {
-      console.error(
-        '[TRAY] Icon still empty. Trying system icon as fallback...',
-      );
-      icon = nativeImage.createFromNamedImage('NSActionTemplate');
-    }
-
-    console.log('[TRAY] Final icon empty:', icon.isEmpty());
+    const icon = loadIcon('icon-running.png');
 
     tray = new Tray(icon);
     tray.setToolTip('BizFlow Server - Running');
 
-    // Create context menu
+    // Create initial context menu
     updateTrayMenu(
       {
         api: 'running',
@@ -59,12 +77,7 @@ export function createTray(
         dbSize: 'Checking...',
         dbPath: '',
       },
-      onOpenBrowser,
-      onStopServer,
-      onStartServer,
-      onRestartServer,
-      onViewLogs,
-      onBackup,
+      callbacks,
       language,
     );
 
@@ -81,83 +94,34 @@ export function createTray(
 
 export function updateTrayStatus(
   status: ServerStatus,
-  onOpenBrowser: () => void,
-  onStopServer: () => void,
-  onStartServer: () => void,
-  onRestartServer: () => void,
-  onViewLogs: () => void,
-  onBackup: () => void,
-  language: 'id' | 'en' = 'id',
+  callbacks: TrayCallbacks,
+  language: SupportedLanguage = 'id',
 ): void {
   if (!tray) return;
 
   const isRunning = status.api === 'running' && status.web === 'running';
 
   // Update icon
-  const iconName = isRunning ? 'icon-running.png' : 'icon-stopped.png';
-  const iconPath = path.join(__dirname, '../resources', iconName);
-
-  let icon = nativeImage.createFromPath(iconPath);
-  if (icon.isEmpty()) {
-    try {
-      const fs = require('fs');
-      const buffer = fs.readFileSync(iconPath);
-      icon = nativeImage.createFromBuffer(buffer);
-    } catch (e) {}
-  }
-
-  if (icon.isEmpty()) {
-    icon = nativeImage.createFromNamedImage('NSActionTemplate');
-  }
-
+  const icon = loadIcon(isRunning ? 'icon-running.png' : 'icon-stopped.png');
   tray.setImage(icon.resize({ width: 16, height: 16 }));
 
   // Update tooltip
-  const tooltip = isRunning
-    ? 'BizFlow Server - Running'
-    : 'BizFlow Server - Stopped';
-  tray.setToolTip(tooltip);
+  tray.setToolTip(
+    isRunning ? 'BizFlow Server - Running' : 'BizFlow Server - Stopped',
+  );
 
   // Update menu
-  updateTrayMenu(
-    status,
-    onOpenBrowser,
-    onStopServer,
-    onStartServer,
-    onRestartServer,
-    onViewLogs,
-    onBackup,
-    language,
-  );
+  updateTrayMenu(status, callbacks, language);
 }
 
 function updateTrayMenu(
   status: ServerStatus,
-  onOpenBrowser: () => void,
-  onStopServer: () => void,
-  onStartServer: () => void,
-  onRestartServer: () => void,
-  onViewLogs: () => void,
-  onBackup: () => void,
-  language: 'id' | 'en' = 'id',
+  callbacks: TrayCallbacks,
+  language: SupportedLanguage = 'id',
 ): void {
   if (!tray) return;
 
   const isRunning = status.api === 'running' && status.web === 'running';
-  const resourcePath = path.join(__dirname, '../resources');
-  const t = TRAY_TRANSLATIONS[language] || TRAY_TRANSLATIONS.id;
-
-  const getMenuIcon = (name: string) => {
-    const iconPath = path.join(resourcePath, name.replace('.svg', '.png'));
-    const image = nativeImage.createFromPath(iconPath);
-
-    if (image.isEmpty()) {
-      console.error(`[TRAY] Failed to load icon: ${name} at ${iconPath}`);
-    }
-
-    image.setTemplateImage(true);
-    return image.resize({ width: 16, height: 16 });
-  };
 
   const contextMenu = Menu.buildFromTemplate([
     {
@@ -168,45 +132,47 @@ function updateTrayMenu(
     { type: 'separator' },
     {
       label: isRunning
-        ? t['status.running'] || 'Server Running'
-        : t['status.stopped'] || 'Server Stopped',
+        ? t(language, 'status.running')
+        : t(language, 'status.stopped'),
       enabled: false,
       icon: getMenuIcon(isRunning ? 'check-circle.svg' : 'circle.svg'),
     },
     { type: 'separator' },
     {
-      label: t['open.browser'],
+      label: t(language, 'open.browser'),
       enabled: isRunning,
-      click: onOpenBrowser,
+      click: callbacks.onOpenBrowser,
       icon: getMenuIcon('globe.svg'),
     },
     {
-      label: t['logs.view'],
+      label: t(language, 'logs.view'),
       enabled: true,
-      click: onViewLogs,
+      click: callbacks.onViewLogs,
       icon: getMenuIcon('clipboard-list.svg'),
     },
     {
-      label: t['backup.create'],
+      label: t(language, 'backup.create'),
       enabled: true,
-      click: onBackup,
+      click: callbacks.onBackup,
       icon: getMenuIcon('save.svg'),
     },
     { type: 'separator' },
     {
-      label: isRunning ? t['server.stop'] : t['server.start'],
-      click: isRunning ? onStopServer : onStartServer,
+      label: isRunning
+        ? t(language, 'server.stop')
+        : t(language, 'server.start'),
+      click: isRunning ? callbacks.onStopServer : callbacks.onStartServer,
       icon: getMenuIcon(isRunning ? 'pause.svg' : 'play.svg'),
     },
     {
-      label: t['server.restart'],
+      label: t(language, 'server.restart'),
       enabled: isRunning,
-      click: onRestartServer,
+      click: callbacks.onRestartServer,
       icon: getMenuIcon('refresh-cw.svg'),
     },
     { type: 'separator' },
     {
-      label: t['quit'],
+      label: t(language, 'quit'),
       click: () => {
         app.quit();
       },

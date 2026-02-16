@@ -11,7 +11,29 @@ export interface BackupInfo {
   createdAt: Date;
 }
 
+export interface BackupManagerEvents {
+  'backup-created': (info: BackupInfo) => void;
+  'backup-restored': (filename: string) => void;
+  'backup-deleted': (filename: string) => void;
+  'backup-error': (error: unknown) => void;
+}
+
 export class BackupManager extends EventEmitter {
+  // -- Typed emit/on overrides --
+  emit<K extends keyof BackupManagerEvents>(
+    event: K,
+    ...args: Parameters<BackupManagerEvents[K]>
+  ): boolean {
+    return super.emit(event, ...args);
+  }
+
+  on<K extends keyof BackupManagerEvents>(
+    event: K,
+    listener: BackupManagerEvents[K],
+  ): this {
+    return super.on(event, listener);
+  }
+
   private config: ConfigManager;
   private backupDir: string;
   private dbPath: string;

@@ -54,9 +54,11 @@ export class LicenseManager extends EventEmitter {
     super();
     const userDataPath = app.getPath('userData');
     this.licenseFilePath = path.join(userDataPath, 'license.json');
+    this.revokedKeysPath = path.join(userDataPath, 'revoked_licenses.json');
     this.deviceId = this.generateDeviceId();
 
     // Load existing license if available
+    this.loadRevokedKeys();
     this.loadLicense();
 
     console.log('[LICENSE] Initialized. Device ID:', this.deviceId);
@@ -173,6 +175,16 @@ export class LicenseManager extends EventEmitter {
   ): Promise<{ success: boolean; message: string }> {
     console.log('[LICENSE] Attempting to activate license:', key);
 
+    // Check if key is in revoked list (local blacklist)
+    if (this.isKeyRevoked(key)) {
+      console.log('[LICENSE] Key is locally revoked');
+      return {
+        success: false,
+        message:
+          'This license has been deactivated on this machine and cannot be reused.',
+      };
+    }
+
     // Real cryptographic validation
     if (!this.validateLicenseKey(key)) {
       return {
@@ -203,17 +215,37 @@ export class LicenseManager extends EventEmitter {
   }
 
   /**
-   * Deactivate current license
+   * Deactivate current license and generate proof
    */
-  async deactivateLicense(): Promise<void> {
+  async deactivateLicense(): Promise<{ success: boolean; proof?: string }> {
     console.log('[LICENSE] Deactivating license');
 
-    // In production, call license server API to deactivate
-
-    if (this.licenseInfo) {
-      this.emit('license-deactivated', this.licenseInfo);
+    if (!this.licenseInfo) {
+      return { success: false };
     }
 
+    const oldKey = this.licenseInfo.key;
+    const machineId = this.deviceId;
+
+    // Generate Deactivation Proof: Hash(Key + MachineID + "DEACT")
+    // We use a simple hash to prove the user had the key and decided to deactivate it
+    const proofString = `${oldKey}-${machineId}-DEACT`;
+    const proofHash = crypto
+      .createHash('sha256')
+      .update(proofString)
+      .digest('hex')
+      .substring(0, 16)
+      .toUpperCase();
+
+    // Format: DEACT-[FIRST_8_CHARS_OF_KEY]-[PROOF_HASH]
+    // This makes it easy to identify which key was deactivated
+    const keyPrefix = oldKey.split('-')[1] || 'UNKNOWN';
+    const finalProof = `DEACT-${keyPrefix}-${proofHash}`;
+
+    // Add to local blacklist to prevent reuse on this machine
+    this.addToRevokedList(oldKey);
+
+    this.emit('license-deactivated', this.licenseInfo);
     this.licenseInfo = null;
 
     // Delete license file
@@ -221,7 +253,33 @@ export class LicenseManager extends EventEmitter {
       fs.unlinkSync(this.licenseFilePath);
     }
 
-    console.log('[LICENSE] License deactivated');
+    console.log('[LICENSE] License deactivated. Proof:', finalProof);
+    return { success: true, proof: finalProof };
+  }
+
+  private revokedKeysPath: string;
+  private revokedKeys: string[] = [];
+
+  private loadRevokedKeys(): void {
+    try {
+      if (fs.existsSync(this.revokedKeysPath)) {
+        const data = fs.readFileSync(this.revokedKeysPath, 'utf-8');
+        this.revokedKeys = JSON.parse(data);
+      }
+    } catch (e) {
+      this.revokedKeys = [];
+    }
+  }
+
+  private addToRevokedList(key: string): void {
+    if (!this.revokedKeys.includes(key)) {
+      this.revokedKeys.push(key);
+      fs.writeFileSync(this.revokedKeysPath, JSON.stringify(this.revokedKeys));
+    }
+  }
+
+  private isKeyRevoked(key: string): boolean {
+    return this.revokedKeys.includes(key);
   }
 
   /**

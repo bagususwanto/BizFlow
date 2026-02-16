@@ -165,20 +165,63 @@ activateBtn.addEventListener('click', async () => {
   }
 });
 
+// Deactivation Proof Copy
+const proofCodeEl = document.getElementById('proof-code');
+const copyProofBtn = document.getElementById('copy-proof-btn');
+const deactivationProofEl = document.getElementById('deactivation-proof');
+
+if (copyProofBtn) {
+  copyProofBtn.addEventListener('click', () => {
+    const proof = proofCodeEl.textContent;
+    if (proof) {
+      navigator.clipboard.writeText(proof);
+
+      const originalContent = copyProofBtn.innerHTML;
+      copyProofBtn.innerHTML = '<span style="font-size: 12px">Copied!</span>';
+      setTimeout(() => {
+        copyProofBtn.innerHTML = originalContent;
+      }, 2000);
+    }
+  });
+}
+
 // Deactivate license
 deactivateBtn.addEventListener('click', async () => {
-  if (!confirm('Are you sure you want to deactivate this license?')) {
+  if (
+    !confirm(
+      'Are you sure you want to deactivate this license?\n\nThis will remove the license from this computer and generate a proof code.',
+    )
+  ) {
     return;
   }
 
   try {
-    await window.electronAPI.license.deactivate();
-    licenseInfo.style.display = 'none';
-    activationForm.style.display = 'block';
-    licenseKeyInput.value = '';
-    emailInput.value = '';
-    showMessage('License deactivated successfully', 'success');
+    const result = await window.electronAPI.license.deactivate();
+
+    if (result.success) {
+      licenseInfo.style.display = 'none';
+      activationForm.style.display = 'block';
+      licenseKeyInput.value = '';
+
+      // Show Deactivation Proof if available
+      if (result.proof) {
+        deactivationProofEl.style.display = 'block';
+        proofCodeEl.textContent = result.proof;
+        showMessage(
+          'License deactivated. Please save the proof code below.',
+          'success',
+        );
+      } else {
+        showMessage('License deactivated successfully', 'success');
+      }
+    } else {
+      showMessage(
+        'Deactivation failed: ' + (result.message || 'Unknown error'),
+        'error',
+      );
+    }
   } catch (error) {
+    console.error(error);
     showMessage('Deactivation failed: ' + error.message, 'error');
   }
 });

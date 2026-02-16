@@ -7,8 +7,7 @@ export function registerLicenseIpc(licenseManager: LicenseManager): void {
   });
 
   ipcMain.handle('license:deactivate', async () => {
-    await licenseManager.deactivateLicense();
-    return { success: true };
+    return await licenseManager.deactivateLicense();
   });
 
   ipcMain.handle('license:getStatus', () => {

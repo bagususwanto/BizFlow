@@ -19,7 +19,8 @@
     "package:linux": "npm run prepackage && electron-builder --linux",
     "postpackage": "ls -lh release/",
     "generate-keys": "ts-node scripts/generate-keys.ts",
-    "generate-license": "ts-node scripts/generate-license.ts"
+    "generate-license": "ts-node scripts/generate-license.ts",
+    "verify-deactivation": "ts-node scripts/verify-deactivation.ts"
   },
   "devDependencies": {
     "@electron/fuses": "^2.0.0",

@@ -58,6 +58,36 @@
         </button>
 
         <div id="message" class="message"></div>
+
+        <div
+          id="deactivation-proof"
+          class="card"
+          style="display: none; border-color: var(--accent-warning)"
+        >
+          <h3 style="color: var(--accent-warning); margin-top: 0">
+            Deactivation Successful
+          </h3>
+          <p>
+            Please send this code to your administrator to prove deactivation:
+          </p>
+          <div class="input-group">
+            <div
+              class="device-id"
+              id="proof-code"
+              style="font-family: monospace; font-weight: bold"
+            ></div>
+            <button
+              id="copy-proof-btn"
+              class="btn-secondary"
+              title="Copy Proof"
+            >
+              <div
+                class="icon-sm"
+                style="mask-image: url('assets/icons/copy.png')"
+              ></div>
+            </button>
+          </div>
+        </div>
       </div>
 
       <div id="license-info" class="card" style="display: none">

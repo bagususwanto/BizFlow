@@ -179,6 +179,20 @@ class StockService {
     );
     return res.data!;
   }
+
+  async exportMovements(
+    params?: Omit<QueryStockMovementValues, 'page' | 'pageSize'>,
+  ): Promise<StockMovement[]> {
+    const searchParams = buildSearchParams({
+      ...params,
+      page: 1,
+      pageSize: 10000, // Large limit to get all records
+    });
+    const res = await apiClient.get<StockMovementsResponse>(
+      `/inventory/stock/movements?${searchParams.toString()}`,
+    );
+    return res.data;
+  }
 }
 
 export const stockService = new StockService();

@@ -6,11 +6,17 @@ import { Button } from '@bizflow/ui';
 import { AuditLogDetailSheet } from '@/components/audit-logs/audit-log-detail-sheet';
 import { ErrorState } from '@/components/common/error-state';
 import { useAuditLogs, useDebounce } from '@/hooks';
-import { AuditLog } from '@/services/audit-logs.service';
+import { AuditLog, auditLogService } from '@/services/audit-logs.service';
 import { Download, Loader2, Box } from 'lucide-react';
 import { DataListPage } from '@/components/shared/data-list-page';
 import { getColumns } from '@/components/audit-logs/columns';
 import { AVAILABLE_MODULES, AVAILABLE_ACTIONS } from '@bizflow/types';
+import {
+  exportToExcel,
+  generateFilename,
+  formatDateForExport,
+} from '@/lib/export';
+import { toast } from 'sonner';
 
 function AuditLogsContent() {
   const router = useRouter();
@@ -39,6 +45,7 @@ function AuditLogsContent() {
 
   const [selectedLog, setSelectedLog] = useState<AuditLog | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   const debouncedSearch = useDebounce(search, 500);
 
@@ -83,6 +90,50 @@ function AuditLogsContent() {
       endDate: end ? end.toISOString() : null,
       page: 1,
     });
+  };
+
+  const handleExportLogs = async () => {
+    try {
+      setIsExporting(true);
+      toast.info('Mengekspor data audit log...');
+
+      const logs = await auditLogService.exportAll({
+        search: debouncedSearch,
+        module: moduleFilter === 'all' ? undefined : moduleFilter,
+        action: actionFilter === 'all' ? undefined : actionFilter,
+        startDate: startDate?.toISOString(),
+        endDate: endDate?.toISOString(),
+      });
+
+      exportToExcel(
+        logs,
+        [
+          { key: 'id', label: 'ID', width: 30 },
+          {
+            key: 'createdAt',
+            label: 'Waktu',
+            format: formatDateForExport,
+            width: 20,
+          },
+          { key: 'user.name', label: 'Pengguna', width: 20 },
+          { key: 'user.username', label: 'Username', width: 15 },
+          { key: 'module', label: 'Modul', width: 15 },
+          { key: 'action', label: 'Aksi', width: 12 },
+          { key: 'entityType', label: 'Tipe Entitas', width: 15 },
+          { key: 'entityId', label: 'ID Entitas', width: 30 },
+          { key: 'ipAddress', label: 'Alamat IP', width: 15 },
+          { key: 'userAgent', label: 'User Agent', width: 40 },
+        ],
+        generateFilename('audit-logs'),
+        'Audit Logs',
+      );
+      toast.success(`Berhasil mengekspor ${logs.length} audit log`);
+    } catch (error) {
+      console.error('Export error:', error);
+      toast.error('Gagal mengekspor audit log');
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   if (isError) {
@@ -184,9 +235,13 @@ function AuditLogsContent() {
         onReset={() => router.push(pathname)}
         // Extra Actions
         headerAction={
-          <Button>
-            <Download className="mr-2 h-4 w-4" />
-            Export Log
+          <Button onClick={handleExportLogs} disabled={isExporting}>
+            {isExporting ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="mr-2 h-4 w-4" />
+            )}
+            {isExporting ? 'Mengekspor...' : 'Export Excel'}
           </Button>
         }
         onRefresh={refetch}

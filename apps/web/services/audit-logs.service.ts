@@ -52,6 +52,20 @@ class AuditLogService {
     );
     return res;
   }
+
+  async exportAll(
+    params?: Partial<Omit<AuditLogQuery, 'page' | 'limit'>>,
+  ): Promise<AuditLog[]> {
+    const searchParams = buildSearchParams({
+      ...params,
+      page: 1,
+      limit: 10000, // Large limit to get all records
+    });
+    const res = await apiClient.get<AuditLogsResponse>(
+      `/core/audit-logs?${searchParams.toString()}`,
+    );
+    return res.data;
+  }
 }
 
 export const auditLogService = new AuditLogService();

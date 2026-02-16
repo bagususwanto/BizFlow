@@ -11,6 +11,12 @@ import { Loader2, Download, History } from 'lucide-react';
 import { Button } from '@bizflow/ui';
 import { StockCardDialog } from './stock-card-dialog';
 import { toast } from 'sonner';
+import { stockService } from '@/services/stock.service';
+import {
+  exportToExcel,
+  generateFilename,
+  formatDateForExport,
+} from '@/lib/export';
 
 function StockMovementsContent() {
   const router = useRouter();
@@ -19,6 +25,7 @@ function StockMovementsContent() {
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
     null,
   );
+  const [isExporting, setIsExporting] = useState(false);
 
   // Get state from URL params
   const page = Number(searchParams.get('page')) || 1;
@@ -95,8 +102,57 @@ function StockMovementsContent() {
     return [...baseColumns, actionColumn];
   }, []);
 
-  const handleExport = () => {
-    toast.info('Fitur export akan segera hadir!');
+  const handleExport = async () => {
+    try {
+      setIsExporting(true);
+      toast.info('Mengekspor data riwayat stok...');
+
+      const movements = await stockService.exportMovements({
+        search: debouncedSearch,
+        warehouseId: warehouseId !== 'all' ? warehouseId : undefined,
+        type: type !== 'all' ? type : undefined,
+        dateFrom,
+        dateTo,
+        sortBy: sortBy as any,
+        sortOrder,
+      });
+
+      exportToExcel(
+        movements,
+        [
+          { key: 'id', label: 'ID', width: 30 },
+          {
+            key: 'createdAt',
+            label: 'Tanggal',
+            format: formatDateForExport,
+            width: 20,
+          },
+          { key: 'type', label: 'Tipe', width: 18 },
+          { key: 'variant.product.name', label: 'Produk', width: 30 },
+          { key: 'variant.name', label: 'Varian', width: 25 },
+          { key: 'variant.sku', label: 'SKU', width: 15 },
+          { key: 'warehouse.name', label: 'Gudang', width: 20 },
+          {
+            key: 'quantity',
+            label: 'Kuantitas',
+            width: 12,
+            format: (val: any) =>
+              `${val} ${movements.find((m) => m.id)?.variant?.product?.unit?.symbol || ''}`.trim(),
+          },
+          { key: 'referenceType', label: 'Tipe Referensi', width: 18 },
+          { key: 'referenceId', label: 'ID Referensi', width: 30 },
+          { key: 'notes', label: 'Catatan', width: 30 },
+        ],
+        generateFilename('stock-movements'),
+        'Riwayat Stok',
+      );
+      toast.success(`Berhasil mengekspor ${movements.length} riwayat stok`);
+    } catch (error) {
+      console.error('Export error:', error);
+      toast.error('Gagal mengekspor riwayat stok');
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   return (
@@ -150,9 +206,17 @@ function StockMovementsContent() {
         // Actions
         onRefresh={refetch}
         headerAction={
-          <Button variant="outline" onClick={handleExport}>
-            <Download className="mr-2 h-4 w-4" />
-            Export
+          <Button
+            variant="outline"
+            onClick={handleExport}
+            disabled={isExporting}
+          >
+            {isExporting ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="mr-2 h-4 w-4" />
+            )}
+            {isExporting ? 'Mengekspor...' : 'Export Excel'}
           </Button>
         }
       />

@@ -34,25 +34,25 @@ function applyTheme(theme) {
   const root = document.documentElement;
   if (theme === 'system') {
     const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    root.style.setProperty('--bg-color', isDark ? '#1a1b1e' : '#ffffff');
-    root.style.setProperty('--card-bg', isDark ? '#25262b' : '#f8f9fa');
+    root.style.setProperty('--bg-primary', isDark ? '#1a1b1e' : '#ffffff');
+    root.style.setProperty('--bg-secondary', isDark ? '#25262b' : '#f8f9fa');
     root.style.setProperty('--text-primary', isDark ? '#e6e6e6' : '#1f2937');
     root.style.setProperty('--text-secondary', isDark ? '#909296' : '#6b7280');
     root.style.setProperty('--border-color', isDark ? '#373a40' : '#e5e7eb');
     root.style.setProperty('--bg-tertiary', isDark ? '#2C2E33' : '#f1f3f5');
     root.style.setProperty('--bg-hover', isDark ? '#373A40' : '#e9ecef');
   } else if (theme === 'light') {
-    root.style.setProperty('--bg-color', '#ffffff');
-    root.style.setProperty('--card-bg', '#f8f9fa');
+    root.style.setProperty('--bg-primary', '#ffffff');
+    root.style.setProperty('--bg-secondary', '#f8f9fa');
     root.style.setProperty('--text-primary', '#1f2937');
     root.style.setProperty('--text-secondary', '#6b7280');
     root.style.setProperty('--border-color', '#e5e7eb');
     root.style.setProperty('--bg-tertiary', '#f1f3f5');
     root.style.setProperty('--bg-hover', '#e9ecef');
   } else {
-    // Dark theme (default)
-    root.style.removeProperty('--bg-color');
-    root.style.removeProperty('--card-bg');
+    // Dark theme (default) - Remove overrides to use CSS defaults
+    root.style.removeProperty('--bg-primary');
+    root.style.removeProperty('--bg-secondary');
     root.style.removeProperty('--text-primary');
     root.style.removeProperty('--text-secondary');
     root.style.removeProperty('--border-color');

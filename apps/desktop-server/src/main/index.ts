@@ -90,21 +90,43 @@ app.whenReady().then(async () => {
   licenseManager = new LicenseManager();
   console.log('[LICENSE] Initialized');
 
+  // Initialize server manager with config (but don't start yet)
+  serverManager = new ServerManager(configManager);
+
+  // Initialize backup manager
+  const dbPath = getDbPath();
+  backupManager = new BackupManager(configManager, dbPath);
+  console.log('[BACKUP] Initialized');
+
+  // Start auto-backup if enabled
+  if (configManager.get('autoBackup')) {
+    backupManager.startAutoBackup();
+  }
+
+  // Register all IPC handlers immediately so License Window can use them
+  registerAllIpcHandlers({
+    serverManager,
+    configManager,
+    logManager,
+    backupManager,
+    licenseManager,
+  });
+
   // Check license
   if (!licenseManager.isLicenseValid()) {
     console.log('[LICENSE] No valid license found. Showing activation window.');
     const licenseWin = createLicenseWindow();
 
-    licenseManager.once('license-activated', () => {
+    licenseManager.once('license-activated', async () => {
       console.log('[LICENSE] Activated! Starting servers...');
       if (licenseWin && !licenseWin.isDestroyed()) {
         licenseWin.close();
       }
-      startApp();
+      await startApp();
     });
   } else {
     console.log('[LICENSE] Valid license found. Starting app...');
-    startApp();
+    await startApp();
   }
 
   app.on('activate', () => {
@@ -120,33 +142,10 @@ app.whenReady().then(async () => {
   });
 });
 
-function startApp(): void {
+async function startApp(): Promise<void> {
   const splash = createSplashWindow();
-
-  // Initialize server manager with config
-  serverManager = new ServerManager(configManager);
-
-  // Initialize backup manager
-  const dbPath = getDbPath();
-  backupManager = new BackupManager(configManager, dbPath);
-  console.log('[BACKUP] Initialized');
-
-  // Start auto-backup if enabled
-  if (configManager.get('autoBackup')) {
-    backupManager.startAutoBackup();
-  }
-
-  // Register all IPC handlers
-  registerAllIpcHandlers({
-    serverManager,
-    configManager,
-    logManager,
-    backupManager,
-    licenseManager,
-  });
-
-  setupEventListeners();
-  startServers(splash);
+  setupEventListeners(); // Now safe to call since everything is initialized
+  await startServers(splash);
 }
 
 function setupEventListeners(): void {

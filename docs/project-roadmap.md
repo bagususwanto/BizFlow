@@ -196,13 +196,13 @@ Referensi: [09-desktop-app.md](file:///Users/bagus/Project/personal/BizFlow/docs
 
 | Task                                    | Status | Priority |
 | --------------------------------------- | ------ | -------- |
-| Electron wrapper dengan embedded server | [ ]    | High     |
-| System tray integration                 | [ ]    | High     |
-| Server lifecycle management             | [ ]    | High     |
-| Logs viewer (filter, export)            | [ ]    | Medium   |
-| Backup/Restore functionality            | [ ]    | High     |
-| License activation flow                 | [ ]    | High     |
-| One-click installer (Windows/Mac/Linux) | [ ]    | High     |
+| Electron wrapper dengan embedded server | [x]    | High     |
+| System tray integration                 | [x]    | High     |
+| Server lifecycle management             | [x]    | High     |
+| Logs viewer (filter, export)            | [x]    | Medium   |
+| Backup/Restore functionality            | [x]    | High     |
+| License activation flow                 | [x]    | High     |
+| One-click installer (Windows/Mac/Linux) | [x]    | High     |
 
 **Build Output**: `BizFlow-Setup-1.0.0.exe` (~150MB)
 

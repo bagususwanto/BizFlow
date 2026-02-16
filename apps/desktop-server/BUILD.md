@@ -24,7 +24,9 @@ Before building the installer, ensure:
    pnpm build
    ```
 
-3. **Desktop server is built:**
+3. **Desktop server is compiled:**
+   The desktop server is written in TypeScript and needs to be compiled before packaging.
+
    ```bash
    cd apps/desktop-server
    pnpm build
@@ -70,8 +72,8 @@ pnpm package:win
 
 **Requirements:**
 
-- Windows 7+ or Wine on macOS/Linux
-- Code signing certificate (optional, for distribution)
+- Windows 7+ or Wine (on macOS/Linux builds)
+- Code signing certificate (optional, to avoid "Unknown Publisher" warnings)
 
 ### Linux
 
@@ -90,13 +92,14 @@ pnpm package:linux
 
 **Requirements:**
 
-- Linux with `fuse` for AppImage
-- `dpkg` for DEB
-- `rpm` for RPM
+- Linux environment (or Docker)
+- `fuse` for running AppImages locally
+- `dpkg` for building DEB
+- `rpm` for building RPM
 
 ### All Platforms
 
-Build for all platforms (requires appropriate OS or CI):
+Build for all platforms (requires appropriate OS or CI environment):
 
 ```bash
 cd apps/desktop-server
@@ -119,15 +122,15 @@ pnpm clean
 The built application includes:
 
 ```
-BizFlow Server.app/
+BizFlow Server.app/ (macOS example)
 ├── Contents/
 │   ├── MacOS/
 │   │   └── BizFlow Server (executable)
 │   ├── Resources/
-│   │   ├── app.asar (main app)
-│   │   ├── api/ (NestJS API)
-│   │   ├── web/ (Next.js app)
-│   │   └── database/ (Prisma schema)
+│   │   ├── app.asar (desktop server code)
+│   │   ├── api/ (Embedded NestJS API)
+│   │   ├── web/ (Embedded Next.js app)
+│   │   └── database/ (Prisma schema & migrations)
 │   └── Info.plist
 ```
 
@@ -152,41 +155,37 @@ BizFlow Server.app/
 - **DEB:** Install: `sudo dpkg -i bizflow-server_*.deb`
 - **RPM:** Install: `sudo rpm -i bizflow-server-*.rpm`
 
-## First Run
+## First Run Lifecycle
 
-On first launch:
+On first launch, the `server-manager` initiates the following sequence:
 
-1. **Splash screen** shows server startup progress
-2. **Servers start automatically** (API on port 3000, Web on port 3001)
-3. **System tray icon** appears (running state)
-4. **Main window** opens with server status
+1. **Checks Paths**: Verifies existence of API and Web server binaries (dev vs prod paths).
+2. **Finds Ports**: Scans for available ports starting at 3000 (API) and 3001 (Web).
+3. **Database Check**: Ensures SQLite database exists or creates a new one.
+4. **Server Startup**: Spawns API and Web processes as child processes.
+5. **Health Checks**: Polls `/health` endpoints until servers are ready.
+6. **Splash Screen**: Closes splash screen and opens main dashboard only when all services are green.
 
 ## Configuration
 
-User data is stored in:
+User data is stored in the OS-specific application directory:
 
 - **macOS:** `~/Library/Application Support/desktop-server/`
 - **Windows:** `%APPDATA%/desktop-server/`
 - **Linux:** `~/.config/desktop-server/`
-
-Files:
-
-- `config.json` - Application settings
-- `license.json` - License information
-- `logs/` - Application logs
-- `backups/` - Database backups
 
 ## Code Signing (Optional)
 
 ### macOS
 
 1. Get Apple Developer certificate
-2. Add to build config:
+2. Add to `package.json` build config:
    ```json
    "mac": {
      "identity": "Developer ID Application: Your Name (TEAM_ID)"
    }
    ```
+3. Notarize the app (requires `electron-notarize` setup)
 
 ### Windows
 
@@ -201,15 +200,11 @@ Files:
 
 ### Build fails with "Cannot find module"
 
-Ensure all dependencies are built:
-
-```bash
-pnpm build
-```
+Ensure `pnpm build` has been run in `apps/api` and `apps/web`. The packager expects `dist/` and `.next/standalone` folders to exist.
 
 ### macOS: "App is damaged and can't be opened"
 
-App is not code signed. Right-click → Open, or disable Gatekeeper:
+App is not code signed/notarized. Right-click → Open, or disable Gatekeeper:
 
 ```bash
 sudo spctl --master-disable
@@ -217,7 +212,7 @@ sudo spctl --master-disable
 
 ### Windows: Antivirus blocks installation
 
-Add exception for the installer or sign the executable.
+Add exception for the installer or sign the executable with a trusted certificate.
 
 ### Linux: AppImage won't run
 
@@ -227,65 +222,3 @@ Install FUSE:
 sudo apt install fuse  # Debian/Ubuntu
 sudo yum install fuse  # RHEL/CentOS
 ```
-
-## CI/CD Integration
-
-### GitHub Actions Example
-
-```yaml
-name: Build Installers
-
-on:
-  push:
-    tags:
-      - 'v*'
-
-jobs:
-  build:
-    strategy:
-      matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
-
-    runs-on: ${{ matrix.os }}
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-          cache: 'pnpm'
-
-      - run: pnpm install
-      - run: pnpm build
-
-      - name: Build Installer
-        run: |
-          cd apps/desktop-server
-          pnpm package
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: installer-${{ matrix.os }}
-          path: apps/desktop-server/release/*
-```
-
-## Version Management
-
-Update version in `package.json`:
-
-```json
-{
-  "version": "1.0.0"
-}
-```
-
-Version is automatically included in installer filename and app metadata.
-
-## Support
-
-For issues or questions:
-
-- GitHub Issues: [repository URL]
-- Email: support@bizflow.com
-- Documentation: [docs URL]

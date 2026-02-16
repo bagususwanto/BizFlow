@@ -15,6 +15,7 @@ import { ProductsModule } from './modules/master-data/products';
 import { UnitsModule } from './modules/master-data/units';
 import { CustomersModule } from './modules/master-data/customers';
 import { WarehousesModule } from './modules/master-data/warehouses';
+import { SuppliersModule } from './modules/master-data/suppliers';
 import { PromotionsModule } from './modules/master-data/promotions';
 
 import { StockModule } from './modules/inventory/stock';
@@ -51,6 +52,7 @@ import { AppController } from './app.controller';
     ProductsModule,
     UnitsModule,
     CustomersModule,
+    SuppliersModule,
     WarehousesModule,
     PromotionsModule,
     // Inventory modules

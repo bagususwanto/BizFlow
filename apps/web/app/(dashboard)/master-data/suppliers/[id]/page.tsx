@@ -26,11 +26,18 @@ export default function EditSupplierPage() {
   }
 
   return (
-    <SupplierForm
-      initialData={supplier}
-      title="Edit Pemasok"
-      description="Perbarui informasi data pemasok."
-    />
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Edit Pemasok</h2>
+          <p className="text-muted-foreground">
+            Perbarui informasi data pemasok.
+          </p>
+        </div>
+      </div>
+
+      <SupplierForm initialData={supplier} isEdit />
+    </div>
   );
 }
 

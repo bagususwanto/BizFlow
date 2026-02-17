@@ -52,6 +52,7 @@ class ProductsService {
       id: string;
       sku: string;
       name: string;
+      costPrice: number;
       sellPrice: number;
       unit?: { symbol: string };
     }[]
@@ -62,6 +63,7 @@ class ProductsService {
           id: string;
           sku: string;
           name: string;
+          costPrice: number;
           sellPrice: number;
           unit?: { symbol: string };
         }[]

@@ -6,7 +6,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { CalendarIcon, Trash, Plus } from 'lucide-react';
+import { CalendarIcon, Trash, Plus, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { z } from 'zod';
@@ -31,11 +31,10 @@ import {
   PopoverContent,
   PopoverTrigger,
   Calendar,
-  Card,
-  CardContent,
   Separator,
   cn,
   formatCurrency,
+  Combobox,
 } from '@bizflow/ui';
 import {
   createPurchaseOrderSchema,
@@ -144,204 +143,199 @@ export function PurchaseOrderForm({
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="grid gap-6 md:grid-cols-2">
           {/* Left Column: Order Infos */}
-          <div className="space-y-6">
-            <Card>
-              <CardContent className="pt-6">
-                <div className="grid gap-4">
-                  <FormField
-                    control={form.control}
-                    name="orderNumber"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>No. PO</FormLabel>
-                        <FormControl>
-                          <Input {...field} disabled={!isCustomOrderNumber} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="orderNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel optional>No. PO</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      disabled={!isCustomOrderNumber}
+                      placeholder="Otomatis"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-                  <FormField
-                    control={form.control}
-                    name="supplierId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Supplier</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          disabled={!!initialData}
+            <FormField
+              control={form.control}
+              name="supplierId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>Supplier</FormLabel>
+                  <Combobox
+                    options={
+                      suppliers?.map((s) => ({
+                        label: `${s.name} (${s.code})`,
+                        value: s.id,
+                      })) || []
+                    }
+                    value={field.value}
+                    onChange={field.onChange}
+                    disabled={!!initialData}
+                    placeholder="Pilih Supplier"
+                    searchPlaceholder="Cari supplier..."
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="expectedDate"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel optional>Tanggal Ekspektasi</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={'outline'}
+                          className={cn(
+                            'w-full pl-3 text-left font-normal',
+                            !field.value && 'text-muted-foreground',
+                          )}
                         >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Pilih Supplier" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {suppliers?.map((supplier) => (
-                              <SelectItem key={supplier.id} value={supplier.id}>
-                                {supplier.name} ({supplier.code})
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                          {field.value ? (
+                            format(new Date(field.value), 'PPP', {
+                              locale: id,
+                            })
+                          ) : (
+                            <span>Pilih tanggal</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={
+                          field.value ? new Date(field.value) : undefined
+                        }
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date < new Date(new Date().setHours(0, 0, 0, 0))
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormDescription>
+                    Perkiraan barang akan diterima.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-                  <FormField
-                    control={form.control}
-                    name="expectedDate"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>Tanggal Ekspektasi</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant={'outline'}
-                                className={cn(
-                                  'w-full pl-3 text-left font-normal',
-                                  !field.value && 'text-muted-foreground',
-                                )}
-                              >
-                                {field.value ? (
-                                  format(new Date(field.value), 'PPP', {
-                                    locale: id,
-                                  })
-                                ) : (
-                                  <span>Pilih tanggal</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={
-                                field.value ? new Date(field.value) : undefined
-                              }
-                              onSelect={field.onChange}
-                              disabled={(date) =>
-                                date < new Date(new Date().setHours(0, 0, 0, 0))
-                              }
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                        <FormDescription>
-                          Perkiraan barang akan diterima.
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="notes"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Catatan</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Catatan tambahan untuk supplier..."
-                            className="resize-none"
-                            {...field}
-                            value={field.value || ''}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </CardContent>
-            </Card>
+            <FormField
+              control={form.control}
+              name="notes"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel optional>Catatan</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Catatan tambahan untuk supplier..."
+                      className="resize-none min-h-[100px]"
+                      {...field}
+                      value={field.value || ''}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
 
           {/* Right Column: Calculations */}
           <div className="space-y-6">
-            <Card>
-              <CardContent className="pt-6">
-                <div className="space-y-4">
-                  <div className="flex justify-between text-sm">
-                    <span>Subtotal</span>
-                    <span>{formatCurrency(subtotal)}</span>
-                  </div>
+            <div className="rounded-lg border bg-muted/40 p-6 space-y-4">
+              <h3 className="font-semibold text-sm">Ringkasan Pesanan</h3>
 
-                  <FormField
-                    control={form.control}
-                    name="discountPercent"
-                    render={({ field }) => (
-                      <FormItem className="flex items-center justify-between space-y-0">
-                        <FormLabel className="text-sm font-normal">
-                          Diskon (%)
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            className="h-8 w-20 text-right"
-                            min="0"
-                            max="100"
-                            {...field}
-                            onChange={(e) =>
-                              field.onChange(parseFloat(e.target.value) || 0)
-                            }
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Subtotal</span>
+                <span>{formatCurrency(subtotal)}</span>
+              </div>
 
-                  <div className="flex justify-between text-sm text-muted-foreground">
-                    <span>Potongan Diskon</span>
-                    <span>- {formatCurrency(discountAmount)}</span>
-                  </div>
+              <FormField
+                control={form.control}
+                name="discountPercent"
+                render={({ field }) => (
+                  <FormItem className="flex items-center justify-between space-y-0">
+                    <FormLabel className="text-sm font-normal text-muted-foreground">
+                      Diskon (%)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        className="h-8 w-20 text-right bg-background"
+                        min="0"
+                        max="100"
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(parseFloat(e.target.value) || 0)
+                        }
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-                  <FormField
-                    control={form.control}
-                    name="taxPercent"
-                    render={({ field }) => (
-                      <FormItem className="flex items-center justify-between space-y-0">
-                        <FormLabel className="text-sm font-normal">
-                          Pajak (%)
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            className="h-8 w-20 text-right"
-                            min="0"
-                            max="100"
-                            {...field}
-                            onChange={(e) =>
-                              field.onChange(parseFloat(e.target.value) || 0)
-                            }
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
+              <div className="flex justify-between text-sm text-muted-foreground">
+                <span>Potongan Diskon</span>
+                <span className="text-destructive">
+                  - {formatCurrency(discountAmount)}
+                </span>
+              </div>
 
-                  <div className="flex justify-between text-sm text-muted-foreground">
-                    <span>Pajak (PPN)</span>
-                    <span>+ {formatCurrency(taxAmount)}</span>
-                  </div>
+              <FormField
+                control={form.control}
+                name="taxPercent"
+                render={({ field }) => (
+                  <FormItem className="flex items-center justify-between space-y-0">
+                    <FormLabel className="text-sm font-normal text-muted-foreground">
+                      Pajak (%)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        className="h-8 w-20 text-right bg-background"
+                        min="0"
+                        max="100"
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(parseFloat(e.target.value) || 0)
+                        }
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-                  <Separator />
+              <div className="flex justify-between text-sm text-muted-foreground">
+                <span>Pajak (PPN)</span>
+                <span>+ {formatCurrency(taxAmount)}</span>
+              </div>
 
-                  <div className="flex justify-between text-lg font-bold">
-                    <span>Total</span>
-                    <span>{formatCurrency(total)}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+              <Separator />
+
+              <div className="flex justify-between text-lg font-bold">
+                <span>Total</span>
+                <span className="text-primary">{formatCurrency(total)}</span>
+              </div>
+            </div>
           </div>
         </div>
+
+        <Separator />
 
         {/* Items Section */}
         <div className="space-y-4">
@@ -366,43 +360,55 @@ export function PurchaseOrderForm({
           </div>
 
           <div className="rounded-md border">
-            <div className="p-4">
-              <div className="grid gap-4">
+            {/* Table Header */}
+            <div className="gap-4 sm:grid-cols-[1fr_100px_150px_150px_40px] items-center p-4 bg-muted/40 text-sm font-medium text-muted-foreground border-b hidden sm:grid">
+              <div>Produk</div>
+              <div className="text-right">Qty</div>
+              <div className="text-right">Harga Satuan</div>
+              <div className="text-right">Subtotal</div>
+              <div></div>
+            </div>
+
+            <div className="p-4 sm:p-0">
+              <div className="grid gap-4 sm:gap-0">
                 {fields.map((field, index) => (
                   <div
                     key={field.id}
-                    className="grid gap-4 sm:grid-cols-[1fr_100px_150px_150px_auto] items-start"
+                    className="grid gap-4 sm:grid-cols-[1fr_100px_150px_150px_40px] items-start sm:items-center sm:p-4 sm:border-b last:border-0"
                   >
                     <FormField
                       control={form.control}
                       name={`items.${index}.variantId`}
                       render={({ field }) => (
-                        <FormItem>
-                          {index === 0 && <FormLabel>Produk</FormLabel>}
-                          <Select
-                            onValueChange={(value) => {
+                        <FormItem className="w-full">
+                          <label className="sm:hidden text-sm font-medium mb-1 block">
+                            Produk
+                          </label>
+                          <Combobox
+                            options={
+                              products?.map((p) => ({
+                                label: `${p.name} (${p.sku})`,
+                                value: p.id,
+                              })) || []
+                            }
+                            value={field.value}
+                            onChange={(value) => {
                               field.onChange(value);
-                              // Auto-fill price logic could go here if variant has default cost price
-                              // For now simplified
+                              // Auto-fill price from master data
+                              const selectedProduct = products?.find(
+                                (p) => p.id === value,
+                              );
+                              if (selectedProduct) {
+                                form.setValue(
+                                  `items.${index}.unitPrice`,
+                                  selectedProduct.costPrice || 0,
+                                );
+                              }
                             }}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Pilih Produk" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {products?.map((product) => (
-                                <SelectItem
-                                  key={product.id}
-                                  value={product.id} // Assuming logic to handle variant selection
-                                >
-                                  {product.name} ({product.sku})
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                            placeholder="Pilih Produk"
+                            searchPlaceholder="Cari produk..."
+                            className="w-full"
+                          />
                           <FormMessage />
                         </FormItem>
                       )}
@@ -413,7 +419,9 @@ export function PurchaseOrderForm({
                       name={`items.${index}.quantity`}
                       render={({ field }) => (
                         <FormItem>
-                          {index === 0 && <FormLabel>Qty</FormLabel>}
+                          <label className="sm:hidden text-sm font-medium mb-1 block">
+                            Qty
+                          </label>
                           <FormControl>
                             <Input
                               type="number"
@@ -422,6 +430,7 @@ export function PurchaseOrderForm({
                               onChange={(e) =>
                                 field.onChange(parseFloat(e.target.value) || 0)
                               }
+                              className="text-right"
                             />
                           </FormControl>
                           <FormMessage />
@@ -434,29 +443,35 @@ export function PurchaseOrderForm({
                       name={`items.${index}.unitPrice`}
                       render={({ field }) => (
                         <FormItem>
-                          {index === 0 && <FormLabel>Harga Satuan</FormLabel>}
+                          <label className="sm:hidden text-sm font-medium mb-1 block">
+                            Harga
+                          </label>
                           <FormControl>
-                            <Input
-                              type="number"
-                              min="0"
-                              {...field}
-                              onChange={(e) =>
-                                field.onChange(parseFloat(e.target.value) || 0)
-                              }
-                            />
+                            <div className="relative">
+                              {/* <span className="absolute left-3 top-2.5 text-xs text-muted-foreground">Rp</span> */}
+                              <Input
+                                type="number"
+                                min="0"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(
+                                    parseFloat(e.target.value) || 0,
+                                  )
+                                }
+                                className="text-right"
+                              />
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
 
-                    <div className="pt-2 sm:pt-0">
-                      {index === 0 && (
-                        <span className="mb-2 block text-sm font-medium">
-                          Subtotal
-                        </span>
-                      )}
-                      <div className="flex h-10 items-center text-sm font-medium">
+                    <div className="flex items-center justify-between sm:justify-end sm:block">
+                      <span className="sm:hidden text-sm font-medium">
+                        Subtotal
+                      </span>
+                      <div className="text-sm font-medium text-right sm:pr-4">
                         {formatCurrency(
                           (form.watch(`items.${index}.quantity`) || 0) *
                             (form.watch(`items.${index}.unitPrice`) || 0),
@@ -464,16 +479,16 @@ export function PurchaseOrderForm({
                       </div>
                     </div>
 
-                    <div className="pt-2 sm:pt-0">
-                      {index === 0 && <div className="h-6 mb-2" />}
+                    <div className="flex justify-end sm:justify-center">
                       <Button
                         type="button"
                         variant="ghost"
                         size="icon"
                         onClick={() => remove(index)}
                         disabled={fields.length === 1}
+                        className="text-muted-foreground hover:text-destructive"
                       >
-                        <Trash className="h-4 w-4 text-muted-foreground hover:text-destructive" />
+                        <Trash className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>
@@ -483,7 +498,7 @@ export function PurchaseOrderForm({
           </div>
         </div>
 
-        <div className="flex justify-end gap-4">
+        <div className="flex justify-end gap-4 pt-4">
           <Button
             type="button"
             variant="outline"
@@ -493,11 +508,8 @@ export function PurchaseOrderForm({
             Batal
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting
-              ? 'Menyimpan...'
-              : initialData
-                ? 'Simpan Perubahan'
-                : 'Buat Purchase Order'}
+            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {initialData ? 'Simpan Perubahan' : 'Buat Purchase Order'}
           </Button>
         </div>
       </form>

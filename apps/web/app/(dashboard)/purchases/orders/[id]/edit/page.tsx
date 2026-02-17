@@ -4,6 +4,14 @@ import { useQuery } from '@tanstack/react-query';
 import { purchaseOrdersService } from '@/services/purchase-orders.service';
 import { Loader2 } from 'lucide-react';
 import { PurchaseOrderForm } from '@/components/purchases/purchase-order-form';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@bizflow/ui';
+import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 
 export default function EditPurchaseOrderPage({
   params,
@@ -14,6 +22,11 @@ export default function EditPurchaseOrderPage({
     queryKey: ['purchase-orders', params.id],
     queryFn: () => purchaseOrdersService.getById(params.id),
   });
+
+  useBreadcrumb(
+    `/purchases/orders/${params.id}/edit`,
+    `Edit PO ${purchaseOrder?.orderNumber || '...'}`,
+  );
 
   if (isLoading) {
     return (
@@ -45,15 +58,23 @@ export default function EditPurchaseOrderPage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">
+        <h2 className="text-2xl font-bold tracking-tight">
           Edit Purchase Order
-        </h1>
+        </h2>
         <p className="text-muted-foreground">
           Edit detail pesanan pembelian: {purchaseOrder.orderNumber}
         </p>
       </div>
 
-      <PurchaseOrderForm initialData={initialData} />
+      <Card>
+        <CardHeader>
+          <CardTitle>Informasi Pesanan</CardTitle>
+          <CardDescription>Perbarui informasi purchase order.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <PurchaseOrderForm initialData={initialData} />
+        </CardContent>
+      </Card>
     </div>
   );
 }

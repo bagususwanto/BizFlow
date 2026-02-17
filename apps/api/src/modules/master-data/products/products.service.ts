@@ -298,6 +298,7 @@ export class ProductsService {
         id: true,
         sku: true,
         name: true,
+        costPrice: true,
         sellPrice: true,
         unit: {
           select: {
@@ -313,6 +314,7 @@ export class ProductsService {
         id: p.id,
         sku: p.sku,
         name: p.name,
+        costPrice: Number(p.costPrice),
         sellPrice: Number(p.sellPrice),
         unit: p.unit,
       })),

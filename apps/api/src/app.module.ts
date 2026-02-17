@@ -23,6 +23,8 @@ import { TransactionsModule } from './modules/pos/transactions';
 import { PaymentsModule } from './modules/pos/payments';
 import { ReturnsModule } from './modules/pos/returns';
 
+import { PurchaseOrdersModule } from './modules/purchases/orders';
+
 import { DashboardReportModule } from './modules/reports/dashboard';
 import { SalesReportModule } from './modules/reports/sales';
 import { StockReportModule } from './modules/reports/inventory';
@@ -61,6 +63,8 @@ import { AppController } from './app.controller';
     TransactionsModule,
     PaymentsModule,
     ReturnsModule,
+    // Purchase modules
+    PurchaseOrdersModule,
     // Reports modules
     DashboardReportModule,
     SalesReportModule,

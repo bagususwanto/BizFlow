@@ -44,6 +44,7 @@ export enum Module {
   POS = 'pos',
   SALES = 'sales',
   PURCHASES = 'purchases',
+  PURCHASE_ORDERS = 'purchase-orders',
   INVENTORY = 'inventory',
   FINANCE = 'finance',
   REPORTS = 'reports',
@@ -152,6 +153,12 @@ export const Permission = {
     Create: 'purchases:create',
     Update: 'purchases:update',
     Delete: 'purchases:delete',
+  },
+  PurchaseOrders: {
+    Read: 'purchase-orders:read',
+    Create: 'purchase-orders:create',
+    Update: 'purchase-orders:update',
+    Delete: 'purchase-orders:delete',
   },
   Inventory: {
     Read: 'inventory:read',

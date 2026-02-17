@@ -33,6 +33,10 @@ interface DataTableProps<TData, TValue> {
   rowSelection?: RowSelectionState;
   onRowSelectionChange?: OnChangeFn<RowSelectionState>;
   getRowId?: (originalRow: TData, index: number, parent?: any) => string;
+  // Pagination
+  pageCount?: number;
+  page?: number;
+  onPageChange?: OnChangeFn<number>;
 }
 
 export function DataTable<TData, TValue>({
@@ -47,6 +51,9 @@ export function DataTable<TData, TValue>({
   rowSelection,
   onRowSelectionChange,
   getRowId,
+  pageCount,
+  page = 1,
+  onPageChange,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -57,12 +64,29 @@ export function DataTable<TData, TValue>({
     enableRowSelection,
     onRowSelectionChange: onRowSelectionChange,
     getRowId,
+    pageCount: pageCount ?? -1,
     state: {
       sorting,
       columnVisibility,
       rowSelection: rowSelection || {},
+      pagination: {
+        pageIndex: page - 1,
+        pageSize: 10, // Default page size, should be prop if variable
+      },
     },
     manualSorting: true, // Server-side sorting
+    manualPagination: true,
+    onPaginationChange: (updater) => {
+      if (typeof updater === 'function') {
+        const newState = updater({
+          pageIndex: page - 1,
+          pageSize: 10,
+        });
+        onPageChange?.(newState.pageIndex + 1);
+      } else {
+        onPageChange?.(updater.pageIndex + 1);
+      }
+    },
   });
 
   return (

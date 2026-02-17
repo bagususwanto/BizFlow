@@ -66,6 +66,15 @@ export class ProductsController {
   }
 
   /**
+   * Get active product variants for dropdown/select (for transactions)
+   */
+  @Get('variants/list/active')
+  @Permissions(Permission.Products.Read)
+  async findActiveVariantsList() {
+    return this.productsService.findActiveVariantsList();
+  }
+
+  /**
    * Get low stock products with pagination
    */
   @Get('low-stock')

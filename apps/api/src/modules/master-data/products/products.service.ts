@@ -322,6 +322,51 @@ export class ProductsService {
   }
 
   /**
+   * Get active product variants for dropdown/select (for transactions)
+   */
+  async findActiveVariantsList() {
+    const variants = await this.prisma.productVariant.findMany({
+      where: {
+        isActive: true,
+        product: {
+          isActive: true,
+        },
+      },
+      select: {
+        id: true,
+        sku: true,
+        name: true,
+        costPrice: true,
+        sellPrice: true,
+        product: {
+          select: {
+            name: true,
+            unit: {
+              select: {
+                symbol: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: { name: 'asc' },
+    });
+
+    return successResponse(
+      variants.map((v) => ({
+        id: v.id,
+        sku: v.sku,
+        name: `${v.product.name} - ${v.name}`,
+        variantName: v.name,
+        productName: v.product.name,
+        costPrice: Number(v.costPrice),
+        sellPrice: Number(v.sellPrice),
+        unit: v.product.unit,
+      })),
+    );
+  }
+
+  /**
    * Get low stock products (stock less than or equal to minStock)
    * Checks per-variant per-warehouse to match Stock Report logic
    * Returns unique products (grouped by product, not by variant/warehouse)

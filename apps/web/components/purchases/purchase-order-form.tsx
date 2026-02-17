@@ -90,10 +90,10 @@ export function PurchaseOrderForm({
     queryFn: () => suppliersService.getActiveList(),
   });
 
-  // Fetch products
+  // Fetch products (variants for transactions)
   const { data: products } = useQuery({
-    queryKey: ['products', 'active'],
-    queryFn: () => productsService.getActiveList(),
+    queryKey: ['products', 'variants', 'active'],
+    queryFn: () => productsService.getActiveVariantsList(),
   });
 
   // Generate order number if not provided

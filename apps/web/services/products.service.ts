@@ -72,6 +72,35 @@ class ProductsService {
     return res.data!;
   }
 
+  async getActiveVariantsList(): Promise<
+    {
+      id: string;
+      sku: string;
+      name: string;
+      variantName: string;
+      productName: string;
+      costPrice: number;
+      sellPrice: number;
+      unit?: { symbol: string };
+    }[]
+  > {
+    const res = await apiClient.get<
+      ApiResponse<
+        {
+          id: string;
+          sku: string;
+          name: string;
+          variantName: string;
+          productName: string;
+          costPrice: number;
+          sellPrice: number;
+          unit?: { symbol: string };
+        }[]
+      >
+    >('/master-data/products/variants/list/active');
+    return res.data!;
+  }
+
   async getLowStock(params?: { page?: number; pageSize?: number }): Promise<{
     data: {
       id: string;

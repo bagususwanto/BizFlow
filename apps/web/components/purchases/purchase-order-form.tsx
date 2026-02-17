@@ -55,6 +55,7 @@ export function PurchaseOrderForm({
 }: PurchaseOrderFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
 
   const form = useForm<z.input<typeof createPurchaseOrderSchema>>({
     resolver: zodResolver(createPurchaseOrderSchema),
@@ -192,7 +193,10 @@ export function PurchaseOrderForm({
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel optional>Tanggal Ekspektasi</FormLabel>
-                  <Popover>
+                  <Popover
+                    open={isCalendarOpen}
+                    onOpenChange={setIsCalendarOpen}
+                  >
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
@@ -215,11 +219,15 @@ export function PurchaseOrderForm({
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
+                        className="w-[300px]"
                         mode="single"
                         selected={
                           field.value ? new Date(field.value) : undefined
                         }
-                        onSelect={field.onChange}
+                        onSelect={(date) => {
+                          field.onChange(date);
+                          setIsCalendarOpen(false);
+                        }}
                         disabled={(date) =>
                           date < new Date(new Date().setHours(0, 0, 0, 0))
                         }

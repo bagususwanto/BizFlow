@@ -102,7 +102,7 @@ function PurchaseOrdersContent() {
     <>
       <DataListPage
         title="Purchase Orders"
-        description="Kelola pesanan pembelian barang ke supplier."
+        description="Kelola pesanan pembelian barang ke pemasok."
         createLink="/purchases/orders/new"
         createLabel="Buat PO Baru"
         data={orders}

@@ -114,10 +114,10 @@ export const getColumns = ({
   {
     accessorKey: 'supplier.name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Supplier" />
+      <DataTableColumnHeader column={column} title="Pemasok" />
     ),
     meta: {
-      title: 'Supplier',
+      title: 'Pemasok',
     },
   },
   {

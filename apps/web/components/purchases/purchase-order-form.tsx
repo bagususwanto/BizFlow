@@ -168,7 +168,7 @@ export function PurchaseOrderForm({
               name="supplierId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required>Supplier</FormLabel>
+                  <FormLabel required>Pemasok</FormLabel>
                   <Combobox
                     options={
                       suppliers?.map((s) => ({
@@ -179,8 +179,8 @@ export function PurchaseOrderForm({
                     value={field.value}
                     onChange={field.onChange}
                     disabled={!!initialData}
-                    placeholder="Pilih Supplier"
-                    searchPlaceholder="Cari supplier..."
+                    placeholder="Pilih Pemasok"
+                    searchPlaceholder="Cari pemasok..."
                   />
                   <FormMessage />
                 </FormItem>

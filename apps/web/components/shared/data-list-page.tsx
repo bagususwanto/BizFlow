@@ -69,6 +69,8 @@ export interface DataListPageProps<TData> {
 
   // Custom Rendering (Optional)
   renderCustomView?: (props: any) => ReactNode;
+
+  children?: ReactNode;
 }
 
 export function DataListPage<
@@ -112,6 +114,7 @@ export function DataListPage<
   extraActions,
   headerAction,
   renderCustomView,
+  children,
 }: DataListPageProps<TData>) {
   // Local State for interactive table features
   const [columnVisibility, setColumnVisibility] = useState<
@@ -164,6 +167,8 @@ export function DataListPage<
           )}
         </div>
       </div>
+
+      {children}
 
       <Card>
         <CardHeader className="pb-4">

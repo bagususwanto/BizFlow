@@ -3,6 +3,7 @@
 import { Suspense, useCallback, useState, useMemo } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, FileText } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@bizflow/ui';
 import {
   usePurchaseOrders,
   useDeletePurchaseOrder,
@@ -99,72 +100,108 @@ function PurchaseOrdersContent() {
   const summary = ordersData?.summary;
 
   return (
-    <>
-      <DataListPage
-        title="Purchase Orders"
-        description="Kelola pesanan pembelian barang ke pemasok."
-        createLink="/purchases/orders/new"
-        createLabel="Buat PO Baru"
-        data={orders}
-        columns={columns}
-        isLoading={isLoading}
-        // Pagination
-        page={page}
-        pageSize={pageSize}
-        totalPages={meta.totalPages}
-        totalItems={meta.totalItems}
-        onPageChange={(p) => updateUrl({ page: p })}
-        onPageSizeChange={(s) => updateUrl({ pageSize: s, page: 1 })}
-        summary={
-          summary
-            ? {
-                totalOrders: summary.totalOrders,
-                draft: summary.draftOrders,
-                ordered: summary.orderedOrders,
-                received: summary.receivedOrders,
-              }
-            : undefined
+    <DataListPage
+      title="Purchase Orders"
+      description="Kelola pesanan pembelian barang ke pemasok."
+      createLink="/purchases/orders/new"
+      createLabel="Buat PO Baru"
+      data={orders}
+      columns={columns}
+      isLoading={isLoading}
+      // Pagination
+      page={page}
+      pageSize={pageSize}
+      totalPages={meta.totalPages}
+      totalItems={meta.totalItems}
+      onPageChange={(p) => updateUrl({ page: p })}
+      onPageSizeChange={(s) => updateUrl({ pageSize: s, page: 1 })}
+      // Sorting
+      sortBy={sortBy}
+      sortOrder={sortOrder}
+      onSortChange={(field) => {
+        if (sortBy === field) {
+          updateUrl({ sortOrder: sortOrder === 'asc' ? 'desc' : 'asc' });
+        } else {
+          updateUrl({ sortBy: field, sortOrder: 'asc' });
         }
-        summaryConfig={[
-          { key: 'totalOrders', label: 'Total PO', icon: FileText },
-          { key: 'draft', label: 'Draft', icon: FileText },
-          { key: 'ordered', label: 'Dipesan', icon: FileText },
-          { key: 'received', label: 'Diterima', icon: FileText },
-        ]}
-        // Sorting
-        sortBy={sortBy}
-        sortOrder={sortOrder}
-        onSortChange={(field) => {
-          if (sortBy === field) {
-            updateUrl({ sortOrder: sortOrder === 'asc' ? 'desc' : 'asc' });
-          } else {
-            updateUrl({ sortBy: field, sortOrder: 'asc' });
-          }
-        }}
-        // Search & Filters
-        search={search}
-        onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
-        searchPlaceholder="Cari No. PO atau Supplier..."
-        filterValues={{ status }}
-        onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
-        onReset={() => router.push(pathname)}
-        filters={[
-          {
-            key: 'status',
-            label: 'Status',
-            options: [
-              { label: 'Draft', value: 'draft' },
-              { label: 'Ordered', value: 'ordered' },
-              { label: 'Received', value: 'received' },
-              { label: 'Completed', value: 'completed' },
-              { label: 'Cancelled', value: 'cancelled' },
-            ],
-            width: 'w-full md:w-[200px]',
-          },
-        ]}
-        // Actions
-        onRefresh={refetch}
-      />
+      }}
+      // Search & Filters
+      search={search}
+      onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
+      searchPlaceholder="Cari No. PO atau Supplier..."
+      filterValues={{ status }}
+      onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
+      onReset={() => router.push(pathname)}
+      filters={[
+        {
+          key: 'status',
+          label: 'Status',
+          options: [
+            { label: 'Draft', value: 'draft' },
+            { label: 'Ordered', value: 'ordered' },
+            { label: 'Received', value: 'received' },
+            { label: 'Completed', value: 'completed' },
+            { label: 'Cancelled', value: 'cancelled' },
+          ],
+          width: 'w-full md:w-[200px]',
+        },
+      ]}
+      // Actions
+      onRefresh={refetch}
+    >
+      {/* Summary Cards */}
+      {summary && (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total PO</CardTitle>
+              <FileText className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{summary.totalOrders}</div>
+              <p className="text-xs text-muted-foreground">
+                Semua status pesanan
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Draft</CardTitle>
+              <FileText className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{summary.draftOrders}</div>
+              <p className="text-xs text-muted-foreground">
+                Pesanan belum diproses
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Dipesan</CardTitle>
+              <FileText className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{summary.orderedOrders}</div>
+              <p className="text-xs text-muted-foreground">
+                Menunggu pengiriman
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Diterima</CardTitle>
+              <FileText className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{summary.receivedOrders}</div>
+              <p className="text-xs text-muted-foreground">
+                Barang sudah diterima
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       <DeleteConfirmDialog
         open={!!orderToDelete}
@@ -187,7 +224,7 @@ function PurchaseOrdersContent() {
         isDeleting={deleteMutation.isPending}
         confirmLabel="Hapus"
       />
-    </>
+    </DataListPage>
   );
 }
 

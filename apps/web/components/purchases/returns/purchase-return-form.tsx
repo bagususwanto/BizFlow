@@ -7,7 +7,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   createPurchaseReturnSchema,
   CreatePurchaseReturnValues,
-  PurchaseOrder,
   PurchaseOrderStatus,
 } from '@bizflow/types';
 import {
@@ -19,11 +18,6 @@ import {
   FormMessage,
   Input,
   Button,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
   Card,
   CardContent,
   CardHeader,
@@ -35,7 +29,6 @@ import {
   TableBody,
   TableCell,
   Textarea,
-  Separator,
   Badge,
 } from '@bizflow/ui';
 import {
@@ -52,8 +45,9 @@ import {
   usePurchaseOrders,
   usePurchaseOrder,
 } from '@/hooks/use-purchase-orders';
-import { formatCurrency } from '@bizflow/ui';
 import { toast } from 'sonner';
+
+import { purchaseReturnsService } from '@/services/purchase-returns.service';
 
 export function PurchaseReturnForm() {
   const router = useRouter();
@@ -68,10 +62,6 @@ export function PurchaseReturnForm() {
     page: 1,
     pageSize: 20,
     search: poSearch,
-    // We ideally want "received OR completed", but our API might only support one status filter or we filter client side
-    // For now let's fetch most recent and filter in UI or request backend to support multiple status
-    // Or just fetch all and filter.
-    // Let's assume user searches by PO number.
   });
 
   // Fetch selected PO details
@@ -95,9 +85,12 @@ export function PurchaseReturnForm() {
     name: 'items',
   });
 
-  // When PO details loaded, pre-fill items (optional, or let user add)
-  // Strategy: When PO selected, show available items to return.
-  // User selects items to add to return list.
+  // Generate return number on mount
+  useEffect(() => {
+    purchaseReturnsService.generateReturnNumber().then((returnNumber) => {
+      form.setValue('returnNumber', returnNumber);
+    });
+  }, [form]);
 
   useEffect(() => {
     if (selectedOrderId) {
@@ -191,7 +184,7 @@ export function PurchaseReturnForm() {
                       <TableCell className="font-medium">
                         {po.orderNumber}
                       </TableCell>
-                      <TableCell>{po.supplier.name}</TableCell>
+                      <TableCell>{po.supplier?.name}</TableCell>
                       <TableCell>
                         {new Date(po.createdAt).toLocaleDateString()}
                       </TableCell>
@@ -229,7 +222,7 @@ export function PurchaseReturnForm() {
           <span className="font-medium text-foreground">
             {selectedPO?.orderNumber}
           </span>{' '}
-          ({selectedPO?.supplier.name})
+          ({selectedPO?.supplier?.name})
         </div>
       </div>
 
@@ -246,10 +239,10 @@ export function PurchaseReturnForm() {
                   name="returnNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>No. Return (Opsional)</FormLabel>
+                      <FormLabel>No. Return</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Otomatis jika kosong"
+                          placeholder="Otomatis"
                           {...field}
                           value={field.value || ''}
                         />
@@ -316,7 +309,7 @@ export function PurchaseReturnForm() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {selectedPO?.items.map((item) => {
+                        {selectedPO?.items?.map((item) => {
                           const isAdded = fields.some(
                             (f) => f.variantId === item.variantId,
                           );
@@ -324,10 +317,10 @@ export function PurchaseReturnForm() {
                             <TableRow key={item.id}>
                               <TableCell>
                                 <div className="font-medium">
-                                  {item.variant.product.name}
+                                  {item.variant?.product?.name}
                                 </div>
                                 <div className="text-xs text-muted-foreground">
-                                  {item.variant.sku}
+                                  {item.variant?.sku}
                                 </div>
                               </TableCell>
                               <TableCell className="text-right">
@@ -386,17 +379,17 @@ export function PurchaseReturnForm() {
                     </TableHeader>
                     <TableBody>
                       {fields.map((field, index) => {
-                        const poItem = selectedPO?.items.find(
+                        const poItem = selectedPO?.items?.find(
                           (i) => i.variantId === field.variantId,
                         );
                         return (
                           <TableRow key={field.id}>
                             <TableCell>
                               <div className="font-medium">
-                                {poItem?.variant.product.name}
+                                {poItem?.variant?.product?.name}
                               </div>
                               <div className="text-xs text-muted-foreground">
-                                {poItem?.variant.sku}
+                                {poItem?.variant?.sku}
                               </div>
                             </TableCell>
                             <TableCell>

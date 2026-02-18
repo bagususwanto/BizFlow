@@ -233,7 +233,7 @@ export default function PurchaseReturnDetailPage({
                 <FileText className="mt-1 h-5 w-5 text-muted-foreground" />
                 <div>
                   <div className="font-medium">
-                    Order: {ret.order.orderNumber}
+                    Order: {ret.order?.orderNumber}
                   </div>
                   <Button
                     variant="link"
@@ -249,9 +249,9 @@ export default function PurchaseReturnDetailPage({
               <div className="flex items-start gap-4 pt-2">
                 <StoreIcon className="mt-1 h-5 w-5 text-muted-foreground" />
                 <div>
-                  <div className="font-medium">{ret.order.supplier.name}</div>
+                  <div className="font-medium">{ret.order?.supplier?.name}</div>
                   <div className="text-sm text-muted-foreground">
-                    {ret.order.supplier.code}
+                    {ret.order?.supplier?.code}
                   </div>
                 </div>
               </div>
@@ -322,14 +322,14 @@ export default function PurchaseReturnDetailPage({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {ret.items.map((item) => (
+                {ret.items?.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell>
                       <div className="font-medium">
-                        {item.variant.product.name}
+                        {item.variant?.product?.name}
                       </div>
                       <div className="text-sm text-muted-foreground">
-                        {item.variant.sku}
+                        {item.variant?.sku}
                       </div>
                     </TableCell>
                     <TableCell>{item.reason || '-'}</TableCell>

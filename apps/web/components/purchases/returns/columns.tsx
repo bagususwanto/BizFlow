@@ -72,7 +72,7 @@ export const getColumns = ({
       <div className="flex flex-col">
         <span className="font-medium">{row.getValue('returnNumber')}</span>
         <span className="text-xs text-muted-foreground">
-          {row.original.order.orderNumber}
+          {row.original.order?.orderNumber}
         </span>
       </div>
     ),
@@ -90,7 +90,7 @@ export const getColumns = ({
   {
     id: 'supplier',
     header: 'Pemasok',
-    cell: ({ row }) => row.original.order.supplier.name,
+    cell: ({ row }) => row.original.order?.supplier?.name,
   },
   {
     accessorKey: 'returnAmount',

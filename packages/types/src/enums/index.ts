@@ -300,8 +300,10 @@ export enum RefundMethod {
 
 export enum PurchaseOrderStatus {
   DRAFT = 'draft',
-  CONFIRMED = 'confirmed',
+  ORDERED = 'ordered',
+  CONFIRMED = 'confirmed', // @deprecated use ORDERED
   PARTIAL = 'partial',
+  RECEIVED = 'received',
   COMPLETED = 'completed',
   CANCELLED = 'cancelled',
 }

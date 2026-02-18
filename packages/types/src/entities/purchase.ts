@@ -112,6 +112,9 @@ export interface PurchaseReturnItem {
   variantId: string;
   quantity: Decimal;
   reason?: string | null;
+
+  // Relations
+  variant?: ProductVariant;
 }
 
 export interface SupplierPayment {

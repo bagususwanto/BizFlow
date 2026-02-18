@@ -413,9 +413,6 @@ export function PurchaseReturnForm() {
                                   </FormItem>
                                 )}
                               />
-                              <div className="mt-1 text-xs text-muted-foreground">
-                                Max: {Number(poItem?.receivedQty || 0)}
-                              </div>
                             </TableCell>
                             <TableCell>
                               <FormField

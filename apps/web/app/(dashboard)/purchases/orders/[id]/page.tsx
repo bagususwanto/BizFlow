@@ -49,6 +49,7 @@ import { PurchaseOrderStatus, PaymentStatus } from '@bizflow/types';
 import { purchaseOrdersService } from '@/services/purchase-orders.service';
 import { LoadingState } from '@/components/common/loading-state';
 import { ErrorState } from '@/components/common/error-state';
+import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 
 export default function PurchaseOrderDetailPage({
   params,
@@ -70,6 +71,11 @@ export default function PurchaseOrderDetailPage({
     queryKey: ['purchase-orders', resolvedParams.id],
     queryFn: () => purchaseOrdersService.getById(resolvedParams.id),
   });
+
+  useBreadcrumb(
+    `/purchases/orders/${resolvedParams.id}`,
+    order?.orderNumber || 'Detail',
+  );
 
   if (isLoading) {
     return (

@@ -32,8 +32,8 @@ export default function EditPurchaseOrderPage({
   });
 
   useBreadcrumb(
-    `/purchases/orders/${resolvedParams.id}/edit`,
-    `Edit PO ${purchaseOrder?.orderNumber || '...'}`,
+    `/purchases/orders/${resolvedParams.id}`,
+    purchaseOrder?.orderNumber || 'Detail',
   );
 
   if (isLoading) {

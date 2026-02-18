@@ -228,10 +228,11 @@ export default function PurchaseOrderDetailPage({
                 <XCircle className="mr-2 h-4 w-4" /> Batalkan
               </Button>
               <Button
-                onClick={() => {
-                  setNextStatus('received');
-                  setStatusDialogOpen(true);
-                }}
+                onClick={() =>
+                  router.push(
+                    `/purchases/goods-receive/new?purchaseOrderId=${order.id}`,
+                  )
+                }
               >
                 <Package className="mr-2 h-4 w-4" /> Terima Barang
               </Button>

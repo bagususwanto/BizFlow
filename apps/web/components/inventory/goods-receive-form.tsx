@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
@@ -49,6 +49,8 @@ interface GoodsReceiveFormProps {
 
 export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const preselectedPOId = searchParams.get('purchaseOrderId') || '';
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
 
@@ -56,7 +58,7 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
     resolver: zodResolver(createGoodsReceiveSchema),
     defaultValues: initialData || {
       receiveNumber: '',
-      purchaseOrderId: '',
+      purchaseOrderId: preselectedPOId,
       warehouseId: '',
       receiveDate: new Date(),
       notes: '',
@@ -196,7 +198,7 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
                       }
                       value={field.value}
                       onChange={field.onChange}
-                      disabled={!!initialData}
+                      disabled={!!initialData || !!preselectedPOId}
                       placeholder="Pilih PO"
                       searchPlaceholder="Cari PO..."
                     />

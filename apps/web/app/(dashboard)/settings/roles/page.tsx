@@ -91,12 +91,6 @@ function RolesContent() {
 
   const columns = useMemo(() => getColumns({ onDelete: setRoleToDelete }), []);
 
-  if (isError) {
-    return (
-      <ErrorState title="Gagal memuat data peran" onRetry={() => refetch()} />
-    );
-  }
-
   const totalPages = meta?.totalPages || 1;
   const totalItems = meta?.totalItems || 0;
 
@@ -172,6 +166,7 @@ function RolesContent() {
         onBulkDelete={handleBulkDelete}
         isBulkDeleting={isBulkDeleting}
         onRefresh={refetch}
+        isError={isError}
         onDelete={(id) => {
           const role = roles?.find((r) => r.id === id);
           if (role) setRoleToDelete(role);

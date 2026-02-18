@@ -189,15 +189,6 @@ function UsersContent() {
     [],
   );
 
-  if (isError) {
-    return (
-      <ErrorState
-        title="Gagal memuat data pengguna"
-        onRetry={() => refetch()}
-      />
-    );
-  }
-
   const data = (users || []) as UserWithUsage[];
   const metaData = meta || {
     totalPages: 1,
@@ -272,6 +263,7 @@ function UsersContent() {
         onBulkDelete={handleBulkDelete}
         isBulkDeleting={isBulkDeleting}
         onRefresh={refetch}
+        isError={isError}
         onDelete={(id) => {
           const user = data.find((u) => u.id === id);
           if (user) setUserToDelete(user);

@@ -40,6 +40,7 @@ function PrintersContent() {
     testPrint,
     isTesting,
     refetch,
+    isError,
   } = usePrinters({
     page,
     pageSize,
@@ -160,6 +161,7 @@ function PrintersContent() {
           },
         ]}
         onRefresh={refetch}
+        isError={isError}
         onDelete={(id) => {
           const printer = data.find((p) => p.id === id);
           if (printer) setPrinterToDelete(printer);

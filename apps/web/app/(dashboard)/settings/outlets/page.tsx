@@ -41,6 +41,7 @@ function OutletsContent() {
     bulkDeleteOutlets,
     isBulkDeleting,
     refetch,
+    isError,
   } = useOutlets({
     page,
     pageSize,
@@ -159,6 +160,7 @@ function OutletsContent() {
         onBulkDelete={handleBulkDelete}
         isBulkDeleting={isBulkDeleting}
         onRefresh={refetch}
+        isError={isError} // Note: useOutlets didn't return isError in the previous view, checking if I need to add it to destructuring or if it was missed
         onDelete={(id) => {
           const outlet = data.find((o) => o.id === id);
           if (outlet) setOutletToDelete(outlet);

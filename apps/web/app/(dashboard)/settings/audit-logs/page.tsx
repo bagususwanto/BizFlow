@@ -136,12 +136,6 @@ function AuditLogsContent() {
     }
   };
 
-  if (isError) {
-    return (
-      <ErrorState title="Gagal memuat audit logs" onRetry={() => refetch()} />
-    );
-  }
-
   const columns = useMemo(
     () =>
       getColumns({
@@ -245,6 +239,7 @@ function AuditLogsContent() {
           </Button>
         }
         onRefresh={refetch}
+        isError={isError}
       />
 
       <AuditLogDetailSheet

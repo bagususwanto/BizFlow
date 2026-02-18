@@ -12,6 +12,7 @@ import {
   XCircle,
   Package,
   Edit,
+  Printer,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
@@ -189,6 +190,15 @@ export default function PurchaseOrderDetailPage({
         </div>
 
         <div className="flex gap-2">
+          {/* Print button - always available */}
+          <Button
+            variant="outline"
+            onClick={() =>
+              window.open(`/purchases/orders/${order.id}/print`, '_blank')
+            }
+          >
+            <Printer className="mr-2 h-4 w-4" /> Print PO
+          </Button>
           {order.status === 'draft' && (
             <>
               <Button

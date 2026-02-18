@@ -172,8 +172,13 @@ export default function PurchaseReturnDetailPage({
         </div>
 
         <div className="flex gap-2">
-          {/* Print button - placeholder */}
-          <Button variant="outline" onClick={() => window.print()}>
+          {/* Print button */}
+          <Button
+            variant="outline"
+            onClick={() =>
+              window.open(`/purchases/returns/${ret.id}/print`, '_blank')
+            }
+          >
             <Printer className="mr-2 h-4 w-4" /> Print
           </Button>
 

@@ -288,7 +288,8 @@ export function PurchaseOrderForm({
           </CardHeader>
           <CardContent>
             <div className="rounded-md border">
-              <div className="gap-4 sm:grid-cols-[1fr_100px_150px_150px_40px] items-center p-4 bg-muted/40 text-sm font-medium text-muted-foreground border-b hidden sm:grid">
+              {/* Desktop Header */}
+              <div className="hidden sm:grid grid-cols-[1fr_100px_160px_160px_50px] gap-4 items-center p-4 bg-muted/40 text-sm font-medium text-muted-foreground border-b">
                 <div>Produk</div>
                 <div className="text-right">Qty</div>
                 <div className="text-right">Harga Satuan</div>
@@ -296,19 +297,21 @@ export function PurchaseOrderForm({
                 <div></div>
               </div>
 
-              <div className="p-4 sm:p-0">
-                <div className="grid gap-4 sm:gap-0">
-                  {fields.map((field, index) => (
-                    <div
-                      key={field.id}
-                      className="grid gap-4 sm:grid-cols-[1fr_100px_150px_150px_40px] items-start sm:items-center sm:p-4 sm:border-b last:border-0"
-                    >
+              {/* Items List */}
+              <div className="divide-y sm:divide-y-0">
+                {fields.map((field, index) => (
+                  <div
+                    key={field.id}
+                    className="flex flex-col sm:grid sm:grid-cols-[1fr_100px_160px_160px_50px] gap-4 p-4 hover:bg-muted/50 transition-colors"
+                  >
+                    {/* Product */}
+                    <div className="w-full">
                       <FormField
                         control={form.control}
                         name={`items.${index}.variantId`}
                         render={({ field }) => (
-                          <FormItem className="w-full">
-                            <label className="sm:hidden text-sm font-medium mb-1 block">
+                          <FormItem className="space-y-0">
+                            <label className="sm:hidden text-sm font-medium mb-1.5 block">
                               Produk
                             </label>
                             <Combobox
@@ -333,19 +336,22 @@ export function PurchaseOrderForm({
                               }}
                               placeholder="Pilih Produk"
                               searchPlaceholder="Cari produk..."
-                              className="w-full"
+                              className="w-full h-auto whitespace-normal text-left"
                             />
                             <FormMessage />
                           </FormItem>
                         )}
                       />
+                    </div>
 
+                    {/* Qty & Price (Grid on mobile) */}
+                    <div className="grid grid-cols-2 gap-4 sm:contents">
                       <FormField
                         control={form.control}
                         name={`items.${index}.quantity`}
                         render={({ field }) => (
-                          <FormItem>
-                            <label className="sm:hidden text-sm font-medium mb-1 block">
+                          <FormItem className="space-y-0">
+                            <label className="sm:hidden text-sm font-medium mb-1.5 block">
                               Qty
                             </label>
                             <FormControl>
@@ -370,40 +376,41 @@ export function PurchaseOrderForm({
                         control={form.control}
                         name={`items.${index}.unitPrice`}
                         render={({ field }) => (
-                          <FormItem>
-                            <label className="sm:hidden text-sm font-medium mb-1 block">
+                          <FormItem className="space-y-0">
+                            <label className="sm:hidden text-sm font-medium mb-1.5 block">
                               Harga
                             </label>
                             <FormControl>
-                              <div className="relative">
-                                <Input
-                                  type="number"
-                                  min="0"
-                                  {...field}
-                                  onChange={(e) =>
-                                    field.onChange(
-                                      parseFloat(e.target.value) || 0,
-                                    )
-                                  }
-                                  className="text-right"
-                                />
-                              </div>
+                              <Input
+                                type="number"
+                                min="0"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(
+                                    parseFloat(e.target.value) || 0,
+                                  )
+                                }
+                                className="text-right"
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
+                    </div>
 
-                      <div className="flex items-center justify-between sm:justify-end sm:block">
-                        <span className="sm:hidden text-sm font-medium">
-                          Subtotal
+                    {/* Subtotal & Actions */}
+                    <div className="flex items-center justify-between sm:justify-end sm:contents">
+                      <div className="flex flex-col sm:block text-right sm:col-span-1">
+                        <span className="sm:hidden text-sm text-muted-foreground mr-2">
+                          Subtotal:
                         </span>
-                        <div className="text-sm font-medium text-right sm:pr-4">
+                        <span className="text-sm font-medium">
                           {formatCurrency(
                             (form.watch(`items.${index}.quantity`) || 0) *
                               (form.watch(`items.${index}.unitPrice`) || 0),
                           )}
-                        </div>
+                        </span>
                       </div>
 
                       <div className="flex justify-end sm:justify-center">
@@ -413,14 +420,14 @@ export function PurchaseOrderForm({
                           size="icon"
                           onClick={() => remove(index)}
                           disabled={fields.length === 1}
-                          className="text-muted-foreground hover:text-destructive"
+                          className="text-muted-foreground hover:text-destructive h-8 w-8"
                         >
                           <Trash className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             </div>
           </CardContent>

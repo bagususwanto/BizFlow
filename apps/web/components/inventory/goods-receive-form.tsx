@@ -122,7 +122,7 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
             (sum: number, ri: any) => sum + Number(ri.receivedQty),
             0,
           ) || 0;
-        const remaining = Number(item.quantity) - received;
+        const remaining = Number(item.quantity || 0) - received;
 
         return {
           purchaseOrderItemId: item.id,

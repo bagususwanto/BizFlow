@@ -207,7 +207,7 @@ export default function GoodsReceiveDetailPage({
                       {Number(item.purchaseOrderItem?.quantity || 0)}
                     </TableCell>
                     <TableCell className="text-right font-bold">
-                      {Number(item.quantity)}
+                      {Number(item.receivedQty || 0)}
                     </TableCell>
                     <TableCell>{item.notes || '-'}</TableCell>
                   </TableRow>

@@ -294,7 +294,7 @@ export class SupplierPaymentsService {
           reference: dto.reference ?? null,
           notes: dto.notes ?? null,
           createdBy: userId,
-        },
+        } as Prisma.SupplierPaymentUncheckedCreateInput,
         include: {
           supplier: true,
           purchaseOrder: true,

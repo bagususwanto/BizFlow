@@ -100,8 +100,6 @@ function UnitsContent() {
     [],
   );
 
-  if (isError) return handleError();
-
   const data = units || [];
   const metaData = meta || {
     totalPages: 1,
@@ -172,6 +170,7 @@ function UnitsContent() {
         onBulkDelete={handleBulkDelete}
         isBulkDeleting={isBulkDeleting}
         onRefresh={refetch}
+        isError={isError}
       />
 
       {/* Single Delete Dialog */}

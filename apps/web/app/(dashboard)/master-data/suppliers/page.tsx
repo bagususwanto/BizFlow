@@ -94,8 +94,6 @@ function SuppliersContent() {
     [],
   );
 
-  if (isError) return handleError();
-
   const data = suppliers || [];
   const metaData = meta || {
     totalPages: 1,
@@ -163,6 +161,7 @@ function SuppliersContent() {
         onBulkDelete={handleBulkDelete}
         isBulkDeleting={isBulkDeleting}
         onRefresh={refetch}
+        isError={isError}
       />
 
       {/* Single Delete Dialog */}

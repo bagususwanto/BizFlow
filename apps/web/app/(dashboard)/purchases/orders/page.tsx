@@ -88,8 +88,6 @@ function PurchaseOrdersContent() {
     [],
   );
 
-  if (isError) return handleError();
-
   const orders = ordersData?.data || [];
   const meta = ordersData?.meta || {
     totalPages: 1,
@@ -148,6 +146,7 @@ function PurchaseOrdersContent() {
       ]}
       // Actions
       onRefresh={refetch}
+      isError={isError}
     >
       {/* Summary Cards */}
       {summary && (

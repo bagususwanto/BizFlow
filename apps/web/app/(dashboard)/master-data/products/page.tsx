@@ -114,8 +114,6 @@ function ProductsContent() {
     [],
   );
 
-  if (isError) return handleError();
-
   const products = productsData?.data || [];
   const meta = productsData?.meta || {
     totalPages: 1,
@@ -189,6 +187,7 @@ function ProductsContent() {
         onBulkDelete={handleBulkDelete}
         isBulkDeleting={isBulkDeleting}
         onRefresh={refetch}
+        isError={isError}
       />
 
       {/* Single Delete Dialog - Kept here for custom message */}

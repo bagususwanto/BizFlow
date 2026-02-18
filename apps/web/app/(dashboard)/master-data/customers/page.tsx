@@ -96,8 +96,6 @@ function CustomersContent() {
     [],
   );
 
-  if (isError) return handleError();
-
   const data = customers || [];
   const metaData = meta || {
     totalPages: 1,
@@ -165,6 +163,7 @@ function CustomersContent() {
         onBulkDelete={handleBulkDelete}
         isBulkDeleting={isBulkDeleting}
         onRefresh={refetch}
+        isError={isError}
       />
 
       {/* Single Delete Dialog */}

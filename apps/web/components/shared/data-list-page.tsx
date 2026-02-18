@@ -14,6 +14,7 @@ import { DataTable } from '@/components/ui/data-table';
 import { DataListToolbar, FilterConfig } from './data-list-toolbar';
 import { DataListPagination, SummaryItemConfig } from './data-list-pagination';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
+import { ErrorState } from '@/components/common/error-state';
 
 export interface DataListPageProps<TData> {
   title: string;
@@ -63,6 +64,8 @@ export interface DataListPageProps<TData> {
   onBulkDelete?: (ids: string[]) => void;
   isBulkDeleting?: boolean;
   onRefresh?: () => void;
+  isError?: boolean;
+  onRetry?: () => void;
   extraActions?: ReactNode;
 
   headerAction?: ReactNode; // Extra actions in the page header (e.g. Sync button)
@@ -111,6 +114,8 @@ export function DataListPage<
   onBulkDelete,
   isBulkDeleting,
   onRefresh,
+  isError,
+  onRetry,
   extraActions,
   headerAction,
   renderCustomView,
@@ -235,7 +240,12 @@ export function DataListPage<
             }
           />
 
-          {renderCustomView ? (
+          {isError ? (
+            <ErrorState
+              title={`Gagal memuat data ${title.toLowerCase()}`}
+              onRetry={onRetry || onRefresh}
+            />
+          ) : renderCustomView ? (
             renderCustomView({
               data,
               isLoading,

@@ -94,8 +94,6 @@ function WarehousesContent() {
     [],
   );
 
-  if (isError) return handleError();
-
   const data = warehouses || [];
   const metaData = meta || {
     totalPages: 1,
@@ -163,6 +161,7 @@ function WarehousesContent() {
         onBulkDelete={handleBulkDelete}
         isBulkDeleting={isBulkDeleting}
         onRefresh={refetch}
+        isError={isError}
       />
 
       {/* Single Delete Dialog */}

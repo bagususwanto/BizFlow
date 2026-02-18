@@ -64,7 +64,7 @@ export function PurchaseOrderForm({
 
   const form = useForm<z.input<typeof createPurchaseOrderSchema>>({
     resolver: zodResolver(createPurchaseOrderSchema),
-    defaultValues: initialData || {
+    defaultValues: {
       orderNumber: '',
       supplierId: '',
       expectedDate: undefined,
@@ -81,6 +81,7 @@ export function PurchaseOrderForm({
       discountAmount: 0,
       taxPercent: 0,
       status: 'draft',
+      ...initialData,
     },
   });
 
@@ -103,7 +104,7 @@ export function PurchaseOrderForm({
 
   // Generate order number if not provided
   React.useEffect(() => {
-    if (!initialData && !isCustomOrderNumber) {
+    if ((!initialData || !initialData.orderNumber) && !isCustomOrderNumber) {
       purchaseOrdersService.generateOrderNumber().then((orderNumber) => {
         form.setValue('orderNumber', orderNumber);
       });
@@ -128,7 +129,7 @@ export function PurchaseOrderForm({
     const data = values as CreatePurchaseOrderValues;
     setIsSubmitting(true);
     try {
-      if (initialData) {
+      if (initialData?.id) {
         await purchaseOrdersService.update(initialData.id, data);
         toast.success('Purchase Order berhasil diperbarui');
       } else {
@@ -190,7 +191,7 @@ export function PurchaseOrderForm({
                       }
                       value={field.value}
                       onChange={field.onChange}
-                      disabled={!!initialData}
+                      disabled={!!initialData?.id} // Only disable if editing existing PO
                       placeholder="Pilih Pemasok"
                       searchPlaceholder="Cari pemasok..."
                     />

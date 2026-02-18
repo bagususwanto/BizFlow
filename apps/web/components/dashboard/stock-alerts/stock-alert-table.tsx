@@ -145,7 +145,7 @@ export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
               className="h-8"
               onClick={() =>
                 router.push(
-                  `/purchases/orders/create?variantId=${row.original.variantId}&warehouseId=${row.original.warehouseId}`,
+                  `/purchases/orders/new?variantId=${row.original.variantId}&warehouseId=${row.original.warehouseId}`,
                 )
               }
             >
@@ -162,16 +162,38 @@ export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
   const selectedCount = Object.keys(rowSelection).length;
 
   const handleBulkPO = () => {
-    const selectedIds = Object.keys(rowSelection);
-    if (selectedIds.length === 0) return;
+    // rowSelection keys are `${variantId}-${warehouseId}`
+    const selectedKeys = Object.keys(rowSelection);
+    if (selectedKeys.length === 0) return;
 
-    // TODO: Implement actual bulk PO logic or redirect with multiple IDs
-    // For now, toast and log.
-    console.log('Selected for PO:', selectedIds);
-    toast.success(
-      `Membuat PO untuk ${selectedCount} produk terpilih (Feature Coming Soon)`,
+    // Extract variantIds and warehouseIds
+    // We assume for now we can mix warehouses or maybe we should warn?
+    // PO is usually per supplier.
+    // Let's just pass variantIds.
+    // split key by '-' to get variantId
+    // Note: variantId might contain '-' so we need to be careful?
+    // The key is `${row.variantId}-${row.warehouseId}`.
+    // Assuming IDs are UUIDs, they have dashes.
+    // Better to map from data or use a safer separator if possible, but UUIDs are standard.
+    // Actually, we can just find the selected rows from data since we have the full data array.
+
+    const selectedRows = data.filter(
+      (row) => rowSelection[`${row.variantId}-${row.warehouseId}`],
     );
-    // router.push(`/purchases/orders/create?productIds=${selectedIds.join(',')}`);
+
+    const variantIds = Array.from(
+      new Set(selectedRows.map((r) => r.variantId)),
+    );
+    // const warehouseIds = Array.from(new Set(selectedRows.map(r => r.warehouseId)));
+
+    if (variantIds.length === 0) return;
+
+    const queryString = new URLSearchParams();
+    queryString.set('variantIds', variantIds.join(','));
+    // We could pass warehouseId if all selected are from same warehouse?
+    // For now, let's just pass variantIds.
+
+    router.push(`/purchases/orders/new?${queryString.toString()}`);
   };
 
   return (
@@ -187,7 +209,7 @@ export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
           </div>
           <Button size="sm" className="ml-auto h-8" onClick={handleBulkPO}>
             <ShoppingBag className="mr-2 h-4 w-4" />
-            Buat Purchase Order
+            Buat PO
           </Button>
         </div>
       )}

@@ -6,14 +6,12 @@ import { useQuery } from '@tanstack/react-query';
 import {
   CalendarIcon,
   StoreIcon,
-  CreditCardIcon,
-  TruckIcon,
   ArrowLeft,
-  Pencil,
   Trash,
   CheckCircle,
   XCircle,
   Package,
+  Edit,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
@@ -195,7 +193,7 @@ export default function PurchaseOrderDetailPage({
                   router.push(`/purchases/orders/${order.id}/edit`)
                 }
               >
-                <Pencil className="mr-2 h-4 w-4" /> Edit
+                <Edit className="mr-2 h-4 w-4" /> Edit
               </Button>
               <Button
                 variant="destructive"

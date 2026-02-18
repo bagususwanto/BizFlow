@@ -3,7 +3,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { GoodsReceive } from '@bizflow/types';
 import { Button } from '@bizflow/ui';
-import { ArrowUpDown, MoreHorizontal, Eye, Trash } from 'lucide-react';
+import { MoreHorizontal, Eye, Trash } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,41 +20,27 @@ interface ColumnsProps {
   onDelete: (goodsReceive: GoodsReceive) => void;
 }
 
+import { DataTableColumnHeader } from '@/components/ui/data-table-column-header';
+
 export const getColumns = ({
   onDelete,
 }: ColumnsProps): ColumnDef<GoodsReceive>[] => [
   {
     accessorKey: 'receiveNumber',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          No. Penerimaan
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="No. Penerimaan" />
+    ),
     cell: ({ row }) => (
       <div className="font-medium">{row.getValue('receiveNumber')}</div>
     ),
   },
   {
-    accessorKey: 'date',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Tanggal
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    accessorKey: 'createdAt',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Tanggal" />
+    ),
     cell: ({ row }) => {
-      const date = new Date(row.original.createdAt);
+      const date = new Date(row.getValue('createdAt'));
       return <div>{format(date, 'dd MMM yyyy', { locale: id })}</div>;
     },
   },

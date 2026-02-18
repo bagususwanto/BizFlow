@@ -437,7 +437,12 @@ export function PurchaseOrderForm({
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>Catatan</CardTitle>
+              <CardTitle>
+                Catatan{' '}
+                <span className="text-xs font-normal text-muted-foreground">
+                  (Opsional)
+                </span>
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <FormField
@@ -475,7 +480,10 @@ export function PurchaseOrderForm({
                 name="discountPercent"
                 render={({ field }) => (
                   <FormItem className="flex items-center justify-between space-y-0">
-                    <FormLabel className="text-sm font-normal text-muted-foreground">
+                    <FormLabel
+                      optional
+                      className="text-sm font-normal text-muted-foreground"
+                    >
                       Diskon (%)
                     </FormLabel>
                     <FormControl>
@@ -506,7 +514,10 @@ export function PurchaseOrderForm({
                 name="taxPercent"
                 render={({ field }) => (
                   <FormItem className="flex items-center justify-between space-y-0">
-                    <FormLabel className="text-sm font-normal text-muted-foreground">
+                    <FormLabel
+                      optional
+                      className="text-sm font-normal text-muted-foreground"
+                    >
                       Pajak (%)
                     </FormLabel>
                     <FormControl>

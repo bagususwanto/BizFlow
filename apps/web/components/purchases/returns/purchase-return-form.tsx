@@ -239,7 +239,7 @@ export function PurchaseReturnForm() {
                   name="returnNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>No. Return</FormLabel>
+                      <FormLabel optional>No. Return</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Otomatis"
@@ -257,7 +257,7 @@ export function PurchaseReturnForm() {
                   name="reason"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Alasan Return</FormLabel>
+                      <FormLabel required>Alasan Return</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Contoh: Barang rusak, Salah kirim, dll."
@@ -274,7 +274,7 @@ export function PurchaseReturnForm() {
                   name="notes"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Catatan</FormLabel>
+                      <FormLabel optional>Catatan</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Catatan tambahan..."

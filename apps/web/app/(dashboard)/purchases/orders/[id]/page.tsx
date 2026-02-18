@@ -48,6 +48,7 @@ import { purchaseOrdersService } from '@/services/purchase-orders.service';
 import { LoadingState } from '@/components/common/loading-state';
 import { ErrorState } from '@/components/common/error-state';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
+import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 
 export default function PurchaseOrderDetailPage({
   params,
@@ -59,6 +60,7 @@ export default function PurchaseOrderDetailPage({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [statusDialogOpen, setStatusDialogOpen] = useState(false);
   const [nextStatus, setNextStatus] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const {
     data: order,
@@ -94,11 +96,13 @@ export default function PurchaseOrderDetailPage({
 
   const handleDelete = async () => {
     try {
+      setIsDeleting(true);
       await purchaseOrdersService.delete(order.id);
       toast.success('Purchase Order berhasil dihapus');
       router.push('/purchases/orders');
     } catch (error: any) {
       toast.error(error.message || 'Gagal menghapus Purchase Order');
+      setIsDeleting(false);
     }
   };
 
@@ -398,27 +402,6 @@ export default function PurchaseOrderDetailPage({
         </div>
       </div>
 
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Hapus Purchase Order?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Apakah Anda yakin ingin menghapus Purchase Order ini? Tindakan ini
-              tidak dapat dibatalkan.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDelete}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              Hapus
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
       <AlertDialog open={statusDialogOpen} onOpenChange={setStatusDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -436,6 +419,15 @@ export default function PurchaseOrderDetailPage({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <DeleteConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onConfirm={handleDelete}
+        isDeleting={isDeleting}
+        title="Hapus Purchase Order?"
+        description="Apakah Anda yakin ingin menghapus Purchase Order ini? Tindakan ini tidak dapat dibatalkan."
+      />
     </div>
   );
 }

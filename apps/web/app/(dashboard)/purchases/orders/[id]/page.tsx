@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -47,12 +47,15 @@ import {
 
 import { PurchaseOrderStatus, PaymentStatus } from '@bizflow/types';
 import { purchaseOrdersService } from '@/services/purchase-orders.service';
+import { LoadingState } from '@/components/common/loading-state';
+import { ErrorState } from '@/components/common/error-state';
 
 export default function PurchaseOrderDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const resolvedParams = use(params);
   const router = useRouter();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [statusDialogOpen, setStatusDialogOpen] = useState(false);
@@ -62,17 +65,27 @@ export default function PurchaseOrderDetailPage({
     data: order,
     isLoading,
     refetch,
+    isError,
   } = useQuery({
-    queryKey: ['purchase-orders', params.id],
-    queryFn: () => purchaseOrdersService.getById(params.id),
+    queryKey: ['purchase-orders', resolvedParams.id],
+    queryFn: () => purchaseOrdersService.getById(resolvedParams.id),
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center p-8">
+        <LoadingState />
+      </div>
+    );
   }
 
-  if (!order) {
-    return <div>Purchase Order tidak ditemukan</div>;
+  if (isError || !order) {
+    return (
+      <ErrorState
+        title="Gagal memuat detail purchase order"
+        onRetry={() => refetch()}
+      />
+    );
   }
 
   const handleDelete = async () => {

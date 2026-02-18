@@ -1,8 +1,8 @@
 'use client';
 
+import { use } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { purchaseOrdersService } from '@/services/purchase-orders.service';
-import { Loader2 } from 'lucide-react';
 import { PurchaseOrderForm } from '@/components/purchases/purchase-order-form';
 import {
   Card,
@@ -12,32 +12,45 @@ import {
   CardTitle,
 } from '@bizflow/ui';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
+import { LoadingState } from '@/components/common/loading-state';
+import { ErrorState } from '@/components/common/error-state';
 
 export default function EditPurchaseOrderPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const { data: purchaseOrder, isLoading } = useQuery({
-    queryKey: ['purchase-orders', params.id],
-    queryFn: () => purchaseOrdersService.getById(params.id),
+  const resolvedParams = use(params);
+  const {
+    data: purchaseOrder,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: ['purchase-orders', resolvedParams.id],
+    queryFn: () => purchaseOrdersService.getById(resolvedParams.id),
   });
 
   useBreadcrumb(
-    `/purchases/orders/${params.id}/edit`,
+    `/purchases/orders/${resolvedParams.id}/edit`,
     `Edit PO ${purchaseOrder?.orderNumber || '...'}`,
   );
 
   if (isLoading) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
+      <div className="flex justify-center p-8">
+        <LoadingState />
       </div>
     );
   }
 
-  if (!purchaseOrder) {
-    return <div>Purchase Order tidak ditemukan</div>;
+  if (isError || !purchaseOrder) {
+    return (
+      <ErrorState
+        title="Gagal memuat detail purchase order"
+        onRetry={() => refetch()}
+      />
+    );
   }
 
   // Transform data for form

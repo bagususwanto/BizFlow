@@ -61,6 +61,7 @@ export function DynamicBreadcrumb() {
   const pathname = usePathname();
   const { overrides } = useBreadcrumbContext();
   const segments = pathname.split('/').filter(Boolean);
+  console.log('segments', segments);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

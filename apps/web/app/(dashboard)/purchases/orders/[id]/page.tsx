@@ -253,102 +253,9 @@ export default function PurchaseOrderDetailPage({
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
-        {/* Left Column: Details */}
-        <div className="space-y-6 md:col-span-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Item Pesanan</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Produk</TableHead>
-                    <TableHead className="text-right">Qty</TableHead>
-                    <TableHead className="text-right">Harga</TableHead>
-                    <TableHead className="text-right">Total</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {order.items?.map((item: any) => (
-                    <TableRow key={item.id}>
-                      <TableCell>
-                        <div className="font-medium">
-                          {item.variant.product.name}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          {item.variant.product.sku}
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {Number(item.quantity)}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {formatCurrency(Number(item.unitPrice))}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {formatCurrency(Number(item.subtotal))}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Catatan</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                {order.notes || '-'}
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Right Column: Calculations & Info */}
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Rincian Pembayaran</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex justify-between text-sm">
-                <span>Subtotal</span>
-                <span>{formatCurrency(Number(order.subtotal))}</span>
-              </div>
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Diskon ({Number(order.discountPercent)}%)</span>
-                <span>- {formatCurrency(Number(order.discountAmount))}</span>
-              </div>
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Pajak ({Number(order.taxPercent)}%)</span>
-                <span>+ {formatCurrency(Number(order.taxAmount))}</span>
-              </div>
-              <Separator />
-              <div className="flex justify-between text-lg font-bold">
-                <span>Total</span>
-                <span>{formatCurrency(Number(order.total))}</span>
-              </div>
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Sudah Dibayar</span>
-                <span>{formatCurrency(Number(order.paidAmount))}</span>
-              </div>
-              <Separator />
-              <div className="flex justify-between text-sm font-medium text-destructive">
-                <span>Sisa Pembayaran</span>
-                <span>
-                  {formatCurrency(
-                    Number(order.total) - Number(order.paidAmount),
-                  )}
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-
+      <div className="space-y-6">
+        {/* Top Section: Supplier & Order Info */}
+        <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader>
               <CardTitle>Informasi Supplier</CardTitle>
@@ -395,6 +302,100 @@ export default function PurchaseOrderDetailPage({
                         locale: id,
                       })
                     : '-'}
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Middle Section: Items */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Item Pesanan</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Produk</TableHead>
+                  <TableHead className="text-right">Qty</TableHead>
+                  <TableHead className="text-right">Harga</TableHead>
+                  <TableHead className="text-right">Total</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {order.items?.map((item: any) => (
+                  <TableRow key={item.id}>
+                    <TableCell>
+                      <div className="font-medium">
+                        {item.variant.product.name}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {item.variant.product.sku}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {Number(item.quantity)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {formatCurrency(Number(item.unitPrice))}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {formatCurrency(Number(item.subtotal))}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        {/* Bottom Section: Notes & Totals */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Catatan</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                {order.notes || '-'}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Rincian Pembayaran</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex justify-between text-sm">
+                <span>Subtotal</span>
+                <span>{formatCurrency(Number(order.subtotal))}</span>
+              </div>
+              <div className="flex justify-between text-sm text-muted-foreground">
+                <span>Diskon ({Number(order.discountPercent)}%)</span>
+                <span>- {formatCurrency(Number(order.discountAmount))}</span>
+              </div>
+              <div className="flex justify-between text-sm text-muted-foreground">
+                <span>Pajak ({Number(order.taxPercent)}%)</span>
+                <span>+ {formatCurrency(Number(order.taxAmount))}</span>
+              </div>
+              <Separator />
+              <div className="flex justify-between text-lg font-bold">
+                <span>Total</span>
+                <span>{formatCurrency(Number(order.total))}</span>
+              </div>
+              <div className="flex justify-between text-sm text-muted-foreground">
+                <span>Sudah Dibayar</span>
+                <span>{formatCurrency(Number(order.paidAmount))}</span>
+              </div>
+              <Separator />
+              <div className="flex justify-between text-sm font-medium text-destructive">
+                <span>Sisa Pembayaran</span>
+                <span>
+                  {formatCurrency(
+                    Number(order.total) - Number(order.paidAmount),
+                  )}
                 </span>
               </div>
             </CardContent>

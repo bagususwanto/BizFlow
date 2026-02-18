@@ -20,3 +20,4 @@ export * from './supplier';
 export * from './purchase-order';
 export * from './goods-receive';
 export * from './purchase-return';
+export * from './supplier-payment';

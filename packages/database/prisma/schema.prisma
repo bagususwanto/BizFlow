@@ -736,6 +736,7 @@ model SupplierPayment {
   accountId       String
   paymentDate     DateTime @default(now())
   amount          Decimal
+  paymentMethod   String   @default("cash") // 'cash' | 'qris' | 'transfer' | 'credit' | 'debit'
   reference       String?
   notes           String?
   createdBy       String

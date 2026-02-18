@@ -154,23 +154,27 @@ export class GoodsReceiveService {
    * Generate next receive number
    */
   async generateReceiveNumber(): Promise<string> {
-    const lastReceive = await this.prisma.goodsReceive.findFirst({
-      orderBy: { receiveNumber: 'desc' },
+    const today = new Date();
+    const datePrefix = today.toISOString().slice(0, 10).replace(/-/g, ''); // e.g. "20260218"
+
+    const countToday = await this.prisma.goodsReceive.count({
+      where: { receiveNumber: { startsWith: datePrefix } },
     });
 
-    if (!lastReceive) {
-      return 'GR-0001';
+    let next = countToday + 1;
+    let candidate = `GR-${datePrefix}-${next.toString().padStart(3, '0')}`;
+
+    // Ensure uniqueness
+    while (
+      await this.prisma.goodsReceive.findUnique({
+        where: { receiveNumber: candidate },
+      })
+    ) {
+      next++;
+      candidate = `GR-${datePrefix}-${next.toString().padStart(3, '0')}`;
     }
 
-    const lastNumber = lastReceive.receiveNumber;
-    const match = lastNumber.match(/GR-(\d+)/);
-
-    if (match) {
-      const number = parseInt(match[1], 10) + 1;
-      return `GR-${number.toString().padStart(4, '0')}`;
-    }
-
-    return `GR-${Date.now()}`;
+    return candidate;
   }
 
   /**

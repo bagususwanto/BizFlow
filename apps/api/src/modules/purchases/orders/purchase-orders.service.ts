@@ -201,23 +201,27 @@ export class PurchaseOrdersService {
    * Generate next purchase order number
    */
   async generateOrderNumber(): Promise<string> {
-    const lastOrder = await this.prisma.purchaseOrder.findFirst({
-      orderBy: { orderNumber: 'desc' },
+    const today = new Date();
+    const datePrefix = today.toISOString().slice(0, 10).replace(/-/g, ''); // e.g. "20260218"
+
+    const countToday = await this.prisma.purchaseOrder.count({
+      where: { orderNumber: { startsWith: datePrefix } },
     });
 
-    if (!lastOrder) {
-      return 'PO-0001';
+    let next = countToday + 1;
+    let candidate = `PO-${datePrefix}-${next.toString().padStart(3, '0')}`;
+
+    // Ensure uniqueness
+    while (
+      await this.prisma.purchaseOrder.findUnique({
+        where: { orderNumber: candidate },
+      })
+    ) {
+      next++;
+      candidate = `PO-${datePrefix}-${next.toString().padStart(3, '0')}`;
     }
 
-    const lastNumber = lastOrder.orderNumber;
-    const match = lastNumber.match(/PO-(\\d+)/);
-
-    if (match) {
-      const number = parseInt(match[1], 10) + 1;
-      return `PO-${number.toString().padStart(4, '0')}`;
-    }
-
-    return `PO-${Date.now()}`;
+    return candidate;
   }
 
   /**

@@ -35,6 +35,11 @@ import {
   cn,
   formatCurrency,
   Combobox,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from '@bizflow/ui';
 import {
   createPurchaseOrderSchema,
@@ -141,133 +146,318 @@ export function PurchaseOrderForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="grid gap-6 md:grid-cols-2">
-          {/* Left Column: Order Infos */}
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="orderNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel optional>No. PO</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={!isCustomOrderNumber}
-                      placeholder="Otomatis"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="supplierId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel required>Pemasok</FormLabel>
-                  <Combobox
-                    options={
-                      suppliers?.map((s) => ({
-                        label: `${s.name} (${s.code})`,
-                        value: s.id,
-                      })) || []
-                    }
-                    value={field.value}
-                    onChange={field.onChange}
-                    disabled={!!initialData}
-                    placeholder="Pilih Pemasok"
-                    searchPlaceholder="Cari pemasok..."
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="expectedDate"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel optional>Tanggal Ekspektasi</FormLabel>
-                  <Popover
-                    open={isCalendarOpen}
-                    onOpenChange={setIsCalendarOpen}
-                  >
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={'outline'}
-                          className={cn(
-                            'w-full pl-3 text-left font-normal',
-                            !field.value && 'text-muted-foreground',
-                          )}
-                        >
-                          {field.value ? (
-                            format(new Date(field.value), 'PPP', {
-                              locale: id,
-                            })
-                          ) : (
-                            <span>Pilih tanggal</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        className="w-[300px]"
-                        mode="single"
-                        selected={
-                          field.value ? new Date(field.value) : undefined
-                        }
-                        onSelect={(date) => {
-                          field.onChange(date);
-                          setIsCalendarOpen(false);
-                        }}
-                        disabled={(date) =>
-                          date < new Date(new Date().setHours(0, 0, 0, 0))
-                        }
-                        initialFocus
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {/* Top Section: General Info */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Informasi Pesanan</CardTitle>
+            <CardDescription>
+              Informasi umum mengenai purchase order.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-6 md:grid-cols-2">
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="orderNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel optional>No. PO</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={!isCustomOrderNumber}
+                        placeholder="Otomatis"
                       />
-                    </PopoverContent>
-                  </Popover>
-                  <FormDescription>
-                    Perkiraan barang akan diterima.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="notes"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel optional>Catatan</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Catatan tambahan untuk supplier..."
-                      className="resize-none min-h-[100px]"
-                      {...field}
-                      value={field.value || ''}
+              <FormField
+                control={form.control}
+                name="supplierId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel required>Pemasok</FormLabel>
+                    <Combobox
+                      options={
+                        suppliers?.map((s) => ({
+                          label: `${s.name} (${s.code})`,
+                          value: s.id,
+                        })) || []
+                      }
+                      value={field.value}
+                      onChange={field.onChange}
+                      disabled={!!initialData}
+                      placeholder="Pilih Pemasok"
+                      searchPlaceholder="Cari pemasok..."
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-          {/* Right Column: Calculations */}
-          <div className="space-y-6">
-            <div className="rounded-lg border bg-muted/40 p-6 space-y-4">
-              <h3 className="font-semibold text-sm">Ringkasan Pesanan</h3>
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="expectedDate"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel optional>Tanggal Ekspektasi</FormLabel>
+                    <Popover
+                      open={isCalendarOpen}
+                      onOpenChange={setIsCalendarOpen}
+                    >
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={'outline'}
+                            className={cn(
+                              'w-full pl-3 text-left font-normal',
+                              !field.value && 'text-muted-foreground',
+                            )}
+                          >
+                            {field.value ? (
+                              format(new Date(field.value), 'PPP', {
+                                locale: id,
+                              })
+                            ) : (
+                              <span>Pilih tanggal</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          className="w-[300px]"
+                          mode="single"
+                          selected={
+                            field.value ? new Date(field.value) : undefined
+                          }
+                          onSelect={(date) => {
+                            field.onChange(date);
+                            setIsCalendarOpen(false);
+                          }}
+                          disabled={(date) =>
+                            date < new Date(new Date().setHours(0, 0, 0, 0))
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormDescription>
+                      Perkiraan barang akan diterima.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </CardContent>
+        </Card>
 
+        {/* Middle Section: Items */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <div className="space-y-1">
+              <CardTitle>Item Pesanan</CardTitle>
+              <CardDescription>
+                Daftar barang yang akan dipesan.
+              </CardDescription>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                append({
+                  variantId: '',
+                  quantity: 1,
+                  unitPrice: 0,
+                  notes: '',
+                })
+              }
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Tambah Item
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <div className="rounded-md border">
+              <div className="gap-4 sm:grid-cols-[1fr_100px_150px_150px_40px] items-center p-4 bg-muted/40 text-sm font-medium text-muted-foreground border-b hidden sm:grid">
+                <div>Produk</div>
+                <div className="text-right">Qty</div>
+                <div className="text-right">Harga Satuan</div>
+                <div className="text-right">Subtotal</div>
+                <div></div>
+              </div>
+
+              <div className="p-4 sm:p-0">
+                <div className="grid gap-4 sm:gap-0">
+                  {fields.map((field, index) => (
+                    <div
+                      key={field.id}
+                      className="grid gap-4 sm:grid-cols-[1fr_100px_150px_150px_40px] items-start sm:items-center sm:p-4 sm:border-b last:border-0"
+                    >
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.variantId`}
+                        render={({ field }) => (
+                          <FormItem className="w-full">
+                            <label className="sm:hidden text-sm font-medium mb-1 block">
+                              Produk
+                            </label>
+                            <Combobox
+                              options={
+                                products?.map((p) => ({
+                                  label: `${p.name} (${p.sku})`,
+                                  value: p.id,
+                                })) || []
+                              }
+                              value={field.value}
+                              onChange={(value) => {
+                                field.onChange(value);
+                                const selectedProduct = products?.find(
+                                  (p) => p.id === value,
+                                );
+                                if (selectedProduct) {
+                                  form.setValue(
+                                    `items.${index}.unitPrice`,
+                                    selectedProduct.costPrice || 0,
+                                  );
+                                }
+                              }}
+                              placeholder="Pilih Produk"
+                              searchPlaceholder="Cari produk..."
+                              className="w-full"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.quantity`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <label className="sm:hidden text-sm font-medium mb-1 block">
+                              Qty
+                            </label>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                min="1"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(
+                                    parseFloat(e.target.value) || 0,
+                                  )
+                                }
+                                className="text-right"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.unitPrice`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <label className="sm:hidden text-sm font-medium mb-1 block">
+                              Harga
+                            </label>
+                            <FormControl>
+                              <div className="relative">
+                                <Input
+                                  type="number"
+                                  min="0"
+                                  {...field}
+                                  onChange={(e) =>
+                                    field.onChange(
+                                      parseFloat(e.target.value) || 0,
+                                    )
+                                  }
+                                  className="text-right"
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <div className="flex items-center justify-between sm:justify-end sm:block">
+                        <span className="sm:hidden text-sm font-medium">
+                          Subtotal
+                        </span>
+                        <div className="text-sm font-medium text-right sm:pr-4">
+                          {formatCurrency(
+                            (form.watch(`items.${index}.quantity`) || 0) *
+                              (form.watch(`items.${index}.unitPrice`) || 0),
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex justify-end sm:justify-center">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => remove(index)}
+                          disabled={fields.length === 1}
+                          className="text-muted-foreground hover:text-destructive"
+                        >
+                          <Trash className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Bottom Section: Notes & Totals */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Catatan</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <FormField
+                control={form.control}
+                name="notes"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Catatan tambahan untuk supplier..."
+                        className="resize-none min-h-[100px]"
+                        {...field}
+                        value={field.value || ''}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Rincian Pembayaran</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Subtotal</span>
                 <span>{formatCurrency(subtotal)}</span>
@@ -339,171 +529,8 @@ export function PurchaseOrderForm({
                 <span>Total</span>
                 <span className="text-primary">{formatCurrency(total)}</span>
               </div>
-            </div>
-          </div>
-        </div>
-
-        <Separator />
-
-        {/* Items Section */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium">Item Pesanan</h3>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() =>
-                append({
-                  variantId: '',
-                  quantity: 1,
-                  unitPrice: 0,
-                  notes: '',
-                })
-              }
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Tambah Item
-            </Button>
-          </div>
-
-          <div className="rounded-md border">
-            {/* Table Header */}
-            <div className="gap-4 sm:grid-cols-[1fr_100px_150px_150px_40px] items-center p-4 bg-muted/40 text-sm font-medium text-muted-foreground border-b hidden sm:grid">
-              <div>Produk</div>
-              <div className="text-right">Qty</div>
-              <div className="text-right">Harga Satuan</div>
-              <div className="text-right">Subtotal</div>
-              <div></div>
-            </div>
-
-            <div className="p-4 sm:p-0">
-              <div className="grid gap-4 sm:gap-0">
-                {fields.map((field, index) => (
-                  <div
-                    key={field.id}
-                    className="grid gap-4 sm:grid-cols-[1fr_100px_150px_150px_40px] items-start sm:items-center sm:p-4 sm:border-b last:border-0"
-                  >
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.variantId`}
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <label className="sm:hidden text-sm font-medium mb-1 block">
-                            Produk
-                          </label>
-                          <Combobox
-                            options={
-                              products?.map((p) => ({
-                                label: `${p.name} (${p.sku})`,
-                                value: p.id,
-                              })) || []
-                            }
-                            value={field.value}
-                            onChange={(value) => {
-                              field.onChange(value);
-                              // Auto-fill price from master data
-                              const selectedProduct = products?.find(
-                                (p) => p.id === value,
-                              );
-                              if (selectedProduct) {
-                                form.setValue(
-                                  `items.${index}.unitPrice`,
-                                  selectedProduct.costPrice || 0,
-                                );
-                              }
-                            }}
-                            placeholder="Pilih Produk"
-                            searchPlaceholder="Cari produk..."
-                            className="w-full"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.quantity`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <label className="sm:hidden text-sm font-medium mb-1 block">
-                            Qty
-                          </label>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              min="1"
-                              {...field}
-                              onChange={(e) =>
-                                field.onChange(parseFloat(e.target.value) || 0)
-                              }
-                              className="text-right"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.unitPrice`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <label className="sm:hidden text-sm font-medium mb-1 block">
-                            Harga
-                          </label>
-                          <FormControl>
-                            <div className="relative">
-                              {/* <span className="absolute left-3 top-2.5 text-xs text-muted-foreground">Rp</span> */}
-                              <Input
-                                type="number"
-                                min="0"
-                                {...field}
-                                onChange={(e) =>
-                                  field.onChange(
-                                    parseFloat(e.target.value) || 0,
-                                  )
-                                }
-                                className="text-right"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <div className="flex items-center justify-between sm:justify-end sm:block">
-                      <span className="sm:hidden text-sm font-medium">
-                        Subtotal
-                      </span>
-                      <div className="text-sm font-medium text-right sm:pr-4">
-                        {formatCurrency(
-                          (form.watch(`items.${index}.quantity`) || 0) *
-                            (form.watch(`items.${index}.unitPrice`) || 0),
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex justify-end sm:justify-center">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => remove(index)}
-                        disabled={fields.length === 1}
-                        className="text-muted-foreground hover:text-destructive"
-                      >
-                        <Trash className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
 
         <div className="flex justify-end gap-4 pt-4">

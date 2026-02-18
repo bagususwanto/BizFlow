@@ -4,13 +4,7 @@ import { use } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { purchaseOrdersService } from '@/services/purchase-orders.service';
 import { PurchaseOrderForm } from '@/components/purchases/purchase-order-form';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@bizflow/ui';
+
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { LoadingState } from '@/components/common/loading-state';
 import { ErrorState } from '@/components/common/error-state';
@@ -79,15 +73,7 @@ export default function EditPurchaseOrderPage({
         </p>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Informasi Pesanan</CardTitle>
-          <CardDescription>Perbarui informasi purchase order.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <PurchaseOrderForm initialData={initialData} />
-        </CardContent>
-      </Card>
+      <PurchaseOrderForm initialData={initialData} />
     </div>
   );
 }

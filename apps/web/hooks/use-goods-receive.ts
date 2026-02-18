@@ -36,10 +36,11 @@ export function useCreateGoodsReceive() {
   return useMutation({
     mutationFn: (data: CreateGoodsReceiveValues) =>
       goodsReceiveService.create(data),
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success('Penerimaan Barang berhasil dibuat');
-      queryClient.invalidateQueries({ queryKey: ['goods-receives'] });
-      queryClient.invalidateQueries({ queryKey: ['purchase-orders'] }); // Invalidate POs as status might change
+      await queryClient.invalidateQueries({ queryKey: ['goods-receives'] });
+      await queryClient.invalidateQueries({ queryKey: ['purchase-orders'] }); // Invalidate POs as status might change
+      router.refresh();
       router.push('/purchases/goods-receive');
     },
     onError: (error: Error) => {

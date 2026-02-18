@@ -38,9 +38,10 @@ export function useCreatePurchaseOrder() {
   return useMutation({
     mutationFn: (data: CreatePurchaseOrderValues) =>
       purchaseOrdersService.create(data),
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success('Purchase Order berhasil dibuat');
-      queryClient.invalidateQueries({ queryKey: ['purchase-orders'] });
+      await queryClient.invalidateQueries({ queryKey: ['purchase-orders'] });
+      router.refresh();
       router.push('/purchases/orders');
     },
     onError: (error: Error) => {
@@ -56,10 +57,13 @@ export function useUpdatePurchaseOrder(id: string) {
   return useMutation({
     mutationFn: (data: UpdatePurchaseOrderValues) =>
       purchaseOrdersService.update(id, data),
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success('Purchase Order berhasil diperbarui');
-      queryClient.invalidateQueries({ queryKey: ['purchase-orders'] });
-      queryClient.invalidateQueries({ queryKey: ['purchase-orders', id] });
+      await queryClient.invalidateQueries({ queryKey: ['purchase-orders'] });
+      await queryClient.invalidateQueries({
+        queryKey: ['purchase-orders', id],
+      });
+      router.refresh();
       router.push('/purchases/orders');
     },
     onError: (error: Error) => {
@@ -89,10 +93,12 @@ export function useUpdatePurchaseOrderStatus(id: string) {
   return useMutation({
     mutationFn: (data: UpdatePurchaseOrderStatusValues) =>
       purchaseOrdersService.updateStatus(id, data),
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success('Status Purchase Order berhasil diperbarui');
-      queryClient.invalidateQueries({ queryKey: ['purchase-orders'] });
-      queryClient.invalidateQueries({ queryKey: ['purchase-orders', id] });
+      await queryClient.invalidateQueries({ queryKey: ['purchase-orders'] });
+      await queryClient.invalidateQueries({
+        queryKey: ['purchase-orders', id],
+      });
     },
     onError: (error: Error) => {
       toast.error(error.message);

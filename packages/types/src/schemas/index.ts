@@ -19,3 +19,4 @@ export * from './reports';
 export * from './supplier';
 export * from './purchase-order';
 export * from './goods-receive';
+export * from './purchase-return';

@@ -24,6 +24,7 @@ import { PaymentsModule } from './modules/pos/payments';
 import { ReturnsModule } from './modules/pos/returns';
 
 import { PurchaseOrdersModule } from './modules/purchases/orders';
+import { PurchaseReturnsModule } from './modules/purchases/returns';
 import { GoodsReceiveModule } from './modules/inventory/goods-receive';
 
 import { DashboardReportModule } from './modules/reports/dashboard';
@@ -66,6 +67,7 @@ import { AppController } from './app.controller';
     ReturnsModule,
     // Purchase modules
     PurchaseOrdersModule,
+    PurchaseReturnsModule,
     // Inventory modules
     GoodsReceiveModule,
     // Reports modules

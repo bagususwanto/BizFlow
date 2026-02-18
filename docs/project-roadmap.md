@@ -223,7 +223,7 @@ Referensi: [05-purchase-management.md](file:///Users/bagus/Project/personal/BizF
 | **Suppliers** - CRUD Supplier   | [x]    | High     |
 | **Orders** - Purchase Order     | [x]    | High     |
 | **Orders** - PO status workflow | [x]    | High     |
-| **Goods Receive** - Penerimaan  | [ ]    | High     |
+| **Goods Receive** - Penerimaan  | [x]    | High     |
 | **Returns** - Purchase Return   | [ ]    | Medium   |
 | **Payments** - Supplier Payment | [ ]    | High     |
 | Payment terms management        | [ ]    | Medium   |

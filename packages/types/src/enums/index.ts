@@ -45,6 +45,7 @@ export enum Module {
   SALES = 'sales',
   PURCHASES = 'purchases',
   PURCHASE_ORDERS = 'purchase-orders',
+  PURCHASE_RETURNS = 'purchase-returns',
   GOODS_RECEIVE = 'goods-receive',
   INVENTORY = 'inventory',
   FINANCE = 'finance',
@@ -160,6 +161,12 @@ export const Permission = {
     Create: 'purchase-orders:create',
     Update: 'purchase-orders:update',
     Delete: 'purchase-orders:delete',
+  },
+  PurchaseReturns: {
+    Read: 'purchase-returns:read',
+    Create: 'purchase-returns:create',
+    Update: 'purchase-returns:update',
+    Delete: 'purchase-returns:delete',
   },
   GoodsReceive: {
     Read: 'goods-receive:read',

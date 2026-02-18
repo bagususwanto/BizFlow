@@ -18,9 +18,15 @@ export const purchaseReturnKeys = {
 };
 
 export function usePurchaseReturns(params?: QueryPurchaseReturnsValues) {
+  const queryParams = {
+    page: 1,
+    pageSize: 10,
+    ...params,
+  };
+
   return useQuery({
-    queryKey: purchaseReturnKeys.list(params || {}),
-    queryFn: () => purchaseReturnsService.getAll(params),
+    queryKey: purchaseReturnKeys.list(queryParams),
+    queryFn: () => purchaseReturnsService.getAll(queryParams),
   });
 }
 

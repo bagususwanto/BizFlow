@@ -13,6 +13,8 @@ import {
   Package,
   Edit,
   Printer,
+  User,
+  Clock,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
@@ -316,11 +318,13 @@ export default function PurchaseOrderDetailPage({
                 </span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <span className="text-muted-foreground ml-6">Dibuat Oleh:</span>
+                <User className="h-4 w-4 text-muted-foreground" />
+                <span className="text-muted-foreground">Dibuat Oleh:</span>
                 <span className="font-medium">{order.createdBy}</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <span className="text-muted-foreground ml-6">Dibuat Pada:</span>
+                <Clock className="h-4 w-4 text-muted-foreground" />
+                <span className="text-muted-foreground">Dibuat Pada:</span>
                 <span className="font-medium">
                   {format(new Date(order.createdAt), 'dd MMMM yyyy HH:mm', {
                     locale: id,

@@ -13,6 +13,10 @@ import {
   FileText,
   Clock,
   Printer,
+  Phone,
+  Mail,
+  MapPin,
+  User,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
@@ -157,13 +161,15 @@ export default function PurchaseReturnDetailPage({
             <h1 className="text-3xl font-bold tracking-tight">
               {ret.returnNumber}
             </h1>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <span>
-                {format(new Date(ret.createdAt), 'dd MMMM yyyy', {
-                  locale: id,
-                })}
-              </span>
-              <span>•</span>
+            <div className="flex items-center gap-4 text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <Clock className="h-4 w-4" />
+                <span>
+                  {format(new Date(ret.createdAt), 'dd MMMM yyyy HH:mm', {
+                    locale: id,
+                  })}
+                </span>
+              </div>
               <Badge variant={statusBadgeVariant(ret.status) as any}>
                 {ret.status.toUpperCase()}
               </Badge>
@@ -237,9 +243,8 @@ export default function PurchaseReturnDetailPage({
               <div className="flex items-start gap-4">
                 <FileText className="mt-1 h-5 w-5 text-muted-foreground" />
                 <div>
-                  <div className="font-medium">
-                    Order: {ret.order?.orderNumber}
-                  </div>
+                  <div className="text-sm text-muted-foreground">Order</div>
+                  <div className="font-medium">{ret.order?.orderNumber}</div>
                   <Button
                     variant="link"
                     className="h-auto p-0 text-sm text-muted-foreground"
@@ -253,10 +258,28 @@ export default function PurchaseReturnDetailPage({
               </div>
               <div className="flex items-start gap-4 pt-2">
                 <StoreIcon className="mt-1 h-5 w-5 text-muted-foreground" />
-                <div>
+                <div className="space-y-1">
+                  <div className="text-sm text-muted-foreground">Pemasok</div>
                   <div className="font-medium">{ret.order?.supplier?.name}</div>
-                  <div className="text-sm text-muted-foreground">
-                    {ret.order?.supplier?.code}
+                  {ret.order?.supplier?.address && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <MapPin className="h-3 w-3" />
+                      <span>{ret.order.supplier.address}</span>
+                    </div>
+                  )}
+                  <div className="flex flex-wrap gap-x-4 gap-y-1">
+                    {ret.order?.supplier?.phone && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Phone className="h-3 w-3" />
+                        <span>{ret.order.supplier.phone}</span>
+                      </div>
+                    )}
+                    {ret.order?.supplier?.email && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Mail className="h-3 w-3" />
+                        <span>{ret.order.supplier.email}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -271,27 +294,42 @@ export default function PurchaseReturnDetailPage({
               <div className="flex items-center gap-2 text-sm">
                 <Clock className="h-4 w-4 text-muted-foreground" />
                 <span className="text-muted-foreground">Dibuat pada:</span>
-                <span className="font-medium">
-                  {format(new Date(ret.createdAt), 'dd MMM yyyy HH:mm', {
+                <span className="font-medium text-right flex-1">
+                  {format(new Date(ret.createdAt), 'dd MMMM yyyy HH:mm', {
                     locale: id,
                   })}
                 </span>
               </div>
-              {ret.approvedBy && (
+              <div className="flex items-center gap-2 text-sm">
+                <User className="h-4 w-4 text-muted-foreground" />
+                <span className="text-muted-foreground">Dibuat oleh:</span>
+                <span className="font-medium text-right flex-1">
+                  {ret.creator?.name || ret.createdBy}
+                </span>
+              </div>
+              {ret.status !== 'pending' && ret.approver && (
                 <div className="flex items-center gap-2 text-sm">
                   <CheckCircle className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Disetujui oleh:</span>
-                  <span className="font-medium">
-                    {/* We might need to fetch user name, but ID is available */}
-                    User ID: {ret.approvedBy}
+                  <span className="text-muted-foreground">
+                    {ret.status === 'rejected'
+                      ? 'Ditolak oleh:'
+                      : 'Disetujui oleh:'}
+                  </span>
+                  <span className="font-medium text-right flex-1">
+                    {ret.approver.name}
                   </span>
                 </div>
               )}
               {ret.approvedAt && (
-                <div className="flex items-center gap-2 text-sm pl-6">
-                  <span className="text-muted-foreground">Disetujui pada:</span>
-                  <span className="font-medium">
-                    {format(new Date(ret.approvedAt), 'dd MMM yyyy HH:mm', {
+                <div className="flex items-center gap-2 text-sm">
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-muted-foreground">
+                    {ret.status === 'rejected'
+                      ? 'Ditolak pada:'
+                      : 'Disetujui pada:'}
+                  </span>
+                  <span className="font-medium text-right flex-1">
+                    {format(new Date(ret.approvedAt), 'dd MMMM yyyy HH:mm', {
                       locale: id,
                     })}
                   </span>

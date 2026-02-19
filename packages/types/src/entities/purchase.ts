@@ -85,6 +85,7 @@ export interface GoodsReceive {
   purchaseOrder?: PurchaseOrder;
   warehouse?: Warehouse;
   items?: GoodsReceiveItem[];
+  creator?: User;
 }
 
 export interface GoodsReceiveItem {
@@ -107,6 +108,8 @@ export interface PurchaseReturn extends BaseEntity, ApprovableEntity {
   // Relations
   order?: PurchaseOrder;
   items?: PurchaseReturnItem[];
+  creator?: User;
+  approver?: User;
 }
 
 export interface PurchaseReturnItem {

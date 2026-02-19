@@ -10,6 +10,11 @@ import {
   Trash,
   Building2,
   FileText,
+  Phone,
+  Mail,
+  MapPin,
+  Clock,
+  User,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
@@ -103,12 +108,15 @@ export default function GoodsReceiveDetailPage({
             <h1 className="text-3xl font-bold tracking-tight">
               {goodsReceive.receiveNumber}
             </h1>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <span>
-                {format(new Date(goodsReceive.receiveDate), 'dd MMMM yyyy', {
-                  locale: id,
-                })}
-              </span>
+            <div className="flex items-center gap-4 text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <Clock className="h-4 w-4" />
+                <span>
+                  {format(new Date(goodsReceive.receiveDate), 'dd MMMM yyyy', {
+                    locale: id,
+                  })}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -145,10 +153,30 @@ export default function GoodsReceiveDetailPage({
               </div>
               <div className="flex items-start gap-4">
                 <StoreIcon className="mt-1 h-5 w-5 text-muted-foreground" />
-                <div>
+                <div className="space-y-1">
                   <div className="text-sm text-muted-foreground">Pemasok</div>
                   <div className="font-medium">
                     {goodsReceive.purchaseOrder?.supplier?.name}
+                  </div>
+                  {goodsReceive.purchaseOrder?.supplier?.address && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <MapPin className="h-3 w-3" />
+                      <span>{goodsReceive.purchaseOrder.supplier.address}</span>
+                    </div>
+                  )}
+                  <div className="flex flex-wrap gap-x-4 gap-y-1">
+                    {goodsReceive.purchaseOrder?.supplier?.phone && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Phone className="h-3 w-3" />
+                        <span>{goodsReceive.purchaseOrder.supplier.phone}</span>
+                      </div>
+                    )}
+                    {goodsReceive.purchaseOrder?.supplier?.email && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Mail className="h-3 w-3" />
+                        <span>{goodsReceive.purchaseOrder.supplier.email}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -157,20 +185,35 @@ export default function GoodsReceiveDetailPage({
 
           <Card>
             <CardHeader>
-              <CardTitle>Lokasi Penyimpanan</CardTitle>
+              <CardTitle>Informasi Lainnya</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-start gap-4">
-                <Building2 className="mt-1 h-5 w-5 text-muted-foreground" />
-                <div>
-                  <div className="text-sm text-muted-foreground">Gudang</div>
-                  <div className="font-medium">
-                    {goodsReceive.warehouse?.name}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {goodsReceive.warehouse?.address || '-'}
-                  </div>
-                </div>
+              <div className="flex items-center gap-2 text-sm">
+                <Building2 className="h-4 w-4 text-muted-foreground" />
+                <span className="text-muted-foreground">Gudang:</span>
+                <span className="font-medium text-right flex-1">
+                  {goodsReceive.warehouse?.name}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <Clock className="h-4 w-4 text-muted-foreground" />
+                <span className="text-muted-foreground">Dibuat Pada:</span>
+                <span className="font-medium text-right flex-1">
+                  {format(
+                    new Date(goodsReceive.createdAt),
+                    'dd MMMM yyyy HH:mm',
+                    {
+                      locale: id,
+                    },
+                  )}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <User className="h-4 w-4 text-muted-foreground" />
+                <span className="text-muted-foreground">Dibuat Oleh:</span>
+                <span className="font-medium text-right flex-1">
+                  {goodsReceive.creator?.name || goodsReceive.createdBy}
+                </span>
               </div>
             </CardContent>
           </Card>

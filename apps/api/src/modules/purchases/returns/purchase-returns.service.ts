@@ -107,6 +107,18 @@ export class PurchaseReturnsService {
               items: true,
             },
           },
+          creator: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          approver: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
         },
         orderBy,
         skip,
@@ -196,6 +208,18 @@ export class PurchaseReturnsService {
             },
           },
         },
+        creator: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        approver: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
 
@@ -254,7 +278,7 @@ export class PurchaseReturnsService {
     // Only allow returns for received/completed orders
     if (!['received', 'completed'].includes(purchaseOrder.status)) {
       throw new BadRequestException(
-        'Return hanya dapat dilakukan untuk Purchase Order dengan status received atau completed',
+        'Return hanya dapat dilakukan for Purchase Order dengan status received atau completed',
       );
     }
 
@@ -338,6 +362,12 @@ export class PurchaseReturnsService {
                 },
               },
             },
+          },
+        },
+        creator: {
+          select: {
+            id: true,
+            name: true,
           },
         },
       },
@@ -446,6 +476,12 @@ export class PurchaseReturnsService {
                 },
               },
             },
+          },
+        },
+        creator: {
+          select: {
+            id: true,
+            name: true,
           },
         },
       },
@@ -557,6 +593,18 @@ export class PurchaseReturnsService {
                 },
               },
             },
+          },
+        },
+        creator: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        approver: {
+          select: {
+            id: true,
+            name: true,
           },
         },
       },

@@ -90,6 +90,12 @@ export class GoodsReceiveService {
               items: true,
             },
           },
+          creator: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
         },
         orderBy,
         skip,
@@ -138,6 +144,12 @@ export class GoodsReceiveService {
                 },
               },
             },
+          },
+        },
+        creator: {
+          select: {
+            id: true,
+            name: true,
           },
         },
       },
@@ -294,6 +306,12 @@ export class GoodsReceiveService {
                   },
                 },
               },
+            },
+          },
+          creator: {
+            select: {
+              id: true,
+              name: true,
             },
           },
         },

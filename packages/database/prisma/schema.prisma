@@ -74,7 +74,8 @@ model User {
   passwordResetTokens PasswordResetToken[]
   purchaseOrders      PurchaseOrder[]
   goodsReceives       GoodsReceive[]
-  purchaseReturns     PurchaseReturn[]
+  purchaseReturns     PurchaseReturn[] @relation("PurchaseReturnCreator")
+  approvedReturns     PurchaseReturn[] @relation("PurchaseReturnApprover")
   supplierPayments    SupplierPayment[]
 
   @@index([username])
@@ -716,7 +717,8 @@ model PurchaseReturn {
 
   order PurchaseOrder        @relation(fields: [orderId], references: [id])
   items PurchaseReturnItem[]
-  creator User               @relation(fields: [createdBy], references: [id])
+  approver     User?             @relation("PurchaseReturnApprover", fields: [approvedBy], references: [id])
+  creator      User              @relation("PurchaseReturnCreator", fields: [createdBy], references: [id])
 
   @@index([orderId])
   @@index([status])

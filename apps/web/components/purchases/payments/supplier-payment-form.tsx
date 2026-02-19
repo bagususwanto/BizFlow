@@ -39,6 +39,7 @@ import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
 import {
   useCreateSupplierPayment,
+  useUpdateSupplierPayment,
   useGeneratePaymentNumber,
 } from '@/hooks/use-supplier-payments';
 import { useSuppliers } from '@/hooks/use-suppliers';
@@ -46,9 +47,14 @@ import { useAccounts } from '@/hooks/use-accounts';
 import { usePurchaseOrders } from '@/hooks/use-purchase-orders';
 import { toast } from 'sonner';
 
-export function SupplierPaymentForm() {
+interface SupplierPaymentFormProps {
+  initialData?: any;
+}
+
+export function SupplierPaymentForm({ initialData }: SupplierPaymentFormProps) {
   const router = useRouter();
   const createMutation = useCreateSupplierPayment();
+  const updateMutation = useUpdateSupplierPayment();
 
   // Generate payment number
   const { data: generatedNumber, refetch: generateNumber } =
@@ -67,6 +73,7 @@ export function SupplierPaymentForm() {
       paymentMethod: 'transfer',
       reference: '',
       notes: '',
+      ...initialData,
     },
   });
 
@@ -96,17 +103,19 @@ export function SupplierPaymentForm() {
       : { page: 1, pageSize: 0 }, // Don't fetch if no supplier
   );
 
-  // Generate number on mount
+  // Generate number on mount if not editing
   useEffect(() => {
-    generateNumber();
-  }, [generateNumber]);
+    if (!initialData) {
+      generateNumber();
+    }
+  }, [generateNumber, initialData]);
 
   // Set payment number when generated
   useEffect(() => {
-    if (generatedNumber) {
+    if (generatedNumber && !initialData) {
       form.setValue('paymentNumber', generatedNumber);
     }
-  }, [generatedNumber, form]);
+  }, [generatedNumber, form, initialData]);
 
   // Handle PO Selection to auto-fill amount
   useEffect(() => {
@@ -126,11 +135,22 @@ export function SupplierPaymentForm() {
   }, [purchaseOrderId, poData, form]);
 
   const onSubmit = (data: CreateSupplierPaymentValues) => {
-    createMutation.mutate(data, {
-      onSuccess: () => {
-        router.push('/purchases/payments');
-      },
-    });
+    if (initialData?.id) {
+      updateMutation.mutate(
+        { id: initialData.id, data },
+        {
+          onSuccess: () => {
+            router.push('/purchases/payments');
+          },
+        },
+      );
+    } else {
+      createMutation.mutate(data, {
+        onSuccess: () => {
+          router.push('/purchases/payments');
+        },
+      });
+    }
   };
 
   const accounts = accountsData || []; // Accounts is array directly based on my service
@@ -408,16 +428,19 @@ export function SupplierPaymentForm() {
             type="button"
             variant="outline"
             onClick={() => router.back()}
-            disabled={createMutation.isPending}
+            disabled={createMutation.isPending || updateMutation.isPending}
           >
             Batal
           </Button>
-          <Button type="submit" disabled={createMutation.isPending}>
-            {createMutation.isPending && (
+          <Button
+            type="submit"
+            disabled={createMutation.isPending || updateMutation.isPending}
+          >
+            {(createMutation.isPending || updateMutation.isPending) && (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             )}
             <Save className="mr-2 h-4 w-4" />
-            Simpan Pembayaran
+            {initialData ? 'Simpan Perubahan' : 'Simpan Pembayaran'}
           </Button>
         </div>
       </form>

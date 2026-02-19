@@ -124,6 +124,7 @@ export interface SupplierPayment {
   supplierId: string;
   purchaseOrderId?: string | null;
   accountId: string;
+  paymentMethod: string;
   paymentDate: Date;
   amount: Decimal;
   reference?: string | null;

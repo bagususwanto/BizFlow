@@ -124,11 +124,11 @@ export const getColumns = ({
                 <Eye className="mr-2 h-4 w-4" /> Detail
               </Link>
             </DropdownMenuItem>
-            <Link href={`/purchases/payments/${payment.id}/edit`}>
-              <DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href={`/purchases/payments/${payment.id}/edit`}>
                 <Edit className="mr-2 h-4 w-4" /> Edit
-              </DropdownMenuItem>
-            </Link>
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="text-destructive focus:text-destructive"

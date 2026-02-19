@@ -11,6 +11,7 @@ import {
   Edit,
   CreditCard,
   Building,
+  Clock,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
@@ -156,6 +157,16 @@ export default function SupplierPaymentDetailPage({
                   <div className="text-sm text-muted-foreground">
                     {payment.supplier?.code}
                   </div>
+                  {payment.supplier?.address && (
+                    <div className="text-sm text-muted-foreground mt-1">
+                      {payment.supplier.address}
+                    </div>
+                  )}
+                  {payment.supplier?.phone && (
+                    <div className="text-sm text-muted-foreground">
+                      {payment.supplier.phone}
+                    </div>
+                  )}
                 </div>
               </div>
             </CardContent>
@@ -179,12 +190,20 @@ export default function SupplierPaymentDetailPage({
                 <span className="text-muted-foreground">Akun:</span>
                 <span className="font-medium">{payment.account?.name}</span>
               </div>
-              {payment.reference && (
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="text-muted-foreground ml-6">Referensi:</span>
-                  <span className="font-medium">{payment.reference}</span>
+              {payment.account?.bankName && (
+                <div className="flex items-center gap-2 text-sm pl-6">
+                  <span className="text-muted-foreground">
+                    {payment.account.bankName}
+                    {payment.account.accountNumber
+                      ? ` - ${payment.account.accountNumber}`
+                      : ''}
+                  </span>
                 </div>
               )}
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-muted-foreground ml-6">Referensi:</span>
+                <span className="font-medium">{payment.reference || '-'}</span>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -193,12 +212,25 @@ export default function SupplierPaymentDetailPage({
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>Catatan</CardTitle>
+              <CardTitle>Catatan & Lainnya</CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                {payment.notes || '-'}
-              </p>
+            <CardContent className="space-y-4">
+              <div>
+                <span className="text-sm font-medium">Catatan:</span>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {payment.notes || '-'}
+                </p>
+              </div>
+              <Separator />
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Clock className="h-4 w-4" />
+                <span>Dibuat pada:</span>
+                <span>
+                  {format(new Date(payment.createdAt), 'dd MMMM yyyy HH:mm', {
+                    locale: idLocale,
+                  })}
+                </span>
+              </div>
             </CardContent>
           </Card>
 

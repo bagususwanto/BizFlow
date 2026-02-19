@@ -51,7 +51,8 @@ export function SupplierPaymentForm() {
   const createMutation = useCreateSupplierPayment();
 
   // Generate payment number
-  const { data: generatedNumber } = useGeneratePaymentNumber();
+  const { data: generatedNumber, refetch: generateNumber } =
+    useGeneratePaymentNumber();
 
   // Form setup
   const form = useForm<CreateSupplierPaymentValues>({
@@ -94,6 +95,11 @@ export function SupplierPaymentForm() {
         }
       : { page: 1, pageSize: 0 }, // Don't fetch if no supplier
   );
+
+  // Generate number on mount
+  useEffect(() => {
+    generateNumber();
+  }, [generateNumber]);
 
   // Set payment number when generated
   useEffect(() => {
@@ -164,7 +170,7 @@ export function SupplierPaymentForm() {
               name="paymentDate"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Tanggal Pembayaran</FormLabel>
+                  <FormLabel required>Tanggal Pembayaran</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -213,7 +219,7 @@ export function SupplierPaymentForm() {
               name="supplierId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Pemasok</FormLabel>
+                  <FormLabel required>Pemasok</FormLabel>
                   <Select
                     onValueChange={(val) => {
                       field.onChange(val);
@@ -246,7 +252,7 @@ export function SupplierPaymentForm() {
               name="purchaseOrderId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel optional>Purchase Order (Opsional)</FormLabel>
+                  <FormLabel optional>Purchase Order</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value || undefined}
@@ -284,7 +290,7 @@ export function SupplierPaymentForm() {
               name="accountId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Akun Keuangan</FormLabel>
+                  <FormLabel required>Akun Keuangan</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -314,7 +320,7 @@ export function SupplierPaymentForm() {
               name="paymentMethod"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Metode Pembayaran</FormLabel>
+                  <FormLabel required>Metode Pembayaran</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -343,7 +349,7 @@ export function SupplierPaymentForm() {
               name="amount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Jumlah Bayar</FormLabel>
+                  <FormLabel required>Jumlah Bayar</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -366,7 +372,7 @@ export function SupplierPaymentForm() {
                   <FormLabel optional>No. Referensi / Bukti</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Contoh: No. Transfer"
+                      placeholder="Contoh: 123456789"
                       {...field}
                       value={field.value || ''}
                     />

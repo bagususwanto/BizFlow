@@ -156,9 +156,9 @@ export function SupplierPaymentForm({ initialData }: SupplierPaymentFormProps) {
   const accounts = accountsData || []; // Accounts is array directly based on my service
   const purchaseOrders = poData?.data || [];
 
-  // Filter POs to show only unpaid/partial
+  // Filter POs to show only unpaid/partial OR the currently selected PO (for editing/viewing)
   const availablePOs = purchaseOrders.filter(
-    (po) => po.paymentStatus !== 'paid',
+    (po) => po.paymentStatus !== 'paid' || po.id === purchaseOrderId,
   );
 
   return (

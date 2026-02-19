@@ -1,5 +1,7 @@
 'use client';
 
+// Force type re-evaluation
+
 import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal, Eye, Trash, Edit } from 'lucide-react';
 import Link from 'next/link';
@@ -75,7 +77,7 @@ export const getColumns = ({
   {
     id: 'purchaseOrder',
     header: 'Ref. PO',
-    cell: ({ row }) => row.original.purchaseOrder?.orderNumber || '-',
+    cell: ({ row }) => row.original.purchaseOrder?.orderNumber,
   },
   {
     id: 'account',

@@ -10,7 +10,7 @@ export const createSupplierPaymentSchema = z.object({
   purchaseOrderId: z.string().optional().nullable(),
   accountId: z.string().min(1, 'Akun pembayaran wajib dipilih'),
   paymentDate: z.string().min(1, 'Tanggal pembayaran wajib diisi'),
-  amount: z.coerce
+  amount: z
     .number()
     .positive({ message: 'Jumlah pembayaran harus lebih dari 0' }),
   paymentMethod: z.enum(['cash', 'qris', 'transfer', 'credit', 'debit'], {

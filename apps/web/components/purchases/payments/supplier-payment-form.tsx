@@ -61,7 +61,7 @@ export function SupplierPaymentForm() {
       supplierId: '',
       purchaseOrderId: '',
       accountId: '',
-      paymentDate: new Date(),
+      paymentDate: new Date().toISOString(),
       amount: 0,
       paymentMethod: 'transfer',
       reference: '',
@@ -74,7 +74,7 @@ export function SupplierPaymentForm() {
   const purchaseOrderId = form.watch('purchaseOrderId');
 
   // Fetch Data
-  const { data: suppliersData, isLoading: isLoadingSuppliers } = useSuppliers({
+  const { suppliers, isLoading: isLoadingSuppliers } = useSuppliers({
     page: 1,
     pageSize: 100, // Fetch enough suppliers
   });
@@ -98,7 +98,7 @@ export function SupplierPaymentForm() {
   // Set payment number when generated
   useEffect(() => {
     if (generatedNumber) {
-      form.setValue('paymentNumber', generatedNumber.paymentNumber);
+      form.setValue('paymentNumber', generatedNumber);
     }
   }, [generatedNumber, form]);
 
@@ -109,7 +109,7 @@ export function SupplierPaymentForm() {
       if (selectedPO) {
         // Auto fill amount with remaining balance (total - paid)
         // Ensure we handle string/number conversion if needed
-        const total = Number(selectedPO.totalAmount);
+        const total = Number(selectedPO.total);
         const paid = Number(selectedPO.paidAmount || 0);
         const remaining = total - paid;
         if (remaining > 0) {
@@ -127,7 +127,6 @@ export function SupplierPaymentForm() {
     });
   };
 
-  const suppliers = suppliersData?.data || [];
   const accounts = accountsData || []; // Accounts is array directly based on my service
   const purchaseOrders = poData?.data || [];
 
@@ -177,7 +176,7 @@ export function SupplierPaymentForm() {
                           )}
                         >
                           {field.value ? (
-                            format(field.value, 'dd MMMM yyyy', {
+                            format(new Date(field.value), 'dd MMMM yyyy', {
                               locale: idLocale,
                             })
                           ) : (
@@ -190,8 +189,12 @@ export function SupplierPaymentForm() {
                     <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
                         mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
+                        selected={
+                          field.value ? new Date(field.value) : undefined
+                        }
+                        onSelect={(date) =>
+                          field.onChange(date ? date.toISOString() : '')
+                        }
                         disabled={(date) =>
                           date > new Date() || date < new Date('1900-01-01')
                         }
@@ -265,7 +268,7 @@ export function SupplierPaymentForm() {
                       {availablePOs.map((po) => (
                         <SelectItem key={po.id} value={po.id}>
                           {po.orderNumber} (Sisa:{' '}
-                          {Number(po.totalAmount) - Number(po.paidAmount || 0)})
+                          {Number(po.total) - Number(po.paidAmount || 0)})
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -293,7 +296,7 @@ export function SupplierPaymentForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {accounts.map((acc: any) => (
+                      {accounts.map((acc) => (
                         <SelectItem key={acc.id} value={acc.id}>
                           {acc.name}
                         </SelectItem>

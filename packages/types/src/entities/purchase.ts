@@ -6,6 +6,7 @@ import type {
 } from './base';
 import type { ProductVariant } from './product';
 import type { Warehouse } from './warehouse';
+import type { Account } from './finance';
 
 // ========================================
 // Supplier Entity
@@ -129,6 +130,11 @@ export interface SupplierPayment {
   notes?: string | null;
   createdBy: string;
   createdAt: Date;
+
+  // Relations
+  supplier?: Supplier;
+  purchaseOrder?: PurchaseOrder | null;
+  account?: Account;
 }
 
 // ========================================

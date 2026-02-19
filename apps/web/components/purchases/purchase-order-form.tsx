@@ -453,7 +453,7 @@ export function PurchaseOrderForm({
                   <FormItem>
                     <FormControl>
                       <Textarea
-                        placeholder="Catatan tambahan untuk supplier..."
+                        placeholder="Catatan tambahan untuk pemasok..."
                         className="resize-none min-h-[100px]"
                         {...field}
                         value={field.value || ''}

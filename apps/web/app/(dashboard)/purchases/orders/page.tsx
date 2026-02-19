@@ -126,7 +126,7 @@ function PurchaseOrdersContent() {
       // Search & Filters
       search={search}
       onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
-      searchPlaceholder="Cari No. PO atau Supplier..."
+      searchPlaceholder="Cari No. PO atau Pemasok..."
       filterValues={{ status }}
       onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
       onReset={() => router.push(pathname)}

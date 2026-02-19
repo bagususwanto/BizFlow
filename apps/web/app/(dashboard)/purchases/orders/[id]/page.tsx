@@ -221,7 +221,7 @@ export default function PurchaseOrderDetailPage({
                   setStatusDialogOpen(true);
                 }}
               >
-                <CheckCircle className="mr-2 h-4 w-4" /> Pesan ke Supplier
+                <CheckCircle className="mr-2 h-4 w-4" /> Pesan ke Pemasok
               </Button>
             </>
           )}
@@ -269,7 +269,7 @@ export default function PurchaseOrderDetailPage({
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>Informasi Supplier</CardTitle>
+              <CardTitle>Informasi Pemasok</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-start gap-4">

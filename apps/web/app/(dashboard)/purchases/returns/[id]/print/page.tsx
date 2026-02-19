@@ -232,7 +232,7 @@ export default function PurchaseReturnPrintPage({
                   (__________________)
                 </p>
                 <p className="text-xs text-gray-500 mt-1">
-                  Supplier / Ekspedisi
+                  Pemasok / Ekspedisi
                 </p>
               </div>
             </div>

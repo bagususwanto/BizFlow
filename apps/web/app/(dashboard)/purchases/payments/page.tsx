@@ -94,7 +94,7 @@ function SupplierPaymentsContent() {
 
   return (
     <DataListPage
-      title="Pembayaran Supplier"
+      title="Pembayaran Pemasok"
       description="Kelola pembayaran utang ke pemasok."
       createLink="/purchases/payments/new"
       createLabel="Buat Pembayaran"
@@ -121,7 +121,7 @@ function SupplierPaymentsContent() {
       // Search
       search={search}
       onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
-      searchPlaceholder="Cari No. Pembayaran, Supplier, PO..."
+      searchPlaceholder="Cari No. Pembayaran, Pemasok, PO..."
       onReset={() => router.push(pathname)}
       // Actions
       onRefresh={refetch}

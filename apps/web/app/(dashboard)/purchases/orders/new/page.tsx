@@ -52,7 +52,7 @@ export default function CreatePurchaseOrderPage() {
           Buat Purchase Order
         </h2>
         <p className="text-muted-foreground">
-          Buat pesanan pembelian baru ke supplier.
+          Buat pesanan pembelian baru ke pemasok.
         </p>
       </div>
 

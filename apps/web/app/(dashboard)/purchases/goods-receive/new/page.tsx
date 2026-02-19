@@ -15,7 +15,7 @@ export default function CreateGoodsReceivePage() {
           Penerimaan Barang Baru
         </h2>
         <p className="text-muted-foreground">
-          Catat penerimaan barang dari supplier berdasarkan Purchase Order.
+          Catat penerimaan barang dari pemasok berdasarkan Purchase Order.
         </p>
       </div>
 

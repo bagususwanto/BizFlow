@@ -12,10 +12,10 @@ export default function CreateSupplierPaymentPage() {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold tracking-tight">
-          Buat Pembayaran Supplier
+          Buat Pembayaran Pemasok
         </h2>
         <p className="text-muted-foreground">
-          Catat pembayaran ke supplier untuk purchase order atau transaksi
+          Catat pembayaran ke pemasok untuk purchase order atau transaksi
           lainnya.
         </p>
       </div>

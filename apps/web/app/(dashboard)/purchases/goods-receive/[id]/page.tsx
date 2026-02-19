@@ -146,7 +146,7 @@ export default function GoodsReceiveDetailPage({
               <div className="flex items-start gap-4">
                 <StoreIcon className="mt-1 h-5 w-5 text-muted-foreground" />
                 <div>
-                  <div className="text-sm text-muted-foreground">Supplier</div>
+                  <div className="text-sm text-muted-foreground">Pemasok</div>
                   <div className="font-medium">
                     {goodsReceive.purchaseOrder?.supplier?.name}
                   </div>

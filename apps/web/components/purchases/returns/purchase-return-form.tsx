@@ -145,7 +145,7 @@ export function PurchaseReturnForm() {
             <div className="relative flex-1">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Cari No. PO atau Supplier..."
+                placeholder="Cari No. PO atau Pemasok..."
                 value={poSearch}
                 onChange={(e) => setPoSearch(e.target.value)}
                 className="pl-8"
@@ -158,7 +158,7 @@ export function PurchaseReturnForm() {
               <TableHeader>
                 <TableRow>
                   <TableHead>No. PO</TableHead>
-                  <TableHead>Supplier</TableHead>
+                  <TableHead>Pemasok</TableHead>
                   <TableHead>Tanggal</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="w-[100px]">Aksi</TableHead>

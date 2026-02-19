@@ -14,6 +14,9 @@ import {
   Clock,
   User,
   Hash,
+  MapPin,
+  Phone,
+  Mail,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
@@ -154,21 +157,29 @@ export default function SupplierPaymentDetailPage({
             <CardContent className="space-y-4">
               <div className="flex items-start gap-4">
                 <StoreIcon className="mt-1 h-5 w-5 text-muted-foreground" />
-                <div>
+                <div className="space-y-1">
                   <div className="font-medium">{payment.supplier?.name}</div>
-                  <div className="text-sm text-muted-foreground">
-                    {payment.supplier?.code}
-                  </div>
+
                   {payment.supplier?.address && (
-                    <div className="text-sm text-muted-foreground mt-1">
-                      {payment.supplier.address}
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <MapPin className="h-3 w-3" />
+                      <span>{payment.supplier.address}</span>
                     </div>
                   )}
-                  {payment.supplier?.phone && (
-                    <div className="text-sm text-muted-foreground">
-                      {payment.supplier.phone}
-                    </div>
-                  )}
+                  <div className="flex flex-wrap gap-x-4 gap-y-1">
+                    {payment.supplier?.phone && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Phone className="h-3 w-3" />
+                        <span>{payment.supplier.phone}</span>
+                      </div>
+                    )}
+                    {payment.supplier?.email && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Mail className="h-3 w-3" />
+                        <span>{payment.supplier.email}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </CardContent>

@@ -15,6 +15,9 @@ import {
   Printer,
   User,
   Clock,
+  MapPin,
+  Phone,
+  Mail,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
@@ -276,26 +279,28 @@ export default function PurchaseOrderDetailPage({
             <CardContent className="space-y-4">
               <div className="flex items-start gap-4">
                 <StoreIcon className="mt-1 h-5 w-5 text-muted-foreground" />
-                <div>
+                <div className="space-y-1">
                   <div className="font-medium">{order.supplier?.name}</div>
-                  <div className="text-sm text-muted-foreground">
-                    {order.supplier?.code}
-                  </div>
                   {order.supplier?.address && (
-                    <div className="text-sm text-muted-foreground mt-1">
-                      {order.supplier.address}
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <MapPin className="h-3 w-3" />
+                      <span>{order.supplier.address}</span>
                     </div>
                   )}
-                  {order.supplier?.phone && (
-                    <div className="text-sm text-muted-foreground">
-                      Telp: {order.supplier.phone}
-                    </div>
-                  )}
-                  {order.supplier?.email && (
-                    <div className="text-sm text-muted-foreground">
-                      Email: {order.supplier.email}
-                    </div>
-                  )}
+                  <div className="flex flex-wrap gap-x-4 gap-y-1">
+                    {order.supplier?.phone && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Phone className="h-3 w-3" />
+                        <span>{order.supplier.phone}</span>
+                      </div>
+                    )}
+                    {order.supplier?.email && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Mail className="h-3 w-3" />
+                        <span>{order.supplier.email}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </CardContent>

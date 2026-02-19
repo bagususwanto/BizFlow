@@ -318,17 +318,19 @@ export default function PurchaseOrderDetailPage({
                 </span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <User className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Dibuat Oleh:</span>
-                <span className="font-medium">{order.createdBy}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
                 <Clock className="h-4 w-4 text-muted-foreground" />
                 <span className="text-muted-foreground">Dibuat Pada:</span>
                 <span className="font-medium">
                   {format(new Date(order.createdAt), 'dd MMMM yyyy HH:mm', {
                     locale: id,
                   })}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <User className="h-4 w-4 text-muted-foreground" />
+                <span className="text-muted-foreground">Dibuat Oleh:</span>
+                <span className="font-medium">
+                  {order.creator?.name || order.createdBy}
                 </span>
               </div>
             </CardContent>

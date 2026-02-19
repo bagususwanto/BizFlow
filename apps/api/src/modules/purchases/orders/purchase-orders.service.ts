@@ -13,7 +13,7 @@ import {
 
 import { PrismaService } from '../../../prisma';
 import { successResponse, paginatedResponse } from '../../../common/utils';
-import { Prisma, PurchaseOrder } from '@bizflow/database';
+import { Prisma } from '@bizflow/database';
 import { ApiResponse } from '@bizflow/types';
 
 @Injectable()
@@ -187,6 +187,12 @@ export class PurchaseOrdersService {
           },
         },
         payments: true,
+        creator: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
 
@@ -313,6 +319,12 @@ export class PurchaseOrdersService {
             },
           },
         },
+        creator: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
 
@@ -422,6 +434,12 @@ export class PurchaseOrdersService {
             },
           },
         },
+        creator: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
 
@@ -474,6 +492,12 @@ export class PurchaseOrdersService {
                 product: true,
               },
             },
+          },
+        },
+        creator: {
+          select: {
+            id: true,
+            name: true,
           },
         },
       },

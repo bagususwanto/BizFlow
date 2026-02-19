@@ -72,6 +72,10 @@ model User {
   auditLogs           AuditLog[]
   salesOrders         SalesOrder[]
   passwordResetTokens PasswordResetToken[]
+  purchaseOrders      PurchaseOrder[]
+  goodsReceives       GoodsReceive[]
+  purchaseReturns     PurchaseReturn[]
+  supplierPayments    SupplierPayment[]
 
   @@index([username])
   @@index([roleId])
@@ -639,6 +643,7 @@ model PurchaseOrder {
   goodsReceives GoodsReceive[]
   returns       PurchaseReturn[]
   payments      SupplierPayment[]
+  creator       User                @relation(fields: [createdBy], references: [id])
 
   @@index([orderNumber])
   @@index([supplierId])
@@ -676,6 +681,7 @@ model GoodsReceive {
   purchaseOrder PurchaseOrder      @relation(fields: [purchaseOrderId], references: [id])
   warehouse     Warehouse          @relation(fields: [warehouseId], references: [id])
   items         GoodsReceiveItem[]
+  creator       User               @relation(fields: [createdBy], references: [id])
 
   @@index([purchaseOrderId])
   @@index([warehouseId])
@@ -710,6 +716,7 @@ model PurchaseReturn {
 
   order PurchaseOrder        @relation(fields: [orderId], references: [id])
   items PurchaseReturnItem[]
+  creator User               @relation(fields: [createdBy], references: [id])
 
   @@index([orderId])
   @@index([status])
@@ -745,6 +752,7 @@ model SupplierPayment {
   supplier      Supplier       @relation(fields: [supplierId], references: [id])
   purchaseOrder PurchaseOrder? @relation(fields: [purchaseOrderId], references: [id])
   account       Account        @relation(fields: [accountId], references: [id])
+  creator       User           @relation(fields: [createdBy], references: [id])
 
   @@index([supplierId])
   @@index([purchaseOrderId])

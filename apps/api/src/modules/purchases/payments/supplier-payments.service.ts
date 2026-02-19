@@ -176,6 +176,12 @@ export class SupplierPaymentsService {
           },
         },
         account: true,
+        creator: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
 
@@ -299,6 +305,12 @@ export class SupplierPaymentsService {
           supplier: true,
           purchaseOrder: true,
           account: true,
+          creator: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
         },
       });
 
@@ -435,6 +447,12 @@ export class SupplierPaymentsService {
           supplier: true,
           purchaseOrder: true,
           account: true,
+          creator: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
         },
       });
     });

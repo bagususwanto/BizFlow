@@ -7,6 +7,7 @@ import type {
 import type { ProductVariant } from './product';
 import type { Warehouse } from './warehouse';
 import type { Account } from './finance';
+import type { User } from './user';
 
 // ========================================
 // Supplier Entity
@@ -52,6 +53,7 @@ export interface PurchaseOrder extends BaseEntity {
   goodsReceives?: GoodsReceive[];
   returns?: PurchaseReturn[];
   payments?: SupplierPayment[];
+  creator?: User;
 }
 
 export interface PurchaseOrderItem {
@@ -136,6 +138,7 @@ export interface SupplierPayment {
   supplier?: Supplier;
   purchaseOrder?: PurchaseOrder | null;
   account?: Account;
+  creator?: User;
 }
 
 // ========================================

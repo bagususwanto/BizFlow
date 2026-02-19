@@ -12,6 +12,7 @@ import {
   CreditCard,
   Building,
   Clock,
+  User,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
@@ -230,6 +231,11 @@ export default function SupplierPaymentDetailPage({
                     locale: idLocale,
                   })}
                 </span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <User className="h-4 w-4" />
+                <span>Dibuat oleh:</span>
+                <span>{payment.creator?.name || payment.createdBy}</span>
               </div>
             </CardContent>
           </Card>

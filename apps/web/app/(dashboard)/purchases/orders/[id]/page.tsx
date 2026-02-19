@@ -173,7 +173,7 @@ export default function PurchaseOrderDetailPage({
             </h1>
             <div className="flex items-center gap-2 text-muted-foreground">
               <span>
-                {format(new Date(order.createdAt), 'dd MMMM yyyy', {
+                {format(new Date(order.createdAt), 'dd MMMM yyyy HH:mm', {
                   locale: id,
                 })}
               </span>
@@ -279,23 +279,23 @@ export default function PurchaseOrderDetailPage({
                   <div className="text-sm text-muted-foreground">
                     {order.supplier?.code}
                   </div>
+                  {order.supplier?.address && (
+                    <div className="text-sm text-muted-foreground mt-1">
+                      {order.supplier.address}
+                    </div>
+                  )}
+                  {order.supplier?.phone && (
+                    <div className="text-sm text-muted-foreground">
+                      Telp: {order.supplier.phone}
+                    </div>
+                  )}
+                  {order.supplier?.email && (
+                    <div className="text-sm text-muted-foreground">
+                      Email: {order.supplier.email}
+                    </div>
+                  )}
                 </div>
               </div>
-              {order.supplier?.phone && (
-                <div className="text-sm text-muted-foreground">
-                  Telp: {order.supplier?.phone}
-                </div>
-              )}
-              {order.supplier?.email && (
-                <div className="text-sm text-muted-foreground">
-                  Email: {order.supplier?.email}
-                </div>
-              )}
-              {order.supplier?.address && (
-                <div className="text-sm text-muted-foreground">
-                  Alamat: {order.supplier?.address}
-                </div>
-              )}
             </CardContent>
           </Card>
 
@@ -313,6 +313,18 @@ export default function PurchaseOrderDetailPage({
                         locale: id,
                       })
                     : '-'}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-muted-foreground ml-6">Dibuat Oleh:</span>
+                <span className="font-medium">{order.createdBy}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-muted-foreground ml-6">Dibuat Pada:</span>
+                <span className="font-medium">
+                  {format(new Date(order.createdAt), 'dd MMMM yyyy HH:mm', {
+                    locale: id,
+                  })}
                 </span>
               </div>
             </CardContent>

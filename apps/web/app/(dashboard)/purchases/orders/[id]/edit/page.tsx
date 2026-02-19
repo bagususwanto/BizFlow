@@ -54,6 +54,10 @@ export default function EditPurchaseOrderPage({
     expectedDate: purchaseOrder.expectedDate
       ? new Date(purchaseOrder.expectedDate)
       : undefined,
+    discountPercent: Number(purchaseOrder.discountPercent),
+    discountAmount: Number(purchaseOrder.discountAmount),
+    taxPercent: Number(purchaseOrder.taxPercent),
+    taxAmount: Number(purchaseOrder.taxAmount),
     items: (purchaseOrder.items || []).map((item: any) => ({
       variantId: item.variantId,
       quantity: Number(item.quantity),

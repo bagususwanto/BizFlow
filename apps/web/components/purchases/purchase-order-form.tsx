@@ -126,7 +126,18 @@ export function PurchaseOrderForm({
   const total = taxableAmount + taxAmount;
 
   async function onSubmit(values: z.input<typeof createPurchaseOrderSchema>) {
-    const data = values as CreatePurchaseOrderValues;
+    // Recalculate discountAmount to ensure consistency with discountPercent
+    const items = values.items || [];
+    const subtotal = items.reduce((acc, item) => {
+      return acc + (item.quantity || 0) * (item.unitPrice || 0);
+    }, 0);
+    const discountAmount = (subtotal * (values.discountPercent || 0)) / 100;
+
+    const data = {
+      ...values,
+      discountAmount,
+    } as CreatePurchaseOrderValues;
+
     setIsSubmitting(true);
     try {
       if (initialData?.id) {

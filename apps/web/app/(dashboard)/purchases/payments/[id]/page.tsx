@@ -13,6 +13,7 @@ import {
   Building,
   Clock,
   User,
+  Hash,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
@@ -202,7 +203,8 @@ export default function SupplierPaymentDetailPage({
                 </div>
               )}
               <div className="flex items-center gap-2 text-sm">
-                <span className="text-muted-foreground ml-6">Referensi:</span>
+                <Hash className="h-4 w-4 text-muted-foreground" />
+                <span className="text-muted-foreground">Referensi:</span>
                 <span className="font-medium">{payment.reference || '-'}</span>
               </div>
             </CardContent>

@@ -48,6 +48,10 @@ import {
 import { purchaseOrdersService } from '@/services/purchase-orders.service';
 import { suppliersService } from '@/services/suppliers.service';
 import { productsService } from '@/services/products.service';
+import {
+  useCreatePurchaseOrder,
+  useUpdatePurchaseOrder,
+} from '@/hooks/use-purchase-orders';
 
 interface PurchaseOrderFormProps {
   initialData?: any;
@@ -59,9 +63,12 @@ export function PurchaseOrderForm({
   isCustomOrderNumber = false,
 }: PurchaseOrderFormProps) {
   const router = useRouter();
-  const queryClient = useQueryClient();
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
+
+  // Initialize hooks unconditionally
+  const createMutation = useCreatePurchaseOrder();
+  // Safe to call even without initialData; we just won't call mutate if we don't need it
+  const updateMutation = useUpdatePurchaseOrder(initialData?.id || '');
 
   const form = useForm<z.input<typeof createPurchaseOrderSchema>>({
     resolver: zodResolver(createPurchaseOrderSchema),
@@ -139,26 +146,14 @@ export function PurchaseOrderForm({
       discountAmount,
     } as CreatePurchaseOrderValues;
 
-    setIsSubmitting(true);
-    try {
-      if (initialData?.id) {
-        await purchaseOrdersService.update(initialData.id, data);
-        toast.success('Purchase Order berhasil diperbarui');
-      } else {
-        await purchaseOrdersService.create(data);
-        toast.success('Purchase Order berhasil dibuat');
-      }
-      await queryClient.invalidateQueries({
-        queryKey: ['purchase-orders'],
-        refetchType: 'all',
-      });
-      router.push('/purchases/orders');
-    } catch (error: any) {
-      toast.error(error.message || 'Terjadi kesalahan');
-    } finally {
-      setIsSubmitting(false);
+    if (initialData?.id) {
+      updateMutation.mutate(data);
+    } else {
+      createMutation.mutate(data);
     }
   }
+
+  const isSubmitting = createMutation.isPending || updateMutation.isPending;
 
   return (
     <Form {...form}>

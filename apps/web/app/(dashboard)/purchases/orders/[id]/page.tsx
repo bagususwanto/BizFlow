@@ -55,6 +55,10 @@ import { LoadingState } from '@/components/common/loading-state';
 import { ErrorState } from '@/components/common/error-state';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
+import {
+  useDeletePurchaseOrder,
+  useUpdatePurchaseOrderStatus,
+} from '@/hooks/use-purchase-orders';
 
 export default function PurchaseOrderDetailPage({
   params,
@@ -66,7 +70,6 @@ export default function PurchaseOrderDetailPage({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [statusDialogOpen, setStatusDialogOpen] = useState(false);
   const [nextStatus, setNextStatus] = useState<string | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
 
   const {
     data: order,
@@ -77,6 +80,9 @@ export default function PurchaseOrderDetailPage({
     queryKey: ['purchase-orders', resolvedParams.id],
     queryFn: () => purchaseOrdersService.getById(resolvedParams.id),
   });
+
+  const deleteMutation = useDeletePurchaseOrder();
+  const updateStatusMutation = useUpdatePurchaseOrderStatus(resolvedParams.id);
 
   useBreadcrumb(
     `/purchases/orders/${resolvedParams.id}`,
@@ -100,33 +106,35 @@ export default function PurchaseOrderDetailPage({
     );
   }
 
-  const handleDelete = async () => {
-    try {
-      setIsDeleting(true);
-      await purchaseOrdersService.delete(order.id);
-      toast.success('Purchase Order berhasil dihapus');
-      router.push('/purchases/orders');
-    } catch (error: any) {
-      toast.error(error.message || 'Gagal menghapus Purchase Order');
-      setIsDeleting(false);
-    }
+  const handleDelete = () => {
+    deleteMutation.mutate(order.id, {
+      onSuccess: () => {
+        setDeleteDialogOpen(false);
+        // Routing is handled in the hook onSuccess
+      },
+      onError: () => {
+        setDeleteDialogOpen(false);
+      },
+    });
   };
 
-  const handleUpdateStatus = async () => {
+  const handleUpdateStatus = () => {
     if (!nextStatus) return;
 
-    try {
-      await purchaseOrdersService.updateStatus(order.id, {
-        status: nextStatus as any,
-      });
-      toast.success(`Status berhasil diperbarui ke ${nextStatus}`);
-      refetch();
-    } catch (error: any) {
-      toast.error(error.message || 'Gagal memperbarui status');
-    } finally {
-      setStatusDialogOpen(false);
-      setNextStatus(null);
-    }
+    updateStatusMutation.mutate(
+      { status: nextStatus as any },
+      {
+        onSuccess: () => {
+          setStatusDialogOpen(false);
+          setNextStatus(null);
+          refetch(); // Ensure the local query gets the fresh data
+        },
+        onError: () => {
+          setStatusDialogOpen(false);
+          setNextStatus(null);
+        },
+      },
+    );
   };
 
   const statusBadgeVariant = (status: string) => {
@@ -535,7 +543,7 @@ export default function PurchaseOrderDetailPage({
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         onConfirm={handleDelete}
-        isDeleting={isDeleting}
+        isDeleting={deleteMutation.isPending}
         title="Hapus Purchase Order?"
         description="Apakah Anda yakin ingin menghapus Purchase Order ini? Tindakan ini tidak dapat dibatalkan."
       />

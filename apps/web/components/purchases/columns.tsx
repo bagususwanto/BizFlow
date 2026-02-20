@@ -32,12 +32,15 @@ const statusBadgeVariant = (status: string) => {
   switch (status) {
     case PurchaseOrderStatus.DRAFT:
       return 'secondary';
+    case PurchaseOrderStatus.PENDING_APPROVAL:
+      return 'warning';
+    case PurchaseOrderStatus.APPROVED:
     case PurchaseOrderStatus.CONFIRMED:
     case 'ordered':
       return 'default';
     case PurchaseOrderStatus.PARTIAL:
     case 'received':
-      return 'warning';
+      return 'outline'; // Or consider choosing another distinct color for partial/received
     case PurchaseOrderStatus.COMPLETED:
       return 'success';
     case PurchaseOrderStatus.CANCELLED:

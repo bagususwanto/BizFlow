@@ -72,7 +72,8 @@ model User {
   auditLogs           AuditLog[]
   salesOrders         SalesOrder[]
   passwordResetTokens PasswordResetToken[]
-  purchaseOrders      PurchaseOrder[]
+  purchaseOrders      PurchaseOrder[]    @relation("PurchaseOrderCreator")
+  approvedPurchaseOrders PurchaseOrder[] @relation("PurchaseOrderApprover")
   goodsReceives       GoodsReceive[]
   purchaseReturns     PurchaseReturn[] @relation("PurchaseReturnCreator")
   approvedReturns     PurchaseReturn[] @relation("PurchaseReturnApprover")
@@ -635,6 +636,8 @@ model PurchaseOrder {
   total           Decimal
   paidAmount      Decimal   @default(0)
   notes           String?
+  approvedBy      String?
+  approvedAt      DateTime?
   createdBy       String
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
@@ -644,7 +647,8 @@ model PurchaseOrder {
   goodsReceives GoodsReceive[]
   returns       PurchaseReturn[]
   payments      SupplierPayment[]
-  creator       User                @relation(fields: [createdBy], references: [id])
+  creator       User                @relation("PurchaseOrderCreator", fields: [createdBy], references: [id])
+  approver      User?               @relation("PurchaseOrderApprover", fields: [approvedBy], references: [id])
 
   @@index([orderNumber])
   @@index([supplierId])

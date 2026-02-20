@@ -307,6 +307,8 @@ export enum RefundMethod {
 
 export enum PurchaseOrderStatus {
   DRAFT = 'draft',
+  PENDING_APPROVAL = 'pending_approval',
+  APPROVED = 'approved',
   ORDERED = 'ordered',
   CONFIRMED = 'confirmed', // @deprecated use ORDERED
   PARTIAL = 'partial',

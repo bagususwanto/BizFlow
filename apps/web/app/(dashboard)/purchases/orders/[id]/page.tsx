@@ -133,12 +133,15 @@ export default function PurchaseOrderDetailPage({
     switch (status) {
       case PurchaseOrderStatus.DRAFT:
         return 'secondary';
+      case PurchaseOrderStatus.PENDING_APPROVAL:
+        return 'warning';
+      case PurchaseOrderStatus.APPROVED:
       case PurchaseOrderStatus.CONFIRMED:
       case 'ordered':
         return 'default';
       case PurchaseOrderStatus.PARTIAL:
       case 'received':
-        return 'warning';
+        return 'outline';
       case PurchaseOrderStatus.COMPLETED:
         return 'success';
       case PurchaseOrderStatus.CANCELLED:
@@ -219,6 +222,50 @@ export default function PurchaseOrderDetailPage({
                 onClick={() => setDeleteDialogOpen(true)}
               >
                 <Trash className="mr-2 h-4 w-4" /> Hapus
+              </Button>
+              <Button
+                onClick={() => {
+                  setNextStatus('pending_approval');
+                  setStatusDialogOpen(true);
+                }}
+              >
+                <CheckCircle className="mr-2 h-4 w-4" /> Ajukan Approval
+              </Button>
+            </>
+          )}
+
+          {order.status === 'pending_approval' && (
+            <>
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  setNextStatus('draft'); // Reject back to draft
+                  setStatusDialogOpen(true);
+                }}
+              >
+                <XCircle className="mr-2 h-4 w-4" /> Tolak PO
+              </Button>
+              <Button
+                onClick={() => {
+                  setNextStatus('approved');
+                  setStatusDialogOpen(true);
+                }}
+              >
+                <CheckCircle className="mr-2 h-4 w-4" /> Approve PO
+              </Button>
+            </>
+          )}
+
+          {order.status === 'approved' && (
+            <>
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  setNextStatus('cancelled');
+                  setStatusDialogOpen(true);
+                }}
+              >
+                <XCircle className="mr-2 h-4 w-4" /> Batalkan
               </Button>
               <Button
                 onClick={() => {
@@ -338,6 +385,35 @@ export default function PurchaseOrderDetailPage({
                   {order.creator?.name || order.createdBy}
                 </span>
               </div>
+              {order.approver && (
+                <>
+                  <Separator />
+                  <div className="flex items-center gap-2 text-sm">
+                    <User className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-muted-foreground">
+                      Disetujui Oleh:
+                    </span>
+                    <span className="font-medium">{order.approver.name}</span>
+                  </div>
+                  {order.approvedAt && (
+                    <div className="flex items-center gap-2 text-sm">
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-muted-foreground">
+                        Disetujui Pada:
+                      </span>
+                      <span className="font-medium">
+                        {format(
+                          new Date(order.approvedAt),
+                          'dd MMMM yyyy HH:mm',
+                          {
+                            locale: id,
+                          },
+                        )}
+                      </span>
+                    </div>
+                  )}
+                </>
+              )}
             </CardContent>
           </Card>
         </div>

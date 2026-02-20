@@ -29,7 +29,7 @@ export interface Supplier extends ActiveEntity {
 // Purchase Order Entities
 // ========================================
 
-export interface PurchaseOrder extends BaseEntity {
+export interface PurchaseOrder extends BaseEntity, ApprovableEntity {
   orderNumber: string;
   supplierId: string;
   expectedDate?: Date | null;
@@ -54,6 +54,7 @@ export interface PurchaseOrder extends BaseEntity {
   returns?: PurchaseReturn[];
   payments?: SupplierPayment[];
   creator?: User;
+  approver?: User;
 }
 
 export interface PurchaseOrderItem {

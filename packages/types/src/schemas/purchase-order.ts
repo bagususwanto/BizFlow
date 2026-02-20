@@ -12,7 +12,15 @@ const purchaseOrderBaseSchema = z.object({
   supplierId: z.string().min(1, 'Supplier wajib dipilih'),
   expectedDate: z.string().datetime().or(z.date()).optional().nullable(),
   status: z
-    .enum(['draft', 'ordered', 'received', 'completed', 'cancelled'])
+    .enum([
+      'draft',
+      'pending_approval',
+      'approved',
+      'ordered',
+      'received',
+      'completed',
+      'cancelled',
+    ])
     .optional()
     .default('draft'),
   discountPercent: z.number().min(0).max(100).optional().default(0),
@@ -38,14 +46,30 @@ export const queryPurchaseOrdersSchema = z.object({
   sortOrder: z.enum(['asc', 'desc']).optional(),
   search: z.string().optional(),
   status: z
-    .enum(['draft', 'ordered', 'received', 'completed', 'cancelled'])
+    .enum([
+      'draft',
+      'pending_approval',
+      'approved',
+      'ordered',
+      'received',
+      'completed',
+      'cancelled',
+    ])
     .optional(),
   paymentStatus: z.enum(['unpaid', 'partial', 'paid']).optional(),
   supplierId: z.string().optional(),
 });
 
 export const updatePurchaseOrderStatusSchema = z.object({
-  status: z.enum(['draft', 'ordered', 'received', 'completed', 'cancelled']),
+  status: z.enum([
+    'draft',
+    'pending_approval',
+    'approved',
+    'ordered',
+    'received',
+    'completed',
+    'cancelled',
+  ]),
 });
 
 export type CreatePurchaseOrderValues = z.infer<

@@ -101,6 +101,12 @@ export class PurchaseOrdersService {
               payments: true,
             },
           },
+          approver: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
         },
         orderBy,
         skip,
@@ -128,6 +134,8 @@ export class PurchaseOrdersService {
     const [
       totalOrders,
       draftOrders,
+      pendingApprovalOrders,
+      approvedOrders,
       orderedOrders,
       receivedOrders,
       completedOrders,
@@ -135,6 +143,10 @@ export class PurchaseOrdersService {
     ] = await Promise.all([
       this.prisma.purchaseOrder.count(),
       this.prisma.purchaseOrder.count({ where: { status: 'draft' } }),
+      this.prisma.purchaseOrder.count({
+        where: { status: 'pending_approval' },
+      }),
+      this.prisma.purchaseOrder.count({ where: { status: 'approved' } }),
       this.prisma.purchaseOrder.count({ where: { status: 'ordered' } }),
       this.prisma.purchaseOrder.count({ where: { status: 'received' } }),
       this.prisma.purchaseOrder.count({ where: { status: 'completed' } }),
@@ -144,6 +156,8 @@ export class PurchaseOrdersService {
     return {
       totalOrders,
       draftOrders,
+      pendingApprovalOrders,
+      approvedOrders,
       orderedOrders,
       receivedOrders,
       completedOrders,
@@ -188,6 +202,12 @@ export class PurchaseOrdersService {
         },
         payments: true,
         creator: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        approver: {
           select: {
             id: true,
             name: true,
@@ -464,7 +484,9 @@ export class PurchaseOrdersService {
 
     // Validate status transitions
     const validTransitions: Record<string, string[]> = {
-      draft: ['ordered', 'cancelled'],
+      draft: ['pending_approval', 'ordered', 'cancelled'],
+      pending_approval: ['approved', 'draft', 'cancelled'], // Can be returned to draft (rejected)
+      approved: ['ordered', 'cancelled'],
       ordered: ['received', 'cancelled'],
       received: ['completed', 'cancelled'],
       completed: [],
@@ -478,11 +500,25 @@ export class PurchaseOrdersService {
       );
     }
 
+    let updateData: any = {
+      status: dto.status,
+    };
+
+    if (dto.status === 'approved') {
+      updateData.approvedBy = userId;
+      updateData.approvedAt = new Date();
+    } else if (
+      dto.status === 'draft' &&
+      existing.status === 'pending_approval'
+    ) {
+      // Clear approval data if rejected back to draft
+      updateData.approvedBy = null;
+      updateData.approvedAt = null;
+    }
+
     const purchaseOrder = await this.prisma.purchaseOrder.update({
       where: { id },
-      data: {
-        status: dto.status,
-      },
+      data: updateData,
       include: {
         supplier: true,
         items: {
@@ -495,6 +531,12 @@ export class PurchaseOrdersService {
           },
         },
         creator: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        approver: {
           select: {
             id: true,
             name: true,

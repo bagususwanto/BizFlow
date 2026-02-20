@@ -63,7 +63,10 @@ class FetchClient {
   }
 
   async get<T>(endpoint: string, options?: FetchOptions): Promise<T> {
-    return this.request<T>(endpoint, { ...options, method: 'GET' });
+    return this.request<T>(endpoint, {
+      ...options,
+      method: 'GET',
+    });
   }
 
   async post<T>(

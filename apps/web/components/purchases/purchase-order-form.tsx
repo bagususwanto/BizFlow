@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { CalendarIcon, Trash, Plus, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
@@ -59,6 +59,7 @@ export function PurchaseOrderForm({
   isCustomOrderNumber = false,
 }: PurchaseOrderFormProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
 
@@ -147,8 +148,11 @@ export function PurchaseOrderForm({
         await purchaseOrdersService.create(data);
         toast.success('Purchase Order berhasil dibuat');
       }
+      await queryClient.invalidateQueries({
+        queryKey: ['purchase-orders'],
+        refetchType: 'all',
+      });
       router.push('/purchases/orders');
-      router.refresh();
     } catch (error: any) {
       toast.error(error.message || 'Terjadi kesalahan');
     } finally {

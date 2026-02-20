@@ -40,9 +40,12 @@ export function useCreatePurchaseOrder() {
       purchaseOrdersService.create(data),
     onSuccess: async () => {
       toast.success('Purchase Order berhasil dibuat');
-      await queryClient.invalidateQueries({ queryKey: ['purchase-orders'] });
-      router.refresh();
+      await queryClient.invalidateQueries({
+        queryKey: ['purchase-orders'],
+        refetchType: 'all',
+      });
       router.push('/purchases/orders');
+      router.refresh(); // Refresh client router cache
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -59,12 +62,16 @@ export function useUpdatePurchaseOrder(id: string) {
       purchaseOrdersService.update(id, data),
     onSuccess: async () => {
       toast.success('Purchase Order berhasil diperbarui');
-      await queryClient.invalidateQueries({ queryKey: ['purchase-orders'] });
+      await queryClient.invalidateQueries({
+        queryKey: ['purchase-orders'],
+        refetchType: 'all',
+      });
       await queryClient.invalidateQueries({
         queryKey: ['purchase-orders', id],
+        refetchType: 'all',
       });
-      router.refresh();
       router.push('/purchases/orders');
+      router.refresh(); // Refresh client router cache
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -77,9 +84,18 @@ export function useDeletePurchaseOrder() {
 
   return useMutation({
     mutationFn: (id: string) => purchaseOrdersService.delete(id),
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success('Purchase Order berhasil dihapus');
-      queryClient.invalidateQueries({ queryKey: ['purchase-orders'] });
+      await queryClient.invalidateQueries({
+        queryKey: ['purchase-orders'],
+        refetchType: 'all',
+      });
+      const router = (window as any).next?.router;
+      if (!router) {
+        window.location.reload();
+      } else {
+        router.reload();
+      }
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -89,15 +105,20 @@ export function useDeletePurchaseOrder() {
 
 export function useUpdatePurchaseOrderStatus(id: string) {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   return useMutation({
     mutationFn: (data: UpdatePurchaseOrderStatusValues) =>
       purchaseOrdersService.updateStatus(id, data),
     onSuccess: async () => {
       toast.success('Status Purchase Order berhasil diperbarui');
-      await queryClient.invalidateQueries({ queryKey: ['purchase-orders'] });
+      await queryClient.invalidateQueries({
+        queryKey: ['purchase-orders'],
+        refetchType: 'all',
+      });
       await queryClient.invalidateQueries({
         queryKey: ['purchase-orders', id],
+        refetchType: 'all',
       });
     },
     onError: (error: Error) => {

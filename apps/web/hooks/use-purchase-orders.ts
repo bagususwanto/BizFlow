@@ -81,6 +81,7 @@ export function useUpdatePurchaseOrder(id: string) {
 
 export function useDeletePurchaseOrder() {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   return useMutation({
     mutationFn: (id: string) => purchaseOrdersService.delete(id),
@@ -90,12 +91,7 @@ export function useDeletePurchaseOrder() {
         queryKey: ['purchase-orders'],
         refetchType: 'all',
       });
-      const router = (window as any).next?.router;
-      if (!router) {
-        window.location.reload();
-      } else {
-        router.reload();
-      }
+      router.refresh();
     },
     onError: (error: Error) => {
       toast.error(error.message);

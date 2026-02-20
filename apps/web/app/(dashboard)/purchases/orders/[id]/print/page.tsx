@@ -214,23 +214,36 @@ export default function PurchaseOrderPrintPage({
           )}
 
           {/* Signature Section */}
-          <div className="grid grid-cols-2 gap-16 mt-12">
-            <div className="text-center">
-              <p className="text-sm text-gray-600 mb-16">Dibuat oleh,</p>
-              <div className="border-t border-gray-400 pt-2">
-                <p className="text-sm font-medium text-gray-700">
-                  (__________________)
+          <div className="grid grid-cols-2 gap-16 mt-12 mb-8">
+            <div className="flex flex-col items-center">
+              <p className="text-sm text-gray-600 mb-20 text-center">
+                Dibuat oleh,
+              </p>
+              <div className="w-48 text-center">
+                <p className="text-sm font-bold text-gray-900 border-b border-gray-900 pb-1">
+                  {order.creator?.name ||
+                    order.createdBy ||
+                    '__________________'}
                 </p>
-                <p className="text-xs text-gray-500 mt-1">Purchasing</p>
+                <p className="text-xs text-gray-500 mt-1">Staf Purchasing</p>
               </div>
             </div>
-            <div className="text-center">
-              <p className="text-sm text-gray-600 mb-16">Disetujui oleh,</p>
-              <div className="border-t border-gray-400 pt-2">
-                <p className="text-sm font-medium text-gray-700">
-                  (__________________)
+            <div className="flex flex-col items-center">
+              <p className="text-sm text-gray-600 mb-20 text-center">
+                Disetujui oleh,
+              </p>
+              <div className="w-48 text-center">
+                <p className="text-sm font-bold text-gray-900 border-b border-gray-900 pb-1">
+                  {order.approver?.name || '__________________'}
                 </p>
                 <p className="text-xs text-gray-500 mt-1">Manager</p>
+                {order.approvedAt && (
+                  <p className="text-[10px] text-gray-400 mt-1">
+                    {format(new Date(order.approvedAt), 'dd/MM/yyyy HH:mm', {
+                      locale: id,
+                    })}
+                  </p>
+                )}
               </div>
             </div>
           </div>

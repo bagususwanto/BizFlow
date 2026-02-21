@@ -17,6 +17,7 @@ import { CustomersModule } from './modules/master-data/customers';
 import { WarehousesModule } from './modules/master-data/warehouses';
 import { SuppliersModule } from './modules/master-data/suppliers';
 import { PromotionsModule } from './modules/master-data/promotions';
+import { PaymentTermsModule } from './modules/master-data/payment-terms/payment-terms.module';
 
 import { StockModule } from './modules/inventory/stock';
 import { TransactionsModule } from './modules/pos/transactions';
@@ -61,6 +62,7 @@ import { AppController } from './app.controller';
     SuppliersModule,
     WarehousesModule,
     PromotionsModule,
+    PaymentTermsModule,
     // Inventory modules
     StockModule,
     // POS modules

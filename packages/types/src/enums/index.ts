@@ -39,6 +39,7 @@ export enum Module {
   CUSTOMERS = 'customers',
   WAREHOUSES = 'warehouses',
   PROMOTIONS = 'promotions',
+  PAYMENT_TERMS = 'payment-terms',
 
   // Business modules
   POS = 'pos',
@@ -134,6 +135,12 @@ export const Permission = {
     Create: 'promotions:create',
     Update: 'promotions:update',
     Delete: 'promotions:delete',
+  },
+  PaymentTerms: {
+    Read: 'payment-terms:read',
+    Create: 'payment-terms:create',
+    Update: 'payment-terms:update',
+    Delete: 'payment-terms:delete',
   },
 
   // ========================================

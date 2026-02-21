@@ -225,7 +225,7 @@ Referensi: [05-purchase-management.md](file:///Users/bagus/Project/personal/BizF
 | **Orders** - PO status workflow | [x]    | High     |
 | **Goods Receive** - Penerimaan  | [x]    | High     |
 | **Returns** - Purchase Return   | [x]    | Medium   |
-| **Payments** - Supplier Payment | [ ]    | High     |
+| **Payments** - Supplier Payment | [x]    | High     |
 | Payment terms management        | [ ]    | Medium   |
 | Purchase history per supplier   | [ ]    | High     |
 | Auto-reorder (stok minimum)     | [ ]    | Low      |

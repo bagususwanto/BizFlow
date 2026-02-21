@@ -5,11 +5,15 @@ import { StockItem } from '@/services/stock.service';
 import { Badge } from '@bizflow/ui';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
+import { DataTableColumnHeader } from '@/components/ui/data-table-column-header';
 
 export const columns: ColumnDef<StockItem>[] = [
   {
+    id: 'name',
     accessorKey: 'variant.product.name',
-    header: 'Produk',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Produk" />
+    ),
     meta: { title: 'Produk' },
     cell: ({ row }) => {
       const variant = row.original.variant;
@@ -29,8 +33,11 @@ export const columns: ColumnDef<StockItem>[] = [
     },
   },
   {
+    id: 'sku',
     accessorKey: 'variant.sku',
-    header: 'SKU',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="SKU" />
+    ),
     meta: { title: 'SKU' },
     cell: ({ row }) => (
       <span className="font-mono text-xs">{row.original.variant.sku}</span>
@@ -47,8 +54,11 @@ export const columns: ColumnDef<StockItem>[] = [
     ),
   },
   {
+    id: 'warehouse',
     accessorKey: 'warehouse.name',
-    header: 'Gudang',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Gudang" />
+    ),
     meta: { title: 'Gudang' },
     cell: ({ row }) => (
       <div className="flex flex-col">
@@ -60,8 +70,13 @@ export const columns: ColumnDef<StockItem>[] = [
     ),
   },
   {
+    id: 'quantity',
     accessorKey: 'quantity',
-    header: () => <div className="text-right">Total Stok</div>,
+    header: ({ column }) => (
+      <div className="flex justify-end pr-2">
+        <DataTableColumnHeader column={column} title="Total Stok" />
+      </div>
+    ),
     meta: { title: 'Total Stok' },
     cell: ({ row }) => {
       const unit = row.original.variant.product.unit.symbol;

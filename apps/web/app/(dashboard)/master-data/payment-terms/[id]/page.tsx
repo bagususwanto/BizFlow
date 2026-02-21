@@ -1,64 +1,77 @@
 'use client';
 
-import { useParams } from 'next/navigation';
-import { usePaymentTerm } from '@/hooks/master-data/use-payment-terms';
+import { use } from 'react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@bizflow/ui';
 import { PaymentTermForm } from '@/components/master-data/payment-terms/payment-term-form';
+import { usePaymentTerm } from '@/hooks/master-data/use-payment-terms';
+import { useBreadcrumb } from '@/contexts/breadcrumb-context';
+import { LoadingState } from '@/components/common/loading-state';
 import { ErrorState } from '@/components/common/error-state';
-import { Loader2 } from 'lucide-react';
 
-export default function EditPaymentTermPage() {
-  const params = useParams();
-  const id = params.id as string;
+export default function EditPaymentTermPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const resolvedParams = use(params);
+  const {
+    data: paymentTerm,
+    isLoading,
+    isError,
+    refetch,
+  } = usePaymentTerm(resolvedParams.id);
 
-  const { data: paymentTerm, isLoading, isError, refetch } = usePaymentTerm(id);
+  // Set dynamic breadcrumb
+  useBreadcrumb(
+    `/master-data/payment-terms/${resolvedParams.id}`,
+    paymentTerm?.name || 'Edit Termin Pembayaran',
+  );
 
   if (isLoading) {
-    return <PaymentTermFormSkeleton />;
+    return (
+      <div className="flex justify-center p-8">
+        <LoadingState />
+      </div>
+    );
   }
 
   if (isError || !paymentTerm) {
     return (
       <ErrorState
-        title="Termin pembayaran tidak ditemukan"
-        message="Data termin pembayaran yang Anda cari tidak ada atau terjadi kesalahan."
+        title="Gagal memuat detail termin pembayaran"
         onRetry={() => refetch()}
       />
     );
   }
 
   return (
-    <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">
-            Edit Termin Pembayaran
-          </h2>
-          <p className="text-muted-foreground">
-            Edit data termin {paymentTerm.name}
-          </p>
-        </div>
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold tracking-tight">
+          Edit Termin Pembayaran
+        </h2>
+        <p className="text-muted-foreground">
+          Ubah informasi termin pembayaran {paymentTerm.name}.
+        </p>
       </div>
 
-      <div className="max-w-3xl">
-        <PaymentTermForm initialData={paymentTerm} isEdit />
-      </div>
-    </div>
-  );
-}
-
-function PaymentTermFormSkeleton() {
-  return (
-    <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
-      <div className="flex items-center space-x-4">
-        <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
-        <div className="space-y-2">
-          <div className="h-6 w-48 bg-muted animate-pulse rounded" />
-          <div className="h-4 w-64 bg-muted animate-pulse rounded" />
-        </div>
-      </div>
-      <div className="max-w-3xl mt-8 flex justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Edit Informasi Termin Pembayaran</CardTitle>
+          <CardDescription>
+            Lakukan perubahan pada data termin pembayaran.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <PaymentTermForm initialData={paymentTerm} isEdit />
+        </CardContent>
+      </Card>
     </div>
   );
 }

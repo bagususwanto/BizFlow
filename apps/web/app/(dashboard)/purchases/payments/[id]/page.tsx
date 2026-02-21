@@ -47,6 +47,10 @@ import { ErrorState } from '@/components/common/error-state';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { useState } from 'react';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
+import {
+  useDeleteSupplierPayment,
+  useSupplierPayment,
+} from '@/hooks/use-supplier-payments';
 
 export default function SupplierPaymentDetailPage({
   params,
@@ -63,10 +67,9 @@ export default function SupplierPaymentDetailPage({
     isLoading,
     refetch,
     isError,
-  } = useQuery({
-    queryKey: ['supplier-payments', resolvedParams.id],
-    queryFn: () => supplierPaymentsService.getById(resolvedParams.id),
-  });
+  } = useSupplierPayment(resolvedParams.id);
+
+  const deleteMutation = useDeleteSupplierPayment();
 
   useBreadcrumb(
     `/purchases/payments/${resolvedParams.id}`,
@@ -90,16 +93,12 @@ export default function SupplierPaymentDetailPage({
     );
   }
 
-  const handleDelete = async () => {
-    try {
-      setIsDeleting(true);
-      await supplierPaymentsService.delete(payment.id);
-      toast.success('Pembayaran berhasil dihapus');
-      router.push('/purchases/payments');
-    } catch (error: any) {
-      toast.error(error.message || 'Gagal menghapus pembayaran');
-      setIsDeleting(false);
-    }
+  const handleDelete = () => {
+    deleteMutation.mutate(payment.id, {
+      onSuccess: () => {
+        router.push('/purchases/payments');
+      },
+    });
   };
 
   return (
@@ -280,7 +279,7 @@ export default function SupplierPaymentDetailPage({
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         onConfirm={handleDelete}
-        isDeleting={isDeleting}
+        isDeleting={deleteMutation.isPending}
         title="Hapus Pembayaran?"
         description="Apakah Anda yakin ingin menghapus pembayaran ini? Tindakan ini tidak dapat dibatalkan."
       />

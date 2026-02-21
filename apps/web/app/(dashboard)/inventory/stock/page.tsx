@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useMemo, useState } from 'react';
+import { Suspense, useMemo, useState, useCallback } from 'react';
 import { useStocks } from '@/hooks/use-stock';
 import { useWarehouses } from '@/hooks/use-warehouses';
 import { useActiveCategories } from '@/hooks/use-categories';
@@ -9,7 +9,7 @@ import { useDebounce } from '@/hooks/use-debounce';
 import { DataListPage } from '@/components/shared/data-list-page';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Loader2, Box, Layers, Warehouse, History } from 'lucide-react';
-import { Button } from '@bizflow/ui';
+import { Button, Card, CardContent, CardHeader, CardTitle } from '@bizflow/ui';
 import { StockCardDialog } from '../movements/stock-card-dialog';
 
 function StockContent() {
@@ -42,47 +42,31 @@ function StockContent() {
     hasStock: true,
   });
 
-  const updateUrl = (params: Record<string, string | number | null>) => {
-    const newSearchParams = new URLSearchParams(searchParams.toString());
+  const handleCreateQueryString = useCallback(
+    (params: Record<string, string | number | null>) => {
+      const newSearchParams = new URLSearchParams(searchParams.toString());
 
-    for (const [key, value] of Object.entries(params)) {
-      if (value === null || value === '' || value === 'all') {
-        newSearchParams.delete(key);
-      } else {
-        newSearchParams.set(key, String(value));
+      for (const [key, value] of Object.entries(params)) {
+        if (value === null || value === '' || value === 'all') {
+          newSearchParams.delete(key);
+        } else {
+          newSearchParams.set(key, String(value));
+        }
       }
-    }
 
-    router.push(`${pathname}?${newSearchParams.toString()}`);
+      return newSearchParams.toString();
+    },
+    [searchParams],
+  );
+
+  const updateUrl = (params: Record<string, string | number | null>) => {
+    const queryString = handleCreateQueryString(params);
+    router.push(`${pathname}?${queryString}`);
   };
 
   const totalPages = data?.meta?.totalPages || 1;
   const totalItems = data?.meta?.totalItems || 0;
-
-  // Custom Summary Configuration
-  const summaryConfig = useMemo(
-    () => [
-      {
-        key: 'totalStockRecords',
-        label: 'Total Record',
-        icon: Box,
-        value: data?.summary?.totalStockRecords || 0,
-      },
-      {
-        key: 'totalVariantsWithStock',
-        label: 'Varian Stok',
-        icon: Layers,
-        value: data?.summary?.totalVariantsWithStock || 0,
-      },
-      {
-        key: 'totalWarehouses',
-        label: 'Gudang',
-        icon: Warehouse,
-        value: data?.summary?.totalWarehouses || 0,
-      },
-    ],
-    [data?.summary],
-  );
+  const summary = data?.summary;
 
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
     null,
@@ -155,12 +139,59 @@ function StockContent() {
             width: 'w-full md:w-[200px]',
           },
         ]}
-        // Summary
-        summary={data?.summary}
-        summaryConfig={summaryConfig}
         // Actions
         onRefresh={refetch}
-      />
+      >
+        {/* Summary Cards */}
+        {summary && (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Total Record
+                </CardTitle>
+                <Box className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {summary.totalStockRecords || 0}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Semua record stok
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Varian Stok
+                </CardTitle>
+                <Layers className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {summary.totalVariantsWithStock || 0}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Produk dengan stok
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="md:col-span-2 lg:col-span-1">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Gudang</CardTitle>
+                <Warehouse className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {summary.totalWarehouses || 0}
+                </div>
+                <p className="text-xs text-muted-foreground">Lokasi gudang</p>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+      </DataListPage>
 
       <StockCardDialog
         open={!!selectedVariantId}

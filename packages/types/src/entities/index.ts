@@ -9,5 +9,6 @@ export * from './sales';
 export * from './purchase';
 export * from './inventory';
 export * from './finance';
+export * from './payment-term';
 export * from './unit.entity';
 export * from './warehouse';

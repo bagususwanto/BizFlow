@@ -65,6 +65,12 @@ export const navData = [
         permission: 'suppliers:read',
       },
       {
+        title: 'Termin Pembayaran',
+        href: '/master-data/payment-terms',
+        icon: FileText,
+        permission: 'payment-terms:read',
+      },
+      {
         title: 'Satuan',
         href: '/master-data/units',
         icon: Package,

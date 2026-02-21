@@ -54,6 +54,10 @@ export const navigationConfig = {
           url: '/master-data/suppliers',
         },
         {
+          title: 'Termin Pembayaran',
+          url: '/master-data/payment-terms',
+        },
+        {
           title: 'Gudang',
           url: '/master-data/warehouses',
         },

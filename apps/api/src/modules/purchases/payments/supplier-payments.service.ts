@@ -73,8 +73,14 @@ export class SupplierPaymentsService {
 
     if (startDate || endDate) {
       where.paymentDate = {};
-      if (startDate) where.paymentDate.gte = new Date(startDate);
-      if (endDate) where.paymentDate.lte = new Date(endDate);
+      if (startDate) {
+        where.paymentDate.gte = new Date(startDate);
+      }
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        where.paymentDate.lte = end;
+      }
     }
 
     const orderBy: Record<string, 'asc' | 'desc'> = {

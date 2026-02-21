@@ -23,6 +23,8 @@ export const queryGoodsReceivesSchema = z.object({
   search: z.string().optional(),
   purchaseOrderId: z.string().optional(),
   warehouseId: z.string().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
 });
 
 export type CreateGoodsReceiveValues = z.infer<typeof createGoodsReceiveSchema>;

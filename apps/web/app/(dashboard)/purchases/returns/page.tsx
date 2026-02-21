@@ -28,6 +28,8 @@ function PurchaseReturnsContent() {
   const sortBy = searchParams.get('sortBy') || undefined;
   const sortOrder =
     (searchParams.get('sortOrder') as 'asc' | 'desc') || undefined;
+  const startDate = searchParams.get('startDate') || undefined;
+  const endDate = searchParams.get('endDate') || undefined;
 
   const queryParams: QueryPurchaseReturnsValues = {
     page,
@@ -36,6 +38,8 @@ function PurchaseReturnsContent() {
     status: status !== 'all' ? (status as any) : undefined,
     sortBy: sortBy as any,
     sortOrder,
+    startDate,
+    endDate,
   };
 
   const {
@@ -132,6 +136,16 @@ function PurchaseReturnsContent() {
       filterValues={{ status }}
       onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
       onReset={() => router.push(pathname)}
+      showDateRange={true}
+      startDate={startDate ? new Date(startDate) : undefined}
+      endDate={endDate ? new Date(endDate) : undefined}
+      onDateRangeChange={(start, end) =>
+        updateUrl({
+          startDate: start?.toISOString() || null,
+          endDate: end?.toISOString() || null,
+          page: 1,
+        })
+      }
       filters={[
         {
           key: 'status',

@@ -26,6 +26,8 @@ function GoodsReceiveContent() {
   const sortBy = searchParams.get('sortBy') || undefined;
   const sortOrder =
     (searchParams.get('sortOrder') as 'asc' | 'desc') || undefined;
+  const startDate = searchParams.get('startDate') || undefined;
+  const endDate = searchParams.get('endDate') || undefined;
 
   const queryParams: QueryGoodsReceivesValues = {
     page,
@@ -33,6 +35,8 @@ function GoodsReceiveContent() {
     search,
     sortBy: sortBy as any,
     sortOrder,
+    startDate,
+    endDate,
   };
 
   const {
@@ -117,6 +121,16 @@ function GoodsReceiveContent() {
       onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
       searchPlaceholder="Cari No. Terima atau PO..."
       onReset={() => router.push(pathname)}
+      showDateRange={true}
+      startDate={startDate ? new Date(startDate) : undefined}
+      endDate={endDate ? new Date(endDate) : undefined}
+      onDateRangeChange={(start, end) =>
+        updateUrl({
+          startDate: start?.toISOString() || null,
+          endDate: end?.toISOString() || null,
+          page: 1,
+        })
+      }
       // Actions
       onRefresh={refetch}
       isError={isError}

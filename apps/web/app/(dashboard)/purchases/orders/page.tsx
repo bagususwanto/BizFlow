@@ -30,6 +30,8 @@ function PurchaseOrdersContent() {
   const sortOrder =
     (searchParams.get('sortOrder') as 'asc' | 'desc') || undefined;
   const supplierId = searchParams.get('supplierId') || undefined;
+  const startDate = searchParams.get('startDate') || undefined;
+  const endDate = searchParams.get('endDate') || undefined;
 
   const queryParams: QueryPurchaseOrdersValues = {
     page,
@@ -39,6 +41,8 @@ function PurchaseOrdersContent() {
     sortBy: sortBy as any,
     sortOrder,
     supplierId,
+    startDate,
+    endDate,
   };
 
   const {
@@ -139,6 +143,16 @@ function PurchaseOrdersContent() {
       filterValues={{ status, supplierId: supplierId || 'all' }}
       onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
       onReset={() => router.push(pathname)}
+      showDateRange={true}
+      startDate={startDate ? new Date(startDate) : undefined}
+      endDate={endDate ? new Date(endDate) : undefined}
+      onDateRangeChange={(start, end) =>
+        updateUrl({
+          startDate: start?.toISOString() || null,
+          endDate: end?.toISOString() || null,
+          page: 1,
+        })
+      }
       filters={[
         {
           key: 'status',

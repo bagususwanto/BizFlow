@@ -56,6 +56,18 @@ export class GoodsReceiveService {
       where.warehouseId = warehouseId;
     }
 
+    if (query.startDate || query.endDate) {
+      where.receiveDate = {};
+      if (query.startDate) {
+        where.receiveDate.gte = new Date(query.startDate);
+      }
+      if (query.endDate) {
+        const end = new Date(query.endDate);
+        end.setHours(23, 59, 59, 999);
+        where.receiveDate.lte = end;
+      }
+    }
+
     const orderBy: Record<string, 'asc' | 'desc'> = {
       [sortBy || 'createdAt']: sortOrder || 'desc',
     };

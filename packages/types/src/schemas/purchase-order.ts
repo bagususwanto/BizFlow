@@ -58,6 +58,8 @@ export const queryPurchaseOrdersSchema = z.object({
     .optional(),
   paymentStatus: z.enum(['unpaid', 'partial', 'paid']).optional(),
   supplierId: z.string().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
 });
 
 export const updatePurchaseOrderStatusSchema = z.object({

@@ -123,6 +123,23 @@ export function useDeletePurchaseReturn() {
   });
 }
 
+export function useBulkDeletePurchaseReturns() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (ids: string[]) => purchaseReturnsService.bulkDelete(ids),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: purchaseReturnKeys.lists() });
+      toast.success('Purchase Return berhasil dihapus');
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.message || 'Gagal menghapus purchase return',
+      );
+    },
+  });
+}
+
 export function useGenerateReturnNumber() {
   return useQuery({
     queryKey: ['generate-return-number'],

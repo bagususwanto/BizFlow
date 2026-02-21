@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@bizflow/ui';
 import {
   usePurchaseReturns,
   useDeletePurchaseReturn,
+  useBulkDeletePurchaseReturns,
 } from '@/hooks/use-purchase-returns';
 import { QueryPurchaseReturnsValues, PurchaseReturn } from '@bizflow/types';
 import { DataListPage } from '@/components/shared/data-list-page';
@@ -45,6 +46,7 @@ function PurchaseReturnsContent() {
   } = usePurchaseReturns(queryParams);
 
   const deleteMutation = useDeletePurchaseReturn();
+  const bulkDeleteMutation = useBulkDeletePurchaseReturns();
 
   // Delete Dialog State (Local to Page to handle confirmation)
   const [returnToDelete, setReturnToDelete] = useState<PurchaseReturn | null>(
@@ -146,6 +148,8 @@ function PurchaseReturnsContent() {
       // Actions
       onRefresh={refetch}
       isError={isError}
+      onBulkDelete={(ids) => bulkDeleteMutation.mutate(ids)}
+      isBulkDeleting={bulkDeleteMutation.isPending}
     >
       {/* Summary Cards */}
       {summary && (

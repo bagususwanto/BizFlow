@@ -48,6 +48,15 @@ class GoodsReceiveService {
     );
   }
 
+  async bulkDelete(ids: string[]): Promise<ApiResponse<void>> {
+    return apiClient.post<ApiResponse<void>>(
+      '/inventory/goods-receive/bulk-delete',
+      {
+        ids,
+      },
+    );
+  }
+
   async generateReceiveNumber(): Promise<string> {
     const res = await apiClient.get<ApiResponse<{ receiveNumber: string }>>(
       '/inventory/goods-receive/generate-receive-number',

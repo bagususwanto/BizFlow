@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@bizflow/ui';
 import {
   useSupplierPayments,
   useDeleteSupplierPayment,
+  useBulkDeleteSupplierPayments,
 } from '@/hooks/use-supplier-payments';
 import { QuerySupplierPaymentsValues, SupplierPayment } from '@bizflow/types';
 import { DataListPage } from '@/components/shared/data-list-page';
@@ -44,6 +45,7 @@ function SupplierPaymentsContent() {
   } = useSupplierPayments(queryParams);
 
   const deleteMutation = useDeleteSupplierPayment();
+  const bulkDeleteMutation = useBulkDeleteSupplierPayments();
 
   // Delete Dialog State
   const [paymentToDelete, setPaymentToDelete] =
@@ -126,6 +128,8 @@ function SupplierPaymentsContent() {
       // Actions
       onRefresh={refetch}
       isError={isError}
+      onBulkDelete={(ids) => bulkDeleteMutation.mutate(ids)}
+      isBulkDeleting={bulkDeleteMutation.isPending}
     >
       {/* Summary Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

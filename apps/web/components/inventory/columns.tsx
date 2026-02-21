@@ -11,6 +11,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  Checkbox,
 } from '@bizflow/ui';
 import Link from 'next/link';
 import { format } from 'date-fns';
@@ -25,6 +26,27 @@ import { DataTableColumnHeader } from '@/components/ui/data-table-column-header'
 export const getColumns = ({
   onDelete,
 }: ColumnsProps): ColumnDef<GoodsReceive>[] => [
+  {
+    id: 'select',
+    header: ({ table }) => (
+      <Checkbox
+        checked={table.getIsAllPageRowsSelected()}
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Pilih semua"
+        className="translate-y-[2px]"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Pilih baris"
+        className="translate-y-[2px]"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: 'receiveNumber',
     header: ({ column }) => (

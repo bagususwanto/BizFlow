@@ -64,3 +64,19 @@ export function useDeleteGoodsReceive() {
     },
   });
 }
+
+export function useBulkDeleteGoodsReceives() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (ids: string[]) => goodsReceiveService.bulkDelete(ids),
+    onSuccess: () => {
+      toast.success('Penerimaan Barang berhasil dihapus');
+      queryClient.invalidateQueries({ queryKey: ['goods-receives'] });
+      queryClient.invalidateQueries({ queryKey: ['purchase-orders'] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+}

@@ -6,6 +6,7 @@ import { Loader2 } from 'lucide-react';
 import {
   useGoodsReceives,
   useDeleteGoodsReceive,
+  useBulkDeleteGoodsReceives,
 } from '@/hooks/use-goods-receive';
 import { QueryGoodsReceivesValues, GoodsReceive } from '@bizflow/types';
 import { DataListPage } from '@/components/shared/data-list-page';
@@ -42,6 +43,7 @@ function GoodsReceiveContent() {
   } = useGoodsReceives(queryParams);
 
   const deleteMutation = useDeleteGoodsReceive();
+  const bulkDeleteMutation = useBulkDeleteGoodsReceives();
 
   // Delete Dialog State
   const [itemToDelete, setItemToDelete] = useState<GoodsReceive | null>(null);
@@ -118,6 +120,8 @@ function GoodsReceiveContent() {
       // Actions
       onRefresh={refetch}
       isError={isError}
+      onBulkDelete={(ids) => bulkDeleteMutation.mutate(ids)}
+      isBulkDeleting={bulkDeleteMutation.isPending}
     >
       <DeleteConfirmDialog
         open={!!itemToDelete}

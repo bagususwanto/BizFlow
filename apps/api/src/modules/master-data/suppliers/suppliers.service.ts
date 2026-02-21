@@ -66,6 +66,7 @@ export class SuppliersService {
           _count: {
             select: { purchaseOrders: true, supplierPayments: true },
           },
+          paymentTerm: true,
         },
         orderBy,
         skip,
@@ -130,6 +131,9 @@ export class SuppliersService {
   ): Promise<ApiResponse<Prisma.SupplierGetPayload<object>>> {
     const supplier = await this.prisma.supplier.findUnique({
       where: { id },
+      include: {
+        paymentTerm: true,
+      },
     });
 
     if (!supplier) {
@@ -203,7 +207,7 @@ export class SuppliersService {
         email: dto.email,
         address: dto.address,
         taxId: dto.taxId,
-        paymentTermDays: dto.paymentTermDays ?? 0,
+        paymentTermId: dto.paymentTermId,
         bankName: dto.bankName,
         bankAccount: dto.bankAccount,
         isActive: dto.isActive ?? true,
@@ -260,8 +264,8 @@ export class SuppliersService {
         email: dto.email !== undefined ? dto.email : undefined,
         address: dto.address !== undefined ? dto.address : undefined,
         taxId: dto.taxId !== undefined ? dto.taxId : undefined,
-        paymentTermDays:
-          dto.paymentTermDays !== undefined ? dto.paymentTermDays : undefined,
+        paymentTermId:
+          dto.paymentTermId !== undefined ? dto.paymentTermId : undefined,
         bankName: dto.bankName !== undefined ? dto.bankName : undefined,
         bankAccount:
           dto.bankAccount !== undefined ? dto.bankAccount : undefined,

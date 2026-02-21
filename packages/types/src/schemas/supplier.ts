@@ -12,11 +12,7 @@ const supplierBaseSchema = z.object({
     .nullable(),
   address: z.string().optional().nullable(),
   taxId: z.string().optional().nullable(),
-  paymentTermDays: z
-    .number()
-    .min(0, 'Payment term tidak boleh negatif')
-    .optional()
-    .default(0),
+  paymentTermId: z.string().optional().nullable(),
   bankName: z.string().optional().nullable(),
   bankAccount: z.string().optional().nullable(),
   isActive: z.boolean().optional().default(true),

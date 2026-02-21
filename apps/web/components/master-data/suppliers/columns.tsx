@@ -72,6 +72,14 @@ export const getColumns = ({
     cell: ({ row }) => row.original.email || '-',
   },
   {
+    accessorKey: 'paymentTerm',
+    header: 'Termin',
+    cell: ({ row }) => {
+      const term = row.original.paymentTerm;
+      return term ? term.name : '-';
+    },
+  },
+  {
     accessorKey: 'address',
     header: 'Alamat',
     cell: ({ row }) => (

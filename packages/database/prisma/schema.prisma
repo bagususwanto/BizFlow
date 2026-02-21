@@ -608,6 +608,8 @@ model PaymentTerm {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  suppliers   Supplier[]
+
   @@index([name])
 }
 
@@ -619,13 +621,14 @@ model Supplier {
   email           String?
   address         String?
   taxId           String?
-  paymentTermDays Int      @default(0)
+  paymentTermId   String?
   bankName        String?
   bankAccount     String?
   isActive        Boolean  @default(true)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
+  paymentTerm      PaymentTerm?      @relation(fields: [paymentTermId], references: [id])
   purchaseOrders   PurchaseOrder[]
   supplierPayments SupplierPayment[]
 

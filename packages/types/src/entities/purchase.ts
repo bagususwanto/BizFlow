@@ -8,6 +8,7 @@ import type { ProductVariant } from './product';
 import type { Warehouse } from './warehouse';
 import type { Account } from './finance';
 import type { User } from './user';
+import type { PaymentTerm } from './payment-term';
 
 // ========================================
 // Supplier Entity
@@ -20,7 +21,8 @@ export interface Supplier extends ActiveEntity {
   email?: string | null;
   address?: string | null;
   taxId?: string | null;
-  paymentTermDays: number;
+  paymentTermId?: string | null;
+  paymentTerm?: PaymentTerm | null;
   bankName?: string | null;
   bankAccount?: string | null;
 }
@@ -156,7 +158,7 @@ export interface CreateSupplierInput {
   email?: string;
   address?: string;
   taxId?: string;
-  paymentTermDays?: number;
+  paymentTermId?: string;
   bankName?: string;
   bankAccount?: string;
 }
@@ -167,7 +169,7 @@ export interface UpdateSupplierInput {
   email?: string;
   address?: string;
   taxId?: string;
-  paymentTermDays?: number;
+  paymentTermId?: string;
   bankName?: string;
   bankAccount?: string;
   isActive?: boolean;

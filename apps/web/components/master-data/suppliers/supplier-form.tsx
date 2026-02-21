@@ -25,6 +25,11 @@ import {
   Card,
   CardContent,
   Textarea,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@bizflow/ui';
 import { Loader2, RefreshCw, Save } from 'lucide-react';
 import {
@@ -32,6 +37,7 @@ import {
   useUpdateSupplier,
   useGenerateSupplierCode,
 } from '@/hooks/use-suppliers';
+import { useActivePaymentTerms } from '@/hooks/master-data/use-payment-terms';
 
 interface SupplierFormProps {
   initialData?: Supplier;
@@ -57,6 +63,9 @@ export function SupplierForm({
     isFetching: isGenerating,
   } = useGenerateSupplierCode();
 
+  const { data: paymentTerms = [], isLoading: isLoadingPaymentTerms } =
+    useActivePaymentTerms();
+
   const form = useForm({
     resolver: zodResolver(isEdit ? updateSupplierSchema : createSupplierSchema),
     defaultValues: isEdit
@@ -67,7 +76,7 @@ export function SupplierForm({
           email: initialData?.email || '',
           address: initialData?.address || '',
           taxId: initialData?.taxId || '',
-          paymentTermDays: initialData?.paymentTermDays || 0,
+          paymentTermId: initialData?.paymentTermId || '',
           bankName: initialData?.bankName || '',
           bankAccount: initialData?.bankAccount || '',
           isActive: initialData?.isActive ?? true,
@@ -79,7 +88,7 @@ export function SupplierForm({
           email: '',
           address: '',
           taxId: '',
-          paymentTermDays: 0,
+          paymentTermId: '',
           bankName: '',
           bankAccount: '',
           isActive: true,
@@ -255,20 +264,29 @@ export function SupplierForm({
 
               <FormField
                 control={form.control}
-                name="paymentTermDays"
+                name="paymentTermId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel optional>Termin Pembayaran (Hari)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min="0"
-                        placeholder="0"
-                        {...field}
-                        onChange={(e) => field.onChange(Number(e.target.value))}
-                        value={field.value || 0}
-                      />
-                    </FormControl>
+                    <FormLabel optional>Termin Pembayaran</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value || undefined}
+                      value={field.value || undefined}
+                      disabled={isLoadingPaymentTerms}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Pilih Termin" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {paymentTerms.map((term: any) => (
+                          <SelectItem key={term.id} value={term.id}>
+                            {term.name} ({term.daysDue} hari)
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

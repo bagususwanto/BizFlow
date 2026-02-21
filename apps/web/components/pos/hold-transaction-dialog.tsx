@@ -12,7 +12,7 @@ import {
   Input,
   Textarea,
 } from '@bizflow/ui';
-import { PauseCircle } from 'lucide-react';
+import { PauseCircle, Save } from 'lucide-react';
 
 interface HoldTransactionDialogProps {
   open: boolean;
@@ -73,7 +73,14 @@ export function HoldTransactionDialog({
               Batal
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Menyimpan...' : 'Simpan'}
+              {isLoading ? (
+                'Menyimpan...'
+              ) : (
+                <>
+                  <Save className="mr-2 h-4 w-4" />
+                  Simpan
+                </>
+              )}
             </Button>
           </DialogFooter>
         </form>

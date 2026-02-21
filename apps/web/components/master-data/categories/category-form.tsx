@@ -3,7 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Save } from 'lucide-react';
 import { toast } from 'sonner';
 
 import {
@@ -187,6 +187,7 @@ export function CategoryForm({
           </Button>
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {!isSubmitting && <Save className="mr-2 h-4 w-4" />}
             {isEdit ? 'Simpan Perubahan' : 'Buat Kategori'}
           </Button>
         </div>

@@ -20,6 +20,7 @@ import {
 } from '@bizflow/ui';
 import { AppSetting } from '@bizflow/types';
 import { useUpdateSettings } from '@/hooks';
+import { Save } from 'lucide-react';
 
 const companySettingsSchema = z.object({
   company_name: z.string().min(1, 'Nama perusahaan wajib diisi'),
@@ -193,7 +194,14 @@ export function CompanySettingsForm({ settings }: CompanySettingsFormProps) {
 
             <div className="flex justify-end">
               <Button type="submit" disabled={isPending}>
-                {isPending ? 'Menyimpan...' : 'Simpan Perubahan'}
+                {isPending ? (
+                  'Menyimpan...'
+                ) : (
+                  <>
+                    <Save className="mr-2 h-4 w-4" />
+                    Simpan Perubahan
+                  </>
+                )}
               </Button>
             </div>
           </form>

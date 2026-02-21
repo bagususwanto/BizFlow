@@ -22,6 +22,7 @@ import {
 } from '@bizflow/ui';
 import { AppSetting } from '@bizflow/types';
 import { useUpdateSettings } from '@/hooks';
+import { Save } from 'lucide-react';
 
 const receiptSettingsSchema = z.object({
   receipt_header: z.string().optional(),
@@ -139,7 +140,14 @@ export function ReceiptSettingsForm({ settings }: ReceiptSettingsFormProps) {
 
             <div className="flex justify-end">
               <Button type="submit" disabled={isPending}>
-                {isPending ? 'Menyimpan...' : 'Simpan Perubahan'}
+                {isPending ? (
+                  'Menyimpan...'
+                ) : (
+                  <>
+                    <Save className="mr-2 h-4 w-4" />
+                    Simpan Perubahan
+                  </>
+                )}
               </Button>
             </div>
           </form>

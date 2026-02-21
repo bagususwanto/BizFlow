@@ -1,6 +1,6 @@
 'use client';
 
-import { Loader2 } from 'lucide-react';
+import { Loader2, Save } from 'lucide-react';
 import { toast } from 'sonner';
 import { useState } from 'react';
 
@@ -140,7 +140,10 @@ export function ChangePinDialog({
                   Menyimpan...
                 </>
               ) : (
-                'Simpan PIN'
+                <>
+                  <Save className="mr-2 h-4 w-4" />
+                  Simpan PIN
+                </>
               )}
             </Button>
           </DialogFooter>

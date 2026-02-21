@@ -25,6 +25,7 @@ import {
 } from '@bizflow/ui';
 import { AppSetting } from '@bizflow/types';
 import { useUpdateSettings } from '@/hooks';
+import { Save } from 'lucide-react';
 
 const generalSettingsSchema = z.object({
   language: z.string().min(1, 'Bahasa wajib dipilih'),
@@ -130,7 +131,14 @@ export function GeneralSettingsForm({ settings }: GeneralSettingsFormProps) {
 
             <div className="flex justify-end">
               <Button type="submit" disabled={isPending}>
-                {isPending ? 'Menyimpan...' : 'Simpan Perubahan'}
+                {isPending ? (
+                  'Menyimpan...'
+                ) : (
+                  <>
+                    <Save className="mr-2 h-4 w-4" />
+                    Simpan Perubahan
+                  </>
+                )}
               </Button>
             </div>
           </form>

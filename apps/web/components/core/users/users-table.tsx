@@ -25,7 +25,7 @@ import {
   OnChangeFn,
   RowSelectionState,
 } from '@tanstack/react-table';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Save } from 'lucide-react';
 import { toast } from 'sonner';
 import { User } from '@bizflow/types';
 
@@ -350,7 +350,14 @@ export function UsersTable({
                 type="submit"
                 disabled={isChangingPin || newPin.length !== 6}
               >
-                {isChangingPin ? 'Menyimpan...' : 'Simpan PIN'}
+                {isChangingPin ? (
+                  'Menyimpan...'
+                ) : (
+                  <>
+                    <Save className="mr-2 h-4 w-4" />
+                    Simpan PIN
+                  </>
+                )}
               </Button>
             </DialogFooter>
           </form>

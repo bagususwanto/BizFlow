@@ -20,7 +20,7 @@ import {
   Button,
 } from '@bizflow/ui'; // Adjust imports based on your UI library
 import { useState } from 'react';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Save } from 'lucide-react';
 import { toast } from 'sonner';
 
 // Simplified schema for Quick Add - mostly the same but we might want to enforce fewer things or just reuse
@@ -152,6 +152,7 @@ export function QuickAddCustomerDialog({
               </Button>
               <Button type="submit" disabled={isPending}>
                 {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {!isPending && <Save className="mr-2 h-4 w-4" />}
                 Simpan
               </Button>
             </div>

@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2, Lock } from 'lucide-react';
+import { Loader2, Lock, Save } from 'lucide-react';
 import { toast } from 'sonner';
 import { useState } from 'react';
 
@@ -132,6 +132,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
               {isSubmitting && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
+              {!isSubmitting && <Save className="mr-2 h-4 w-4" />}
               Simpan Profil
             </Button>
           </div>

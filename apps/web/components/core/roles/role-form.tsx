@@ -13,7 +13,7 @@ import {
   FormMessage,
   Input,
 } from '@bizflow/ui';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Save } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import { PermissionMatrix } from './permission-matrix';
@@ -134,6 +134,7 @@ export function RoleForm({
           </Button>
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {!isSubmitting && <Save className="mr-2 h-4 w-4" />}
             {isEditing ? 'Simpan Perubahan' : 'Buat Role'}
           </Button>
         </div>

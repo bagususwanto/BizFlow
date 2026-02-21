@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Save } from 'lucide-react';
 import { toast } from 'sonner';
 
 import {
@@ -307,6 +307,7 @@ export function PrinterForm({ initialData, isEdit = false }: PrinterFormProps) {
           </Button>
           <Button type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {!isLoading && <Save className="mr-2 h-4 w-4" />}
             {isEdit ? 'Simpan Perubahan' : 'Tambah Printer'}
           </Button>
         </div>

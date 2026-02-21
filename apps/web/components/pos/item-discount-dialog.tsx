@@ -14,7 +14,7 @@ import {
 } from '@bizflow/ui';
 import { useState, useEffect } from 'react';
 import { useCartStore, CartItem } from '@/stores/cart.store';
-import { Percent, Trash2 } from 'lucide-react';
+import { Percent, Trash2, Save } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface ItemDiscountDialogProps {
@@ -159,7 +159,10 @@ export function ItemDiscountDialog({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Batal
           </Button>
-          <Button onClick={handleSave}>Simpan</Button>
+          <Button onClick={handleSave}>
+            <Save className="mr-2 h-4 w-4" />
+            Simpan
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

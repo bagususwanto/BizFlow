@@ -23,7 +23,7 @@ import {
   Input,
   Combobox,
 } from '@bizflow/ui';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Save } from 'lucide-react';
 import { useUnits, useCreateUnit, useUpdateUnit } from '@/hooks';
 
 interface UnitFormProps {
@@ -195,6 +195,7 @@ export function UnitForm({ initialData, isEdit = false }: UnitFormProps) {
           </Button>
           <Button type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {!isLoading && <Save className="mr-2 h-4 w-4" />}
             {isEdit ? 'Simpan Perubahan' : 'Buat Satuan'}
           </Button>
         </div>

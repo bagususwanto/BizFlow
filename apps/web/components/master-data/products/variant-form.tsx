@@ -18,7 +18,7 @@ import {
   Switch,
   FormDescription,
 } from '@bizflow/ui';
-import { Plus, Trash2, RefreshCw } from 'lucide-react';
+import { Plus, Trash2, RefreshCw, Save } from 'lucide-react';
 import { useEffect } from 'react';
 import { useGenerateVariantSku } from '@/hooks/use-products';
 
@@ -316,7 +316,14 @@ export function VariantForm({
                 disabled={isSubmitting}
                 onClick={form.handleSubmit(handleSubmit)}
               >
-                {isSubmitting ? 'Menyimpan...' : 'Simpan'}
+                {isSubmitting ? (
+                  'Menyimpan...'
+                ) : (
+                  <>
+                    <Save className="mr-2 h-4 w-4" />
+                    Simpan
+                  </>
+                )}
               </Button>
             </DialogFooter>
           </div>

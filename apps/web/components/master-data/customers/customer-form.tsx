@@ -25,7 +25,7 @@ import {
   Card,
   CardContent,
 } from '@bizflow/ui';
-import { Loader2, RefreshCw } from 'lucide-react';
+import { Loader2, RefreshCw, Save } from 'lucide-react';
 import {
   useCreateCustomer,
   useUpdateCustomer,
@@ -311,6 +311,7 @@ export function CustomerForm({
           </Button>
           <Button type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {!isLoading && <Save className="mr-2 h-4 w-4" />}
             {isEdit ? 'Simpan Perubahan' : 'Buat Pelanggan'}
           </Button>
         </div>

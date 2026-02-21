@@ -17,7 +17,7 @@ import {
   Button,
 } from '@bizflow/ui';
 import { useEffect } from 'react';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Save } from 'lucide-react';
 
 interface PriceLevelFormProps {
   open: boolean;
@@ -150,6 +150,7 @@ export function PriceLevelForm({
                 {isSubmitting && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
+                {!isSubmitting && <Save className="mr-2 h-4 w-4" />}
                 Simpan
               </Button>
             </DialogFooter>

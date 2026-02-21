@@ -6,7 +6,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { CalendarIcon, Trash, Plus, Loader2 } from 'lucide-react';
+import { CalendarIcon, Trash, Plus, Loader2, Save } from 'lucide-react';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { z } from 'zod';
@@ -573,6 +573,7 @@ export function PurchaseOrderForm({
           </Button>
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {!isSubmitting && <Save className="mr-2 h-4 w-4" />}
             {initialData ? 'Simpan Perubahan' : 'Buat Purchase Order'}
           </Button>
         </div>

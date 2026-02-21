@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
-import { Loader2, RefreshCw } from 'lucide-react';
+import { Loader2, RefreshCw, Save } from 'lucide-react';
 import { toast } from 'sonner';
 
 import {
@@ -226,6 +226,7 @@ export function OutletForm({ initialData, isEdit = false }: OutletFormProps) {
           </Button>
           <Button type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {!isLoading && <Save className="mr-2 h-4 w-4" />}
             {isEdit ? 'Simpan Perubahan' : 'Buat Outlet'}
           </Button>
         </div>

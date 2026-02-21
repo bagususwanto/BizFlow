@@ -21,6 +21,7 @@ import {
 } from '@bizflow/ui';
 import { AppSetting } from '@bizflow/types';
 import { useUpdateSettings } from '@/hooks';
+import { Save } from 'lucide-react';
 
 const taxSettingsSchema = z.object({
   default_tax_rate: z.coerce.number().min(0, 'Pajak tidak boleh kurang dari 0'),
@@ -127,7 +128,14 @@ export function TaxSettingsForm({ settings }: TaxSettingsFormProps) {
 
             <div className="flex justify-end">
               <Button type="submit" disabled={isPending}>
-                {isPending ? 'Menyimpan...' : 'Simpan Perubahan'}
+                {isPending ? (
+                  'Menyimpan...'
+                ) : (
+                  <>
+                    <Save className="mr-2 h-4 w-4" />
+                    Simpan Perubahan
+                  </>
+                )}
               </Button>
             </div>
           </form>

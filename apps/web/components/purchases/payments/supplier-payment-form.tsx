@@ -439,6 +439,9 @@ export function SupplierPaymentForm({ initialData }: SupplierPaymentFormProps) {
             {(createMutation.isPending || updateMutation.isPending) && (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             )}
+            {!(createMutation.isPending || updateMutation.isPending) && (
+              <Save className="mr-2 h-4 w-4" />
+            )}
             {initialData ? 'Simpan Perubahan' : 'Simpan Pembayaran'}
           </Button>
         </div>

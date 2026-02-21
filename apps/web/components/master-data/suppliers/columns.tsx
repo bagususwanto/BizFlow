@@ -12,7 +12,7 @@ import {
   Badge,
   Checkbox,
 } from '@bizflow/ui';
-import { MoreHorizontal, Edit, Trash2 } from 'lucide-react';
+import { MoreHorizontal, Edit, Trash2, History } from 'lucide-react';
 import Link from 'next/link';
 
 import { DataTableColumnHeader } from '@/components/ui/data-table-column-header';
@@ -118,6 +118,12 @@ export const getColumns = ({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+            <DropdownMenuItem asChild>
+              <Link href={`/purchases/orders?supplierId=${supplier.id}`}>
+                <History className="mr-2 h-4 w-4" />
+                Riwayat Pembelian
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link href={`/master-data/suppliers/${supplier.id}`}>
                 <Edit className="mr-2 h-4 w-4" />

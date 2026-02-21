@@ -8,6 +8,7 @@ import {
   usePurchaseOrders,
   useDeletePurchaseOrder,
 } from '@/hooks/use-purchase-orders';
+import { useSuppliers } from '@/hooks/use-suppliers';
 import { QueryPurchaseOrdersValues, PurchaseOrder } from '@bizflow/types';
 import { DataListPage } from '@/components/shared/data-list-page';
 import { getColumns } from '@/components/purchases/columns';
@@ -27,6 +28,7 @@ function PurchaseOrdersContent() {
   const sortBy = searchParams.get('sortBy') || undefined;
   const sortOrder =
     (searchParams.get('sortOrder') as 'asc' | 'desc') || undefined;
+  const supplierId = searchParams.get('supplierId') || undefined;
 
   const queryParams: QueryPurchaseOrdersValues = {
     page,
@@ -35,6 +37,7 @@ function PurchaseOrdersContent() {
     status: status !== 'all' ? (status as any) : undefined,
     sortBy: sortBy as any,
     sortOrder,
+    supplierId,
   };
 
   const {
@@ -43,6 +46,10 @@ function PurchaseOrdersContent() {
     isError,
     refetch,
   } = usePurchaseOrders(queryParams);
+
+  // Fetch suppliers for the filter dropdown
+  const { suppliers: suppliersData } = useSuppliers({ pageSize: 100 });
+  const suppliers = suppliersData || [];
 
   const deleteMutation = useDeletePurchaseOrder();
 
@@ -127,7 +134,7 @@ function PurchaseOrdersContent() {
       search={search}
       onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
       searchPlaceholder="Cari No. PO atau Pemasok..."
-      filterValues={{ status }}
+      filterValues={{ status, supplierId: supplierId || 'all' }}
       onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
       onReset={() => router.push(pathname)}
       filters={[
@@ -141,7 +148,18 @@ function PurchaseOrdersContent() {
             { label: 'Completed', value: 'completed' },
             { label: 'Cancelled', value: 'cancelled' },
           ],
-          width: 'w-full md:w-[200px]',
+          width: 'w-full md:w-[150px]',
+        },
+        {
+          key: 'supplierId',
+          label: 'Pemasok',
+          type: 'combobox',
+          options: suppliers.map((supplier: any) => ({
+            label: supplier.name,
+            value: supplier.id,
+          })),
+          width: 'w-full md:w-[250px]',
+          searchPlaceholder: 'Cari pemasok...',
         },
       ]}
       // Actions

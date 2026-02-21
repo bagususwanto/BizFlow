@@ -226,8 +226,8 @@ Referensi: [05-purchase-management.md](file:///Users/bagus/Project/personal/BizF
 | **Goods Receive** - Penerimaan  | [x]    | High     |
 | **Returns** - Purchase Return   | [x]    | Medium   |
 | **Payments** - Supplier Payment | [x]    | High     |
-| Payment terms management        | [ ]    | Medium   |
-| Purchase history per supplier   | [ ]    | High     |
+| Payment terms management        | [x]    | Medium   |
+| Purchase history per supplier   | [x]    | High     |
 | Auto-reorder (stok minimum)     | [ ]    | Low      |
 
 **API Endpoints**: `/api/v1/master-data/suppliers/*`, `/api/v1/purchases/orders/*`, `/api/v1/purchases/goods-receive/*`, `/api/v1/purchases/returns/*`, `/api/v1/purchases/payments/*`

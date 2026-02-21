@@ -24,6 +24,7 @@ import {
   PopoverContent,
   PopoverTrigger,
   Calendar,
+  Combobox,
 } from '@bizflow/ui';
 import { ReactNode } from 'react';
 import { format } from 'date-fns';
@@ -33,9 +34,11 @@ import { cn } from '@/lib/utils';
 export interface FilterConfig {
   key: string;
   label: string;
+  type?: 'select' | 'combobox';
   options: { label: string; value: string }[];
   defaultValue?: string;
   width?: string;
+  searchPlaceholder?: string;
 }
 
 export interface DataListToolbarProps {
@@ -115,30 +118,55 @@ export function DataListToolbar({
         )}
 
         {/* Dynamic Filters */}
-        {filters.map((filter) => (
-          <Select
-            key={filter.key}
-            value={filterValues[filter.key] ?? filter.defaultValue ?? 'all'}
-            onValueChange={(value) => onFilterChange?.(filter.key, value)}
-          >
-            <SelectTrigger className={filter.width || 'w-full md:w-[180px]'}>
-              <div className="flex items-center">
-                <span className="mr-2 hidden lg:inline-block whitespace-nowrap">
-                  {filter.label}:
-                </span>
-                <SelectValue placeholder={`Pilih ${filter.label}`} />
+        {filters.map((filter) => {
+          const value =
+            filterValues[filter.key] ?? filter.defaultValue ?? 'all';
+          const isCombobox = filter.type === 'combobox';
+
+          if (isCombobox) {
+            return (
+              <div
+                key={filter.key}
+                className={filter.width || 'w-full md:w-[200px]'}
+              >
+                <Combobox
+                  options={filter.options}
+                  value={value === 'all' ? null : value}
+                  onChange={(val) => onFilterChange?.(filter.key, val || 'all')}
+                  placeholder={`Pilih ${filter.label}`}
+                  searchPlaceholder={filter.searchPlaceholder || 'Cari...'}
+                  allowClear
+                  clearLabel="Semua"
+                />
               </div>
-            </SelectTrigger>
-            <SelectContent className="max-h-[300px] overflow-y-auto">
-              <SelectItem value="all">Semua</SelectItem>
-              {filter.options.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        ))}
+            );
+          }
+
+          return (
+            <Select
+              key={filter.key}
+              value={value}
+              onValueChange={(val) => onFilterChange?.(filter.key, val)}
+            >
+              <SelectTrigger className={filter.width || 'w-full md:w-[180px]'}>
+                <div className="flex items-center">
+                  <span className="mr-2 hidden lg:inline-block whitespace-nowrap">
+                    {filter.label}:
+                  </span>
+                  <SelectValue placeholder={`Pilih ${filter.label}`} />
+                </div>
+              </SelectTrigger>
+              <SelectContent className="max-h-[300px] overflow-y-auto">
+                <SelectItem value="all">Semua</SelectItem>
+                {filter.options.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          );
+        })}
 
         {/* Date Range Picker */}
         {showDateRange && onDateRangeChange && (

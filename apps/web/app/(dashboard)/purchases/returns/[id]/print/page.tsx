@@ -211,7 +211,7 @@ export default function PurchaseReturnPrintPage({
               <p className="text-sm text-gray-600 mb-20">Dibuat oleh,</p>
               <div className="border-t border-gray-400 pt-2 mx-8">
                 <p className="text-sm font-medium text-gray-700">
-                  (__________________)
+                  {ret.creator?.name || ret.createdBy || '(__________________)'}
                 </p>
                 <p className="text-xs text-gray-500 mt-1">Staff Gudang</p>
               </div>
@@ -220,7 +220,7 @@ export default function PurchaseReturnPrintPage({
               <p className="text-sm text-gray-600 mb-20">Disetujui oleh,</p>
               <div className="border-t border-gray-400 pt-2 mx-8">
                 <p className="text-sm font-medium text-gray-700">
-                  (__________________)
+                  {ret.approver?.name || '(__________________)'}
                 </p>
                 <p className="text-xs text-gray-500 mt-1">Manager</p>
               </div>
@@ -229,7 +229,7 @@ export default function PurchaseReturnPrintPage({
               <p className="text-sm text-gray-600 mb-20">Diterima oleh,</p>
               <div className="border-t border-gray-400 pt-2 mx-8">
                 <p className="text-sm font-medium text-gray-700">
-                  (__________________)
+                  {ret.order?.supplier?.name || '(__________________)'}
                 </p>
                 <p className="text-xs text-gray-500 mt-1">
                   Pemasok / Ekspedisi

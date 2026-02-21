@@ -1,21 +1,16 @@
 'use client';
 
+import { useParams } from 'next/navigation';
 import { usePaymentTerm } from '@/hooks/master-data/use-payment-terms';
 import { PaymentTermForm } from '@/components/master-data/payment-terms/payment-term-form';
 import { ErrorState } from '@/components/common/error-state';
 import { Loader2 } from 'lucide-react';
 
-export default function EditPaymentTermPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const {
-    data: paymentTerm,
-    isLoading,
-    isError,
-    refetch,
-  } = usePaymentTerm(params.id);
+export default function EditPaymentTermPage() {
+  const params = useParams();
+  const id = params.id as string;
+
+  const { data: paymentTerm, isLoading, isError, refetch } = usePaymentTerm(id);
 
   if (isLoading) {
     return <PaymentTermFormSkeleton />;

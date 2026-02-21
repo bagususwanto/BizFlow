@@ -5,30 +5,39 @@ import { StockMovement } from '@/services/stock.service';
 import { Badge } from '@bizflow/ui';
 import { ArrowDown, ArrowUp, ArrowRight } from 'lucide-react';
 import { format } from 'date-fns';
-import { id } from 'date-fns/locale';
+import { id as idLocale } from 'date-fns/locale';
+import { DataTableColumnHeader } from '@/components/ui/data-table-column-header';
 
 export const columns: ColumnDef<StockMovement>[] = [
   {
+    id: 'createdAt',
     accessorKey: 'createdAt',
-    header: 'Tanggal',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Tanggal" />
+    ),
     cell: ({ row }) => {
       return (
         <div className="flex flex-col">
           <span className="font-medium">
             {format(new Date(row.original.createdAt), 'dd MMM yyyy', {
-              locale: id,
+              locale: idLocale,
             })}
           </span>
           <span className="text-xs text-muted-foreground">
-            {format(new Date(row.original.createdAt), 'HH:mm', { locale: id })}
+            {format(new Date(row.original.createdAt), 'HH:mm', {
+              locale: idLocale,
+            })}
           </span>
         </div>
       );
     },
   },
   {
+    id: 'type',
     accessorKey: 'type',
-    header: 'Tipe',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Tipe" />
+    ),
     cell: ({ row }) => {
       const type = row.original.type;
       let color: 'default' | 'secondary' | 'destructive' | 'outline' =
@@ -114,8 +123,13 @@ export const columns: ColumnDef<StockMovement>[] = [
     },
   },
   {
+    id: 'quantity',
     accessorKey: 'quantity',
-    header: () => <div className="text-right">Jumlah</div>,
+    header: ({ column }) => (
+      <div className="flex justify-end pr-2">
+        <DataTableColumnHeader column={column} title="Jumlah" />
+      </div>
+    ),
     cell: ({ row }) => {
       const qty = row.original.quantity;
       const isPositive = qty > 0;

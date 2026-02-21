@@ -35,8 +35,9 @@ function StockMovementsContent() {
   const type = searchParams.get('type') || 'all';
   const dateFrom = searchParams.get('dateFrom') || undefined;
   const dateTo = searchParams.get('dateTo') || undefined;
-  const sortBy = searchParams.get('sortBy') || 'createdAt';
-  const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc';
+  const sortBy = searchParams.get('sortBy') || undefined;
+  const sortOrder =
+    (searchParams.get('sortOrder') as 'asc' | 'desc') || undefined;
 
   const debouncedSearch = useDebounce(search, 500);
 

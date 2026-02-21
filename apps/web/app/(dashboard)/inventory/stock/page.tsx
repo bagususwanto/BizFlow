@@ -23,8 +23,9 @@ function StockContent() {
   const search = searchParams.get('search') || '';
   const warehouseId = searchParams.get('warehouseId') || 'all';
   const categoryId = searchParams.get('categoryId') || 'all';
-  const sortBy = searchParams.get('sortBy') || 'updatedAt';
-  const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc';
+  const sortBy = searchParams.get('sortBy') || undefined;
+  const sortOrder =
+    (searchParams.get('sortOrder') as 'asc' | 'desc') || undefined;
 
   const debouncedSearch = useDebounce(search, 500);
 

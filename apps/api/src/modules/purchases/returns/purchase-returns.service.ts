@@ -37,6 +37,7 @@ export class PurchaseReturnsService {
       status,
       startDate,
       endDate,
+      supplierId,
     } = query;
 
     const pageNum = Number(page) || 1;
@@ -55,6 +56,10 @@ export class PurchaseReturnsService {
 
     if (orderId) {
       where.orderId = orderId;
+    }
+
+    if (supplierId) {
+      where.order = { supplierId };
     }
 
     if (status) {

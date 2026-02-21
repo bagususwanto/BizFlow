@@ -9,6 +9,7 @@ import {
   useDeletePurchaseReturn,
   useBulkDeletePurchaseReturns,
 } from '@/hooks/use-purchase-returns';
+import { useSuppliers } from '@/hooks/use-suppliers';
 import { QueryPurchaseReturnsValues, PurchaseReturn } from '@bizflow/types';
 import { DataListPage } from '@/components/shared/data-list-page';
 import { getColumns } from '@/components/purchases/returns/columns';
@@ -30,6 +31,7 @@ function PurchaseReturnsContent() {
     (searchParams.get('sortOrder') as 'asc' | 'desc') || undefined;
   const startDate = searchParams.get('startDate') || undefined;
   const endDate = searchParams.get('endDate') || undefined;
+  const supplierId = searchParams.get('supplierId') || undefined;
 
   const queryParams: QueryPurchaseReturnsValues = {
     page,
@@ -40,6 +42,7 @@ function PurchaseReturnsContent() {
     sortOrder,
     startDate,
     endDate,
+    supplierId,
   };
 
   const {
@@ -48,6 +51,10 @@ function PurchaseReturnsContent() {
     isError,
     refetch,
   } = usePurchaseReturns(queryParams);
+
+  // Fetch suppliers for the filter dropdown
+  const { suppliers: suppliersData } = useSuppliers({ pageSize: 100 });
+  const suppliers = suppliersData || [];
 
   const deleteMutation = useDeletePurchaseReturn();
   const bulkDeleteMutation = useBulkDeletePurchaseReturns();
@@ -133,7 +140,7 @@ function PurchaseReturnsContent() {
       search={search}
       onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
       searchPlaceholder="Cari No. Return, PO, atau Pemasok..."
-      filterValues={{ status }}
+      filterValues={{ status, supplierId: supplierId || 'all' }}
       onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
       onReset={() => router.push(pathname)}
       showDateRange={true}
@@ -157,6 +164,17 @@ function PurchaseReturnsContent() {
             { label: 'Rejected', value: 'rejected' },
           ],
           width: 'w-full md:w-[200px]',
+        },
+        {
+          key: 'supplierId',
+          label: 'Pemasok',
+          type: 'combobox',
+          options: suppliers.map((supplier: any) => ({
+            label: supplier.name,
+            value: supplier.id,
+          })),
+          width: 'w-full md:w-[250px]',
+          searchPlaceholder: 'Cari pemasok...',
         },
       ]}
       // Actions

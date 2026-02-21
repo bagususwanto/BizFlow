@@ -9,6 +9,7 @@ import {
   useDeleteSupplierPayment,
   useBulkDeleteSupplierPayments,
 } from '@/hooks/use-supplier-payments';
+import { useSuppliers } from '@/hooks/use-suppliers';
 import { QuerySupplierPaymentsValues, SupplierPayment } from '@bizflow/types';
 import { DataListPage } from '@/components/shared/data-list-page';
 import { getColumns } from '@/components/purchases/payments/columns';
@@ -30,6 +31,7 @@ function SupplierPaymentsContent() {
     (searchParams.get('sortOrder') as 'asc' | 'desc') || undefined;
   const startDate = searchParams.get('startDate') || undefined;
   const endDate = searchParams.get('endDate') || undefined;
+  const supplierId = searchParams.get('supplierId') || undefined;
 
   const queryParams: QuerySupplierPaymentsValues = {
     page,
@@ -39,6 +41,7 @@ function SupplierPaymentsContent() {
     sortOrder,
     startDate,
     endDate,
+    supplierId,
   };
 
   const {
@@ -47,6 +50,10 @@ function SupplierPaymentsContent() {
     isError,
     refetch,
   } = useSupplierPayments(queryParams);
+
+  // Fetch suppliers for the filter dropdown
+  const { suppliers: suppliersData } = useSuppliers({ pageSize: 100 });
+  const suppliers = suppliersData || [];
 
   const deleteMutation = useDeleteSupplierPayment();
   const bulkDeleteMutation = useBulkDeleteSupplierPayments();
@@ -128,6 +135,8 @@ function SupplierPaymentsContent() {
       search={search}
       onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
       searchPlaceholder="Cari No. Pembayaran, Pemasok, PO..."
+      filterValues={{ supplierId: supplierId || 'all' }}
+      onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
       onReset={() => router.push(pathname)}
       showDateRange={true}
       startDate={startDate ? new Date(startDate) : undefined}
@@ -139,6 +148,19 @@ function SupplierPaymentsContent() {
           page: 1,
         })
       }
+      filters={[
+        {
+          key: 'supplierId',
+          label: 'Pemasok',
+          type: 'combobox',
+          options: suppliers.map((supplier: any) => ({
+            label: supplier.name,
+            value: supplier.id,
+          })),
+          width: 'w-full md:w-[250px]',
+          searchPlaceholder: 'Cari pemasok...',
+        },
+      ]}
       // Actions
       onRefresh={refetch}
       isError={isError}

@@ -65,6 +65,7 @@ export const queryPurchaseReturnsSchema = z.object({
   sortOrder: z.enum(['asc', 'desc']).optional(),
   search: z.string().optional(),
   orderId: z.string().optional(),
+  supplierId: z.string().optional(),
   status: z.enum(['pending', 'approved', 'rejected', 'completed']).optional(),
   startDate: z.string().optional(),
   endDate: z.string().optional(),

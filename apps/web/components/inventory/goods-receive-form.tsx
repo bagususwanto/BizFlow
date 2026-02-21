@@ -6,7 +6,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { CalendarIcon, Loader2 } from 'lucide-react';
+import { CalendarIcon, Loader2, Save } from 'lucide-react';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { z } from 'zod';
@@ -445,7 +445,8 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
           </Button>
           <Button type="submit" disabled={isSubmitting || fields.length === 0}>
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Proses Penerimaan
+            {!isSubmitting && <Save className="mr-2 h-4 w-4" />}
+            Buat Penerimaan
           </Button>
         </div>
       </form>

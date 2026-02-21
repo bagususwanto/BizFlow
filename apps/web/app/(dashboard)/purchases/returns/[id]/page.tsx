@@ -47,6 +47,7 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
+  Separator,
 } from '@bizflow/ui';
 
 import { purchaseReturnsService } from '@/services/purchase-returns.service';
@@ -307,6 +308,7 @@ export default function PurchaseReturnDetailPage({
                   {ret.creator?.name || ret.createdBy}
                 </span>
               </div>
+              <Separator />
               {ret.status !== 'pending' && ret.approver && (
                 <div className="flex items-center gap-2 text-sm">
                   <CheckCircle className="h-4 w-4 text-muted-foreground" />

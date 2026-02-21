@@ -136,7 +136,7 @@ export function DataListToolbar({
                   placeholder={`Pilih ${filter.label}`}
                   searchPlaceholder={filter.searchPlaceholder || 'Cari...'}
                   allowClear
-                  clearLabel="Semua"
+                  clearLabel={`Semua ${filter.label}`}
                 />
               </div>
             );

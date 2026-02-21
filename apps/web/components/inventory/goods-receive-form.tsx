@@ -42,6 +42,7 @@ import { goodsReceiveService } from '@/services/goods-receive.service';
 import { purchaseOrdersService } from '@/services/purchase-orders.service';
 import { warehousesService } from '@/services/warehouses.service';
 import { usePurchaseOrder } from '@/hooks/use-purchase-orders';
+import { useCreateGoodsReceive } from '@/hooks/use-goods-receive';
 
 interface GoodsReceiveFormProps {
   initialData?: any;
@@ -50,8 +51,8 @@ interface GoodsReceiveFormProps {
 export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const createMutation = useCreateGoodsReceive();
   const preselectedPOId = searchParams.get('purchaseOrderId') || '';
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
 
   const form = useForm<z.input<typeof createGoodsReceiveSchema>>({
@@ -143,18 +144,10 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
 
   async function onSubmit(values: z.input<typeof createGoodsReceiveSchema>) {
     const data = values as CreateGoodsReceiveValues;
-    setIsSubmitting(true);
-    try {
-      await goodsReceiveService.create(data);
-      toast.success('Penerimaan Barang berhasil dibuat');
-      router.push('/purchases/goods-receive');
-      router.refresh();
-    } catch (error: any) {
-      toast.error(error.message || 'Terjadi kesalahan');
-    } finally {
-      setIsSubmitting(false);
-    }
+    createMutation.mutate(data);
   }
+
+  const isSubmitting = createMutation.isPending;
 
   return (
     <Form {...form}>

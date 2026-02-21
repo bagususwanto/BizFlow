@@ -40,7 +40,10 @@ import { LoadingState } from '@/components/common/loading-state';
 import { ErrorState } from '@/components/common/error-state';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
-import { useDeleteGoodsReceive } from '@/hooks/use-goods-receive';
+import {
+  useDeleteGoodsReceive,
+  useGoodsReceive,
+} from '@/hooks/use-goods-receive';
 
 export default function GoodsReceiveDetailPage({
   params,
@@ -56,10 +59,7 @@ export default function GoodsReceiveDetailPage({
     isLoading,
     refetch,
     isError,
-  } = useQuery({
-    queryKey: ['goods-receives', resolvedParams.id],
-    queryFn: () => goodsReceiveService.getById(resolvedParams.id),
-  });
+  } = useGoodsReceive(resolvedParams.id);
 
   const deleteMutation = useDeleteGoodsReceive();
 

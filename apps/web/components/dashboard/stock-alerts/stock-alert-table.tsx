@@ -1,12 +1,13 @@
 'use client';
 
-import { Badge, Button, Checkbox } from '@bizflow/ui';
-import { ShoppingBag } from 'lucide-react';
+import { Badge, Button } from '@bizflow/ui';
+import { RefreshCw, ShoppingBag } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { ColumnDef, RowSelectionState } from '@tanstack/react-table';
 import { DataTable } from '@/components/ui/data-table';
-import { toast } from 'sonner';
+import { Checkbox } from '@bizflow/ui';
+import { AutoReorderDialog } from './auto-reorder-dialog';
 
 interface StockAlertItem {
   id: string; // Product ID
@@ -56,6 +57,7 @@ function StatusBadge({ status }: { status: StockStatus }) {
 export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
   const router = useRouter();
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const [autoReorderOpen, setAutoReorderOpen] = useState(false);
 
   const columns = useMemo<ColumnDef<StockAlertItem>[]>(
     () => [
@@ -70,8 +72,6 @@ export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
               }
               className="translate-y-[2px]"
             />
-            {/* Added explicit text as per wireframe implication, standard DataTable usually just has checkbox */}
-            {/* <span className="text-sm font-medium">Pilih Semua</span> */}
           </div>
         ),
         cell: ({ row }) => (
@@ -161,55 +161,28 @@ export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
 
   const selectedCount = Object.keys(rowSelection).length;
 
-  const handleBulkPO = () => {
-    // rowSelection keys are `${variantId}-${warehouseId}`
-    const selectedKeys = Object.keys(rowSelection);
-    if (selectedKeys.length === 0) return;
+  const selectedRows = data.filter(
+    (row) => rowSelection[`${row.variantId}-${row.warehouseId}`],
+  );
 
-    // Extract variantIds and warehouseIds
-    // We assume for now we can mix warehouses or maybe we should warn?
-    // PO is usually per supplier.
-    // Let's just pass variantIds.
-    // split key by '-' to get variantId
-    // Note: variantId might contain '-' so we need to be careful?
-    // The key is `${row.variantId}-${row.warehouseId}`.
-    // Assuming IDs are UUIDs, they have dashes.
-    // Better to map from data or use a safer separator if possible, but UUIDs are standard.
-    // Actually, we can just find the selected rows from data since we have the full data array.
-
-    const selectedRows = data.filter(
-      (row) => rowSelection[`${row.variantId}-${row.warehouseId}`],
-    );
-
-    const variantIds = Array.from(
-      new Set(selectedRows.map((r) => r.variantId)),
-    );
-    // const warehouseIds = Array.from(new Set(selectedRows.map(r => r.warehouseId)));
-
-    if (variantIds.length === 0) return;
-
-    const queryString = new URLSearchParams();
-    queryString.set('variantIds', variantIds.join(','));
-    // We could pass warehouseId if all selected are from same warehouse?
-    // For now, let's just pass variantIds.
-
-    router.push(`/purchases/orders/new?${queryString.toString()}`);
-  };
+  const selectedVariantIds = Array.from(
+    new Set(selectedRows.map((r) => r.variantId)),
+  );
 
   return (
     <div className="space-y-4">
-      {/* Bulk Action Bar matches: [ ☐ Pilih Semua ] [ 🛒 Buat Purchase Order untuk yang dipilih ] 
-          We use DataTable header for "Pilih Semua" (Select All) checkbox.
-          Here we show the Action Button when items are selected.
-      */}
       {selectedCount > 0 && (
         <div className="flex items-center gap-4 rounded-md bg-muted px-4 py-2">
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium">{selectedCount} Dipilih</span>
           </div>
-          <Button size="sm" className="ml-auto h-8" onClick={handleBulkPO}>
-            <ShoppingBag className="mr-2 h-4 w-4" />
-            Buat PO
+          <Button
+            size="sm"
+            className="ml-auto h-8"
+            onClick={() => setAutoReorderOpen(true)}
+          >
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Auto-Reorder
           </Button>
         </div>
       )}
@@ -222,6 +195,13 @@ export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
         rowSelection={rowSelection}
         onRowSelectionChange={setRowSelection}
         getRowId={(row) => `${row.variantId}-${row.warehouseId}`}
+      />
+
+      <AutoReorderDialog
+        open={autoReorderOpen}
+        onOpenChange={setAutoReorderOpen}
+        variantIds={selectedVariantIds}
+        onSuccess={() => setRowSelection({})}
       />
     </div>
   );

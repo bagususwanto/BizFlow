@@ -84,3 +84,42 @@ export type QueryPurchaseOrdersValues = z.infer<
 export type UpdatePurchaseOrderStatusValues = z.infer<
   typeof updatePurchaseOrderStatusSchema
 >;
+
+export const autoReorderSchema = z.object({
+  variantIds: z
+    .array(z.string().min(1))
+    .min(1, 'Minimal 1 varian produk diperlukan'),
+});
+
+export type AutoReorderValues = z.infer<typeof autoReorderSchema>;
+
+export interface AutoReorderPreviewItem {
+  supplierId: string;
+  supplierName: string;
+  supplierCode: string;
+  items: {
+    variantId: string;
+    productName: string;
+    variantName: string;
+    sku: string;
+    currentStock: number;
+    minStock: number;
+    orderQty: number;
+    unitPrice: number;
+  }[];
+}
+
+export interface AutoReorderPreviewResult {
+  groups: AutoReorderPreviewItem[];
+  noSupplierVariants: {
+    variantId: string;
+    productName: string;
+    variantName: string;
+    sku: string;
+  }[];
+}
+
+export interface AutoReorderExecuteResult {
+  createdOrders: number;
+  skippedVariants: number;
+}

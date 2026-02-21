@@ -9,6 +9,8 @@ import {
   UpdatePurchaseOrderValues,
   QueryPurchaseOrdersValues,
   UpdatePurchaseOrderStatusValues,
+  AutoReorderPreviewResult,
+  AutoReorderExecuteResult,
 } from '@bizflow/types';
 
 import { PrismaService } from '../../../prisma';
@@ -649,5 +651,194 @@ export class PurchaseOrdersService {
       deletedCount,
       skippedCount,
     });
+  }
+
+  /**
+   * Preview auto-reorder: group low-stock variants by their historical supplier
+   */
+  async previewAutoReorder(
+    variantIds: string[],
+  ): Promise<AutoReorderPreviewResult> {
+    // 1. Fetch variant info including current stock and minStock from product
+    const variants = await this.prisma.productVariant.findMany({
+      where: { id: { in: variantIds } },
+      include: {
+        product: {
+          select: { name: true, minStock: true },
+        },
+        stocks: {
+          select: { quantity: true },
+        },
+      },
+    });
+
+    // Calculate current total stock per variant across all warehouses
+    const variantStockMap = new Map<
+      string,
+      { currentStock: number; minStock: number }
+    >();
+    for (const v of variants) {
+      const totalStock = v.stocks.reduce(
+        (sum, s) => sum + Number(s.quantity),
+        0,
+      );
+      variantStockMap.set(v.id, {
+        currentStock: totalStock,
+        minStock: v.product.minStock,
+      });
+    }
+
+    // 2. Find the most recent PurchaseOrderItem per variant to determine supplier and price
+    const recentItems = await this.prisma.purchaseOrderItem.findMany({
+      where: { variantId: { in: variantIds } },
+      orderBy: { order: { createdAt: 'desc' } },
+      distinct: ['variantId'],
+      include: {
+        order: {
+          include: {
+            supplier: {
+              select: { id: true, name: true, code: true },
+            },
+          },
+        },
+      },
+    });
+
+    // Map variantId -> { supplier, unitPrice }
+    const supplierMap = new Map<
+      string,
+      {
+        supplierId: string;
+        supplierName: string;
+        supplierCode: string;
+        unitPrice: number;
+      }
+    >();
+    for (const item of recentItems) {
+      supplierMap.set(item.variantId, {
+        supplierId: item.order.supplier.id,
+        supplierName: item.order.supplier.name,
+        supplierCode: item.order.supplier.code,
+        unitPrice: Number(item.unitPrice),
+      });
+    }
+
+    // 3. Group variants by supplier
+    const supplierGroups = new Map<
+      string,
+      {
+        supplierId: string;
+        supplierName: string;
+        supplierCode: string;
+        items: AutoReorderPreviewResult['groups'][0]['items'];
+      }
+    >();
+    const noSupplierVariants: AutoReorderPreviewResult['noSupplierVariants'] =
+      [];
+
+    for (const variant of variants) {
+      const stockInfo = variantStockMap.get(variant.id)!;
+      const orderQty = Math.max(1, stockInfo.minStock - stockInfo.currentStock);
+      const supplierInfo = supplierMap.get(variant.id);
+
+      if (!supplierInfo) {
+        noSupplierVariants.push({
+          variantId: variant.id,
+          productName: variant.product.name,
+          variantName: variant.name,
+          sku: variant.sku,
+        });
+        continue;
+      }
+
+      if (!supplierGroups.has(supplierInfo.supplierId)) {
+        supplierGroups.set(supplierInfo.supplierId, {
+          supplierId: supplierInfo.supplierId,
+          supplierName: supplierInfo.supplierName,
+          supplierCode: supplierInfo.supplierCode,
+          items: [],
+        });
+      }
+
+      supplierGroups.get(supplierInfo.supplierId)!.items.push({
+        variantId: variant.id,
+        productName: variant.product.name,
+        variantName: variant.name,
+        sku: variant.sku,
+        currentStock: stockInfo.currentStock,
+        minStock: stockInfo.minStock,
+        orderQty,
+        unitPrice: supplierInfo.unitPrice,
+      });
+    }
+
+    return {
+      groups: Array.from(supplierGroups.values()),
+      noSupplierVariants,
+    };
+  }
+
+  /**
+   * Execute auto-reorder: generate draft POs grouped by supplier
+   */
+  async executeAutoReorder(
+    variantIds: string[],
+    userId: string,
+  ): Promise<AutoReorderExecuteResult> {
+    const preview = await this.previewAutoReorder(variantIds);
+
+    if (preview.groups.length === 0) {
+      return {
+        createdOrders: 0,
+        skippedVariants: preview.noSupplierVariants.length,
+      };
+    }
+
+    let createdOrders = 0;
+
+    await this.prisma.$transaction(async (tx) => {
+      for (const group of preview.groups) {
+        // Generate order number
+        const orderNumber = await this.generateOrderNumber();
+
+        const subtotal = group.items.reduce(
+          (sum, item) => sum + item.orderQty * item.unitPrice,
+          0,
+        );
+
+        await tx.purchaseOrder.create({
+          data: {
+            orderNumber,
+            supplierId: group.supplierId,
+            status: 'draft',
+            paymentStatus: 'unpaid',
+            subtotal,
+            discountPercent: 0,
+            discountAmount: 0,
+            taxPercent: 0,
+            taxAmount: 0,
+            total: subtotal,
+            paidAmount: 0,
+            notes: '[Auto-generated dari fitur Auto-Reorder Stok Minimum]',
+            createdBy: userId,
+            items: {
+              create: group.items.map((item) => ({
+                variantId: item.variantId,
+                quantity: item.orderQty,
+                unitPrice: item.unitPrice,
+                subtotal: item.orderQty * item.unitPrice,
+              })),
+            },
+          },
+        });
+
+        createdOrders++;
+      }
+    });
+
+    return {
+      createdOrders,
+      skippedVariants: preview.noSupplierVariants.length,
+    };
   }
 }

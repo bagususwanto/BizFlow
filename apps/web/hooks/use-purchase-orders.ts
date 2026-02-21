@@ -122,3 +122,40 @@ export function useUpdatePurchaseOrderStatus(id: string) {
     },
   });
 }
+
+export function usePreviewAutoReorder() {
+  return useMutation({
+    mutationFn: (variantIds: string[]) =>
+      purchaseOrdersService.previewAutoReorder(variantIds),
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+}
+
+export function useExecuteAutoReorder() {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: (variantIds: string[]) =>
+      purchaseOrdersService.executeAutoReorder(variantIds),
+    onSuccess: async (data) => {
+      toast.success(
+        `Auto-Reorder berhasil! ${data.createdOrders} Draft PO dibuat.${
+          data.skippedVariants > 0
+            ? ` ${data.skippedVariants} varian dilewati karena tidak ada riwayat pemasok.`
+            : ''
+        }`,
+      );
+      await queryClient.invalidateQueries({
+        queryKey: ['purchase-orders'],
+        refetchType: 'all',
+      });
+      router.push('/purchases/orders');
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+}

@@ -31,6 +31,7 @@ import {
   UpdatePurchaseOrderDto,
   QueryPurchaseOrdersDto,
   UpdatePurchaseOrderStatusDto,
+  AutoReorderDto,
 } from './dto';
 import { Prisma } from '@bizflow/database';
 
@@ -54,6 +55,36 @@ export class PurchaseOrdersController {
   async generateOrderNumber() {
     const orderNumber = await this.purchaseOrdersService.generateOrderNumber();
     return { data: { orderNumber } };
+  }
+
+  @Post('auto-reorder/preview')
+  @Permissions(Permission.PurchaseOrders.Read)
+  @HttpCode(HttpStatus.OK)
+  async previewAutoReorder(@Body() dto: AutoReorderDto) {
+    const result = await this.purchaseOrdersService.previewAutoReorder(
+      dto.variantIds,
+    );
+    return { data: result };
+  }
+
+  @Post('auto-reorder/execute')
+  @Permissions(Permission.PurchaseOrders.Create as PermissionType)
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditLog({
+    module: Module.PURCHASE_ORDERS,
+    action: AuditAction.CREATE,
+    entityType: 'purchase_order (auto_reorder)',
+  })
+  @HttpCode(HttpStatus.CREATED)
+  async executeAutoReorder(
+    @Body() dto: AutoReorderDto,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    const result = await this.purchaseOrdersService.executeAutoReorder(
+      dto.variantIds,
+      user.sub,
+    );
+    return { data: result };
   }
 
   @Get(':id')

@@ -5,6 +5,8 @@ import {
   UpdatePurchaseOrderStatusValues,
   ApiResponse,
   PurchaseOrder,
+  AutoReorderPreviewResult,
+  AutoReorderExecuteResult,
 } from '@bizflow/types';
 import { apiClient } from '@/lib/fetch-client';
 import { buildSearchParams } from '@/lib/utils';
@@ -89,6 +91,26 @@ class PurchaseOrdersService {
       '/purchases/orders/generate-order-number',
     );
     return res.data!.orderNumber;
+  }
+
+  async previewAutoReorder(
+    variantIds: string[],
+  ): Promise<AutoReorderPreviewResult> {
+    const res = await apiClient.post<ApiResponse<AutoReorderPreviewResult>>(
+      '/purchases/orders/auto-reorder/preview',
+      { variantIds },
+    );
+    return res.data!;
+  }
+
+  async executeAutoReorder(
+    variantIds: string[],
+  ): Promise<AutoReorderExecuteResult> {
+    const res = await apiClient.post<ApiResponse<AutoReorderExecuteResult>>(
+      '/purchases/orders/auto-reorder/execute',
+      { variantIds },
+    );
+    return res.data!;
   }
 }
 

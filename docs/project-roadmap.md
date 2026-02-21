@@ -228,7 +228,7 @@ Referensi: [05-purchase-management.md](file:///Users/bagus/Project/personal/BizF
 | **Payments** - Supplier Payment | [x]    | High     |
 | Payment terms management        | [x]    | Medium   |
 | Purchase history per supplier   | [x]    | High     |
-| Auto-reorder (stok minimum)     | [ ]    | Low      |
+| Auto-reorder (stok minimum)     | [x]    | Low      |
 
 **API Endpoints**: `/api/v1/master-data/suppliers/*`, `/api/v1/purchases/orders/*`, `/api/v1/purchases/goods-receive/*`, `/api/v1/purchases/returns/*`, `/api/v1/purchases/payments/*`
 

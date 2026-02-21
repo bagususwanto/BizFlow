@@ -442,7 +442,7 @@ export function SupplierPaymentForm({ initialData }: SupplierPaymentFormProps) {
             {!(createMutation.isPending || updateMutation.isPending) && (
               <Save className="mr-2 h-4 w-4" />
             )}
-            {initialData ? 'Simpan Perubahan' : 'Simpan Pembayaran'}
+            {initialData ? 'Simpan Perubahan' : 'Buat Pembayaran'}
           </Button>
         </div>
       </form>

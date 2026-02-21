@@ -474,7 +474,7 @@ export function PurchaseReturnForm() {
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
               <Save className="mr-2 h-4 w-4" />
-              Simpan Return
+              Buat Return
             </Button>
           </div>
         </form>

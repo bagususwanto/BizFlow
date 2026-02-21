@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@bizflow/ui';
 import {
   usePurchaseOrders,
   useDeletePurchaseOrder,
+  useBulkDeletePurchaseOrders,
 } from '@/hooks/use-purchase-orders';
 import { useSuppliers } from '@/hooks/use-suppliers';
 import { QueryPurchaseOrdersValues, PurchaseOrder } from '@bizflow/types';
@@ -52,6 +53,7 @@ function PurchaseOrdersContent() {
   const suppliers = suppliersData || [];
 
   const deleteMutation = useDeletePurchaseOrder();
+  const bulkDeleteMutation = useBulkDeletePurchaseOrders();
 
   // Delete Dialog State (Local to Page to handle confirmation)
   const [orderToDelete, setOrderToDelete] = useState<PurchaseOrder | null>(
@@ -165,6 +167,8 @@ function PurchaseOrdersContent() {
       // Actions
       onRefresh={refetch}
       isError={isError}
+      onBulkDelete={(ids) => bulkDeleteMutation.mutate(ids)}
+      isBulkDeleting={bulkDeleteMutation.isPending}
     >
       {/* Summary Cards */}
       {summary && (

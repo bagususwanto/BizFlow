@@ -63,6 +63,7 @@ export interface DataListPageProps<TData> {
   isDeleting?: boolean;
   onBulkDelete?: (ids: string[]) => void;
   isBulkDeleting?: boolean;
+  enableRowSelection?: boolean;
   onRefresh?: () => void;
   isError?: boolean;
   onRetry?: () => void;
@@ -113,6 +114,7 @@ export function DataListPage<
   isDeleting,
   onBulkDelete,
   isBulkDeleting,
+  enableRowSelection,
   onRefresh,
   isError,
   onRetry,
@@ -265,7 +267,10 @@ export function DataListPage<
                 onSortingChange={handleSortingChange}
                 columnVisibility={columnVisibility}
                 onColumnVisibilityChange={setColumnVisibility}
-                enableRowSelection={!!onBulkDelete}
+                enableRowSelection={
+                  enableRowSelection ??
+                  (columns.some((c) => c.id === 'select') || !!onBulkDelete)
+                }
                 rowSelection={rowSelection}
                 onRowSelectionChange={setRowSelection}
                 getRowId={getRowId}

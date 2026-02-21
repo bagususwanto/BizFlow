@@ -99,6 +99,26 @@ export function useDeletePurchaseOrder() {
   });
 }
 
+export function useBulkDeletePurchaseOrders() {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: (ids: string[]) => purchaseOrdersService.bulkDelete(ids),
+    onSuccess: async () => {
+      toast.success('Purchase Orders berhasil dihapus');
+      await queryClient.invalidateQueries({
+        queryKey: ['purchase-orders'],
+        refetchType: 'all',
+      });
+      router.refresh();
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+}
+
 export function useUpdatePurchaseOrderStatus(id: string) {
   const queryClient = useQueryClient();
   const router = useRouter();

@@ -87,7 +87,7 @@ export class ReturnsController {
    */
   @Post(':id/refund')
   @HttpCode(HttpStatus.OK)
-  @Permissions(Permission.Pos.Create as PermissionType)
+  @Permissions(Permission.Sales.Refund as PermissionType)
   @UseInterceptors(AuditLogInterceptor)
   @AuditLog({
     module: Module.POS,
@@ -112,7 +112,7 @@ export class ReturnsController {
    */
   @Post(':id/approve')
   @HttpCode(HttpStatus.OK)
-  @Permissions(Permission.Pos.Update as PermissionType)
+  @Permissions(Permission.Pos.Approve as PermissionType)
   @UseInterceptors(AuditLogInterceptor)
   @AuditLog({
     module: Module.POS,
@@ -133,7 +133,7 @@ export class ReturnsController {
    */
   @Post(':id/reject')
   @HttpCode(HttpStatus.OK)
-  @Permissions(Permission.Pos.Update as PermissionType)
+  @Permissions(Permission.Pos.Reject as PermissionType)
   @UseInterceptors(AuditLogInterceptor)
   @AuditLog({
     module: Module.POS,

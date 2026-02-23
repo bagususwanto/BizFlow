@@ -20,7 +20,7 @@ export class ExportController {
   constructor(private readonly exportService: ExportService) {}
 
   @Get('sales/excel')
-  @Permissions(Permission.Reports.Read)
+  @Permissions(Permission.Reports.Export)
   async exportSalesExcel(
     @Query() query: QuerySalesReportDto,
     @Res({ passthrough: true }) res: Response,
@@ -35,7 +35,7 @@ export class ExportController {
   }
 
   @Get('sales/pdf')
-  @Permissions(Permission.Reports.Read)
+  @Permissions(Permission.Reports.Export)
   async exportSalesPdf(
     @Query() query: QuerySalesReportDto,
     @Res({ passthrough: true }) res: Response,
@@ -49,7 +49,7 @@ export class ExportController {
   }
 
   @Get('inventory/excel')
-  @Permissions(Permission.Reports.Read)
+  @Permissions(Permission.Reports.Export)
   async exportStockExcel(
     @Query() query: QueryStockReportDto,
     @Res({ passthrough: true }) res: Response,
@@ -64,7 +64,7 @@ export class ExportController {
   }
 
   @Get('inventory/pdf')
-  @Permissions(Permission.Reports.Read)
+  @Permissions(Permission.Reports.Export)
   async exportStockPdf(
     @Query() query: QueryStockReportDto,
     @Res({ passthrough: true }) res: Response,

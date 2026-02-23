@@ -3,6 +3,7 @@ import {
   NotFoundException,
   ConflictException,
   BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import {
   CreatePurchaseOrderValues,
@@ -487,6 +488,7 @@ export class PurchaseOrdersService {
     id: string,
     dto: UpdatePurchaseOrderStatusValues,
     userId: string,
+    userPermissions: string[],
   ): Promise<ApiResponse<Prisma.PurchaseOrderGetPayload<object>>> {
     const existing = await this.prisma.purchaseOrder.findUnique({
       where: { id },
@@ -518,13 +520,32 @@ export class PurchaseOrdersService {
       status: dto.status,
     };
 
+    // Extract module from our own permissions (always purchase-orders:*)
+    const checkPerm = (perm: string) => {
+      return (
+        userPermissions.includes(perm) ||
+        userPermissions.includes('purchase-orders:*') ||
+        userPermissions.includes('*:*')
+      );
+    };
+
     if (dto.status === 'approved') {
+      if (!checkPerm('purchase-orders:approve')) {
+        throw new ForbiddenException(
+          'Akses ditolak: Anda tidak memiliki izin untuk melakukan approve',
+        );
+      }
       updateData.approvedBy = userId;
       updateData.approvedAt = new Date();
     } else if (
       dto.status === 'draft' &&
       existing.status === 'pending_approval'
     ) {
+      if (!checkPerm('purchase-orders:reject')) {
+        throw new ForbiddenException(
+          'Akses ditolak: Anda tidak memiliki izin untuk melakukan reject',
+        );
+      }
       // Clear approval data if rejected back to draft
       updateData.approvedBy = null;
       updateData.approvedAt = null;

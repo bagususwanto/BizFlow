@@ -100,7 +100,11 @@ export class PurchaseReturnsController {
   }
 
   @Patch(':id/status')
-  @Permissions(Permission.PurchaseReturns.Update as PermissionType)
+  @Permissions(
+    Permission.PurchaseReturns.Update as PermissionType,
+    Permission.PurchaseReturns.Approve as PermissionType,
+    Permission.PurchaseReturns.Reject as PermissionType,
+  )
   @UseInterceptors(AuditLogInterceptor)
   @AuditLog({
     module: Module.PURCHASE_RETURNS,
@@ -112,7 +116,12 @@ export class PurchaseReturnsController {
     @Body() dto: UpdatePurchaseReturnStatusDto,
     @CurrentUser() user: JwtPayload,
   ): Promise<ApiResponse<Prisma.PurchaseReturnGetPayload<object>>> {
-    return this.purchaseReturnsService.updateStatus(id, dto, user.sub);
+    return this.purchaseReturnsService.updateStatus(
+      id,
+      dto,
+      user.sub,
+      user.permissions,
+    );
   }
 
   @Delete(':id')

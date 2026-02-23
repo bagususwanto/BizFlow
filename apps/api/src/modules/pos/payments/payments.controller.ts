@@ -121,7 +121,7 @@ export class PaymentsController {
    */
   @Post(':id/refund')
   @HttpCode(HttpStatus.OK)
-  @Permissions(Permission.Pos.Create as PermissionType)
+  @Permissions(Permission.Sales.Refund as PermissionType)
   @UseInterceptors(AuditLogInterceptor)
   @AuditLog({
     module: Module.POS,

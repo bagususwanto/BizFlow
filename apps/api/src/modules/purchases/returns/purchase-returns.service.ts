@@ -3,6 +3,7 @@ import {
   NotFoundException,
   BadRequestException,
   ConflictException,
+  ForbiddenException,
 } from '@nestjs/common';
 import {
   CreatePurchaseReturnValues,
@@ -508,6 +509,7 @@ export class PurchaseReturnsService {
     id: string,
     dto: UpdatePurchaseReturnStatusValues,
     userId: string,
+    userPermissions: string[],
   ): Promise<ApiResponse<Prisma.PurchaseReturnGetPayload<object>>> {
     const existing = await this.prisma.purchaseReturn.findUnique({
       where: { id },
@@ -540,10 +542,28 @@ export class PurchaseReturnsService {
       notes: dto.notes ?? existing.notes,
     };
 
-    // When approving, set approvedBy and approvedAt
+    const checkPerm = (perm: string) => {
+      return (
+        userPermissions.includes(perm) ||
+        userPermissions.includes('purchase-returns:*') ||
+        userPermissions.includes('*:*')
+      );
+    };
+
     if (dto.status === 'approved') {
+      if (!checkPerm('purchase-returns:approve')) {
+        throw new ForbiddenException(
+          'Akses ditolak: Anda tidak memiliki izin untuk melakukan approve',
+        );
+      }
       updateData.approvedBy = userId;
       updateData.approvedAt = new Date();
+    } else if (dto.status === 'rejected') {
+      if (!checkPerm('purchase-returns:reject')) {
+        throw new ForbiddenException(
+          'Akses ditolak: Anda tidak memiliki izin untuk melakukan reject',
+        );
+      }
     }
 
     // When completing (stock is returned to supplier), update stock movements

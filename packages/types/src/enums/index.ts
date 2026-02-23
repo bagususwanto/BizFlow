@@ -99,6 +99,7 @@ export const Permission = {
     Create: 'products:create',
     Update: 'products:update',
     Delete: 'products:delete',
+    Export: 'products:export',
   },
   Categories: {
     Read: 'categories:read',
@@ -123,6 +124,7 @@ export const Permission = {
     Create: 'customers:create',
     Update: 'customers:update',
     Delete: 'customers:delete',
+    Export: 'customers:export',
   },
   Warehouses: {
     Read: 'warehouses:read',
@@ -151,12 +153,17 @@ export const Permission = {
     Create: 'pos:create',
     Update: 'pos:update',
     Delete: 'pos:delete',
+    Void: 'pos:void',
+    Approve: 'pos:approve',
+    Reject: 'pos:reject',
   },
   Sales: {
     Read: 'sales:read',
     Create: 'sales:create',
     Update: 'sales:update',
     Delete: 'sales:delete',
+    Export: 'sales:export',
+    Refund: 'sales:refund',
   },
   Purchases: {
     Read: 'purchases:read',
@@ -169,12 +176,16 @@ export const Permission = {
     Create: 'purchase-orders:create',
     Update: 'purchase-orders:update',
     Delete: 'purchase-orders:delete',
+    Approve: 'purchase-orders:approve',
+    Reject: 'purchase-orders:reject',
   },
   PurchaseReturns: {
     Read: 'purchase-returns:read',
     Create: 'purchase-returns:create',
     Update: 'purchase-returns:update',
     Delete: 'purchase-returns:delete',
+    Approve: 'purchase-returns:approve',
+    Reject: 'purchase-returns:reject',
   },
   SupplierPayments: {
     Read: 'supplier-payments:read',
@@ -205,6 +216,7 @@ export const Permission = {
     Create: 'reports:create',
     Update: 'reports:update',
     Delete: 'reports:delete',
+    Export: 'reports:export',
   },
   Settings: {
     Read: 'settings:read',
@@ -220,14 +232,20 @@ export const Permission = {
   },
 } as const;
 
-export type PermissionType =
-  (typeof Permission)[keyof typeof Permission][keyof (typeof Permission)[keyof typeof Permission]];
+export type PermissionType = {
+  [K in keyof typeof Permission]: (typeof Permission)[K][keyof (typeof Permission)[K]];
+}[keyof typeof Permission];
 
 export enum PermissionAction {
   CREATE = 'create',
   READ = 'read',
   UPDATE = 'update',
   DELETE = 'delete',
+  APPROVE = 'approve',
+  REJECT = 'reject',
+  EXPORT = 'export',
+  VOID = 'void',
+  REFUND = 'refund',
 }
 
 // Helper array for available actions

@@ -128,7 +128,11 @@ export class PurchaseOrdersController {
   }
 
   @Patch(':id/status')
-  @Permissions(Permission.PurchaseOrders.Update as PermissionType)
+  @Permissions(
+    Permission.PurchaseOrders.Update as PermissionType,
+    Permission.PurchaseOrders.Approve as PermissionType,
+    Permission.PurchaseOrders.Reject as PermissionType,
+  )
   @UseInterceptors(AuditLogInterceptor)
   @AuditLog({
     module: Module.PURCHASE_ORDERS,
@@ -140,7 +144,12 @@ export class PurchaseOrdersController {
     @Body() dto: UpdatePurchaseOrderStatusDto,
     @CurrentUser() user: JwtPayload,
   ): Promise<ApiResponse<Prisma.PurchaseOrderGetPayload<object>>> {
-    return this.purchaseOrdersService.updateStatus(id, dto, user.sub);
+    return this.purchaseOrdersService.updateStatus(
+      id,
+      dto,
+      user.sub,
+      user.permissions,
+    );
   }
 
   @Delete(':id')

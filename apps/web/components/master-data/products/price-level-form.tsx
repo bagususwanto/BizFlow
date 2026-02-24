@@ -18,6 +18,7 @@ import {
 } from '@bizflow/ui';
 import { useEffect } from 'react';
 import { Loader2, Save } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface PriceLevelFormProps {
   open: boolean;
@@ -34,6 +35,8 @@ export function PriceLevelForm({
   initialData,
   isSubmitting,
 }: PriceLevelFormProps) {
+  const t = useTranslations('priceLevels.form');
+
   const form = useForm<CreatePriceLevelValues>({
     resolver: zodResolver(createPriceLevelSchema) as any,
     defaultValues: {
@@ -74,7 +77,7 @@ export function PriceLevelForm({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {initialData ? 'Edit Level Harga' : 'Tambah Level Harga'}
+            {initialData ? t('editTitle') : t('addTitle')}
           </DialogTitle>
         </DialogHeader>
 
@@ -88,9 +91,9 @@ export function PriceLevelForm({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required>Nama Level</FormLabel>
+                  <FormLabel required>{t('nameLabel')}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Contoh: Grosir, Member" {...field} />
+                    <Input placeholder={t('namePlaceholder')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -103,7 +106,7 @@ export function PriceLevelForm({
                 name="minQty"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel required>Minimal Qty</FormLabel>
+                    <FormLabel required>{t('minQtyLabel')}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -122,7 +125,7 @@ export function PriceLevelForm({
                 name="price"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel required>Harga</FormLabel>
+                    <FormLabel required>{t('priceLabel')}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -144,14 +147,14 @@ export function PriceLevelForm({
                 onClick={() => onOpenChange(false)}
                 disabled={isSubmitting}
               >
-                Batal
+                {t('cancel')}
               </Button>
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
                 {!isSubmitting && <Save className="mr-2 h-4 w-4" />}
-                Simpan
+                {t('save')}
               </Button>
             </DialogFooter>
           </form>

@@ -21,6 +21,7 @@ import {
 import { Plus, Trash2, RefreshCw, Save } from 'lucide-react';
 import { useEffect } from 'react';
 import { useGenerateVariantSku } from '@/hooks/use-products';
+import { useTranslations } from 'next-intl';
 
 interface VariantFormProps {
   open: boolean;
@@ -39,6 +40,7 @@ export function VariantForm({
   isSubmitting,
   productId,
 }: VariantFormProps) {
+  const t = useTranslations('variants.form');
   const generateSku = useGenerateVariantSku(productId);
 
   const form = useForm<CreateVariantValues>({
@@ -121,7 +123,9 @@ export function VariantForm({
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>
-            {initialData ? 'Edit Varian' : 'Tambah Varian Baru'}
+            {initialData
+              ? t('editVariant', { ns: 'variants' })
+              : t('addVariant', { ns: 'variants' })}
           </DialogTitle>
         </DialogHeader>
 
@@ -133,11 +137,11 @@ export function VariantForm({
                 name="sku"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel optional>SKU</FormLabel>
+                    <FormLabel optional>{t('skuLabel')}</FormLabel>
                     <div className="flex gap-2">
                       <FormControl>
                         <Input
-                          placeholder="Kosongkan untuk auto-generate"
+                          placeholder={t('skuPlaceholder')}
                           {...field}
                           value={field.value || ''}
                         />
@@ -147,13 +151,13 @@ export function VariantForm({
                         variant="outline"
                         size="icon"
                         onClick={handleGenerateSku}
-                        title="Generate SKU Otomatis"
+                        title={t('skuLabel')}
                       >
                         <RefreshCw className="h-4 w-4" />
                       </Button>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Akan otomatis dibuat jika dikosongkan
+                      {t('skuDesc')}
                     </p>
                     <FormMessage />
                   </FormItem>
@@ -165,10 +169,10 @@ export function VariantForm({
                 name="barcode"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel optional>Barcode</FormLabel>
+                    <FormLabel optional>{t('barcodeLabel')}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="899..."
+                        placeholder={t('barcodePlaceholder')}
                         {...field}
                         value={field.value || ''}
                       />
@@ -183,9 +187,9 @@ export function VariantForm({
                 name="name"
                 render={({ field }) => (
                   <FormItem className="col-span-2">
-                    <FormLabel required>Nama Varian</FormLabel>
+                    <FormLabel required>{t('nameLabel')}</FormLabel>
                     <FormControl>
-                      <Input placeholder="Contoh: Merah, XL" {...field} />
+                      <Input placeholder={t('namePlaceholder')} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -197,7 +201,7 @@ export function VariantForm({
                 name="costPrice"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel required>Harga Beli</FormLabel>
+                    <FormLabel required>{t('costPrice')}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -215,7 +219,7 @@ export function VariantForm({
                 name="sellPrice"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel required>Harga Jual</FormLabel>
+                    <FormLabel required>{t('sellPrice')}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -234,10 +238,8 @@ export function VariantForm({
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm col-span-2">
                     <div className="space-y-0.5">
-                      <FormLabel>Status Aktif</FormLabel>
-                      <FormDescription>
-                        Tentukan apakah varian ini aktif atau tidak.
-                      </FormDescription>
+                      <FormLabel>{t('isActive')}</FormLabel>
+                      <FormDescription>{t('isActiveDesc')}</FormDescription>
                     </div>
                     <FormControl>
                       <Switch
@@ -252,7 +254,7 @@ export function VariantForm({
 
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h4 className="text-sm font-medium">Atribut Varian</h4>
+                <h4 className="text-sm font-medium">{t('attributesTitle')}</h4>
                 <Button
                   type="button"
                   variant="outline"
@@ -260,14 +262,13 @@ export function VariantForm({
                   onClick={addAttribute}
                 >
                   <Plus className="mr-2 h-4 w-4" />
-                  Tambah Atribut
+                  {t('addAttribute')}
                 </Button>
               </div>
 
               {attributeEntries.length === 0 && (
                 <div className="text-sm text-muted-foreground text-center py-4 border rounded-md border-dashed">
-                  Belum ada atribut. Tambahkan atribut seperti Warna, Ukuran,
-                  dll.
+                  {t('emptyAttributes')}
                 </div>
               )}
 
@@ -276,14 +277,14 @@ export function VariantForm({
                   <div key={index} className="flex gap-2 items-start">
                     <div className="flex-1">
                       <Input
-                        placeholder="Nama Atribut (mis: Warna)"
+                        placeholder={t('attrNamePlaceholder')}
                         defaultValue={key}
                         onBlur={(e) => updateAttributeKey(key, e.target.value)}
                       />
                     </div>
                     <div className="flex-1">
                       <Input
-                        placeholder="Nilai (mis: Merah)"
+                        placeholder={t('attrValuePlaceholder')}
                         value={value as string}
                         onChange={(e) =>
                           updateAttributeValue(key, e.target.value)
@@ -309,7 +310,7 @@ export function VariantForm({
                 variant="outline"
                 onClick={() => onOpenChange(false)}
               >
-                Batal
+                {t('save').includes('Simpan') ? 'Batal' : 'Cancel'}
               </Button>
               <Button
                 type="button"
@@ -317,11 +318,11 @@ export function VariantForm({
                 onClick={form.handleSubmit(handleSubmit)}
               >
                 {isSubmitting ? (
-                  'Menyimpan...'
+                  t('saving')
                 ) : (
                   <>
                     <Save className="mr-2 h-4 w-4" />
-                    Simpan
+                    {t('save')}
                   </>
                 )}
               </Button>

@@ -152,6 +152,133 @@
       "failedLoad": "Failed to load product details",
       "cardTitle": "Edit Product Information",
       "cardDesc": "Make changes to product data."
+    },
+    "form": {
+      "tabs": {
+        "info": "Basic Info",
+        "pricing": "Pricing & Stock",
+        "media": "Media",
+        "variants": "Variants",
+        "priceLevels": "Price Levels"
+      },
+      "fields": {
+        "name": "Product Name",
+        "namePlaceholder": "e.g., Caramel Macchiato",
+        "category": "Category",
+        "categoryPlaceholder": "Select Category",
+        "categorySearch": "Search Category...",
+        "categoryEmpty": "No category found.",
+        "unit": "Unit",
+        "unitPlaceholder": "Select Unit",
+        "unitSearch": "Search Unit...",
+        "unitEmpty": "No unit found.",
+        "sku": "SKU",
+        "skuPlaceholder": "Auto generate...",
+        "skuDesc": "Will be automatically generated if left empty",
+        "generateSkuTooltip": "Auto Generate SKU",
+        "barcode": "Barcode",
+        "barcodePlaceholder": "Scan barcode...",
+        "barcodeDesc": "Scan product barcode if available",
+        "isService": "Service Product",
+        "isServiceDesc": "Enable if this is a service (no stock)",
+        "isActive": "Active Status",
+        "isActiveDesc": "Disable product if no longer sold",
+        "costPrice": "Cost Price",
+        "sellPrice": "Selling Price",
+        "minStock": "Minimum Stock",
+        "minStockDesc": "Minimum limit for low stock notification",
+        "images": "Product Photos",
+        "imagesDesc": "Format: JPG, PNG, WEBP. Max 5MB.",
+        "description": "Description",
+        "descriptionPlaceholder": "Detailed product description..."
+      },
+      "messages": {
+        "barcodeScanned": "Barcode detected: {barcode}",
+        "selectCategoryFirst": "Please select a category first",
+        "generateSkuFailed": "Failed to generate SKU",
+        "createSuccess": "Product successfully created",
+        "updateSuccess": "Product successfully updated",
+        "errorOccurred": "An error occurred",
+        "completeInfoTab": "Please complete data in the Basic Info tab",
+        "completePricingTab": "Please complete data in the Pricing & Stock tab",
+        "completeMediaTab": "Please complete data in the Media tab"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "save": "Save Changes",
+        "create": "Create Product"
+      }
+    },
+    "variants": {
+      "title": "Variant List",
+      "addVariant": "Add Variant",
+      "editVariant": "Edit Variant",
+      "loading": "Loading variants...",
+      "empty": "No product variants yet.",
+      "columns": {
+        "sku": "SKU",
+        "name": "Name",
+        "attributes": "Attributes",
+        "costPrice": "Cost Price",
+        "sellPrice": "Selling Price",
+        "status": "Status"
+      },
+      "form": {
+        "skuLabel": "SKU",
+        "skuPlaceholder": "Leave blank to auto-generate",
+        "skuDesc": "Will be automatically generated if left empty",
+        "barcodeLabel": "Barcode",
+        "barcodePlaceholder": "899...",
+        "nameLabel": "Variant Name",
+        "namePlaceholder": "e.g., Red, XL",
+        "costPrice": "Cost Price",
+        "sellPrice": "Selling Price",
+        "isActive": "Active Status",
+        "isActiveDesc": "Determine whether this variant is active or not.",
+        "attributesTitle": "Variant Attributes",
+        "addAttribute": "Add Attribute",
+        "emptyAttributes": "No attributes yet. Add attributes like Color, Size, etc.",
+        "attrNamePlaceholder": "Attribute Name (e.g., Color)",
+        "attrValuePlaceholder": "Value (e.g., Red)",
+        "saving": "Saving...",
+        "save": "Save"
+      },
+      "deleteDialog": {
+        "titleActive": "Deactivate Variant?",
+        "titlePermanent": "Permanently Delete Variant?",
+        "descActive": "Variant {name} will be deactivated.",
+        "descPermanent": "Variant {name} will be permanently deleted. This action cannot be undone.",
+        "descWarning": "Warning: Variants with stock history or transactions cannot be permanently deleted.",
+        "confirmDeactivate": "Deactivate",
+        "confirmDelete": "Delete Permanently"
+      }
+    },
+    "priceLevels": {
+      "title": "Price Levels",
+      "description": "Manage tiered pricing based on purchase quantity",
+      "addLevel": "Add Level",
+      "loading": "Loading price levels...",
+      "empty": "No price levels yet.",
+      "columns": {
+        "name": "Level Name",
+        "minQty": "Min. Qty",
+        "price": "Unit Price"
+      },
+      "form": {
+        "addTitle": "Add Price Level",
+        "editTitle": "Edit Price Level",
+        "nameLabel": "Level Name",
+        "namePlaceholder": "e.g., Wholesale, Member",
+        "minQtyLabel": "Minimum Qty",
+        "priceLabel": "Price",
+        "save": "Save",
+        "cancel": "Cancel"
+      },
+      "deleteDialog": {
+        "title": "Delete Price Level?",
+        "desc": "This price level will be permanently deleted. This action cannot be undone.",
+        "warning": "Warning: If the price level is already used in a transaction, the system may reject the deletion."
+      }
     }
   },
   "errors": {

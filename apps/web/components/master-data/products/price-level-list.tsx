@@ -26,6 +26,7 @@ import {
   useUpdatePriceLevel,
   useDeletePriceLevel,
 } from '@/hooks/use-products';
+import { useTranslations } from 'next-intl';
 
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 
@@ -34,6 +35,7 @@ interface PriceLevelListProps {
 }
 
 export function PriceLevelList({ productId }: PriceLevelListProps) {
+  const t = useTranslations('priceLevels');
   const { data: priceLevels, isLoading } = usePriceLevels(productId);
   const createMutation = useCreatePriceLevel(productId);
   const updateMutation = useUpdatePriceLevel(productId);
@@ -74,7 +76,7 @@ export function PriceLevelList({ productId }: PriceLevelListProps) {
   };
 
   if (isLoading) {
-    return <div className="p-4 text-center">Loading price levels...</div>;
+    return <div className="p-4 text-center">{t('loading')}</div>;
   }
 
   const editingPriceLevel = priceLevels?.find((pl) => pl.id === editingId);
@@ -83,14 +85,12 @@ export function PriceLevelList({ productId }: PriceLevelListProps) {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
-          <CardTitle>Level Harga</CardTitle>
-          <CardDescription>
-            Kelola harga bertingkat berdasarkan jumlah pembelian
-          </CardDescription>
+          <CardTitle>{t('title')}</CardTitle>
+          <CardDescription>{t('description')}</CardDescription>
         </div>
         <Button type="button" onClick={openCreate} size="sm">
           <Plus className="mr-2 h-4 w-4" />
-          Tambah Level
+          {t('addLevel')}
         </Button>
       </CardHeader>
       <CardContent>
@@ -98,9 +98,13 @@ export function PriceLevelList({ productId }: PriceLevelListProps) {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Nama Level</TableHead>
-                <TableHead className="text-center">Min. Qty</TableHead>
-                <TableHead className="text-right">Harga Satuan</TableHead>
+                <TableHead>{t('columns.name')}</TableHead>
+                <TableHead className="text-center">
+                  {t('columns.minQty')}
+                </TableHead>
+                <TableHead className="text-right">
+                  {t('columns.price')}
+                </TableHead>
                 <TableHead className="w-[70px]"></TableHead>
               </TableRow>
             </TableHeader>
@@ -111,7 +115,7 @@ export function PriceLevelList({ productId }: PriceLevelListProps) {
                     colSpan={4}
                     className="h-24 text-center text-muted-foreground"
                   >
-                    Belum ada level harga.
+                    {t('empty')}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -142,14 +146,18 @@ export function PriceLevelList({ productId }: PriceLevelListProps) {
                             onClick={() => openEdit(priceLevel)}
                           >
                             <Pencil className="mr-2 h-4 w-4" />
-                            Edit
+                            {t('form.editTitle').includes('Edit')
+                              ? 'Edit'
+                              : 'Edit'}
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => setDeleteId(priceLevel.id)}
                             className="text-destructive focus:text-destructive"
                           >
                             <Trash2 className="mr-2 h-4 w-4" />
-                            Hapus
+                            {t('deleteDialog.title').includes('Hapus')
+                              ? 'Hapus'
+                              : 'Delete'}
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -172,16 +180,12 @@ export function PriceLevelList({ productId }: PriceLevelListProps) {
         <DeleteConfirmDialog
           open={!!deleteId}
           onOpenChange={(open) => !open && setDeleteId(null)}
-          title="Hapus Level Harga?"
+          title={t('deleteDialog.title')}
           description={
             <>
-              <p>
-                Level harga ini akan dihapus secara permanen. Tindakan ini tidak
-                dapat dibatalkan.
-              </p>
+              <p>{t('deleteDialog.desc')}</p>
               <p className="mt-2 text-sm text-warning">
-                Peringatan: Jika level harga sudah digunakan dalam transaksi,
-                sistem mungkin menolak penghapusan.
+                {t('deleteDialog.warning')}
               </p>
             </>
           }

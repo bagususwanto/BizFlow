@@ -25,12 +25,15 @@ import {
 } from '@/hooks/use-products';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 import { formatCurrency } from '@/lib/utils'; // Assuming this exists, if not use Intl
+import { useTranslations } from 'next-intl';
 
 interface VariantListProps {
   productId: string;
 }
 
 export function VariantList({ productId }: VariantListProps) {
+  const t = useTranslations('variants');
+
   const { data: variants, isLoading } = useProductVariants(productId);
   const createVariant = useCreateVariant(productId);
   const updateVariant = useUpdateVariant(productId);
@@ -90,13 +93,13 @@ export function VariantList({ productId }: VariantListProps) {
   };
 
   if (isLoading) {
-    return <div>Loading variants...</div>;
+    return <div>{t('loading')}</div>;
   }
 
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium">Daftar Varian</h3>
+        <h3 className="text-lg font-medium">{t('title')}</h3>
         <Button
           type="button"
           onClick={() => {
@@ -105,7 +108,7 @@ export function VariantList({ productId }: VariantListProps) {
           }}
         >
           <Plus className="mr-2 h-4 w-4" />
-          Tambah Varian
+          {t('addVariant')}
         </Button>
       </div>
 
@@ -113,12 +116,12 @@ export function VariantList({ productId }: VariantListProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>SKU</TableHead>
-              <TableHead>Nama</TableHead>
-              <TableHead>Atribut</TableHead>
-              <TableHead>Harga Beli</TableHead>
-              <TableHead>Harga Jual</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>{t('columns.sku')}</TableHead>
+              <TableHead>{t('columns.name')}</TableHead>
+              <TableHead>{t('columns.attributes')}</TableHead>
+              <TableHead>{t('columns.costPrice')}</TableHead>
+              <TableHead>{t('columns.sellPrice')}</TableHead>
+              <TableHead>{t('columns.status')}</TableHead>
               <TableHead className="w-[70px]"></TableHead>
             </TableRow>
           </TableHeader>
@@ -126,7 +129,7 @@ export function VariantList({ productId }: VariantListProps) {
             {variants?.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} className="text-center h-24">
-                  Belum ada varian produk.
+                  {t('empty')}
                 </TableCell>
               </TableRow>
             ) : (
@@ -153,7 +156,9 @@ export function VariantList({ productId }: VariantListProps) {
                   </TableCell>
                   <TableCell>
                     <Badge variant={variant.isActive ? 'default' : 'secondary'}>
-                      {variant.isActive ? 'Aktif' : 'Nonaktif'}
+                      {variant.isActive
+                        ? t('form.isActive')
+                        : t('deleteDialog.titleActive').replace('?', '')}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -171,14 +176,15 @@ export function VariantList({ productId }: VariantListProps) {
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => handleEdit(variant)}>
                           <Pencil className="mr-2 h-4 w-4" />
-                          Edit
+                          {t('editVariant')}
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           className="text-destructive focus:text-destructive"
                           onClick={() => setVariantToDelete(variant)}
                         >
                           <Trash2 className="mr-2 h-4 w-4" />
-                          Hapus
+                          {t('deleteDialog.confirmDelete').split(' ')[0]}{' '}
+                          {/* Simplified "Hapus" or "Delete" */}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -216,37 +222,39 @@ export function VariantList({ productId }: VariantListProps) {
         onOpenChange={(open) => !open && setVariantToDelete(null)}
         title={
           variantToDelete?.isActive
-            ? 'Nonaktifkan Varian?'
-            : 'Hapus Varian Permanen?'
+            ? t('deleteDialog.titleActive')
+            : t('deleteDialog.titlePermanent')
         }
         description={
           variantToDelete?.isActive ? (
-            <>
-              Varian{' '}
-              <span className="font-medium text-foreground">
-                {variantToDelete?.name}
-              </span>{' '}
-              akan dinonaktifkan.
-            </>
+            t.rich('deleteDialog.descActive', {
+              name: variantToDelete?.name || '',
+              bold: (chunks: React.ReactNode) => (
+                <span className="font-medium text-foreground">{chunks}</span>
+              ),
+            })
           ) : (
             <>
               <p>
-                Varian{' '}
-                <span className="font-medium text-foreground">
-                  {variantToDelete?.name}
-                </span>{' '}
-                akan dihapus secara permanen. Tindakan ini tidak dapat
-                dibatalkan.
+                {t.rich('deleteDialog.descPermanent', {
+                  name: variantToDelete?.name || '',
+                  bold: (chunks: React.ReactNode) => (
+                    <span className="font-medium text-foreground">
+                      {chunks}
+                    </span>
+                  ),
+                })}
               </p>
               <p className="mt-2 text-sm text-warning">
-                Peringatan: Varian yang memiliki riwayat stok atau transaksi
-                tidak dapat dihapus permanen.
+                {t('deleteDialog.descWarning')}
               </p>
             </>
           )
         }
         confirmLabel={
-          variantToDelete?.isActive ? 'Nonaktifkan' : 'Hapus Permanen'
+          variantToDelete?.isActive
+            ? t('deleteDialog.confirmDeactivate')
+            : t('deleteDialog.confirmDelete')
         }
         onConfirm={handleDelete}
       />

@@ -152,6 +152,133 @@
       "failedLoad": "Gagal memuat detail produk",
       "cardTitle": "Edit Informasi Produk",
       "cardDesc": "Lakukan perubahan pada data produk."
+    },
+    "form": {
+      "tabs": {
+        "info": "Informasi Dasar",
+        "pricing": "Harga & Stok",
+        "media": "Media",
+        "variants": "Varian",
+        "priceLevels": "Level Harga"
+      },
+      "fields": {
+        "name": "Nama Produk",
+        "namePlaceholder": "Contoh: Kopi Susu Aren",
+        "category": "Kategori",
+        "categoryPlaceholder": "Pilih Kategori",
+        "categorySearch": "Cari Kategori...",
+        "categoryEmpty": "Kategori tidak ditemukan.",
+        "unit": "Satuan",
+        "unitPlaceholder": "Pilih Satuan",
+        "unitSearch": "Cari Satuan...",
+        "unitEmpty": "Satuan tidak ditemukan.",
+        "sku": "SKU",
+        "skuPlaceholder": "Generate otomatis...",
+        "skuDesc": "Akan otomatis dibuat jika dikosongkan",
+        "generateSkuTooltip": "Generate SKU Otomatis",
+        "barcode": "Barcode",
+        "barcodePlaceholder": "Scan barcode...",
+        "barcodeDesc": "Scan barcode produk jika ada",
+        "isService": "Produk Jasa",
+        "isServiceDesc": "Aktifkan jika ini adalah jasa (tidak punya stok)",
+        "isActive": "Status Aktif",
+        "isActiveDesc": "Nonaktifkan produk jika tidak lagi dijual",
+        "costPrice": "Harga Modal",
+        "sellPrice": "Harga Jual",
+        "minStock": "Stok Minimum",
+        "minStockDesc": "Batas minimum untuk notifikasi stok menipis",
+        "images": "Foto Produk",
+        "imagesDesc": "Format: JPG, PNG, WEBP. Maksimal 5MB.",
+        "description": "Deskripsi",
+        "descriptionPlaceholder": "Deskripsi detail produk..."
+      },
+      "messages": {
+        "barcodeScanned": "Barcode terdeteksi: {barcode}",
+        "selectCategoryFirst": "Pilih kategori terlebih dahulu",
+        "generateSkuFailed": "Gagal generate SKU",
+        "createSuccess": "Produk berhasil dibuat",
+        "updateSuccess": "Produk berhasil diperbarui",
+        "errorOccurred": "Terjadi kesalahan",
+        "completeInfoTab": "Mohon lengkapi data pada tab Informasi Dasar",
+        "completePricingTab": "Mohon lengkapi data pada tab Harga & Stok",
+        "completeMediaTab": "Mohon lengkapi data pada tab Media & Lainnya"
+      },
+      "buttons": {
+        "cancel": "Batal",
+        "save": "Simpan Perubahan",
+        "create": "Buat Produk"
+      }
+    },
+    "variants": {
+      "title": "Daftar Varian",
+      "addVariant": "Tambah Varian",
+      "editVariant": "Edit Varian",
+      "loading": "Memuat varian...",
+      "empty": "Belum ada varian produk.",
+      "columns": {
+        "sku": "SKU",
+        "name": "Nama",
+        "attributes": "Atribut",
+        "costPrice": "Harga Beli",
+        "sellPrice": "Harga Jual",
+        "status": "Status"
+      },
+      "form": {
+        "skuLabel": "SKU",
+        "skuPlaceholder": "Kosongkan untuk auto-generate",
+        "skuDesc": "Akan otomatis dibuat jika dikosongkan",
+        "barcodeLabel": "Barcode",
+        "barcodePlaceholder": "899...",
+        "nameLabel": "Nama Varian",
+        "namePlaceholder": "Contoh: Merah, XL",
+        "costPrice": "Harga Beli",
+        "sellPrice": "Harga Jual",
+        "isActive": "Status Aktif",
+        "isActiveDesc": "Tentukan apakah varian ini aktif atau tidak.",
+        "attributesTitle": "Atribut Varian",
+        "addAttribute": "Tambah Atribut",
+        "emptyAttributes": "Belum ada atribut. Tambahkan atribut seperti Warna, Ukuran, dll.",
+        "attrNamePlaceholder": "Nama Atribut (mis: Warna)",
+        "attrValuePlaceholder": "Nilai (mis: Merah)",
+        "saving": "Menyimpan...",
+        "save": "Simpan"
+      },
+      "deleteDialog": {
+        "titleActive": "Nonaktifkan Varian?",
+        "titlePermanent": "Hapus Varian Permanen?",
+        "descActive": "Varian <bold>{name}</bold> akan dinonaktifkan.",
+        "descPermanent": "Varian <bold>{name}</bold> akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.",
+        "descWarning": "Peringatan: Varian yang memiliki riwayat stok atau transaksi tidak dapat dihapus permanen.",
+        "confirmDeactivate": "Nonaktifkan",
+        "confirmDelete": "Hapus Permanen"
+      }
+    },
+    "priceLevels": {
+      "title": "Level Harga",
+      "description": "Kelola harga bertingkat berdasarkan jumlah pembelian",
+      "addLevel": "Tambah Level",
+      "loading": "Memuat level harga...",
+      "empty": "Belum ada level harga.",
+      "columns": {
+        "name": "Nama Level",
+        "minQty": "Min. Qty",
+        "price": "Harga Satuan"
+      },
+      "form": {
+        "addTitle": "Tambah Level Harga",
+        "editTitle": "Edit Level Harga",
+        "nameLabel": "Nama Level",
+        "namePlaceholder": "Contoh: Grosir, Member",
+        "minQtyLabel": "Minimal Qty",
+        "priceLabel": "Harga",
+        "save": "Simpan",
+        "cancel": "Batal"
+      },
+      "deleteDialog": {
+        "title": "Hapus Level Harga?",
+        "desc": "Level harga ini akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.",
+        "warning": "Peringatan: Jika level harga sudah digunakan dalam transaksi, sistem mungkin menolak penghapusan."
+      }
     }
   },
   "errors": {

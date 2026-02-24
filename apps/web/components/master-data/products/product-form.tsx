@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import { Loader2, RefreshCw, Info, Save } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 import {
   Button,
@@ -54,6 +55,7 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('info');
+  const t = useTranslations('products.form');
 
   const { data: categories = [], isLoading: isLoadingCategories } =
     useActiveCategories();
@@ -101,14 +103,14 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
   useBarcodeScanner({
     onScan: (barcode) => {
       form.setValue('barcode', barcode);
-      toast.success('Barcode detected: ' + barcode);
+      toast.success(t('messages.barcodeScanned', { barcode }));
     },
   });
 
   // SKU Generation logic
   const handleGenerateSku = async () => {
     if (!categoryId) {
-      toast.error('Pilih kategori terlebih dahulu');
+      toast.error(t('messages.selectCategoryFirst'));
       return;
     }
 
@@ -116,7 +118,7 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
       const sku = await productsService.generateSku(categoryId);
       form.setValue('sku', sku);
     } catch (error) {
-      toast.error('Gagal generate SKU');
+      toast.error(t('messages.generateSkuFailed'));
     }
   };
 
@@ -127,17 +129,19 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
           initialData.id,
           data as UpdateProductValues,
         );
-        toast.success('Produk berhasil diperbarui');
+        toast.success(t('messages.updateSuccess'));
       } else {
         await productsService.create(data as CreateProductValues);
-        toast.success('Produk berhasil dibuat');
+        toast.success(t('messages.createSuccess'));
       }
 
       queryClient.invalidateQueries({ queryKey: ['products'] });
       router.back();
       router.refresh();
     } catch (error: any) {
-      toast.error(error instanceof Error ? error.message : 'Terjadi kesalahan');
+      toast.error(
+        error instanceof Error ? error.message : t('messages.errorOccurred'),
+      );
     }
   };
 
@@ -154,21 +158,21 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
     ];
     if (infoFields.some((field) => errorFields.includes(field))) {
       setActiveTab('info');
-      toast.error('Mohon lengkapi data pada tab Informasi Dasar');
+      toast.error(t('messages.completeInfoTab'));
       return;
     }
 
     const pricingFields = ['costPrice', 'sellPrice', 'minStock'];
     if (pricingFields.some((field) => errorFields.includes(field))) {
       setActiveTab('pricing');
-      toast.error('Mohon lengkapi data pada tab Harga & Stok');
+      toast.error(t('messages.completePricingTab'));
       return;
     }
 
     const mediaFields = ['images', 'description', 'isActive'];
     if (mediaFields.some((field) => errorFields.includes(field))) {
       setActiveTab('media');
-      toast.error('Mohon lengkapi data pada tab Media & Lainnya');
+      toast.error(t('messages.completeMediaTab'));
       return;
     }
   };
@@ -183,12 +187,16 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
           <TabsList
             className={`grid w-full ${isEdit ? 'grid-cols-5 lg:w-[600px]' : 'grid-cols-3 lg:w-[400px]'}`}
           >
-            <TabsTrigger value="info">Informasi Dasar</TabsTrigger>
-            <TabsTrigger value="pricing">Harga & Stok</TabsTrigger>
-            <TabsTrigger value="media">Media</TabsTrigger>
-            {isEdit && <TabsTrigger value="variants">Varian</TabsTrigger>}
+            <TabsTrigger value="info">{t('tabs.info')}</TabsTrigger>
+            <TabsTrigger value="pricing">{t('tabs.pricing')}</TabsTrigger>
+            <TabsTrigger value="media">{t('tabs.media')}</TabsTrigger>
             {isEdit && (
-              <TabsTrigger value="price-levels">Level Harga</TabsTrigger>
+              <TabsTrigger value="variants">{t('tabs.variants')}</TabsTrigger>
+            )}
+            {isEdit && (
+              <TabsTrigger value="price-levels">
+                {t('tabs.priceLevels')}
+              </TabsTrigger>
             )}
           </TabsList>
 
@@ -201,10 +209,10 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                     name="name"
                     render={({ field }) => (
                       <FormItem className="col-span-2">
-                        <FormLabel required>Nama Produk</FormLabel>
+                        <FormLabel required>{t('fields.name')}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Contoh: Kopi Susu Aren"
+                            placeholder={t('fields.namePlaceholder')}
                             {...field}
                           />
                         </FormControl>
@@ -218,7 +226,7 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                     name="categoryId"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel required>Kategori</FormLabel>
+                        <FormLabel required>{t('fields.category')}</FormLabel>
                         <Combobox
                           options={categories.map((category) => ({
                             label: category.name,
@@ -226,9 +234,9 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                           }))}
                           value={field.value as string}
                           onChange={field.onChange}
-                          placeholder="Pilih Kategori"
-                          searchPlaceholder="Cari Kategori..."
-                          emptyMessage="Kategori tidak ditemukan."
+                          placeholder={t('fields.categoryPlaceholder')}
+                          searchPlaceholder={t('fields.categorySearch')}
+                          emptyMessage={t('fields.categoryEmpty')}
                         />
                         <FormMessage />
                       </FormItem>
@@ -240,7 +248,7 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                     name="unitId"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel required>Satuan</FormLabel>
+                        <FormLabel required>{t('fields.unit')}</FormLabel>
                         <Combobox
                           options={units.map((unit) => ({
                             label: `${unit.name} (${unit.symbol})`,
@@ -248,9 +256,9 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                           }))}
                           value={field.value as string}
                           onChange={field.onChange}
-                          placeholder="Pilih Satuan"
-                          searchPlaceholder="Cari Satuan..."
-                          emptyMessage="Satuan tidak ditemukan."
+                          placeholder={t('fields.unitPlaceholder')}
+                          searchPlaceholder={t('fields.unitSearch')}
+                          emptyMessage={t('fields.unitEmpty')}
                         />
                         <FormMessage />
                       </FormItem>
@@ -263,11 +271,11 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                     name="sku"
                     render={({ field }) => (
                       <FormItem className="flex-1">
-                        <FormLabel optional>SKU</FormLabel>
+                        <FormLabel optional>{t('fields.sku')}</FormLabel>
                         <div className="flex gap-2">
                           <FormControl>
                             <Input
-                              placeholder="Generate otomatis..."
+                              placeholder={t('fields.skuPlaceholder')}
                               {...field}
                               value={field.value || ''}
                             />
@@ -278,14 +286,12 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                             size="icon"
                             onClick={handleGenerateSku}
                             disabled={!categoryId}
-                            title="Generate SKU Otomatis"
+                            title={t('fields.generateSkuTooltip')}
                           >
                             <RefreshCw className="h-4 w-4" />
                           </Button>
                         </div>
-                        <FormDescription>
-                          Akan otomatis dibuat jika dikosongkan
-                        </FormDescription>
+                        <FormDescription>{t('fields.skuDesc')}</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -296,16 +302,16 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                     name="barcode"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel optional>Barcode</FormLabel>
+                        <FormLabel optional>{t('fields.barcode')}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Scan barcode..."
+                            placeholder={t('fields.barcodePlaceholder')}
                             {...field}
                             value={field.value || ''}
                           />
                         </FormControl>
                         <FormDescription>
-                          Scan barcode produk jika ada
+                          {t('fields.barcodeDesc')}
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -319,10 +325,10 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                       <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                         <div className="space-y-0.5">
                           <FormLabel className="text-base">
-                            Produk Jasa
+                            {t('fields.isService')}
                           </FormLabel>
                           <div className="text-sm text-muted-foreground">
-                            Aktifkan jika ini adalah jasa (tidak punya stok)
+                            {t('fields.isServiceDesc')}
                           </div>
                         </div>
                         <FormControl>
@@ -341,10 +347,10 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                       <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                         <div className="space-y-0.5">
                           <FormLabel className="text-base">
-                            Status Aktif
+                            {t('fields.isActive')}
                           </FormLabel>
                           <div className="text-sm text-muted-foreground">
-                            Nonaktifkan produk jika tidak lagi dijual
+                            {t('fields.isActiveDesc')}
                           </div>
                         </div>
                         <FormControl>
@@ -369,7 +375,7 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                   name="costPrice"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel required>Harga Modal</FormLabel>
+                      <FormLabel required>{t('fields.costPrice')}</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <span className="absolute left-3 top-2.5 text-muted-foreground">
@@ -395,7 +401,7 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                   name="sellPrice"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel required>Harga Jual</FormLabel>
+                      <FormLabel required>{t('fields.sellPrice')}</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <span className="absolute left-3 top-2.5 text-muted-foreground">
@@ -421,7 +427,7 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                   name="minStock"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel optional>Stok Minimum</FormLabel>
+                      <FormLabel optional>{t('fields.minStock')}</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -433,7 +439,7 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                         />
                       </FormControl>
                       <FormDescription>
-                        Batas minimum untuk notifikasi stok menipis
+                        {t('fields.minStockDesc')}
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -451,7 +457,7 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                   name="images"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel optional>Foto Produk</FormLabel>
+                      <FormLabel optional>{t('fields.images')}</FormLabel>
                       <FormControl>
                         <MultiImageUpload
                           values={field.value || []}
@@ -464,7 +470,7 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                         />
                       </FormControl>
                       <FormDescription>
-                        Format: JPG, PNG, WEBP. Maksimal 5MB.
+                        {t('fields.imagesDesc')}
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -476,10 +482,10 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel optional>Deskripsi</FormLabel>
+                      <FormLabel optional>{t('fields.description')}</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Deskripsi detail produk..."
+                          placeholder={t('fields.descriptionPlaceholder')}
                           className="min-h-[100px]"
                           {...field}
                           value={field.value || ''}
@@ -517,12 +523,12 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
             onClick={() => router.back()}
             disabled={isSubmitting}
           >
-            Batal
+            {t('buttons.cancel')}
           </Button>
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {!isSubmitting && <Save className="mr-2 h-4 w-4" />}
-            {isEdit ? 'Simpan Perubahan' : 'Buat Produk'}
+            {isEdit ? t('buttons.save') : t('buttons.create')}
           </Button>
         </div>
       </form>

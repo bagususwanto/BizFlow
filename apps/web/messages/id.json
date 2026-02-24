@@ -8,22 +8,91 @@
     "create": "Tambah",
     "search": "Cari...",
     "loading": "Memuat...",
-    "actions": "Aksi"
+    "actions": "Aksi",
+    "all": "Semua"
   },
   "auth": {},
   "navigation": {
-    "dashboard": "Dasbor",
-    "masterData": "Data Induk",
-    "inventory": "Persediaan",
-    "purchases": "Pembelian",
-    "sales": "Penjualan",
-    "reports": "Laporan",
-    "settings": "Pengaturan"
+    "dashboard": {
+      "title": "Dasbor",
+      "overview": "Ringkasan",
+      "stockAlerts": "Peringatan Stok"
+    },
+    "masterData": {
+      "title": "Data Induk",
+      "products": "Produk",
+      "categories": "Kategori",
+      "units": "Satuan",
+      "customers": "Pelanggan",
+      "suppliers": "Pemasok",
+      "paymentTerms": "Termin Pembayaran",
+      "warehouses": "Gudang",
+      "promotions": "Promosi"
+    },
+    "inventory": {
+      "title": "Persediaan",
+      "stock": "Stok",
+      "movements": "Pergerakan",
+      "adjustments": "Penyesuaian",
+      "transfers": "Pindah Gudang",
+      "stockOpname": "Stok Opname"
+    },
+    "sales": {
+      "title": "Penjualan",
+      "orders": "Pesanan",
+      "returns": "Retur",
+      "payments": "Pembayaran"
+    },
+    "purchases": {
+      "title": "Pembelian",
+      "orders": "Pesanan",
+      "goodsReceive": "Penerimaan Barang",
+      "returns": "Retur",
+      "payments": "Pembayaran"
+    },
+    "finance": {
+      "title": "Keuangan",
+      "accounts": "Akun",
+      "transactions": "Transaksi",
+      "expenses": "Pengeluaran"
+    },
+    "reports": {
+      "title": "Laporan",
+      "sales": "Penjualan",
+      "inventory": "Persediaan",
+      "finance": "Keuangan"
+    },
+    "settings": {
+      "title": "Pengaturan",
+      "general": "Umum",
+      "users": "Pengguna",
+      "roles": "Peran & Akses",
+      "outlets": "Outlet",
+      "auditLogs": "Log Audit",
+      "printers": "Printer"
+    }
   },
   "general": {
     "title": "Umum",
     "list": "Daftar {title}",
     "new": "Tambah {title}"
+  },
+  "dataList": {
+    "selected": "{count} dipilih",
+    "failedLoad": "Gagal memuat data {title}",
+    "deleteTitle": "Hapus {count} item?",
+    "deleteTitlePlural": "Hapus {count} item?",
+    "deleteDesc1": "Tindakan ini tidak dapat dibatalkan. Data yang dipilih akan dihapus permanen atau dinonaktifkan.",
+    "deleteDesc2": "Peringatan: Data yang sedang digunakan atau memiliki riwayat aktivitas mungkin tidak dapat dihapus.",
+    "selectFilter": "Pilih {label}",
+    "allFilter": "Semua {label}",
+    "selectDate": "Pilih Tanggal",
+    "total": "Total",
+    "active": "Aktif",
+    "inactive": "Non-aktif",
+    "service": "Jasa",
+    "rowsPerPage": "Baris per halaman",
+    "pageInfo": "Halaman {page} dari {totalPages}"
   },
   "errors": {
     "validationFailed": "Validasi gagal",

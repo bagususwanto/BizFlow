@@ -13,200 +13,196 @@ import {
 export const navigationConfig = {
   navMain: [
     {
-      title: 'Dashboard',
+      title: 'dashboard.title',
       url: '#',
       icon: Home,
       items: [
         {
-          title: 'Overview',
+          title: 'dashboard.overview',
           url: '/dashboard',
         },
         {
-          title: 'Stock Alerts',
+          title: 'dashboard.stockAlerts',
           url: '/dashboard/stock-alerts',
         },
       ],
     },
 
     {
-      title: 'Master Data',
+      title: 'masterData.title',
       url: '#',
       icon: Layers,
       items: [
         {
-          title: 'Products',
+          title: 'masterData.products',
           url: '/master-data/products',
         },
         {
-          title: 'Categories',
+          title: 'masterData.categories',
           url: '/master-data/categories',
         },
         {
-          title: 'Units',
+          title: 'masterData.units',
           url: '/master-data/units',
         },
         {
-          title: 'Customers',
+          title: 'masterData.customers',
           url: '/master-data/customers',
         },
         {
-          title: 'Suppliers',
+          title: 'masterData.suppliers',
           url: '/master-data/suppliers',
         },
         {
-          title: 'Payment Terms',
+          title: 'masterData.paymentTerms',
           url: '/master-data/payment-terms',
         },
         {
-          title: 'Warehouses',
+          title: 'masterData.warehouses',
           url: '/master-data/warehouses',
         },
         {
-          title: 'Promotions',
+          title: 'masterData.promotions',
           url: '/master-data/promotions',
         },
       ],
     },
     {
-      title: 'Inventory',
+      title: 'inventory.title',
       url: '#',
       icon: Box,
       items: [
         {
-          title: 'Stock',
+          title: 'inventory.stock',
           url: '/inventory/stock',
         },
         {
-          title: 'Movements',
+          title: 'inventory.movements',
           url: '/inventory/movements',
         },
         {
-          title: 'Adjustments',
+          title: 'inventory.adjustments',
           url: '/inventory/adjustments',
         },
         {
-          title: 'Transfers',
+          title: 'inventory.transfers',
           url: '/inventory/transfers',
         },
         {
-          title: 'Stock Opname',
+          title: 'inventory.stockOpname',
           url: '/inventory/opname',
         },
       ],
     },
     {
-      title: 'Sales',
+      title: 'sales.title',
       url: '#',
       icon: DollarSign,
       items: [
         {
-          title: 'Orders',
+          title: 'sales.orders',
           url: '/sales/orders',
         },
         {
-          title: 'Returns',
+          title: 'sales.returns',
           url: '/sales/returns',
         },
         {
-          title: 'Payments',
+          title: 'sales.payments',
           url: '/sales/payments',
         },
       ],
     },
     {
-      title: 'Purchases',
+      title: 'purchases.title',
       url: '#',
       icon: Truck,
       items: [
         {
-          title: 'Orders',
+          title: 'purchases.orders',
           url: '/purchases/orders',
         },
         {
-          title: 'Goods Receive',
+          title: 'purchases.goodsReceive',
           url: '/purchases/goods-receive',
         },
         {
-          title: 'Returns',
+          title: 'purchases.returns',
           url: '/purchases/returns',
         },
         {
-          title: 'Payments',
+          title: 'purchases.payments',
           url: '/purchases/payments',
         },
       ],
     },
     {
-      title: 'Finance',
+      title: 'finance.title',
       url: '#',
       icon: CreditCard,
       items: [
         {
-          title: 'Accounts',
+          title: 'finance.accounts',
           url: '/finance/accounts',
         },
         {
-          title: 'Transactions',
+          title: 'finance.transactions',
           url: '/finance/transactions',
         },
         {
-          title: 'Expenses',
+          title: 'finance.expenses',
           url: '/finance/expenses',
         },
       ],
     },
     {
-      title: 'Reports',
+      title: 'reports.title',
       url: '#',
       icon: BarChart,
       items: [
         {
-          title: 'Sales',
+          title: 'reports.sales',
           url: '/reports/sales',
         },
         {
-          title: 'Inventory',
+          title: 'reports.inventory',
           url: '/reports/inventory',
         },
         {
-          title: 'Finance',
+          title: 'reports.finance',
           url: '/reports/financial',
         },
       ],
     },
     {
-      title: 'Settings',
+      title: 'settings.title',
       url: '#',
       icon: Settings,
       items: [
         {
-          title: 'General',
+          title: 'settings.general',
           url: '/settings/general',
         },
         {
-          title: 'Users',
+          title: 'settings.users',
           url: '/settings/users',
         },
         {
-          title: 'Roles & Access',
+          title: 'settings.roles',
           url: '/settings/roles',
         },
         {
-          title: 'Outlets',
+          title: 'settings.outlets',
           url: '/settings/outlets',
         },
         {
-          title: 'Audit Logs',
+          title: 'settings.auditLogs',
           url: '/settings/audit-logs',
         },
         {
-          title: 'Printers',
+          title: 'settings.printers',
           url: '/settings/printers',
         },
-        // {
-        //   title: 'Backups',
-        //   url: '/settings/backup',
-        // },
       ],
     },
   ],

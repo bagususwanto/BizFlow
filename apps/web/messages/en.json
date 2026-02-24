@@ -8,22 +8,91 @@
     "create": "Create",
     "search": "Search...",
     "loading": "Loading...",
-    "actions": "Actions"
+    "actions": "Actions",
+    "all": "All"
   },
   "auth": {},
   "navigation": {
-    "dashboard": "Dashboard",
-    "masterData": "Master Data",
-    "inventory": "Inventory",
-    "purchases": "Purchases",
-    "sales": "Sales",
-    "reports": "Reports",
-    "settings": "Settings"
+    "dashboard": {
+      "title": "Dashboard",
+      "overview": "Overview",
+      "stockAlerts": "Stock Alerts"
+    },
+    "masterData": {
+      "title": "Master Data",
+      "products": "Products",
+      "categories": "Categories",
+      "units": "Units",
+      "customers": "Customers",
+      "suppliers": "Suppliers",
+      "paymentTerms": "Payment Terms",
+      "warehouses": "Warehouses",
+      "promotions": "Promotions"
+    },
+    "inventory": {
+      "title": "Inventory",
+      "stock": "Stock",
+      "movements": "Movements",
+      "adjustments": "Adjustments",
+      "transfers": "Transfers",
+      "stockOpname": "Stock Opname"
+    },
+    "sales": {
+      "title": "Sales",
+      "orders": "Orders",
+      "returns": "Returns",
+      "payments": "Payments"
+    },
+    "purchases": {
+      "title": "Purchases",
+      "orders": "Orders",
+      "goodsReceive": "Goods Receive",
+      "returns": "Returns",
+      "payments": "Payments"
+    },
+    "finance": {
+      "title": "Finance",
+      "accounts": "Accounts",
+      "transactions": "Transactions",
+      "expenses": "Expenses"
+    },
+    "reports": {
+      "title": "Reports",
+      "sales": "Sales",
+      "inventory": "Inventory",
+      "finance": "Finance"
+    },
+    "settings": {
+      "title": "Settings",
+      "general": "General",
+      "users": "Users",
+      "roles": "Roles & Access",
+      "outlets": "Outlets",
+      "auditLogs": "Audit Logs",
+      "printers": "Printers"
+    }
   },
   "general": {
     "title": "General",
     "list": "{title} List",
     "new": "New {title}"
+  },
+  "dataList": {
+    "selected": "{count} selected",
+    "failedLoad": "Failed to load {title} data",
+    "deleteTitle": "Delete {count} item?",
+    "deleteTitlePlural": "Delete {count} items?",
+    "deleteDesc1": "This action cannot be undone. The selected data will be permanently deleted or deactivated.",
+    "deleteDesc2": "Warning: Data being used or with activity history might not be deletable.",
+    "selectFilter": "Select {label}",
+    "allFilter": "All {label}",
+    "selectDate": "Select Date",
+    "total": "Total",
+    "active": "Active",
+    "inactive": "Inactive",
+    "service": "Service",
+    "rowsPerPage": "Rows per page",
+    "pageInfo": "Page {page} of {totalPages}"
   },
   "errors": {
     "validationFailed": "Validation failed",

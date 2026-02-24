@@ -14,6 +14,8 @@ import {
 import { navigationConfig } from '@/config/navigation';
 import { useBreadcrumbContext } from '@/contexts/breadcrumb-context';
 
+import { useTranslations } from 'next-intl';
+
 function getBreadcrumbInfo(path: string):
   | {
       title: string;
@@ -40,10 +42,10 @@ function getBreadcrumbInfo(path: string):
   return undefined;
 }
 
-function formatSegmentTitle(segment: string): string {
+function formatSegmentTitle(segment: string, tCommon: any): string {
   // Handle special segments
-  if (segment === 'create') return 'Create';
-  if (segment === 'edit') return 'Edit';
+  if (segment === 'create') return tCommon('create');
+  if (segment === 'edit') return tCommon('edit');
 
   // Better capitalization for multi-word segments
   return segment
@@ -64,6 +66,9 @@ export function DynamicBreadcrumb() {
   const segments = pathname.split('/').filter(Boolean);
   const [mounted, setMounted] = useState(false);
 
+  const tNav = useTranslations('navigation');
+  const tCommon = useTranslations('common');
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -71,7 +76,7 @@ export function DynamicBreadcrumb() {
   // Always start with Dashboard
   const breadcrumbs = [
     {
-      title: 'Dashboard',
+      title: tNav('dashboard.title'),
       href: '/dashboard',
       isClickable: true,
     },
@@ -96,13 +101,13 @@ export function DynamicBreadcrumb() {
       const info = getBreadcrumbInfo(currentPath);
 
       if (info) {
-        title = info.title;
+        title = tNav(info.title);
       } else {
         // Check if this is a UUID/ID segment
         if (isUUID(segment)) {
           title = segment; // Will be replaced by context if available
         } else {
-          title = formatSegmentTitle(segment);
+          title = formatSegmentTitle(segment, tCommon);
         }
       }
     }

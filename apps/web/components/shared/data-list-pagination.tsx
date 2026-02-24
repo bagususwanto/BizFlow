@@ -21,6 +21,7 @@ import {
   LucideIcon,
 } from 'lucide-react';
 import React from 'react';
+import { useTranslations } from 'next-intl';
 
 export interface SummaryItemConfig {
   key: string;
@@ -56,6 +57,8 @@ export function DataListPagination({
   summary,
   summaryConfig,
 }: DataListPaginationProps) {
+  const tDataList = useTranslations('dataList');
+
   // Helper to render a summary item
   const renderSummaryItem = (
     key: string,
@@ -78,22 +81,22 @@ export function DataListPagination({
   };
 
   const defaultSummaryItems = [
-    { key: 'total', label: 'Total', icon: Box, className: '' },
+    { key: 'total', label: tDataList('total'), icon: Box, className: '' },
     {
       key: 'active',
-      label: 'Aktif',
+      label: tDataList('active'),
       icon: CheckCircle2,
       className: 'text-success',
     },
     {
       key: 'inactive',
-      label: 'Non-aktif',
+      label: tDataList('inactive'),
       icon: XCircle,
       className: 'text-destructive',
     },
     {
       key: 'service',
-      label: 'Jasa',
+      label: tDataList('service'),
       icon: LayoutGrid,
       className: 'text-purple-500',
     },
@@ -124,7 +127,7 @@ export function DataListPagination({
                 <div className="flex items-center gap-2">
                   <Box className="h-4 w-4" />
                   <span>
-                    Total:{' '}
+                    {tDataList('total')}:{' '}
                     <span className="font-medium text-foreground">
                       {summary.total ?? totalItems}
                     </span>
@@ -179,7 +182,7 @@ export function DataListPagination({
           <div className="flex items-center gap-2">
             <Box className="h-4 w-4" />
             <span>
-              Total:{' '}
+              {tDataList('total')}:{' '}
               <span className="font-medium text-foreground">{totalItems}</span>
             </span>
           </div>
@@ -189,7 +192,7 @@ export function DataListPagination({
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-2">
           <p className="text-sm font-medium text-muted-foreground hidden sm:block">
-            Baris per halaman
+            {tDataList('rowsPerPage')}
           </p>
           <Select
             value={pageSize.toString()}
@@ -223,7 +226,7 @@ export function DataListPagination({
             </PaginationItem>
             <PaginationItem>
               <span className="flex h-9 items-center justify-center px-4 text-sm">
-                Halaman {page} dari {totalPages}
+                {tDataList('pageInfo', { page, totalPages })}
               </span>
             </PaginationItem>
 

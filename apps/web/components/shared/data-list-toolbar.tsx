@@ -28,8 +28,9 @@ import {
 } from '@bizflow/ui';
 import { ReactNode } from 'react';
 import { format } from 'date-fns';
-import { id } from 'date-fns/locale';
+import { id as localeId, enUS as localeEn } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+import { useTranslations, useLocale } from 'next-intl';
 
 export interface FilterConfig {
   key: string;
@@ -75,7 +76,7 @@ export interface DataListToolbarProps {
 export function DataListToolbar({
   search = '',
   onSearchChange,
-  searchPlaceholder = 'Cari...',
+  searchPlaceholder,
   filters = [],
   filterValues = {},
   onFilterChange,
@@ -88,9 +89,17 @@ export function DataListToolbar({
   onColumnVisibilityChange,
   onReset,
   createLink,
-  createLabel = 'Tambah Baru',
+  createLabel,
   extraActions,
 }: DataListToolbarProps) {
+  const tCommon = useTranslations('common');
+  const tDataList = useTranslations('dataList');
+  const locale = useLocale();
+  const dateFnsLocale = locale === 'id' ? localeId : localeEn;
+
+  const finalSearchPlaceholder = searchPlaceholder || tCommon('search');
+  const finalCreateLabel = createLabel || tCommon('create');
+
   const isFiltered =
     search !== '' ||
     Object.keys(filterValues).some(
@@ -109,7 +118,7 @@ export function DataListToolbar({
           <div className="relative w-full md:w-auto md:flex-1 md:min-w-[200px] lg:w-[300px] lg:flex-none">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder={searchPlaceholder}
+              placeholder={finalSearchPlaceholder}
               value={search}
               onChange={(e) => onSearchChange(e.target.value)}
               className="pl-8"
@@ -133,10 +142,14 @@ export function DataListToolbar({
                   options={filter.options}
                   value={value === 'all' ? null : value}
                   onChange={(val) => onFilterChange?.(filter.key, val || 'all')}
-                  placeholder={`Pilih ${filter.label}`}
-                  searchPlaceholder={filter.searchPlaceholder || 'Cari...'}
+                  placeholder={tDataList('selectFilter', {
+                    label: filter.label,
+                  })}
+                  searchPlaceholder={
+                    filter.searchPlaceholder || finalSearchPlaceholder
+                  }
                   allowClear
-                  clearLabel={`Semua ${filter.label}`}
+                  clearLabel={tDataList('allFilter', { label: filter.label })}
                 />
               </div>
             );
@@ -153,11 +166,15 @@ export function DataListToolbar({
                   <span className="mr-2 hidden lg:inline-block whitespace-nowrap">
                     {filter.label}:
                   </span>
-                  <SelectValue placeholder={`Pilih ${filter.label}`} />
+                  <SelectValue
+                    placeholder={tDataList('selectFilter', {
+                      label: filter.label,
+                    })}
+                  />
                 </div>
               </SelectTrigger>
               <SelectContent className="max-h-[300px] overflow-y-auto">
-                <SelectItem value="all">Semua</SelectItem>
+                <SelectItem value="all">{tCommon('all')}</SelectItem>
                 {filter.options.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
@@ -190,7 +207,7 @@ export function DataListToolbar({
                     format(startDate, 'dd/MM/yyyy')
                   )
                 ) : (
-                  <span>Pilih Tanggal</span>
+                  <span>{tDataList('selectDate')}</span>
                 )}
               </Button>
             </PopoverTrigger>
@@ -205,7 +222,7 @@ export function DataListToolbar({
                 }}
                 onSelect={(range) => onDateRangeChange(range?.from, range?.to)}
                 numberOfMonths={2}
-                locale={id}
+                locale={dateFnsLocale}
               />
             </PopoverContent>
           </Popover>
@@ -232,7 +249,7 @@ export function DataListToolbar({
             <Button asChild>
               <Link href={createLink}>
                 <Plus className="mr-2 h-4 w-4" />
-                {createLabel}
+                {finalCreateLabel}
               </Link>
             </Button>
           )}

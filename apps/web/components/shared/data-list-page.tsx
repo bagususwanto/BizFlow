@@ -15,6 +15,7 @@ import { DataListToolbar, FilterConfig } from './data-list-toolbar';
 import { DataListPagination, SummaryItemConfig } from './data-list-pagination';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 import { ErrorState } from '@/components/common/error-state';
+import { useTranslations } from 'next-intl';
 
 export interface DataListPageProps<TData> {
   title: string;
@@ -130,6 +131,10 @@ export function DataListPage<
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
 
+  const tCommon = useTranslations('common');
+  const tDataList = useTranslations('dataList');
+  const tGeneral = useTranslations('general');
+
   // Sorting Logic
   const sorting: SortingState = sortBy
     ? [{ id: sortBy, desc: sortOrder === 'desc' }]
@@ -168,7 +173,7 @@ export function DataListPage<
             <Button asChild>
               <Link href={createLink}>
                 <Plus className="mr-2 h-4 w-4" />
-                {createLabel || 'Tambah Baru'}
+                {createLabel || tCommon('create')}
               </Link>
             </Button>
           )}
@@ -179,7 +184,7 @@ export function DataListPage<
 
       <Card>
         <CardHeader className="pb-4">
-          <CardTitle>Daftar {title}</CardTitle>
+          <CardTitle>{tGeneral('list', { title })}</CardTitle>
           {/* <CardDescription>Manajemen data {title}</CardDescription> */}
         </CardHeader>
         <CardContent className="space-y-6">
@@ -227,14 +232,16 @@ export function DataListPage<
                 {Object.keys(rowSelection).length > 0 && onBulkDelete ? (
                   <div className="flex items-center gap-2 rounded-md bg-muted px-4 py-2">
                     <span className="text-sm font-medium">
-                      {Object.keys(rowSelection).length} dipilih
+                      {tDataList('selected', {
+                        count: Object.keys(rowSelection).length,
+                      })}
                     </span>
                     <button
                       onClick={() => setShowBulkDeleteDialog(true)}
                       className="text-destructive hover:text-destructive/80 text-sm font-medium flex items-center"
                     >
                       <Trash2 className="mr-2 h-4 w-4" />
-                      Hapus
+                      {tCommon('delete')}
                     </button>
                   </div>
                 ) : null}
@@ -244,7 +251,7 @@ export function DataListPage<
 
           {isError ? (
             <ErrorState
-              title={`Gagal memuat data ${title.toLowerCase()}`}
+              title={tDataList('failedLoad', { title: title.toLowerCase() })}
               onRetry={onRetry || onRefresh}
             />
           ) : renderCustomView ? (
@@ -294,16 +301,14 @@ export function DataListPage<
       <DeleteConfirmDialog
         open={showBulkDeleteDialog}
         onOpenChange={(open) => !open && setShowBulkDeleteDialog(false)}
-        title={`Hapus ${Object.keys(rowSelection).length} item?`}
+        title={tDataList('deleteTitle', {
+          count: Object.keys(rowSelection).length,
+        })}
         description={
           <>
-            <p>
-              Tindakan ini tidak dapat dibatalkan. Data yang dipilih akan
-              dihapus permanen atau dinonaktifkan.
-            </p>
+            <p>{tDataList('deleteDesc1')}</p>
             <p className="mt-2 text-sm text-yellow-600">
-              Peringatan: Data yang sedang digunakan atau memiliki riwayat
-              aktivitas mungkin tidak dapat dihapus.
+              {tDataList('deleteDesc2')}
             </p>
           </>
         }

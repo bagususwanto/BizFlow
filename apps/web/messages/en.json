@@ -94,6 +94,66 @@
     "rowsPerPage": "Rows per page",
     "pageInfo": "Page {page} of {totalPages}"
   },
+  "products": {
+    "title": "Products",
+    "description": "Product and service catalog management.",
+    "createLabel": "Add Product",
+    "failedLoad": "Failed to load products data",
+    "bulkDeleteSuccess": "{count} products successfully deactivated",
+    "deleteFailed": "Failed to delete product",
+    "searchPlaceholder": "Search products (Name, SKU, Barcode)...",
+    "deleteDialog": {
+      "titleActive": "Deactivate Product?",
+      "titlePermanent": "Permanently Delete Product?",
+      "descActive": "Product <bold>{name}</bold> will be deactivated. Product data will remain saved.",
+      "descPermanent1": "Product <bold>{name}</bold> will be permanently deleted. This action cannot be undone.",
+      "descPermanent2": "Warning: If the product still has transaction history (stock, mutations, etc.), the system will reject permanent deletion.",
+      "btnDeactivate": "Deactivate",
+      "btnDeletePermanent": "Delete Permanently"
+    },
+    "columns": {
+      "image": "Image",
+      "noImage": "No Img",
+      "sku": "SKU",
+      "barcode": "Barcode",
+      "productName": "Product Name",
+      "service": "Service",
+      "variants": "{count} Variants",
+      "priceLevels": "{count} Price Levels",
+      "category": "Category",
+      "unit": "Unit",
+      "sellPrice": "Sell Price",
+      "minStock": "Min. Stock",
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "actions": "Actions",
+      "edit": "Edit",
+      "delete": "Delete",
+      "selectAll": "Select all",
+      "selectRow": "Select row",
+      "openMenu": "Open menu"
+    },
+    "filters": {
+      "category": "Category",
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "create": {
+      "title": "Add New Product",
+      "subtitle": "Add a new product or service to the catalog.",
+      "cardTitle": "Product Information",
+      "cardDesc": "Fill in the form below to add a new product."
+    },
+    "edit": {
+      "title": "Edit Product",
+      "subtitle": "Modify information for product {name}.",
+      "failedLoad": "Failed to load product details",
+      "cardTitle": "Edit Product Information",
+      "cardDesc": "Make changes to product data."
+    }
+  },
   "errors": {
     "validationFailed": "Validation failed",
     "internalError": "Internal server error",

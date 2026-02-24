@@ -13,6 +13,7 @@ import { useProduct } from '@/hooks/use-products';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { LoadingState } from '@/components/common/loading-state';
 import { ErrorState } from '@/components/common/error-state';
+import { useTranslations } from 'next-intl';
 
 export default function EditProductPage({
   params,
@@ -27,10 +28,12 @@ export default function EditProductPage({
     refetch,
   } = useProduct(resolvedParams.id);
 
+  const t = useTranslations('products.edit');
+
   // Set dynamic breadcrumb
   useBreadcrumb(
     `/master-data/products/${resolvedParams.id}`,
-    product?.name || 'Edit Produk',
+    product?.name || t('title'),
   );
 
   if (isLoading) {
@@ -42,27 +45,22 @@ export default function EditProductPage({
   }
 
   if (isError || !product) {
-    return (
-      <ErrorState
-        title="Gagal memuat detail produk"
-        onRetry={() => refetch()}
-      />
-    );
+    return <ErrorState title={t('failedLoad')} onRetry={() => refetch()} />;
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Edit Produk</h2>
+        <h2 className="text-2xl font-bold tracking-tight">{t('title')}</h2>
         <p className="text-muted-foreground">
-          Ubah informasi produk {product.name}.
+          {t('subtitle', { name: product.name })}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Edit Informasi Produk</CardTitle>
-          <CardDescription>Lakukan perubahan pada data produk.</CardDescription>
+          <CardTitle>{t('cardTitle')}</CardTitle>
+          <CardDescription>{t('cardDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <ProductForm initialData={product} isEdit />

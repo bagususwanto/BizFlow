@@ -15,6 +15,7 @@ import { ErrorState } from '@/components/common/error-state';
 import { useActiveCategories } from '@/hooks/use-categories';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 function ProductsContent() {
   const router = useRouter();
@@ -53,6 +54,7 @@ function ProductsContent() {
   } = useProducts(queryParams);
 
   const deleteMutation = useDeleteProduct();
+  const t = useTranslations('products');
 
   // Delete Dialog State (Local to Page to handle confirmation)
   const [productToDelete, setProductToDelete] =
@@ -82,7 +84,7 @@ function ProductsContent() {
   };
 
   const handleError = () => (
-    <ErrorState title="Gagal memuat data produk" onRetry={() => refetch()} />
+    <ErrorState title={t('failedLoad')} onRetry={() => refetch()} />
   );
 
   const handleBulkDelete = async (ids: string[]) => {
@@ -94,13 +96,11 @@ function ProductsContent() {
       const response = await productsService.bulkDelete(ids);
       const message =
         (response as any).data?.message ||
-        `${ids.length} produk berhasil dinonaktifkan`;
+        t('bulkDeleteSuccess', { count: ids.length });
       toast.success(message);
       refetch();
     } catch (error: any) {
-      toast.error(
-        error instanceof Error ? error.message : 'Gagal menghapus produk',
-      );
+      toast.error(error instanceof Error ? error.message : t('deleteFailed'));
     } finally {
       setIsBulkDeleting(false);
     }
@@ -110,8 +110,9 @@ function ProductsContent() {
     () =>
       getColumns({
         onDelete: (product) => setProductToDelete(product),
+        t,
       }),
-    [],
+    [t],
   );
 
   const products = productsData?.data || [];
@@ -126,10 +127,10 @@ function ProductsContent() {
   return (
     <>
       <DataListPage
-        title="Produk"
-        description="Manajemen katalog produk dan jasa."
+        title={t('title')}
+        description={t('description')}
         createLink="/master-data/products/create"
-        createLabel="Tambah Produk"
+        createLabel={t('createLabel')}
         data={products}
         columns={columns}
         isLoading={isLoading}
@@ -162,23 +163,23 @@ function ProductsContent() {
         // Search & Filters
         search={search}
         onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
-        searchPlaceholder="Cari produk (Nama, SKU, Barcode)..."
+        searchPlaceholder={t('searchPlaceholder')}
         filterValues={{ categoryId, status }}
         onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
         onReset={() => router.push(pathname)}
         filters={[
           {
             key: 'categoryId',
-            label: 'Kategori',
+            label: t('filters.category'),
             options: categories.map((c) => ({ label: c.name, value: c.id })),
             width: 'w-full md:w-[240px]',
           },
           {
             key: 'status',
-            label: 'Status',
+            label: t('filters.status'),
             options: [
-              { label: 'Aktif', value: 'active' },
-              { label: 'Nonaktif', value: 'inactive' },
+              { label: t('filters.active'), value: 'active' },
+              { label: t('filters.inactive'), value: 'inactive' },
             ],
             width: 'w-full md:w-[150px]',
           },
@@ -196,31 +197,31 @@ function ProductsContent() {
         onOpenChange={(open) => !open && setProductToDelete(null)}
         title={
           productToDelete?.isActive
-            ? 'Nonaktifkan Produk?'
-            : 'Hapus Produk Permanen?'
+            ? t('deleteDialog.titleActive')
+            : t('deleteDialog.titlePermanent')
         }
         description={
           productToDelete?.isActive ? (
-            <>
-              Produk{' '}
-              <span className="font-medium text-foreground">
-                {productToDelete?.name}
-              </span>{' '}
-              akan dinonaktifkan. Data produk tetap tersimpan.
-            </>
+            t.rich('deleteDialog.descActive', {
+              name: productToDelete?.name || '',
+              bold: (chunks) => (
+                <span className="font-medium text-foreground">{chunks}</span>
+              ),
+            })
           ) : (
             <>
               <p>
-                Produk{' '}
-                <span className="font-medium text-foreground">
-                  {productToDelete?.name}
-                </span>{' '}
-                akan dihapus secara permanen. Tindakan ini tidak dapat
-                dibatalkan.
+                {t.rich('deleteDialog.descPermanent1', {
+                  name: productToDelete?.name || '',
+                  bold: (chunks) => (
+                    <span className="font-medium text-foreground">
+                      {chunks}
+                    </span>
+                  ),
+                })}
               </p>
               <p className="mt-2 text-sm text-warning">
-                Peringatan: Jika produk masih memiliki riwayat transaksi (stok,
-                mutasi, dll), sistem akan menolak penghapusan permanen.
+                {t('deleteDialog.descPermanent2')}
               </p>
             </>
           )
@@ -234,7 +235,9 @@ function ProductsContent() {
         }}
         isDeleting={deleteMutation.isPending}
         confirmLabel={
-          productToDelete?.isActive ? 'Nonaktifkan' : 'Hapus Permanen'
+          productToDelete?.isActive
+            ? t('deleteDialog.btnDeactivate')
+            : t('deleteDialog.btnDeletePermanent')
         }
       />
     </>

@@ -94,6 +94,66 @@
     "rowsPerPage": "Baris per halaman",
     "pageInfo": "Halaman {page} dari {totalPages}"
   },
+  "products": {
+    "title": "Produk",
+    "description": "Manajemen katalog produk dan jasa.",
+    "createLabel": "Tambah Produk",
+    "failedLoad": "Gagal memuat data produk",
+    "bulkDeleteSuccess": "{count} produk berhasil dinonaktifkan",
+    "deleteFailed": "Gagal menghapus produk",
+    "searchPlaceholder": "Cari produk (Nama, SKU, Barcode)...",
+    "deleteDialog": {
+      "titleActive": "Nonaktifkan Produk?",
+      "titlePermanent": "Hapus Produk Permanen?",
+      "descActive": "Produk <bold>{name}</bold> akan dinonaktifkan. Data produk tetap tersimpan.",
+      "descPermanent1": "Produk <bold>{name}</bold> akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.",
+      "descPermanent2": "Peringatan: Jika produk masih memiliki riwayat transaksi (stok, mutasi, dll), sistem akan menolak penghapusan permanen.",
+      "btnDeactivate": "Nonaktifkan",
+      "btnDeletePermanent": "Hapus Permanen"
+    },
+    "columns": {
+      "image": "Gambar",
+      "noImage": "Tanpa Gbr",
+      "sku": "SKU",
+      "barcode": "Barcode",
+      "productName": "Nama Produk",
+      "service": "Jasa",
+      "variants": "{count} Varian",
+      "priceLevels": "{count} Level Harga",
+      "category": "Kategori",
+      "unit": "Satuan",
+      "sellPrice": "Harga Jual",
+      "minStock": "Min. Stok",
+      "status": "Status",
+      "active": "Aktif",
+      "inactive": "Nonaktif",
+      "actions": "Aksi",
+      "edit": "Edit",
+      "delete": "Hapus",
+      "selectAll": "Pilih semua",
+      "selectRow": "Pilih baris",
+      "openMenu": "Buka menu"
+    },
+    "filters": {
+      "category": "Kategori",
+      "status": "Status",
+      "active": "Aktif",
+      "inactive": "Nonaktif"
+    },
+    "create": {
+      "title": "Tambah Produk Baru",
+      "subtitle": "Tambahkan produk atau jasa baru ke katalog.",
+      "cardTitle": "Informasi Produk",
+      "cardDesc": "Isi formulir berikut untuk menambahkan produk baru."
+    },
+    "edit": {
+      "title": "Edit Produk",
+      "subtitle": "Ubah informasi produk {name}.",
+      "failedLoad": "Gagal memuat detail produk",
+      "cardTitle": "Edit Informasi Produk",
+      "cardDesc": "Lakukan perubahan pada data produk."
+    }
+  },
   "errors": {
     "validationFailed": "Validasi gagal",
     "internalError": "Kesalahan server internal",

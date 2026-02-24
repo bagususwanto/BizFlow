@@ -20,10 +20,12 @@ import { DataTableColumnHeader } from '@/components/ui/data-table-column-header'
 
 interface GetColumnsProps {
   onDelete: (product: ProductWithRelations) => void;
+  t: (key: string, values?: any) => string;
 }
 
 export const getColumns = ({
   onDelete,
+  t,
 }: GetColumnsProps): ColumnDef<ProductWithRelations>[] => [
   {
     id: 'select',
@@ -31,7 +33,7 @@ export const getColumns = ({
       <Checkbox
         checked={table.getIsAllPageRowsSelected()}
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Pilih semua"
+        aria-label={t('columns.selectAll')}
         className="translate-y-[2px]"
       />
     ),
@@ -39,7 +41,7 @@ export const getColumns = ({
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Pilih baris"
+        aria-label={t('columns.selectRow')}
         className="translate-y-[2px]"
       />
     ),
@@ -48,7 +50,7 @@ export const getColumns = ({
   },
   {
     accessorKey: 'images',
-    header: 'Gambar',
+    header: t('columns.image'),
     cell: ({ row }) => {
       const images = row.original.images || [];
       const mainImage = images[0]?.url;
@@ -64,7 +66,7 @@ export const getColumns = ({
             />
           ) : (
             <div className="flex h-full w-full items-center text-center justify-center bg-secondary text-muted-foreground">
-              <span className="text-xs">Tanpa Gbr</span>
+              <span className="text-xs">{t('columns.noImage')}</span>
             </div>
           )}
         </div>
@@ -75,18 +77,18 @@ export const getColumns = ({
   {
     accessorKey: 'sku',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="SKU" />
+      <DataTableColumnHeader column={column} title={t('columns.sku')} />
     ),
     cell: ({ row }) => (
       <span className="font-mono font-medium">{row.getValue('sku')}</span>
     ),
     meta: {
-      title: 'SKU',
+      title: t('columns.sku'),
     },
   },
   {
     accessorKey: 'barcode',
-    header: 'Barcode',
+    header: t('columns.barcode'),
     cell: ({ row }) => (
       <span className="font-mono text-muted-foreground">
         {row.getValue('barcode') || '-'}
@@ -96,35 +98,39 @@ export const getColumns = ({
   {
     accessorKey: 'name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Nama Produk" />
+      <DataTableColumnHeader column={column} title={t('columns.productName')} />
     ),
     cell: ({ row }) => (
       <div className="flex flex-col gap-1">
         <span className="font-medium">{row.getValue('name')}</span>
         <div className="flex items-center gap-2">
           {row.original.isService && (
-            <span className="text-xs text-muted-foreground">(Jasa)</span>
+            <span className="text-xs text-muted-foreground">
+              ({t('columns.service')})
+            </span>
           )}
           {(row.original.variantCount || 0) > 0 && (
             <Badge variant="secondary" className="h-5 px-1.5 text-[10px]">
-              {row.original.variantCount} Varian
+              {t('columns.variants', { count: row.original.variantCount })}
             </Badge>
           )}
           {(row.original.priceLevelCount || 0) > 0 && (
             <Badge variant="secondary" className="h-5 px-1.5 text-[10px]">
-              {row.original.priceLevelCount} Level Harga
+              {t('columns.priceLevels', {
+                count: row.original.priceLevelCount,
+              })}
             </Badge>
           )}
         </div>
       </div>
     ),
     meta: {
-      title: 'Nama Produk',
+      title: t('columns.productName'),
     },
   },
   {
     accessorKey: 'category',
-    header: 'Kategori',
+    header: t('columns.category'),
     cell: ({ row }) => {
       const category = row.original.category;
       return category ? category.name : '-';
@@ -133,7 +139,7 @@ export const getColumns = ({
   },
   {
     accessorKey: 'unit',
-    header: 'Satuan',
+    header: t('columns.unit'),
     cell: ({ row }) => {
       const unit = row.original.unit;
       return unit ? unit.symbol : '-';
@@ -143,20 +149,20 @@ export const getColumns = ({
   {
     accessorKey: 'sellPrice',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Harga Jual" />
+      <DataTableColumnHeader column={column} title={t('columns.sellPrice')} />
     ),
     cell: ({ row }) => {
       const price = Number(row.getValue('sellPrice'));
       return <div className="font-medium">{formatCurrency(price)}</div>;
     },
     meta: {
-      title: 'Harga Jual',
+      title: t('columns.sellPrice'),
     },
   },
   {
     accessorKey: 'minStock',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Min. Stok" />
+      <DataTableColumnHeader column={column} title={t('columns.minStock')} />
     ),
     cell: ({ row }) => {
       if (row.original.isService)
@@ -176,24 +182,24 @@ export const getColumns = ({
       );
     },
     meta: {
-      title: 'Min. Stok',
+      title: t('columns.minStock'),
     },
   },
   {
     accessorKey: 'isActive',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
+      <DataTableColumnHeader column={column} title={t('columns.status')} />
     ),
     cell: ({ row }) => {
       const isActive = row.getValue('isActive') as boolean;
       return (
         <Badge variant={isActive ? 'default' : 'secondary'}>
-          {isActive ? 'Aktif' : 'Nonaktif'}
+          {isActive ? t('columns.active') : t('columns.inactive')}
         </Badge>
       );
     },
     meta: {
-      title: 'Status',
+      title: t('columns.status'),
     },
   },
   {
@@ -205,16 +211,16 @@ export const getColumns = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Buka menu</span>
+              <span className="sr-only">{t('columns.openMenu')}</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+            <DropdownMenuLabel>{t('columns.actions')}</DropdownMenuLabel>
             <DropdownMenuItem asChild>
               <Link href={`/master-data/products/${product.id}`}>
                 <Edit className="mr-2 h-4 w-4" />
-                Edit
+                {t('columns.edit')}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -223,7 +229,7 @@ export const getColumns = ({
               onClick={() => onDelete(product)}
             >
               <Trash2 className="mr-2 h-4 w-4" />
-              Hapus
+              {t('columns.delete')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

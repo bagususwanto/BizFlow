@@ -29,14 +29,23 @@ export const useGroupedSettings = () => {
   };
 };
 
+import { useAuthStore } from '@/stores/auth.store';
+
 export const useUpdateSettings = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (data: UpdateSettingsValues) =>
       settingsService.updateBatch(data),
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
       toast.success(data.message || 'Pengaturan berhasil diperbarui');
+
+      // If language was updated, sync it with the global auth store immediately
+      const langUpdate = variables.settings?.find((s) => s.key === 'language');
+      if (langUpdate && langUpdate.value) {
+        useAuthStore.getState().setLanguage(langUpdate.value as 'id' | 'en');
+      }
+
       queryClient.invalidateQueries({ queryKey: ['settings'] });
     },
     onError: (error: any) => {

@@ -13,10 +13,11 @@ class FetchClient {
     endpoint: string,
     options: FetchOptions = {},
   ): Promise<T> {
-    const { accessToken } = useAuthStore.getState();
+    const { accessToken, language } = useAuthStore.getState();
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
+      'Accept-Language': language || 'id',
       ...(options.headers as Record<string, string>),
     };
 
@@ -110,9 +111,10 @@ class FetchClient {
   }
 
   async getBlob(endpoint: string, options?: FetchOptions): Promise<Blob> {
-    const { accessToken } = useAuthStore.getState();
+    const { accessToken, language } = useAuthStore.getState();
 
     const headers: Record<string, string> = {
+      'Accept-Language': language || 'id',
       ...(options?.headers as Record<string, string>),
     };
 

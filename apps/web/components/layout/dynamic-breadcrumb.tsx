@@ -42,7 +42,8 @@ function getBreadcrumbInfo(path: string):
 
 function formatSegmentTitle(segment: string): string {
   // Handle special segments
-  if (segment === 'create') return 'Tambah';
+  if (segment === 'create') return 'Create';
+  if (segment === 'edit') return 'Edit';
 
   // Better capitalization for multi-word segments
   return segment

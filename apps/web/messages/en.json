@@ -1,0 +1,34 @@
+{
+  "common": {
+    "save": "Save",
+    "saved": "Saved",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search...",
+    "loading": "Loading...",
+    "actions": "Actions"
+  },
+  "auth": {},
+  "navigation": {
+    "dashboard": "Dashboard",
+    "masterData": "Master Data",
+    "inventory": "Inventory",
+    "purchases": "Purchases",
+    "sales": "Sales",
+    "reports": "Reports",
+    "settings": "Settings"
+  },
+  "general": {
+    "title": "General",
+    "list": "{title} List",
+    "new": "New {title}"
+  },
+  "errors": {
+    "validationFailed": "Validation failed",
+    "internalError": "Internal server error",
+    "unauthorized": "Unauthorized access",
+    "INSUFFICIENT_STOCK": "Insufficient stock to process the request."
+  }
+}

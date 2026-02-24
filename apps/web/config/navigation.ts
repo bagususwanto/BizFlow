@@ -34,35 +34,35 @@ export const navigationConfig = {
       icon: Layers,
       items: [
         {
-          title: 'Produk',
+          title: 'Products',
           url: '/master-data/products',
         },
         {
-          title: 'Kategori',
+          title: 'Categories',
           url: '/master-data/categories',
         },
         {
-          title: 'Satuan',
+          title: 'Units',
           url: '/master-data/units',
         },
         {
-          title: 'Pelanggan',
+          title: 'Customers',
           url: '/master-data/customers',
         },
         {
-          title: 'Pemasok',
+          title: 'Suppliers',
           url: '/master-data/suppliers',
         },
         {
-          title: 'Termin Pembayaran',
+          title: 'Payment Terms',
           url: '/master-data/payment-terms',
         },
         {
-          title: 'Gudang',
+          title: 'Warehouses',
           url: '/master-data/warehouses',
         },
         {
-          title: 'Promosi',
+          title: 'Promotions',
           url: '/master-data/promotions',
         },
       ],
@@ -73,95 +73,95 @@ export const navigationConfig = {
       icon: Box,
       items: [
         {
-          title: 'Stok',
+          title: 'Stock',
           url: '/inventory/stock',
         },
         {
-          title: 'Riwayat Stok',
+          title: 'Movements',
           url: '/inventory/movements',
         },
         {
-          title: 'Penyesuaian',
+          title: 'Adjustments',
           url: '/inventory/adjustments',
         },
         {
-          title: 'Transfer',
+          title: 'Transfers',
           url: '/inventory/transfers',
         },
         {
-          title: 'Stok Opname',
+          title: 'Stock Opname',
           url: '/inventory/opname',
         },
       ],
     },
     {
-      title: 'Penjualan',
+      title: 'Sales',
       url: '#',
       icon: DollarSign,
       items: [
         {
-          title: 'Pesanan',
+          title: 'Orders',
           url: '/sales/orders',
         },
         {
-          title: 'Retur',
+          title: 'Returns',
           url: '/sales/returns',
         },
         {
-          title: 'Pembayaran',
+          title: 'Payments',
           url: '/sales/payments',
         },
       ],
     },
     {
-      title: 'Pembelian',
+      title: 'Purchases',
       url: '#',
       icon: Truck,
       items: [
         {
-          title: 'Pesanan',
+          title: 'Orders',
           url: '/purchases/orders',
         },
         {
-          title: 'Penerimaan',
+          title: 'Goods Receive',
           url: '/purchases/goods-receive',
         },
         {
-          title: 'Retur',
+          title: 'Returns',
           url: '/purchases/returns',
         },
         {
-          title: 'Pembayaran',
+          title: 'Payments',
           url: '/purchases/payments',
         },
       ],
     },
     {
-      title: 'Keuangan',
+      title: 'Finance',
       url: '#',
       icon: CreditCard,
       items: [
         {
-          title: 'Akun',
+          title: 'Accounts',
           url: '/finance/accounts',
         },
         {
-          title: 'Transaksi',
+          title: 'Transactions',
           url: '/finance/transactions',
         },
         {
-          title: 'Pengeluaran',
+          title: 'Expenses',
           url: '/finance/expenses',
         },
       ],
     },
     {
-      title: 'Laporan',
+      title: 'Reports',
       url: '#',
       icon: BarChart,
       items: [
         {
-          title: 'Penjualan',
+          title: 'Sales',
           url: '/reports/sales',
         },
         {
@@ -169,42 +169,42 @@ export const navigationConfig = {
           url: '/reports/inventory',
         },
         {
-          title: 'Keuangan',
+          title: 'Finance',
           url: '/reports/financial',
         },
       ],
     },
     {
-      title: 'Pengaturan',
+      title: 'Settings',
       url: '#',
       icon: Settings,
       items: [
         {
-          title: 'Umum',
+          title: 'General',
           url: '/settings/general',
         },
         {
-          title: 'Pengguna',
+          title: 'Users',
           url: '/settings/users',
         },
         {
-          title: 'Peran & Akses',
+          title: 'Roles & Access',
           url: '/settings/roles',
         },
         {
-          title: 'Outlet',
+          title: 'Outlets',
           url: '/settings/outlets',
         },
         {
-          title: 'Audit Log',
+          title: 'Audit Logs',
           url: '/settings/audit-logs',
         },
         {
-          title: 'Printer',
+          title: 'Printers',
           url: '/settings/printers',
         },
         // {
-        //   title: 'Backup',
+        //   title: 'Backups',
         //   url: '/settings/backup',
         // },
       ],

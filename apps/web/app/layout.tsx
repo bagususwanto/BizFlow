@@ -3,6 +3,7 @@ import localFont from 'next/font/local';
 import './globals.css';
 import { ReactQueryProvider } from '@/providers/query-provider';
 import { AuthProvider } from '@/providers/auth-provider';
+import { I18nProvider } from '@/providers/i18n-provider';
 import { Toaster } from '@bizflow/ui';
 
 const geistSans = localFont({
@@ -29,8 +30,10 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ReactQueryProvider>
           <AuthProvider>
-            {children}
-            <Toaster richColors />
+            <I18nProvider>
+              {children}
+              <Toaster richColors />
+            </I18nProvider>
           </AuthProvider>
         </ReactQueryProvider>
       </body>

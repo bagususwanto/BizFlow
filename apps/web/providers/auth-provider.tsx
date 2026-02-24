@@ -3,6 +3,7 @@
 import { useEffect, useCallback } from 'react';
 import { useAuthStore } from '@/stores/auth.store';
 import { authService } from '@/services/auth.service';
+import { settingsService } from '@/services/settings.service';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const {
@@ -37,20 +38,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    const fetchUser = async () => {
+    const fetchUserAndSettings = async () => {
       try {
-        const user = await authService.getMe();
-        setUser(user);
+        const [user, languageSetting] = await Promise.allSettled([
+          authService.getMe(),
+          settingsService.getByKey('language'),
+        ]);
+
+        if (user.status === 'fulfilled') {
+          setUser(user.value);
+        }
+
+        if (languageSetting.status === 'fulfilled' && languageSetting.value) {
+          useAuthStore
+            .getState()
+            .setLanguage(languageSetting.value.value as 'id' | 'en');
+        }
       } catch {
-        // If we can't fetch user (likely 401), we should probably logout
-        // But let the refresh logic handle 401s if token is expired
-        // Here we just ignore or log error
-        // Actually, if getMe fails, it implies session is invalid if token was supposed to be valid
-        // But let's be safe and not aggressive logout here unless we are sure
+        // Ignored. Refresh logic handles 401s.
       }
     };
 
-    fetchUser();
+    fetchUserAndSettings();
   }, [isAuthenticated, setUser]);
 
   // Auto refresh token before expiry

@@ -13,6 +13,7 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
+  language: 'id' | 'en';
 
   // Actions
   setCredentials: (data: {
@@ -30,6 +31,7 @@ interface AuthState {
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   setUser: (user: AuthUser) => void;
+  setLanguage: (lang: 'id' | 'en') => void;
   hasPermission: (permission: string) => boolean;
 }
 
@@ -43,6 +45,7 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       isLoading: false,
       error: null,
+      language: 'id',
 
       setCredentials: ({ user, accessToken, refreshToken, expiresIn }) => {
         set({
@@ -86,6 +89,10 @@ export const useAuthStore = create<AuthState>()(
         set({ user });
       },
 
+      setLanguage: (language: 'id' | 'en') => {
+        set({ language });
+      },
+
       hasPermission: (permission: string) => {
         const { user } = get();
         if (!user) return false;
@@ -106,6 +113,7 @@ export const useAuthStore = create<AuthState>()(
         refreshToken: state.refreshToken,
         expiresAt: state.expiresAt,
         isAuthenticated: state.isAuthenticated,
+        language: state.language,
       }),
     },
   ),

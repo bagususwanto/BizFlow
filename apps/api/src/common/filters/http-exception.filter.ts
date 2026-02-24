@@ -49,10 +49,37 @@ export class HttpExceptionFilter implements ExceptionFilter {
     // Handle ZodValidationException (from nestjs-zod)
     if (exception instanceof ZodValidationException) {
       const zodError = exception.getZodError() as {
-        issues?: Array<{ path: (string | number)[]; message: string }>;
+        issues?: Array<any>;
       };
       errorMessage = 'Validation failed';
       errorDetails = {};
+
+      // Get language from header, default to 'en'
+      const acceptLanguage =
+        ctx.getRequest().headers['accept-language'] || 'en';
+      const lang = acceptLanguage.split(',')[0].split('-')[0]; // Extract primary language code (e.g., 'id' from 'id-ID')
+
+      // We will initialize i18next here for simplicity, though ideally it should be a provider
+      const i18next = require('i18next');
+      const { makeZodI18nMap } = require('zod-i18n-map');
+
+      // Ensure it's initialized (since this is sync, we do a basic init if not already done)
+      if (!i18next.isInitialized) {
+        i18next.init({
+          lng: 'en',
+          fallbackLng: 'en',
+          resources: {
+            en: { zod: require('../../i18n/en.json') },
+            id: { zod: require('../../i18n/id.json') },
+          },
+        });
+      }
+
+      // Change language based on request
+      i18next.changeLanguage(lang);
+
+      // Create the error map for this specific request's language
+      const errorMap = makeZodI18nMap({ t: i18next.t, ns: 'zod' });
 
       if (zodError?.issues) {
         for (const issue of zodError.issues) {
@@ -60,7 +87,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
           if (!errorDetails[field]) {
             errorDetails[field] = [];
           }
-          errorDetails[field].push(issue.message);
+
+          // Translate the issue using the error map
+          const translatedMessage = errorMap(issue, {
+            data: {},
+            defaultError: issue.message,
+            parsedType: 'unknown' as any,
+          }).message;
+
+          errorDetails[field].push(translatedMessage);
         }
       }
     } else if (typeof exceptionResponse === 'string') {

@@ -1,0 +1,34 @@
+{
+  "common": {
+    "save": "Simpan",
+    "saved": "Tersimpan",
+    "cancel": "Batal",
+    "delete": "Hapus",
+    "edit": "Ubah",
+    "create": "Tambah",
+    "search": "Cari...",
+    "loading": "Memuat...",
+    "actions": "Aksi"
+  },
+  "auth": {},
+  "navigation": {
+    "dashboard": "Dasbor",
+    "masterData": "Data Induk",
+    "inventory": "Persediaan",
+    "purchases": "Pembelian",
+    "sales": "Penjualan",
+    "reports": "Laporan",
+    "settings": "Pengaturan"
+  },
+  "general": {
+    "title": "Umum",
+    "list": "Daftar {title}",
+    "new": "Tambah {title}"
+  },
+  "errors": {
+    "validationFailed": "Validasi gagal",
+    "internalError": "Kesalahan server internal",
+    "unauthorized": "Akses tidak diizinkan",
+    "INSUFFICIENT_STOCK": "Stok tidak mencukupi untuk memproses permintaan."
+  }
+}

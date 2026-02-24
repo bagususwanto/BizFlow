@@ -7,13 +7,24 @@ import i18next from 'i18next';
 import { z } from 'zod';
 import { zodI18nMap } from 'zod-i18n-map';
 
+const messageLoaders: Record<string, () => Promise<any>> = {
+  en: () => import('../messages/en.json'),
+  id: () => import('../messages/id.json'),
+};
+
+const zodLocaleLoaders: Record<string, () => Promise<any>> = {
+  en: () => import('zod-i18n-map/locales/en/zod.json'),
+  id: () => import('zod-i18n-map/locales/id/zod.json'),
+};
+
 export function I18nProvider({ children }: { children: React.ReactNode }) {
   const { language } = useAuthStore();
   const [messages, setMessages] = useState<any>(null);
 
   useEffect(() => {
     // 1. Load Next-Intl App Messages
-    import(`../../messages/${language}.json`)
+    const loader = (messageLoaders[language] || messageLoaders['id'])!;
+    loader()
       .then((module) => {
         setMessages(module.default);
       })
@@ -24,9 +35,9 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     // 2. Set up Zod i18n
     const setupZodI18n = async () => {
       try {
-        const zodTranslations = await import(
-          `zod-i18n-map/locales/${language}/zod.json`
-        );
+        const zodLocaleLoader = (zodLocaleLoaders[language] ||
+          zodLocaleLoaders['id'])!;
+        const zodTranslations = await zodLocaleLoader();
 
         await i18next.init({
           lng: language,

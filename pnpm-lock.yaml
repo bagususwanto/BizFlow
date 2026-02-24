@@ -79,7 +79,7 @@ importers:
         version: 2.0.2
       nestjs-zod:
         specifier: ^5.1.1
-        version: 5.1.1(@nestjs/common@11.1.11)(@nestjs/swagger@11.2.6)(rxjs@7.8.2)(zod@4.3.5)
+        version: 5.1.1(@nestjs/common@11.1.11)(@nestjs/swagger@11.2.6)(rxjs@7.8.2)(zod@3.25.76)
       passport:
         specifier: ^0.7.0
         version: 0.7.0
@@ -99,11 +99,11 @@ importers:
         specifier: ^13.0.0
         version: 13.0.0
       zod:
-        specifier: ^4.3.5
-        version: 4.3.5
+        specifier: ^3.25.76
+        version: 3.25.76
       zod-i18n-map:
         specifier: ^2.27.0
-        version: 2.27.0(i18next@25.8.13)(zod@4.3.5)
+        version: 2.27.0(i18next@25.8.13)(zod@3.25.76)
     devDependencies:
       '@jest/globals':
         specifier: ^29.7.0
@@ -302,11 +302,11 @@ importers:
         specifier: ^0.18.5
         version: 0.18.5
       zod:
-        specifier: ^4.3.5
-        version: 4.3.5
+        specifier: ^3.25.76
+        version: 3.25.76
       zod-i18n-map:
         specifier: ^2.27.0
-        version: 2.27.0(i18next@25.8.13)(zod@4.3.5)
+        version: 2.27.0(i18next@25.8.13)(zod@3.25.76)
       zustand:
         specifier: ^5.0.9
         version: 5.0.9(@types/react@19.1.0)(react@19.2.0)
@@ -442,8 +442,8 @@ importers:
   packages/types:
     dependencies:
       zod:
-        specifier: ^4.3.5
-        version: 4.3.5
+        specifier: ^3.25.76
+        version: 3.25.76
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*
@@ -574,8 +574,8 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0
       zod:
-        specifier: ^4.3.5
-        version: 4.3.5
+        specifier: ^3.25.76
+        version: 3.25.76
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*
@@ -10616,7 +10616,7 @@ packages:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
     dev: true
 
-  /nestjs-zod@5.1.1(@nestjs/common@11.1.11)(@nestjs/swagger@11.2.6)(rxjs@7.8.2)(zod@4.3.5):
+  /nestjs-zod@5.1.1(@nestjs/common@11.1.11)(@nestjs/swagger@11.2.6)(rxjs@7.8.2)(zod@3.25.76):
     resolution: {integrity: sha512-pXa9Jrdip7iedKvGxJTvvCFVRCoIcNENPCsHjpCefPH3PcFejRgkZkUcr3TYITRyxnUk7Zy5OsLpirZGLYBfBQ==}
     peerDependencies:
       '@nestjs/common': ^10.0.0 || ^11.0.0
@@ -10631,7 +10631,7 @@ packages:
       '@nestjs/swagger': 11.2.6(@nestjs/common@11.1.11)(@nestjs/core@11.1.11)(reflect-metadata@0.2.2)
       deepmerge: 4.3.1
       rxjs: 7.8.2
-      zod: 4.3.5
+      zod: 3.25.76
     dev: false
 
   /next-intl-swc-plugin-extractor@4.8.3:
@@ -13811,18 +13811,18 @@ packages:
       compress-commons: 4.1.2
       readable-stream: 3.6.2
 
-  /zod-i18n-map@2.27.0(i18next@25.8.13)(zod@4.3.5):
+  /zod-i18n-map@2.27.0(i18next@25.8.13)(zod@3.25.76):
     resolution: {integrity: sha512-ORu9XpiVh3WDiEUs5Cr9siGgnpeODoBsTIgSD8sQCH9B//f9KowlzqHUEdPYb3vFonaSH8yPvPCOFM4niwp3Sg==}
     peerDependencies:
       i18next: '>=21.3.0'
       zod: '>=3.17.0'
     dependencies:
       i18next: 25.8.13(typescript@5.8.2)
-      zod: 4.3.5
+      zod: 3.25.76
     dev: false
 
-  /zod@4.3.5:
-    resolution: {integrity: sha512-k7Nwx6vuWx1IJ9Bjuf4Zt1PEllcwe7cls3VNzm4CQ1/hgtFUK2bRNG3rvnpPUhFjmqJKAKtjV576KnUkHocg/g==}
+  /zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
     dev: false
 
   /zustand@5.0.9(@types/react@19.1.0)(react@19.2.0):

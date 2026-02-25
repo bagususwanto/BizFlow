@@ -1,6 +1,10 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { createPriceLevelSchema, CreatePriceLevelValues } from '@bizflow/types';
+import {
+  createPriceLevelSchema,
+  CreatePriceLevelValues,
+  updatePriceLevelSchema,
+} from '@bizflow/types';
 import {
   Dialog,
   DialogContent,
@@ -19,6 +23,7 @@ import {
 import { useEffect } from 'react';
 import { Loader2, Save } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useZodI18nResolver } from '@/hooks/use-zod-i18n-resolver';
 
 interface PriceLevelFormProps {
   open: boolean;
@@ -26,6 +31,8 @@ interface PriceLevelFormProps {
   onSubmit: (data: CreatePriceLevelValues) => Promise<void>;
   initialData?: CreatePriceLevelValues & { id?: string };
   isSubmitting: boolean;
+  productId?: string;
+  editingId?: string;
 }
 
 export function PriceLevelForm({
@@ -34,11 +41,16 @@ export function PriceLevelForm({
   onSubmit,
   initialData,
   isSubmitting,
+  productId,
+  editingId,
 }: PriceLevelFormProps) {
   const t = useTranslations('priceLevels.form');
+  const resolver = useZodI18nResolver(
+    initialData ? updatePriceLevelSchema : createPriceLevelSchema,
+  );
 
   const form = useForm<CreatePriceLevelValues>({
-    resolver: zodResolver(createPriceLevelSchema) as any,
+    resolver: resolver as any,
     defaultValues: {
       name: '',
       minQty: 1,

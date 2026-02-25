@@ -22,22 +22,20 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   const [messages, setMessages] = useState<any>(null);
 
   useEffect(() => {
-    // 1. Load Next-Intl App Messages
-    const loader = (messageLoaders[language] || messageLoaders['id'])!;
-    loader()
-      .then((module) => {
-        setMessages(module.default);
-      })
-      .catch((err) => {
-        console.error('Failed to load translations', err);
-      });
-
-    // 2. Set up Zod i18n
-    const setupZodI18n = async () => {
+    const setupI18n = async () => {
       try {
         const zodLocaleLoader = (zodLocaleLoaders[language] ||
           zodLocaleLoaders['id'])!;
-        const zodTranslations = await zodLocaleLoader();
+        const appMessageLoader = (messageLoaders[language] ||
+          messageLoaders['id'])!;
+
+        const [zodTranslations, appMessagesModule] = await Promise.all([
+          zodLocaleLoader(),
+          appMessageLoader(),
+        ]);
+
+        const appMessages = appMessagesModule.default;
+        setMessages(appMessages);
 
         await i18next.init({
           lng: language,
@@ -47,13 +45,25 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
           },
         });
 
-        z.setErrorMap(zodI18nMap);
+        const customMap: z.ZodErrorMap = (issue, ctx) => {
+          if (issue.message && issue.message.includes('.')) {
+            const keys = issue.message.split('.');
+            let val = appMessages;
+            for (const k of keys) {
+              if (val) val = val[k];
+            }
+            if (typeof val === 'string') return { message: val };
+          }
+          return zodI18nMap(issue, ctx);
+        };
+
+        z.setErrorMap(customMap);
       } catch (err) {
-        console.error('Failed to setup Zod translations', err);
+        console.error('Failed to setup translations', err);
       }
     };
 
-    setupZodI18n();
+    setupI18n();
   }, [language]);
 
   if (!messages) {

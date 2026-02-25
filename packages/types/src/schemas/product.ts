@@ -13,44 +13,46 @@ export const createProductSchema = z.object({
     (val) => (val === '' ? undefined : val),
     z
       .string()
-      .min(1, { message: 'SKU wajib diisi' })
-      .max(50, { message: 'SKU maksimal 50 karakter' })
+      .min(1, { message: 'products.validation.skuRequired' })
+      .max(50, { message: 'products.validation.skuMax' })
       .optional(),
   ),
   barcode: z.preprocess(
     (val) => (val === '' ? null : val),
     z
       .string()
-      .min(8, { message: 'Barcode minimal 8 karakter' })
-      .max(14, { message: 'Barcode maksimal 14 karakter' })
-      .regex(/^[0-9]+$/, { message: 'Barcode hanya boleh berisi angka' })
+      .min(8, { message: 'products.validation.barcodeMin' })
+      .max(14, { message: 'products.validation.barcodeMax' })
+      .regex(/^[0-9]+$/, { message: 'products.validation.barcodeNumeric' })
       .nullable()
       .optional(),
   ),
   name: z
     .string()
-    .min(1, { message: 'Nama produk wajib diisi' })
-    .max(200, { message: 'Nama produk maksimal 200 karakter' }),
+    .min(1, { message: 'products.validation.nameRequired' })
+    .max(200, { message: 'products.validation.nameMax' }),
   description: z.preprocess(
     (val) => (val === '' ? null : val),
     z
       .string()
-      .max(1000, { message: 'Deskripsi maksimal 1000 karakter' })
+      .max(1000, { message: 'products.validation.descriptionMax' })
       .nullable()
       .optional(),
   ),
-  categoryId: z.string().min(1, { message: 'Kategori wajib dipilih' }),
-  unitId: z.string().min(1, { message: 'Satuan wajib dipilih' }),
+  categoryId: z
+    .string()
+    .min(1, { message: 'products.validation.categoryRequired' }),
+  unitId: z.string().min(1, { message: 'products.validation.unitRequired' }),
   costPrice: z.coerce
     .number()
-    .min(0, { message: 'Harga beli tidak boleh negatif' }),
+    .min(0, { message: 'products.validation.costPriceMin' }),
   sellPrice: z.coerce
     .number()
-    .min(0, { message: 'Harga jual tidak boleh negatif' }),
+    .min(0, { message: 'products.validation.sellPriceMin' }),
   minStock: z.coerce
     .number()
     .int()
-    .min(0, { message: 'Stok minimum tidak boleh negatif' })
+    .min(0, { message: 'products.validation.minStockMin' })
     .default(0),
   isService: z.boolean().default(false),
   isActive: z.boolean().default(true),
@@ -68,30 +70,30 @@ export const updateProductSchema = z.object({
     (val) => (val === '' ? undefined : val),
     z
       .string()
-      .min(1, { message: 'SKU wajib diisi' })
-      .max(50, { message: 'SKU maksimal 50 karakter' })
+      .min(1, { message: 'products.validation.skuRequired' })
+      .max(50, { message: 'products.validation.skuMax' })
       .optional(),
   ),
   barcode: z.preprocess(
     (val) => (val === '' ? null : val),
     z
       .string()
-      .min(8, { message: 'Barcode minimal 8 karakter' })
-      .max(14, { message: 'Barcode maksimal 14 karakter' })
-      .regex(/^[0-9]+$/, { message: 'Barcode hanya boleh berisi angka' })
+      .min(8, { message: 'products.validation.barcodeMin' })
+      .max(14, { message: 'products.validation.barcodeMax' })
+      .regex(/^[0-9]+$/, { message: 'products.validation.barcodeNumeric' })
       .nullable()
       .optional(),
   ),
   name: z
     .string()
-    .min(1, { message: 'Nama produk wajib diisi' })
-    .max(200, { message: 'Nama produk maksimal 200 karakter' })
+    .min(1, { message: 'products.validation.nameRequired' })
+    .max(200, { message: 'products.validation.nameMax' })
     .optional(),
   description: z.preprocess(
     (val) => (val === '' ? null : val),
     z
       .string()
-      .max(1000, { message: 'Deskripsi maksimal 1000 karakter' })
+      .max(1000, { message: 'products.validation.descriptionMax' })
       .nullable()
       .optional(),
   ),
@@ -99,16 +101,16 @@ export const updateProductSchema = z.object({
   unitId: z.string().min(1).optional(),
   costPrice: z.coerce
     .number()
-    .min(0, { message: 'Harga beli tidak boleh negatif' })
+    .min(0, { message: 'products.validation.costPriceMin' })
     .optional(),
   sellPrice: z.coerce
     .number()
-    .min(0, { message: 'Harga jual tidak boleh negatif' })
+    .min(0, { message: 'products.validation.sellPriceMin' })
     .optional(),
   minStock: z.coerce
     .number()
     .int()
-    .min(0, { message: 'Stok minimum tidak boleh negatif' })
+    .min(0, { message: 'products.validation.minStockMin' })
     .optional(),
   isService: z.boolean().optional(),
   isActive: z.boolean().optional(),
@@ -180,14 +182,14 @@ export type ProductImageValues = z.infer<typeof productImageSchema>;
 export const createPriceLevelSchema = z.object({
   name: z
     .string()
-    .min(1, { message: 'Nama level harga wajib diisi' })
-    .max(50, { message: 'Nama level harga maksimal 50 karakter' }),
+    .min(1, { message: 'products.validation.levelNameRequired' })
+    .max(50, { message: 'products.validation.levelNameMax' }),
   minQty: z.coerce
     .number()
     .int()
-    .min(1, { message: 'Minimum qty minimal 1' })
+    .min(1, { message: 'products.validation.minQtyMin' })
     .default(1),
-  price: z.coerce.number().min(0, { message: 'Harga tidak boleh negatif' }),
+  price: z.coerce.number().min(0, { message: 'products.validation.priceMin' }),
 });
 
 export type CreatePriceLevelValues = z.infer<typeof createPriceLevelSchema>;
@@ -203,29 +205,29 @@ export type UpdatePriceLevelValues = z.infer<typeof updatePriceLevelSchema>;
 export const createVariantSchema = z.object({
   sku: z
     .string()
-    .min(1, { message: 'SKU wajib diisi' })
-    .max(50, { message: 'SKU maksimal 50 karakter' })
+    .min(1, { message: 'products.validation.skuRequired' })
+    .max(50, { message: 'products.validation.skuMax' })
     .optional(),
   barcode: z.preprocess(
     (val) => (val === '' ? null : val),
     z
       .string()
-      .min(8, { message: 'Barcode minimal 8 karakter' })
-      .max(50, { message: 'Barcode maksimal 50 karakter' })
+      .min(8, { message: 'products.validation.barcodeMin' })
+      .max(50, { message: 'products.validation.barcodeMaxVariant' })
       .nullable()
       .optional(),
   ),
   name: z
     .string()
-    .min(1, { message: 'Nama varian wajib diisi' })
-    .max(200, { message: 'Nama varian maksimal 200 karakter' }),
+    .min(1, { message: 'products.validation.variantNameRequired' })
+    .max(200, { message: 'products.validation.variantNameMax' }),
   attributes: z.record(z.string(), z.any()).default({}),
   costPrice: z.coerce
     .number()
-    .min(0, { message: 'Harga beli tidak boleh negatif' }),
+    .min(0, { message: 'products.validation.costPriceMin' }),
   sellPrice: z.coerce
     .number()
-    .min(0, { message: 'Harga jual tidak boleh negatif' }),
+    .min(0, { message: 'products.validation.sellPriceMin' }),
   isActive: z.boolean().default(true),
 });
 

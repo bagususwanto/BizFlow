@@ -279,6 +279,28 @@
         "desc": "Level harga ini akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.",
         "warning": "Peringatan: Jika level harga sudah digunakan dalam transaksi, sistem mungkin menolak penghapusan."
       }
+    },
+    "validation": {
+      "skuRequired": "SKU wajib diisi",
+      "skuMax": "SKU maksimal 50 karakter",
+      "barcodeMin": "Barcode minimal 8 karakter",
+      "barcodeMax": "Barcode maksimal 14 karakter",
+      "barcodeMaxVariant": "Barcode maksimal 50 karakter",
+      "barcodeNumeric": "Barcode hanya boleh berisi angka",
+      "nameRequired": "Nama produk wajib diisi",
+      "nameMax": "Nama produk maksimal 200 karakter",
+      "descriptionMax": "Deskripsi maksimal 1000 karakter",
+      "categoryRequired": "Kategori wajib dipilih",
+      "unitRequired": "Satuan wajib dipilih",
+      "costPriceMin": "Harga beli tidak boleh negatif",
+      "sellPriceMin": "Harga jual tidak boleh negatif",
+      "minStockMin": "Stok minimum tidak boleh negatif",
+      "levelNameRequired": "Nama level harga wajib diisi",
+      "levelNameMax": "Nama level harga maksimal 50 karakter",
+      "minQtyMin": "Minimum qty minimal 1",
+      "priceMin": "Harga tidak boleh negatif",
+      "variantNameRequired": "Nama varian wajib diisi",
+      "variantNameMax": "Nama varian maksimal 200 karakter"
     }
   },
   "errors": {

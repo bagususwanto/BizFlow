@@ -22,6 +22,7 @@ import { Plus, Trash2, RefreshCw, Save } from 'lucide-react';
 import { useEffect } from 'react';
 import { useGenerateVariantSku } from '@/hooks/use-products';
 import { useTranslations } from 'next-intl';
+import { useZodI18nResolver } from '@/hooks/use-zod-i18n-resolver';
 
 interface VariantFormProps {
   open: boolean;
@@ -42,9 +43,10 @@ export function VariantForm({
 }: VariantFormProps) {
   const t = useTranslations('variants.form');
   const generateSku = useGenerateVariantSku(productId);
+  const resolver = useZodI18nResolver(createVariantSchema);
 
   const form = useForm<CreateVariantValues>({
-    resolver: zodResolver(createVariantSchema) as any,
+    resolver: resolver as any,
     defaultValues: {
       sku: undefined,
       barcode: null,

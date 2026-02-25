@@ -51,6 +51,8 @@ interface ProductFormProps {
   isEdit?: boolean;
 }
 
+import { useZodI18nResolver } from '@/hooks/use-zod-i18n-resolver';
+
 export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -61,10 +63,12 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
     useActiveCategories();
   const { data: units = [], isLoading: isLoadingUnits } = useActiveUnits();
 
+  const resolver = useZodI18nResolver(
+    isEdit ? updateProductSchema : createProductSchema,
+  );
+
   const form = useForm<CreateProductValues | UpdateProductValues>({
-    resolver: zodResolver(
-      isEdit ? updateProductSchema : createProductSchema,
-    ) as any,
+    resolver: resolver as any,
     defaultValues: isEdit
       ? {
           name: initialData?.name || '',

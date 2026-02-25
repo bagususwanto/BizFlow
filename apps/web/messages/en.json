@@ -279,6 +279,28 @@
         "desc": "This price level will be permanently deleted. This action cannot be undone.",
         "warning": "Warning: If the price level is already used in a transaction, the system may reject the deletion."
       }
+    },
+    "validation": {
+      "skuRequired": "SKU is required",
+      "skuMax": "SKU maximum is 50 characters",
+      "barcodeMin": "Barcode minimum is 8 characters",
+      "barcodeMax": "Barcode maximum is 14 characters",
+      "barcodeMaxVariant": "Barcode maximum is 50 characters",
+      "barcodeNumeric": "Barcode can only contain numbers",
+      "nameRequired": "Product name is required",
+      "nameMax": "Product name maximum is 200 characters",
+      "descriptionMax": "Description maximum is 1000 characters",
+      "categoryRequired": "Category must be selected",
+      "unitRequired": "Unit must be selected",
+      "costPriceMin": "Cost price cannot be negative",
+      "sellPriceMin": "Selling price cannot be negative",
+      "minStockMin": "Minimum stock cannot be negative",
+      "levelNameRequired": "Price level name is required",
+      "levelNameMax": "Price level name maximum is 50 characters",
+      "minQtyMin": "Minimum quantity is 1",
+      "priceMin": "Price cannot be negative",
+      "variantNameRequired": "Variant name is required",
+      "variantNameMax": "Variant name maximum is 200 characters"
     }
   },
   "errors": {

@@ -32,7 +32,7 @@ interface VariantListProps {
 }
 
 export function VariantList({ productId }: VariantListProps) {
-  const t = useTranslations('variants');
+  const t = useTranslations('products.variants');
 
   const { data: variants, isLoading } = useProductVariants(productId);
   const createVariant = useCreateVariant(productId);

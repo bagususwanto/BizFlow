@@ -41,7 +41,8 @@ export function VariantForm({
   isSubmitting,
   productId,
 }: VariantFormProps) {
-  const t = useTranslations('variants.form');
+  const t = useTranslations('products.variants.form');
+  const tCommon = useTranslations('products.variants');
   const generateSku = useGenerateVariantSku(productId);
   const resolver = useZodI18nResolver(createVariantSchema);
 
@@ -125,9 +126,7 @@ export function VariantForm({
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>
-            {initialData
-              ? t('editVariant', { ns: 'variants' })
-              : t('addVariant', { ns: 'variants' })}
+            {initialData ? tCommon('editVariant') : tCommon('addVariant')}
           </DialogTitle>
         </DialogHeader>
 

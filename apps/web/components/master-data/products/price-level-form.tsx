@@ -44,7 +44,8 @@ export function PriceLevelForm({
   productId,
   editingId,
 }: PriceLevelFormProps) {
-  const t = useTranslations('priceLevels.form');
+  const t = useTranslations('products.priceLevels.form');
+  const tCommon = useTranslations('products.priceLevels');
   const resolver = useZodI18nResolver(
     initialData ? updatePriceLevelSchema : createPriceLevelSchema,
   );
@@ -159,14 +160,14 @@ export function PriceLevelForm({
                 onClick={() => onOpenChange(false)}
                 disabled={isSubmitting}
               >
-                {t('cancel')}
+                {tCommon('form.cancel')}
               </Button>
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
                 {!isSubmitting && <Save className="mr-2 h-4 w-4" />}
-                {t('save')}
+                {tCommon('form.save')}
               </Button>
             </DialogFooter>
           </form>

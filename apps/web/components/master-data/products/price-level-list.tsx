@@ -35,7 +35,7 @@ interface PriceLevelListProps {
 }
 
 export function PriceLevelList({ productId }: PriceLevelListProps) {
-  const t = useTranslations('priceLevels');
+  const t = useTranslations('products.priceLevels');
   const { data: priceLevels, isLoading } = usePriceLevels(productId);
   const createMutation = useCreatePriceLevel(productId);
   const updateMutation = useUpdatePriceLevel(productId);

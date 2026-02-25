@@ -303,6 +303,23 @@
       "variantNameMax": "Nama varian maksimal 200 karakter"
     }
   },
+  "multiImageUpload": {
+    "errors": {
+      "maxLimit": "Maksimal {max} gambar",
+      "unsupportedFormat": "File {name} tidak didukung (harus JPG, PNG, atau WEBP)",
+      "sizeLimit": "Ukuran file {name} maksimal 5MB",
+      "uploadFailed": "Gagal mengunggah foto"
+    },
+    "success": {
+      "uploaded": "{count} foto berhasil diunggah"
+    },
+    "labels": {
+      "uploading": "Mengunggah...",
+      "upload": "Upload Foto",
+      "maxImages": "Max {max} gambar",
+      "mainPhotoInfo": "* Foto pertama akan menjadi foto utama produk"
+    }
+  },
   "errors": {
     "validationFailed": "Validasi gagal",
     "internalError": "Kesalahan server internal",

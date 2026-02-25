@@ -303,6 +303,23 @@
       "variantNameMax": "Variant name maximum is 200 characters"
     }
   },
+  "multiImageUpload": {
+    "errors": {
+      "maxLimit": "Maximum {max} images",
+      "unsupportedFormat": "File {name} is not supported (must be JPG, PNG, or WEBP)",
+      "sizeLimit": "File {name} size maximum is 5MB",
+      "uploadFailed": "Failed to upload photos"
+    },
+    "success": {
+      "uploaded": "{count} photos successfully uploaded"
+    },
+    "labels": {
+      "uploading": "Uploading...",
+      "upload": "Upload Photo",
+      "maxImages": "Max {max} images",
+      "mainPhotoInfo": "* The first photo will be the main product photo"
+    }
+  },
   "errors": {
     "validationFailed": "Validation failed",
     "internalError": "Internal server error",

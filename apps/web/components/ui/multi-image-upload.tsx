@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ImagePlus, X, Loader2, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 import { Button } from '@bizflow/ui';
 import { cn, getImageUrl } from '@/lib/utils';
@@ -24,6 +25,7 @@ export function MultiImageUpload({
   maxImages = 5,
 }: MultiImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
+  const t = useTranslations('multiImageUpload');
 
   const onUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -31,7 +33,7 @@ export function MultiImageUpload({
 
     // Check max images
     if (values.length + files.length > maxImages) {
-      toast.error(`Maksimal ${maxImages} gambar`);
+      toast.error(t('errors.maxLimit', { max: maxImages }));
       return;
     }
 
@@ -48,15 +50,13 @@ export function MultiImageUpload({
           file.type,
         );
         if (!isValidType) {
-          toast.error(
-            `File ${file.name} tidak didukung (harus JPG, PNG, atau WEBP)`,
-          );
+          toast.error(t('errors.unsupportedFormat', { name: file.name }));
           continue;
         }
 
         const isValidSize = file.size <= 5 * 1024 * 1024; // 5MB
         if (!isValidSize) {
-          toast.error(`Ukuran file ${file.name} maksimal 5MB`);
+          toast.error(t('errors.sizeLimit', { name: file.name }));
           continue;
         }
 
@@ -66,10 +66,10 @@ export function MultiImageUpload({
 
       if (newUrls.length > 0) {
         onChange([...values, ...newUrls]);
-        toast.success(`${newUrls.length} foto berhasil diunggah`);
+        toast.success(t('success.uploaded', { count: newUrls.length }));
       }
     } catch (error) {
-      toast.error('Gagal mengunggah foto');
+      toast.error(t('errors.uploadFailed'));
       console.error('Upload error:', error);
     } finally {
       setIsUploading(false);
@@ -120,10 +120,10 @@ export function MultiImageUpload({
               )}
               <div className="text-center">
                 <span className="text-xs font-semibold text-muted-foreground">
-                  {isUploading ? 'Mengunggah...' : 'Upload Foto'}
+                  {isUploading ? t('labels.uploading') : t('labels.upload')}
                 </span>
                 <p className="px-2 text-[10px] text-muted-foreground mt-1">
-                  Max {maxImages} gambar
+                  {t('labels.maxImages', { max: maxImages })}
                 </p>
               </div>
               <input
@@ -140,7 +140,7 @@ export function MultiImageUpload({
       </div>
       {values.length > 0 && (
         <p className="text-xs text-muted-foreground">
-          * Foto pertama akan menjadi foto utama produk
+          {t('labels.mainPhotoInfo')}
         </p>
       )}
     </div>

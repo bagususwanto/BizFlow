@@ -8,18 +8,22 @@ import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { AuditLog } from '@/services/audit-logs.service';
 
+import { useTranslations } from 'next-intl';
+
 interface AuditLogsColumnsProps {
   onViewDetail: (log: AuditLog) => void;
+  t: ReturnType<typeof useTranslations>;
 }
 
 export const getColumns = ({
   onViewDetail,
+  t,
 }: AuditLogsColumnsProps): ColumnDef<AuditLog>[] => [
   {
     accessorKey: 'createdAt',
     id: 'time',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Waktu" />
+      <DataTableColumnHeader column={column} title={t('columns.time')} />
     ),
     cell: ({ row }) => (
       <span className="whitespace-nowrap font-mono text-xs">
@@ -29,14 +33,14 @@ export const getColumns = ({
       </span>
     ),
     meta: {
-      title: 'Waktu',
+      title: t('columns.time'),
     },
   },
   {
     accessorKey: 'user.name',
     id: 'user',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Pengguna" />
+      <DataTableColumnHeader column={column} title={t('columns.user')} />
     ),
     cell: ({ row }) => (
       <div className="flex flex-col">
@@ -47,14 +51,14 @@ export const getColumns = ({
       </div>
     ),
     meta: {
-      title: 'Pengguna',
+      title: t('columns.user'),
     },
   },
   {
     accessorKey: 'module',
     id: 'module',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Modul" />
+      <DataTableColumnHeader column={column} title={t('columns.module')} />
     ),
     cell: ({ row }) => (
       <Badge variant="outline" className="capitalize">
@@ -62,23 +66,23 @@ export const getColumns = ({
       </Badge>
     ),
     meta: {
-      title: 'Modul',
+      title: t('columns.module'),
     },
   },
   {
     accessorKey: 'action',
     id: 'action',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Aksi" />
+      <DataTableColumnHeader column={column} title={t('columns.action')} />
     ),
     cell: ({ row }) => {
       const log = row.original;
       const actionMap: Record<string, string> = {
-        create: 'Tambah',
-        update: 'Ubah',
-        delete: 'Hapus',
-        login: 'Masuk',
-        logout: 'Keluar',
+        create: t('actions.create'),
+        update: t('actions.update'),
+        delete: t('actions.delete'),
+        login: t('actions.login'),
+        logout: t('actions.logout'),
       };
 
       return (
@@ -99,14 +103,14 @@ export const getColumns = ({
       );
     },
     meta: {
-      title: 'Aksi',
+      title: t('columns.action'),
     },
   },
   {
     accessorKey: 'entityType',
     id: 'entity',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Entitas" />
+      <DataTableColumnHeader column={column} title={t('columns.entityType')} />
     ),
     cell: ({ row }) => {
       const log = row.original;
@@ -127,14 +131,14 @@ export const getColumns = ({
       );
     },
     meta: {
-      title: 'Entitas',
+      title: t('columns.entityType'),
     },
   },
   {
     accessorKey: 'ipAddress',
     id: 'ipAddress',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Alamat IP" />
+      <DataTableColumnHeader column={column} title={t('columns.ipAddress')} />
     ),
     cell: ({ row }) => (
       <span className="font-mono text-xs text-muted-foreground">
@@ -142,7 +146,7 @@ export const getColumns = ({
       </span>
     ),
     meta: {
-      title: 'Alamat IP',
+      title: t('columns.ipAddress'),
     },
   },
   {

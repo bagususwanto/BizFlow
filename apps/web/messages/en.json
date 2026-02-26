@@ -315,6 +315,61 @@
       "variantNameMax": "Variant name maximum is 200 characters"
     }
   },
+  "auditLogs": {
+    "title": "Audit Logs",
+    "description": "Monitor and track user activities within the system.",
+    "exporting": "Exporting...",
+    "exportExcel": "Export Excel",
+    "exportInfo": "Exporting audit log data...",
+    "exportSuccess": "Successfully exported {count} audit logs",
+    "exportFailed": "Failed to export audit logs",
+    "searchPlaceholder": "Search Entity ID...",
+    "columns": {
+      "time": "Time",
+      "user": "User",
+      "username": "Username",
+      "module": "Module",
+      "action": "Action",
+      "entityType": "Entity Type",
+      "entityId": "Entity ID",
+      "ipAddress": "IP Address",
+      "userAgent": "User Agent"
+    },
+    "summary": {
+      "total": "Total Logs",
+      "today": "Today's Logs",
+      "uniqueUsers": "Unique Users",
+      "topModule": "Top Module"
+    },
+    "filters": {
+      "module": "Module",
+      "action": "Action"
+    },
+    "detail": {
+      "title": "Audit Log Detail",
+      "description": "Details of user activities recorded in the system.",
+      "generalInfo": "General Information",
+      "entityInfo": "Entity Information",
+      "changes": "Data Changes",
+      "oldValue": "Old Value",
+      "newValue": "New Value",
+      "time": "Time",
+      "user": "User",
+      "module": "Module",
+      "action": "Action",
+      "entityType": "Entity Type",
+      "entityId": "Entity ID",
+      "ipAddress": "IP Address",
+      "userAgent": "User Agent"
+    },
+    "actions": {
+      "create": "Create",
+      "update": "Update",
+      "delete": "Delete",
+      "login": "Login",
+      "logout": "Logout"
+    }
+  },
   "categories": {
     "title": "Product Categories",
     "description": "Manage your product category structure.",

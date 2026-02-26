@@ -315,6 +315,61 @@
       "variantNameMax": "Nama varian maksimal 200 karakter"
     }
   },
+  "auditLogs": {
+    "title": "Audit Logs",
+    "description": "Monitor dan pelacakan aktivitas pengguna dalam sistem.",
+    "exporting": "Mengekspor...",
+    "exportExcel": "Export Excel",
+    "exportInfo": "Mengekspor data audit log...",
+    "exportSuccess": "Berhasil mengekspor {count} audit log",
+    "exportFailed": "Gagal mengekspor audit log",
+    "searchPlaceholder": "Cari ID Entity...",
+    "columns": {
+      "time": "Waktu",
+      "user": "Pengguna",
+      "username": "Username",
+      "module": "Modul",
+      "action": "Aksi",
+      "entityType": "Tipe Entitas",
+      "entityId": "ID Entitas",
+      "ipAddress": "Alamat IP",
+      "userAgent": "User Agent"
+    },
+    "summary": {
+      "total": "Total Log",
+      "today": "Log Hari Ini",
+      "uniqueUsers": "Pengguna Unik",
+      "topModule": "Modul Teratas"
+    },
+    "filters": {
+      "module": "Module",
+      "action": "Aksi"
+    },
+    "detail": {
+      "title": "Detail Audit Log",
+      "description": "Detail aktivitas pengguna yang tercatat dalam sistem.",
+      "generalInfo": "Informasi Umum",
+      "entityInfo": "Informasi Entity",
+      "changes": "Perubahan Data",
+      "oldValue": "Nilai Lama (Old Value)",
+      "newValue": "Nilai Baru (New Value)",
+      "time": "Waktu",
+      "user": "User",
+      "module": "Module",
+      "action": "Aksi",
+      "entityType": "Entity Type",
+      "entityId": "Entity ID",
+      "ipAddress": "IP Address",
+      "userAgent": "User Agent"
+    },
+    "actions": {
+      "create": "Tambah",
+      "update": "Ubah",
+      "delete": "Hapus",
+      "login": "Masuk",
+      "logout": "Keluar"
+    }
+  },
   "categories": {
     "title": "Kategori Produk",
     "description": "Kelola struktur kategori produk Anda.",

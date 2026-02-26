@@ -17,6 +17,7 @@ import {
   formatDateForExport,
 } from '@/lib/export';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 function AuditLogsContent() {
   const router = useRouter();
@@ -42,6 +43,8 @@ function AuditLogsContent() {
 
   const startDate = startDateStr ? new Date(startDateStr) : undefined;
   const endDate = endDateStr ? new Date(endDateStr) : undefined;
+
+  const t = useTranslations('auditLogs');
 
   const [selectedLog, setSelectedLog] = useState<AuditLog | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -95,7 +98,7 @@ function AuditLogsContent() {
   const handleExportLogs = async () => {
     try {
       setIsExporting(true);
-      toast.info('Mengekspor data audit log...');
+      toast.info(t('exportInfo'));
 
       const logs = await auditLogService.exportAll({
         search: debouncedSearch,
@@ -111,26 +114,26 @@ function AuditLogsContent() {
           { key: 'id', label: 'ID', width: 30 },
           {
             key: 'createdAt',
-            label: 'Waktu',
+            label: t('columns.time'),
             format: formatDateForExport,
             width: 20,
           },
-          { key: 'user.name', label: 'Pengguna', width: 20 },
-          { key: 'user.username', label: 'Username', width: 15 },
-          { key: 'module', label: 'Modul', width: 15 },
-          { key: 'action', label: 'Aksi', width: 12 },
-          { key: 'entityType', label: 'Tipe Entitas', width: 15 },
-          { key: 'entityId', label: 'ID Entitas', width: 30 },
-          { key: 'ipAddress', label: 'Alamat IP', width: 15 },
-          { key: 'userAgent', label: 'User Agent', width: 40 },
+          { key: 'user.name', label: t('columns.user'), width: 20 },
+          { key: 'user.username', label: t('columns.username'), width: 15 },
+          { key: 'module', label: t('columns.module'), width: 15 },
+          { key: 'action', label: t('columns.action'), width: 12 },
+          { key: 'entityType', label: t('columns.entityType'), width: 15 },
+          { key: 'entityId', label: t('columns.entityId'), width: 30 },
+          { key: 'ipAddress', label: t('columns.ipAddress'), width: 15 },
+          { key: 'userAgent', label: t('columns.userAgent'), width: 40 },
         ],
         generateFilename('audit-logs'),
-        'Audit Logs',
+        t('title'),
       );
-      toast.success(`Berhasil mengekspor ${logs.length} audit log`);
+      toast.success(t('exportSuccess', { count: logs.length }));
     } catch (error) {
       console.error('Export error:', error);
-      toast.error('Gagal mengekspor audit log');
+      toast.error(t('exportFailed'));
     } finally {
       setIsExporting(false);
     }
@@ -139,12 +142,13 @@ function AuditLogsContent() {
   const columns = useMemo(
     () =>
       getColumns({
+        t,
         onViewDetail: (log) => {
           setSelectedLog(log);
           setIsDetailOpen(true);
         },
       }),
-    [],
+    [t],
   );
 
   const data = auditLogs || [];
@@ -158,8 +162,8 @@ function AuditLogsContent() {
   return (
     <>
       <DataListPage
-        title="Audit Logs"
-        description="Monitor dan pelacakan aktivitas pengguna dalam sistem."
+        title={t('title')}
+        description={t('description')}
         data={data}
         columns={columns}
         isLoading={isLoading}
@@ -174,15 +178,15 @@ function AuditLogsContent() {
           summary
             ? {
                 total: summary.totalLogs,
-                'Log Hari Ini': summary.logsToday,
-                'Pengguna Unik': summary.uniqueUsers,
-                'Modul Teratas': summary.topModules?.[0]
+                [t('summary.today')]: summary.logsToday,
+                [t('summary.uniqueUsers')]: summary.uniqueUsers,
+                [t('summary.topModule')]: summary.topModules?.[0]
                   ? `${summary.topModules[0].module} (${summary.topModules[0].count})`
                   : '-',
               }
             : undefined
         }
-        summaryConfig={[{ key: 'total', label: 'Total Log', icon: Box }]}
+        summaryConfig={[{ key: 'total', label: t('summary.total'), icon: Box }]}
         // Sorting
         sortBy={sortBy}
         sortOrder={sortOrder}
@@ -196,14 +200,14 @@ function AuditLogsContent() {
         // Search
         search={search}
         onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
-        searchPlaceholder="Cari ID Entity..."
+        searchPlaceholder={t('searchPlaceholder')}
         // Filters
         filterValues={{ module: moduleFilter, action: actionFilter }}
         onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
         filters={[
           {
             key: 'module',
-            label: 'Module',
+            label: t('filters.module'),
             options: AVAILABLE_MODULES.map((module) => ({
               value: module,
               label: module.charAt(0).toUpperCase() + module.slice(1),
@@ -212,7 +216,7 @@ function AuditLogsContent() {
           },
           {
             key: 'action',
-            label: 'Aksi',
+            label: t('filters.action'),
             options: AVAILABLE_ACTIONS.map((action) => ({
               value: action,
               label: action.charAt(0).toUpperCase() + action.slice(1),
@@ -235,7 +239,7 @@ function AuditLogsContent() {
             ) : (
               <Download className="mr-2 h-4 w-4" />
             )}
-            {isExporting ? 'Mengekspor...' : 'Export Excel'}
+            {isExporting ? t('exporting') : t('exportExcel')}
           </Button>
         }
         onRefresh={refetch}

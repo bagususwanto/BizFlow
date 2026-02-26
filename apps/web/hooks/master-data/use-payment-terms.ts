@@ -3,6 +3,7 @@ import { paymentTermsService } from '@/services/master-data/payment-terms.servic
 import { PaymentTermsQuery } from '@bizflow/types';
 import { useAuthStore } from '@/stores/auth.store';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 export function usePaymentTerms(params?: PaymentTermsQuery) {
   const token = useAuthStore((state) => state.accessToken);
@@ -65,12 +66,13 @@ export function usePaymentTerm(id: string) {
 
 export function useCreatePaymentTerm() {
   const queryClient = useQueryClient();
+  const t = useTranslations('paymentTerms.form.messages');
 
   return useMutation({
     mutationFn: (data: Parameters<typeof paymentTermsService.create>[0]) =>
       paymentTermsService.create(data),
     onSuccess: () => {
-      toast.success('Termin pembayaran berhasil ditambahkan');
+      toast.success(t('createSuccess'));
       queryClient.invalidateQueries({ queryKey: ['payment-terms'] });
     },
     onError: (error: Error) => {
@@ -81,12 +83,13 @@ export function useCreatePaymentTerm() {
 
 export function useUpdatePaymentTerm(id: string) {
   const queryClient = useQueryClient();
+  const t = useTranslations('paymentTerms.form.messages');
 
   return useMutation({
     mutationFn: (data: Parameters<typeof paymentTermsService.update>[1]) =>
       paymentTermsService.update(id, data),
     onSuccess: () => {
-      toast.success('Termin pembayaran berhasil diperbarui');
+      toast.success(t('updateSuccess'));
       queryClient.invalidateQueries({ queryKey: ['payment-terms'] });
       queryClient.invalidateQueries({ queryKey: ['payment-term', id] });
     },

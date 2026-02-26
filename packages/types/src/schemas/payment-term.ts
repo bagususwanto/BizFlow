@@ -1,10 +1,10 @@
 import { z } from 'zod';
 
 const paymentTermBaseSchema = z.object({
-  name: z.string().min(1, 'Nama payment term wajib diisi'),
+  name: z.string().min(1, 'paymentTerms.validation.nameRequired'),
   daysDue: z
     .number()
-    .min(0, 'Hari jatuh tempo tidak boleh negatif')
+    .min(0, 'paymentTerms.validation.daysDueMin')
     .optional()
     .default(0),
   description: z.string().optional().nullable(),

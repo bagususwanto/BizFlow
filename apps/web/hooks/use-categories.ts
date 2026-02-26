@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/auth.store';
 import { toast } from 'sonner';
 import { QueryCategoriesValues } from '@bizflow/types';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 export function useCategories(params?: QueryCategoriesValues) {
   const token = useAuthStore((state) => state.accessToken);
@@ -49,11 +50,12 @@ export function useActiveCategories() {
 export function useCreateCategory() {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const t = useTranslations('categories.form.messages');
 
   return useMutation({
     mutationFn: categoriesService.create,
     onSuccess: () => {
-      toast.success('Kategori berhasil dibuat');
+      toast.success(t('createSuccess'));
       queryClient.invalidateQueries({ queryKey: ['categories'] });
       router.back();
     },
@@ -66,11 +68,12 @@ export function useCreateCategory() {
 export function useUpdateCategory(id: string) {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const t = useTranslations('categories.form.messages');
 
   return useMutation({
     mutationFn: (data: any) => categoriesService.update(id, data),
     onSuccess: () => {
-      toast.success('Kategori berhasil diperbarui');
+      toast.success(t('updateSuccess'));
       queryClient.invalidateQueries({ queryKey: ['categories'] });
       queryClient.invalidateQueries({ queryKey: ['category', id] });
       router.back();

@@ -10,11 +10,14 @@ import { DataListPage } from '@/components/shared/data-list-page';
 import { getColumns } from '@/components/master-data/suppliers/columns';
 import { ErrorState } from '@/components/common/error-state';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
+import { useTranslations } from 'next-intl';
 
 function SuppliersContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const t = useTranslations('suppliers');
+  const tCommon = useTranslations('common');
 
   // Get state from URL params
   const page = Number(searchParams.get('page')) || 1;
@@ -75,7 +78,7 @@ function SuppliersContent() {
   };
 
   const handleError = () => (
-    <ErrorState title="Gagal memuat data pemasok" onRetry={() => refetch()} />
+    <ErrorState title={t('failedLoad')} onRetry={() => refetch()} />
   );
 
   const handleBulkDelete = (ids: string[]) => {
@@ -90,8 +93,10 @@ function SuppliersContent() {
     () =>
       getColumns({
         onDelete: (supplier) => setSupplierToDelete(supplier),
+        t,
+        tCommon,
       }),
-    [],
+    [t, tCommon],
   );
 
   const data = suppliers || [];
@@ -105,10 +110,10 @@ function SuppliersContent() {
   return (
     <>
       <DataListPage
-        title="Pemasok"
-        description="Manajemen data pemasok dan pembelian."
+        title={t('title')}
+        description={t('description')}
         createLink="/master-data/suppliers/create"
-        createLabel="Tambah Pemasok"
+        createLabel={t('createLabel')}
         data={data}
         columns={columns}
         isLoading={isLoading}
@@ -141,7 +146,7 @@ function SuppliersContent() {
         // Search
         search={search}
         onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
-        searchPlaceholder="Cari pemasok..."
+        searchPlaceholder={t('searchPlaceholder')}
         // Filters
         filterValues={{ status }}
         onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
@@ -151,8 +156,8 @@ function SuppliersContent() {
             key: 'status',
             label: 'Status',
             options: [
-              { label: 'Aktif', value: 'active' },
-              { label: 'Non-aktif', value: 'inactive' },
+              { label: tCommon('status.active'), value: 'active' },
+              { label: tCommon('status.inactive'), value: 'inactive' },
             ],
             width: 'w-[150px]',
           },
@@ -170,35 +175,23 @@ function SuppliersContent() {
         onOpenChange={(open) => !open && setSupplierToDelete(null)}
         title={
           supplierToDelete?.isActive
-            ? 'Nonaktifkan Pemasok?'
-            : 'Hapus Pemasok Permanen?'
+            ? t('delete.titleActive')
+            : t('delete.titlePermanent')
         }
         description={
-          supplierToDelete?.isActive ? (
-            <>
-              Pemasok{' '}
-              <span className="font-medium text-foreground">
-                {supplierToDelete?.name}
-              </span>{' '}
-              akan dinonaktifkan. Data pemasok tetap tersimpan.
-            </>
-          ) : (
-            <>
-              <p>
-                Pemasok{' '}
-                <span className="font-medium text-foreground">
-                  {supplierToDelete?.name}
-                </span>{' '}
-                akan dihapus secara permanen. Tindakan ini tidak dapat
-                dibatalkan.
-              </p>
-              <p className="mt-2 text-sm text-warning">
-                Peringatan: Jika pemasok masih memiliki riwayat transaksi
-                (pembelian, pembayaran, dll), sistem akan menolak penghapusan
-                permanen.
-              </p>
-            </>
-          )
+          supplierToDelete?.isActive
+            ? t.rich('delete.descActive', {
+                name: supplierToDelete?.name || '',
+                bold: (chunks) => (
+                  <span className="font-medium text-foreground">{chunks}</span>
+                ),
+              })
+            : t.rich('delete.descPermanent1', {
+                name: supplierToDelete?.name || '',
+                bold: (chunks) => (
+                  <span className="font-medium text-foreground">{chunks}</span>
+                ),
+              })
         }
         onConfirm={() => {
           if (supplierToDelete) {
@@ -209,9 +202,11 @@ function SuppliersContent() {
         }}
         isDeleting={isDeleting}
         confirmLabel={
-          supplierToDelete?.isActive ? 'Nonaktifkan' : 'Hapus Permanen'
+          supplierToDelete?.isActive
+            ? t('delete.btnDeactivate')
+            : t('delete.btnDeletePermanent')
         }
-        cancelLabel="Batal"
+        cancelLabel={tCommon('cancel')}
       />
     </>
   );

@@ -9,9 +9,21 @@
     "search": "Cari...",
     "loading": "Memuat...",
     "actions": "Aksi",
-    "all": "Semua"
+    "all": "Semua",
+    "reset": "Mereset",
+    "openMenu": "Buka menu",
+    "historyPurchase": "Riwayat Pembelian",
+    "day": "Hari",
+    "default": "Bawaan",
+    "status": {
+      "active": "Aktif",
+      "inactive": "Nonaktif"
+    }
   },
-  "auth": {},
+  "auth": {
+    "profile": "Profil",
+    "logout": "Keluar"
+  },
   "navigation": {
     "dashboard": {
       "title": "Dasbor",
@@ -301,6 +313,479 @@
       "priceMin": "Harga tidak boleh negatif",
       "variantNameRequired": "Nama varian wajib diisi",
       "variantNameMax": "Nama varian maksimal 200 karakter"
+    }
+  },
+  "categories": {
+    "title": "Kategori Produk",
+    "description": "Kelola struktur kategori produk Anda.",
+    "createLabel": "Tambah Kategori",
+    "create": {
+      "title": "Buat Kategori Baru",
+      "subtitle": "Tambahkan kategori produk baru ke dalam sistem.",
+      "cardTitle": "Formulir Kategori",
+      "cardDesc": "Lengkapi data kategori di bawah ini."
+    },
+    "edit": {
+      "title": "Edit Kategori",
+      "subtitle": "Ubah informasi kategori {name}.",
+      "cardTitle": "Formulir Edit Kategori",
+      "cardDesc": "Silakan ubah data kategori di bawah ini.",
+      "failedLoad": "Gagal memuat data kategori"
+    },
+    "searchPlaceholder": "Cari kategori...",
+    "status": {
+      "active": "Aktif",
+      "inactive": "Nonaktif"
+    },
+    "empty": "Belum ada kategori",
+    "detail": {
+      "title": "Detail Kategori",
+      "empty": "Pilih kategori untuk melihat detail dan sub-kategori.",
+      "totalProducts": "Total Produk",
+      "totalProductsDesc": "Item terdaftar dalam kategori ini",
+      "subCategories": "Sub-kategori",
+      "subCategoriesDesc": "Level turunan langsung",
+      "description": "Deskripsi",
+      "noSubCategories": "Tidak ada sub-kategori.",
+      "productCount": "{count} produk",
+      "createdAt": "Dibuat: ",
+      "updatedAt": "Diupdate: ",
+      "delete": {
+        "titleActive": "Nonaktifkan Kategori?",
+        "titlePermanent": "Hapus Kategori Permanen?",
+        "descActive": "Kategori <bold>{name}</bold> akan dinonaktifkan. Data kategori tetap tersimpan.",
+        "descPermanent1": "Kategori <bold>{name}</bold> akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.",
+        "descPermanent2": "Peringatan: Jika kategori masih memiliki produk atau sub-kategori aktif, sistem akan menolak penghapusan permanen.",
+        "btnDeactivate": "Nonaktifkan",
+        "btnDeletePermanent": "Hapus Permanen"
+      },
+      "addSubCategory": "Tambah Sub-kategori"
+    },
+    "form": {
+      "nameLabel": "Nama Kategori",
+      "namePlaceholder": "Contoh: Makanan Berat",
+      "parentLabel": "Induk Kategori",
+      "parentPlaceholder": "Pilih induk kategori",
+      "parentSearch": "Cari kategori...",
+      "parentEmpty": "Kategori tidak ditemukan.",
+      "parentClear": "-- Tidak Ada (Root) --",
+      "parentDesc": "Kategori root adalah kategori utama tanpa induk.",
+      "descLabel": "Deskripsi",
+      "descPlaceholder": "Deskripsi singkat tentang kategori ini...",
+      "statusLabel": "Status Aktif",
+      "statusDesc": "Kategori nonaktif tidak akan muncul di pilihan produk.",
+      "cancel": "Batal",
+      "save": "Simpan Perubahan",
+      "create": "Buat Kategori",
+      "messages": {
+        "createSuccess": "Kategori berhasil dibuat",
+        "updateSuccess": "Kategori berhasil diperbarui",
+        "errorOccurred": "Terjadi kesalahan"
+      }
+    },
+    "failedLoad": "Gagal memuat data kategori",
+    "bulkDeleteSuccess": "{count} kategori berhasil diproses",
+    "deleteFailed": "Gagal menghapus kategori",
+    "validation": {
+      "nameRequired": "Nama kategori wajib diisi",
+      "nameMax": "Nama kategori maksimal 100 karakter",
+      "descriptionMax": "Deskripsi maksimal 500 karakter"
+    }
+  },
+  "units": {
+    "title": "Satuan",
+    "description": "Manajemen satuan produk (Unit of Measure).",
+    "createLabel": "Tambah Satuan",
+    "create": {
+      "title": "Buat Satuan Baru",
+      "subtitle": "Tambahkan satuan baru untuk pengukuran produk.",
+      "cardTitle": "Form Satuan",
+      "cardDesc": "Isi detail satuan baru di bawah ini."
+    },
+    "edit": {
+      "title": "Edit Satuan",
+      "subtitle": "Ubah informasi satuan {name}.",
+      "cardTitle": "Form Edit Satuan",
+      "cardDesc": "Perbarui informasi satuan di bawah ini.",
+      "failedLoad": "Satuan tidak ditemukan"
+    },
+    "searchPlaceholder": "Cari satuan...",
+    "failedLoad": "Gagal memuat data satuan",
+    "summary": {
+      "total": "Total",
+      "baseUnits": "Dasar",
+      "derivedUnits": "Turunan"
+    },
+    "columns": {
+      "name": "Nama Satuan",
+      "symbol": "Simbol",
+      "baseUnit": "Satuan Dasar",
+      "conversionRate": "Konversi"
+    },
+    "delete": {
+      "title": "Hapus Satuan Permanen?",
+      "desc1": "Satuan <bold>{name}</bold> akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.",
+      "desc2": "Peringatan: Jika satuan masih digunakan dalam transaksi atau produk, sistem akan menolak penghapusan permanen.",
+      "confirm": "Hapus Permanen",
+      "titleActive": "Nonaktifkan Satuan?",
+      "titlePermanent": "Hapus Satuan Permanen?",
+      "descActive": "Satuan <bold>{name}</bold> akan dinonaktifkan. Data tetap tersimpan.",
+      "descPermanent1": "Satuan <bold>{name}</bold> akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.",
+      "btnDeactivate": "Nonaktifkan",
+      "btnDeletePermanent": "Hapus Permanen"
+    },
+    "form": {
+      "nameLabel": "Nama Satuan",
+      "namePlaceholder": "Contoh: Kilogram",
+      "symbolLabel": "Simbol",
+      "symbolPlaceholder": "Contoh: kg",
+      "baseUnitLabel": "Base Unit",
+      "baseUnitPlaceholder": "Pilih base unit",
+      "baseUnitSearch": "Cari unit...",
+      "baseUnitClear": "Tidak ada (Base Unit Utama)",
+      "baseUnitDesc": "Satuan dasar yang menjadi acuan konversi.",
+      "conversionLabel": "Nilai Konversi",
+      "conversionPlaceholder": "Contoh: 1000",
+      "conversionDesc": "1 {symbol} = {value} {baseSymbol}",
+      "cancel": "Batal",
+      "save": "Simpan Perubahan",
+      "create": "Buat Satuan",
+      "thisUnit": "satuan ini",
+      "messages": {
+        "createSuccess": "Satuan berhasil dibuat",
+        "updateSuccess": "Satuan berhasil diperbarui",
+        "errorOccurred": "Terjadi kesalahan"
+      }
+    },
+    "bulkDeleteSuccess": "{count} satuan berhasil diproses",
+    "deleteFailed": "Gagal menghapus satuan",
+    "validation": {
+      "nameRequired": "Nama satuan wajib diisi",
+      "nameMax": "Nama satuan maksimal 50 karakter",
+      "symbolRequired": "Simbol wajib diisi",
+      "symbolMax": "Simbol maksimal 10 karakter",
+      "conversionRateMin": "Nilai konversi harus lebih dari 0"
+    }
+  },
+  "customers": {
+    "title": "Pelanggan",
+    "description": "Manajemen data pelanggan dan klien.",
+    "createLabel": "Tambah Pelanggan",
+    "create": {
+      "title": "Buat Pelanggan Baru",
+      "subtitle": "Tambahkan pelanggan baru ke dalam sistem.",
+      "cardTitle": "Form Pelanggan",
+      "cardDesc": "Isi detail pelanggan baru di bawah ini."
+    },
+    "edit": {
+      "title": "Edit Pelanggan",
+      "subtitle": "Ubah informasi pelanggan {name}.",
+      "cardTitle": "Form Edit Pelanggan",
+      "cardDesc": "Perbarui informasi pelanggan di bawah ini.",
+      "failedLoad": "Pelanggan tidak ditemukan"
+    },
+    "searchPlaceholder": "Cari pelanggan...",
+    "failedLoad": "Gagal memuat data pelanggan",
+    "summary": {
+      "total": "Total",
+      "active": "Aktif",
+      "inactive": "Nonaktif"
+    },
+    "columns": {
+      "code": "Kode Pelanggan",
+      "name": "Nama Pelanggan",
+      "phone": "Telepon",
+      "email": "Email",
+      "address": "Alamat",
+      "taxId": "NPWP",
+      "creditLimit": "Batas Kredit",
+      "isActive": "Status"
+    },
+    "delete": {
+      "title": "Hapus Pelanggan Permanen?",
+      "desc1": "Pelanggan <bold>{name}</bold> akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.",
+      "desc2": "Peringatan: Jika pelanggan masih memiliki transaksi, sistem akan menolak penghapusan permanen.",
+      "confirm": "Hapus Permanen",
+      "titleActive": "Nonaktifkan Pelanggan?",
+      "titlePermanent": "Hapus Pelanggan Permanen?",
+      "descActive": "Pelanggan <bold>{name}</bold> akan dinonaktifkan. Data tetap tersimpan.",
+      "descPermanent1": "Pelanggan <bold>{name}</bold> akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.",
+      "btnDeactivate": "Nonaktifkan",
+      "btnDeletePermanent": "Hapus Permanen"
+    },
+    "form": {
+      "codeLabel": "Kode Pelanggan",
+      "codePlaceholder": "Generate otomatis",
+      "codeGenerateBtn": "Generate Kode Baru",
+      "codeDesc": "Akan di-generate otomatis jika kosong.",
+      "nameLabel": "Nama Pelanggan",
+      "namePlaceholder": "Nama Lengkap / Perusahaan",
+      "emailLabel": "Email",
+      "emailPlaceholder": "contoh@email.com",
+      "phoneLabel": "Telepon",
+      "phonePlaceholder": "08123456789",
+      "addressLabel": "Alamat",
+      "addressPlaceholder": "Alamat lengkap",
+      "taxIdLabel": "NPWP / Tax ID",
+      "taxIdPlaceholder": "Nomor NPWP",
+      "creditLimitLabel": "Credit Limit (Rp)",
+      "creditLimitPlaceholder": "0",
+      "creditLimitDesc": "Batas maksimal hutang pelanggan. Isi 0 jika tidak terbatas atau tidak ada fitur hutang.",
+      "statusLabel": "Status Aktif",
+      "statusDesc": "Pelanggan aktif dapat melakukan transaksi.",
+      "cancel": "Batal",
+      "save": "Simpan Perubahan",
+      "create": "Buat Pelanggan",
+      "messages": {
+        "createSuccess": "Pelanggan berhasil dibuat",
+        "updateSuccess": "Pelanggan berhasil diperbarui",
+        "errorOccurred": "Terjadi kesalahan"
+      }
+    },
+    "bulkDeleteSuccess": "{count} pelanggan berhasil diproses",
+    "deleteFailed": "Gagal menghapus pelanggan",
+    "validation": {
+      "nameRequired": "Nama pelanggan wajib diisi",
+      "nameMax": "Nama pelanggan maksimal 100 karakter",
+      "emailInvalid": "Format email tidak valid",
+      "phoneMax": "Nomor telepon maksimal 20 karakter"
+    }
+  },
+  "suppliers": {
+    "title": "Pemasok",
+    "description": "Manajemen data pemasok dan vendor.",
+    "createLabel": "Tambah Pemasok",
+    "create": {
+      "title": "Buat Pemasok Baru",
+      "subtitle": "Tambahkan pemasok baru ke dalam sistem.",
+      "cardTitle": "Form Pemasok",
+      "cardDesc": "Isi detail pemasok baru di bawah ini."
+    },
+    "edit": {
+      "title": "Edit Pemasok",
+      "subtitle": "Ubah informasi pemasok {name}.",
+      "cardTitle": "Form Edit Pemasok",
+      "cardDesc": "Perbarui informasi pemasok di bawah ini.",
+      "failedLoad": "Pemasok tidak ditemukan"
+    },
+    "searchPlaceholder": "Cari pemasok...",
+    "failedLoad": "Gagal memuat data pemasok",
+    "summary": {
+      "total": "Total",
+      "active": "Aktif",
+      "inactive": "Nonaktif"
+    },
+    "columns": {
+      "code": "Kode Pemasok",
+      "name": "Nama Pemasok",
+      "contact": "Kontak",
+      "phone": "Telepon",
+      "email": "Email",
+      "address": "Alamat",
+      "taxId": "NPWP",
+      "isActive": "Status"
+    },
+    "delete": {
+      "title": "Hapus Pemasok Permanen?",
+      "desc1": "Pemasok <bold>{name}</bold> akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.",
+      "desc2": "Peringatan: Jika pemasok masih memiliki transaksi, sistem akan menolak penghapusan permanen.",
+      "confirm": "Hapus Permanen",
+      "titleActive": "Nonaktifkan Pemasok?",
+      "titlePermanent": "Hapus Pemasok Permanen?",
+      "descActive": "Pemasok <bold>{name}</bold> akan dinonaktifkan. Data tetap tersimpan.",
+      "descPermanent1": "Pemasok <bold>{name}</bold> akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.",
+      "btnDeactivate": "Nonaktifkan",
+      "btnDeletePermanent": "Hapus Permanen"
+    },
+    "form": {
+      "codeLabel": "Kode Pemasok",
+      "codePlaceholder": "Generate otomatis",
+      "codeGenerateBtn": "Generate Kode Baru",
+      "codeDesc": "Akan di-generate otomatis jika kosong.",
+      "nameLabel": "Nama Pemasok",
+      "namePlaceholder": "Nama Lengkap / Perusahaan",
+      "emailLabel": "Email",
+      "emailPlaceholder": "contoh@email.com",
+      "phoneLabel": "Telepon",
+      "phonePlaceholder": "08123456789",
+      "addressLabel": "Alamat",
+      "addressPlaceholder": "Alamat lengkap",
+      "taxIdLabel": "NPWP / Tax ID",
+      "taxIdPlaceholder": "Nomor NPWP",
+      "paymentTermLabel": "Termin Pembayaran",
+      "paymentTermPlaceholder": "Pilih Termin",
+      "bankNameLabel": "Nama Bank",
+      "bankNamePlaceholder": "BCA, Mandiri, dll",
+      "bankAccountLabel": "No. Rekening",
+      "bankAccountPlaceholder": "Nomor Rekening",
+      "statusLabel": "Status Aktif",
+      "statusDesc": "Pemasok aktif dapat melakukan transaksi.",
+      "cancel": "Batal",
+      "save": "Simpan Perubahan",
+      "create": "Buat Pemasok",
+      "messages": {
+        "createSuccess": "Pemasok berhasil dibuat",
+        "updateSuccess": "Pemasok berhasil diperbarui",
+        "errorOccurred": "Terjadi kesalahan"
+      }
+    },
+    "bulkDeleteSuccess": "{count} pemasok berhasil diproses",
+    "deleteFailed": "Gagal menghapus pemasok",
+    "validation": {
+      "nameRequired": "Nama pemasok wajib diisi",
+      "nameMax": "Nama pemasok maksimal 100 karakter",
+      "emailInvalid": "Format email tidak valid"
+    }
+  },
+  "paymentTerms": {
+    "title": "Termin Pembayaran",
+    "description": "Manajemen termin pembayaran untuk transaksi.",
+    "createLabel": "Tambah Termin",
+    "create": {
+      "title": "Buat Termin Baru",
+      "subtitle": "Tambahkan termin pembayaran baru ke dalam sistem.",
+      "cardTitle": "Form Termin",
+      "cardDesc": "Isi detail termin baru di bawah ini."
+    },
+    "edit": {
+      "title": "Edit Termin",
+      "subtitle": "Ubah informasi termin {name}.",
+      "cardTitle": "Form Edit Termin",
+      "cardDesc": "Perbarui informasi termin di bawah ini.",
+      "failedLoad": "Termin pembayaran tidak ditemukan"
+    },
+    "searchPlaceholder": "Cari termin pembayaran...",
+    "failedLoad": "Gagal memuat data termin pembayaran",
+    "summary": {
+      "total": "Total",
+      "active": "Aktif",
+      "inactive": "Nonaktif"
+    },
+    "columns": {
+      "name": "Nama Termin",
+      "daysDue": "Hari Jt. Tempo",
+      "description": "Keterangan",
+      "isActive": "Status"
+    },
+    "delete": {
+      "title": "Hapus Termin Permanen?",
+      "desc1": "Termin pembayaran <bold>{name}</bold> akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.",
+      "desc2": "Peringatan: Jika termin masih digunakan dalam transaksi, sistem akan menolak penghapusan permanen.",
+      "confirm": "Hapus Permanen",
+      "titleActive": "Nonaktifkan Termin pembayaran?",
+      "titlePermanent": "Hapus Termin pembayaran Permanen?",
+      "descActive": "Termin pembayaran <bold>{name}</bold> akan dinonaktifkan. Data tetap tersimpan.",
+      "descPermanent1": "Termin pembayaran <bold>{name}</bold> akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.",
+      "btnDeactivate": "Nonaktifkan",
+      "btnDeletePermanent": "Hapus Permanen"
+    },
+    "form": {
+      "nameLabel": "Nama Termin",
+      "namePlaceholder": "e.g., Net 30, COD",
+      "daysDueLabel": "Lama Hari Jt. Tempo",
+      "daysDuePlaceholder": "0",
+      "daysDueDesc": "Berapa hari sebelum lewat waktu (Net)",
+      "descLabel": "Keterangan",
+      "descPlaceholder": "Informasi tambahan",
+      "statusLabel": "Status Aktif",
+      "statusDesc": "Termin pembayaran aktif dapat dipilih saat transaksi.",
+      "cancel": "Batal",
+      "save": "Simpan Perubahan",
+      "create": "Buat Termin Pembayaran",
+      "messages": {
+        "createSuccess": "Termin pembayaran berhasil dibuat",
+        "updateSuccess": "Termin pembayaran berhasil diperbarui",
+        "errorOccurred": "Terjadi kesalahan"
+      }
+    },
+    "bulkDeleteSuccess": "{count} termin pembayaran berhasil diproses",
+    "deleteFailed": "Gagal menghapus termin pembayaran",
+    "validation": {
+      "nameRequired": "Nama termin wajib diisi",
+      "nameMax": "Nama termin maksimal 50 karakter",
+      "daysDueMin": "Hari jatuh tempo tidak boleh negatif"
+    }
+  },
+  "warehouses": {
+    "title": "Gudang",
+    "description": "Manajemen lokasi gudang dan penyimpanan.",
+    "createLabel": "Tambah Gudang",
+    "create": {
+      "title": "Buat Gudang Baru",
+      "subtitle": "Tambahkan lokasi gudang baru ke dalam sistem.",
+      "cardTitle": "Form Gudang",
+      "cardDesc": "Isi detail gudang baru di bawah ini."
+    },
+    "edit": {
+      "title": "Edit Gudang",
+      "subtitle": "Ubah informasi gudang {name}.",
+      "cardTitle": "Form Edit Gudang",
+      "cardDesc": "Perbarui informasi gudang di bawah ini.",
+      "failedLoad": "Gudang tidak ditemukan"
+    },
+    "searchPlaceholder": "Cari gudang...",
+    "failedLoad": "Gagal memuat data gudang",
+    "summary": {
+      "total": "Total",
+      "active": "Aktif",
+      "inactive": "Nonaktif"
+    },
+    "columns": {
+      "code": "Kode Gudang",
+      "name": "Nama Gudang",
+      "address": "Alamat",
+      "isDefault": "Default",
+      "isActive": "Status"
+    },
+    "delete": {
+      "title": "Hapus Gudang Permanen?",
+      "desc1": "Gudang <bold>{name}</bold> akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.",
+      "desc2": "Peringatan: Jika gudang masih memiliki stok, sistem akan menolak penghapusan permanen.",
+      "confirm": "Hapus Permanen",
+      "titleActive": "Nonaktifkan Gudang?",
+      "titlePermanent": "Hapus Gudang Permanen?",
+      "descActive": "Gudang <bold>{name}</bold> akan dinonaktifkan. Data tetap tersimpan.",
+      "descPermanent1": "Gudang <bold>{name}</bold> akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.",
+      "btnDeactivate": "Nonaktifkan",
+      "btnDeletePermanent": "Hapus Permanen"
+    },
+    "form": {
+      "codeLabel": "Kode Gudang",
+      "codePlaceholder": "Generate otomatis",
+      "codeGenerateBtn": "Generate Kode Baru",
+      "codeDesc": "Akan di-generate otomatis jika kosong.",
+      "nameLabel": "Nama Gudang",
+      "namePlaceholder": "Contoh: Gudang Utama",
+      "addressLabel": "Alamat",
+      "addressPlaceholder": "Alamat lengkap gudang",
+      "defaultLabel": "Gudang Default",
+      "defaultDesc": "Jadikan gudang utama untuk transaksi.",
+      "statusLabel": "Status Aktif",
+      "statusDesc": "Gudang aktif dapat digunakan dalam transaksi.",
+      "cancel": "Batal",
+      "save": "Simpan Perubahan",
+      "create": "Buat Gudang",
+      "messages": {
+        "createSuccess": "Gudang berhasil dibuat",
+        "updateSuccess": "Gudang berhasil diperbarui",
+        "errorOccurred": "Terjadi kesalahan"
+      }
+    },
+    "bulkDeleteSuccess": "{count} gudang berhasil diproses",
+    "deleteFailed": "Gagal menghapus gudang",
+    "validation": {
+      "nameRequired": "Nama gudang wajib diisi",
+      "nameMax": "Nama gudang maksimal 100 karakter"
+    }
+  },
+  "promotions": {
+    "title": "Promosi",
+    "description": "Kelola promo dan diskon otomatis untuk POS",
+    "createLabel": "Buat Promo",
+    "comingSoon": {
+      "title": "Fitur Promo Segera Hadir",
+      "desc1": "Halaman ini nantinya akan digunakan untuk mengelola promo otomatis seperti diskon persen, nominal, dan buy X get Y yang akan otomatis diaplikasikan di POS.",
+      "desc2": "Backend API sudah siap digunakan."
     }
   },
   "multiImageUpload": {

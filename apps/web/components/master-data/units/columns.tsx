@@ -20,10 +20,14 @@ import type { UnitOfMeasure } from '@bizflow/types';
 
 interface UnitsColumnsProps {
   onDelete: (unit: UnitOfMeasure) => void;
+  t: (key: string) => string;
+  tCommon: (key: string) => string;
 }
 
 export const getColumns = ({
   onDelete,
+  t,
+  tCommon,
 }: UnitsColumnsProps): ColumnDef<UnitOfMeasure>[] => [
   {
     id: 'select',
@@ -47,7 +51,7 @@ export const getColumns = ({
   {
     accessorKey: 'name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Nama Satuan" />
+      <DataTableColumnHeader column={column} title={t('columns.name')} />
     ),
     cell: ({ row }) => (
       <div className="font-medium">{row.getValue('name')}</div>
@@ -59,7 +63,7 @@ export const getColumns = ({
   {
     accessorKey: 'symbol',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Simbol" />
+      <DataTableColumnHeader column={column} title={t('columns.symbol')} />
     ),
     meta: {
       title: 'Simbol',
@@ -69,7 +73,7 @@ export const getColumns = ({
     id: 'baseUnit',
     accessorFn: (row) => row.baseUnit?.name,
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Satuan Dasar" />
+      <DataTableColumnHeader column={column} title={t('columns.baseUnit')} />
     ),
     cell: ({ row }) => row.original.baseUnit?.name || '-',
     meta: {
@@ -78,7 +82,7 @@ export const getColumns = ({
   },
   {
     accessorKey: 'conversionRate',
-    header: 'Konversi',
+    header: t('columns.conversionRate'),
     cell: ({ row }) => row.original.conversionRate || '-',
   },
   {
@@ -91,16 +95,16 @@ export const getColumns = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Buka menu</span>
+              <span className="sr-only">{tCommon('openMenu')}</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+            <DropdownMenuLabel>{tCommon('actions')}</DropdownMenuLabel>
             <DropdownMenuItem asChild>
               <Link href={`/master-data/units/${unit.id}`}>
                 <Edit className="mr-2 h-4 w-4" />
-                Edit
+                {tCommon('edit')}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -109,7 +113,7 @@ export const getColumns = ({
               onClick={() => onDelete(unit)}
             >
               <Trash2 className="mr-2 h-4 w-4" />
-              Hapus
+              {tCommon('delete')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -13,6 +13,7 @@ import { usePaymentTerm } from '@/hooks/master-data/use-payment-terms';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { LoadingState } from '@/components/common/loading-state';
 import { ErrorState } from '@/components/common/error-state';
+import { useTranslations } from 'next-intl';
 
 export default function EditPaymentTermPage({
   params,
@@ -26,11 +27,12 @@ export default function EditPaymentTermPage({
     isError,
     refetch,
   } = usePaymentTerm(resolvedParams.id);
+  const t = useTranslations('paymentTerms');
 
   // Set dynamic breadcrumb
   useBreadcrumb(
     `/master-data/payment-terms/${resolvedParams.id}`,
-    paymentTerm?.name || 'Edit Termin Pembayaran',
+    paymentTerm?.name || t('edit.title'),
   );
 
   if (isLoading) {
@@ -43,30 +45,23 @@ export default function EditPaymentTermPage({
 
   if (isError || !paymentTerm) {
     return (
-      <ErrorState
-        title="Gagal memuat detail termin pembayaran"
-        onRetry={() => refetch()}
-      />
+      <ErrorState title={t('edit.failedLoad')} onRetry={() => refetch()} />
     );
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">
-          Edit Termin Pembayaran
-        </h2>
+        <h2 className="text-2xl font-bold tracking-tight">{t('edit.title')}</h2>
         <p className="text-muted-foreground">
-          Ubah informasi termin pembayaran {paymentTerm.name}.
+          {t('edit.subtitle', { name: paymentTerm.name })}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Edit Informasi Termin Pembayaran</CardTitle>
-          <CardDescription>
-            Lakukan perubahan pada data termin pembayaran.
-          </CardDescription>
+          <CardTitle>{t('edit.cardTitle')}</CardTitle>
+          <CardDescription>{t('edit.cardDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <PaymentTermForm initialData={paymentTerm} isEdit />

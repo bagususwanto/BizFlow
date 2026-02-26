@@ -19,10 +19,14 @@ import { DataTableColumnHeader } from '@/components/ui/data-table-column-header'
 
 interface ColumnsProps {
   onDelete: (warehouse: Warehouse) => void;
+  t: (key: string) => string;
+  tCommon: (key: string) => string;
 }
 
 export const getColumns = ({
   onDelete,
+  t,
+  tCommon,
 }: ColumnsProps): ColumnDef<Warehouse>[] => [
   {
     id: 'select',
@@ -46,7 +50,7 @@ export const getColumns = ({
   {
     accessorKey: 'code',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Kode" />
+      <DataTableColumnHeader column={column} title={t('columns.code')} />
     ),
     meta: {
       title: 'Kode',
@@ -55,7 +59,7 @@ export const getColumns = ({
   {
     accessorKey: 'name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Nama Gudang" />
+      <DataTableColumnHeader column={column} title={t('columns.name')} />
     ),
     meta: {
       title: 'Nama Gudang',
@@ -63,7 +67,7 @@ export const getColumns = ({
   },
   {
     accessorKey: 'address',
-    header: 'Alamat',
+    header: t('columns.address'),
     cell: ({ row }) => row.original.address || '-',
     meta: {
       title: 'Alamat',
@@ -71,11 +75,11 @@ export const getColumns = ({
   },
   {
     accessorKey: 'isDefault',
-    header: 'Default',
+    header: t('columns.isDefault'),
     cell: ({ row }) =>
       row.original.isDefault ? (
         <Badge variant="default" className="text-info-foreground bg-info">
-          Default
+          {tCommon('default')}
         </Badge>
       ) : null,
     meta: {
@@ -84,12 +88,12 @@ export const getColumns = ({
   },
   {
     accessorKey: 'isActive',
-    header: 'Status',
+    header: t('columns.isActive'),
     cell: ({ row }) => {
       const isActive = row.original.isActive;
       return (
         <Badge variant={isActive ? 'default' : 'secondary'}>
-          {isActive ? 'Aktif' : 'Non-aktif'}
+          {isActive ? tCommon('status.active') : tCommon('status.inactive')}
         </Badge>
       );
     },
@@ -106,16 +110,16 @@ export const getColumns = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Buka menu</span>
+              <span className="sr-only">{tCommon('openMenu')}</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+            <DropdownMenuLabel>{tCommon('actions')}</DropdownMenuLabel>
             <DropdownMenuItem asChild>
               <Link href={`/master-data/warehouses/${warehouse.id}`}>
                 <Edit className="mr-2 h-4 w-4" />
-                Edit
+                {tCommon('edit')}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem
@@ -124,7 +128,7 @@ export const getColumns = ({
               disabled={warehouse.isDefault} // Prevent delete from UI for default warehouse
             >
               <Trash2 className="mr-2 h-4 w-4" />
-              Hapus
+              {tCommon('delete')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

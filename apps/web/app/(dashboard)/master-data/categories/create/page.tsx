@@ -12,6 +12,7 @@ import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import { Loader2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 function CreateCategoryContent() {
   const searchParams = useSearchParams();
@@ -23,25 +24,22 @@ function CreateCategoryContent() {
 }
 
 export default function CreateCategoryPage() {
-  useBreadcrumb('/master-data/categories/create', 'Tambah Kategori');
+  const t = useTranslations('categories');
+  useBreadcrumb('/master-data/categories/create', t('createLabel'));
 
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-3xl font-bold tracking-tight">
-          Buat Kategori Baru
+          {t('create.title')}
         </h2>
-        <p className="text-muted-foreground">
-          Tambahkan kategori produk baru ke dalam sistem.
-        </p>
+        <p className="text-muted-foreground">{t('create.subtitle')}</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Formulir Kategori</CardTitle>
-          <CardDescription>
-            Lengkapi data kategori di bawah ini.
-          </CardDescription>
+          <CardTitle>{t('create.cardTitle')}</CardTitle>
+          <CardDescription>{t('create.cardDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <Suspense

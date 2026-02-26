@@ -1,10 +1,13 @@
 import { z } from 'zod';
 
 const unitBaseSchema = z.object({
-  name: z.string().min(1, 'Nama satuan wajib diisi'),
-  symbol: z.string().min(1, 'Simbol satuan wajib diisi'),
+  name: z.string().min(1, 'units.validation.nameRequired'),
+  symbol: z.string().min(1, 'units.validation.symbolRequired'),
   baseUnitId: z.string().optional(),
-  conversionRate: z.number().min(0.0001, 'Min 0.0001').optional(),
+  conversionRate: z
+    .number()
+    .min(0.0001, 'units.validation.conversionRateMin')
+    .optional(),
 });
 
 export const createUnitSchema = unitBaseSchema.refine(
@@ -15,7 +18,7 @@ export const createUnitSchema = unitBaseSchema.refine(
     return true;
   },
   {
-    message: 'Conversion rate wajib diisi jika memilih base unit',
+    message: 'units.validation.conversionRateRequired',
     path: ['conversionRate'],
   },
 );
@@ -28,7 +31,7 @@ export const updateUnitSchema = unitBaseSchema.partial().refine(
     return true;
   },
   {
-    message: 'Conversion rate wajib diisi jika memilih base unit',
+    message: 'units.validation.conversionRateRequired',
     path: ['conversionRate'],
   },
 );

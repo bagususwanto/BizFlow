@@ -1,7 +1,7 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useZodI18nResolver } from '@/hooks/use-zod-i18n-resolver';
 import {
   createSupplierSchema,
   updateSupplierSchema,
@@ -38,6 +38,7 @@ import {
   useGenerateSupplierCode,
 } from '@/hooks/use-suppliers';
 import { useActivePaymentTerms } from '@/hooks/master-data/use-payment-terms';
+import { useTranslations } from 'next-intl';
 
 interface SupplierFormProps {
   initialData?: Supplier;
@@ -50,6 +51,8 @@ export function SupplierForm({
 }: SupplierFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const t = useTranslations('suppliers.form');
+  const tCommon = useTranslations('common');
 
   // Hooks for mutations
   const { mutateAsync: createSupplier, isPending: isCreating } =
@@ -66,8 +69,12 @@ export function SupplierForm({
   const { data: paymentTerms = [], isLoading: isLoadingPaymentTerms } =
     useActivePaymentTerms();
 
+  const resolver = useZodI18nResolver(
+    isEdit ? updateSupplierSchema : createSupplierSchema,
+  );
+
   const form = useForm({
-    resolver: zodResolver(isEdit ? updateSupplierSchema : createSupplierSchema),
+    resolver: resolver as any,
     defaultValues: isEdit
       ? {
           code: initialData?.code || '',
@@ -134,11 +141,11 @@ export function SupplierForm({
                 name="code"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel optional>Kode Pemasok</FormLabel>
+                    <FormLabel optional>{t('codeLabel')}</FormLabel>
                     <div className="flex gap-2">
                       <FormControl>
                         <Input
-                          placeholder="Generate otomatis"
+                          placeholder={t('codePlaceholder')}
                           {...field}
                           value={field.value || ''}
                           disabled={isEdit}
@@ -151,7 +158,7 @@ export function SupplierForm({
                           size="icon"
                           onClick={handleGenerateCode}
                           disabled={isGenerating}
-                          title="Generate Kode Baru"
+                          title={t('codeGenerateBtn')}
                         >
                           <RefreshCw
                             className={`h-4 w-4 ${isGenerating ? 'animate-spin' : ''}`}
@@ -159,9 +166,7 @@ export function SupplierForm({
                         </Button>
                       )}
                     </div>
-                    <FormDescription>
-                      Akan di-generate otomatis jika kosong.
-                    </FormDescription>
+                    <FormDescription>{t('codeDesc')}</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -172,10 +177,10 @@ export function SupplierForm({
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel required>Nama Pemasok</FormLabel>
+                    <FormLabel required>{t('nameLabel')}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Nama Lengkap / Perusahaan"
+                        placeholder={t('namePlaceholder')}
                         {...field}
                         value={field.value || ''}
                       />
@@ -192,11 +197,11 @@ export function SupplierForm({
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel optional>Email</FormLabel>
+                    <FormLabel optional>{t('emailLabel')}</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
-                        placeholder="contoh@email.com"
+                        placeholder={t('emailPlaceholder')}
                         {...field}
                         value={field.value || ''}
                       />
@@ -211,10 +216,10 @@ export function SupplierForm({
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel optional>Telepon</FormLabel>
+                    <FormLabel optional>{t('phoneLabel')}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="08123456789"
+                        placeholder={t('phonePlaceholder')}
                         {...field}
                         value={field.value || ''}
                       />
@@ -230,10 +235,10 @@ export function SupplierForm({
               name="address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel optional>Alamat</FormLabel>
+                  <FormLabel optional>{t('addressLabel')}</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Alamat lengkap"
+                      placeholder={t('addressPlaceholder')}
                       {...field}
                       value={field.value || ''}
                     />
@@ -249,10 +254,10 @@ export function SupplierForm({
                 name="taxId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel optional>NPWP / Tax ID</FormLabel>
+                    <FormLabel optional>{t('taxIdLabel')}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Nomor NPWP"
+                        placeholder={t('taxIdPlaceholder')}
                         {...field}
                         value={field.value || ''}
                       />
@@ -267,7 +272,7 @@ export function SupplierForm({
                 name="paymentTermId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel optional>Termin Pembayaran</FormLabel>
+                    <FormLabel optional>{t('paymentTermLabel')}</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value || undefined}
@@ -276,7 +281,9 @@ export function SupplierForm({
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Pilih Termin" />
+                          <SelectValue
+                            placeholder={t('paymentTermPlaceholder')}
+                          />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -299,10 +306,10 @@ export function SupplierForm({
                 name="bankName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel optional>Nama Bank</FormLabel>
+                    <FormLabel optional>{t('bankNameLabel')}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="BCA, Mandiri, dll"
+                        placeholder={t('bankNamePlaceholder')}
                         {...field}
                         value={field.value || ''}
                       />
@@ -317,10 +324,10 @@ export function SupplierForm({
                 name="bankAccount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel optional>No. Rekening</FormLabel>
+                    <FormLabel optional>{t('bankAccountLabel')}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Nomor Rekening"
+                        placeholder={t('bankAccountPlaceholder')}
                         {...field}
                         value={field.value || ''}
                       />
@@ -337,10 +344,10 @@ export function SupplierForm({
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base">Status Aktif</FormLabel>
-                    <FormDescription>
-                      Pemasok aktif dapat melakukan transaksi.
-                    </FormDescription>
+                    <FormLabel className="text-base">
+                      {t('statusLabel')}
+                    </FormLabel>
+                    <FormDescription>{t('statusDesc')}</FormDescription>
                   </div>
                   <FormControl>
                     <Switch
@@ -361,12 +368,12 @@ export function SupplierForm({
             onClick={() => router.back()}
             disabled={isLoading}
           >
-            Batal
+            {tCommon('cancel')}
           </Button>
           <Button type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {!isLoading && <Save className="mr-2 h-4 w-4" />}
-            {isEdit ? 'Simpan Perubahan' : 'Buat Pemasok'}
+            {isEdit ? tCommon('save') : t('create')}
           </Button>
         </div>
       </form>

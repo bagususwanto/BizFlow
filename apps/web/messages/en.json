@@ -9,9 +9,21 @@
     "search": "Search...",
     "loading": "Loading...",
     "actions": "Actions",
-    "all": "All"
+    "all": "All",
+    "reset": "Reset",
+    "openMenu": "Open menu",
+    "historyPurchase": "Purchase History",
+    "day": "Days",
+    "default": "Default",
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    }
   },
-  "auth": {},
+  "auth": {
+    "profile": "Profile",
+    "logout": "Log out"
+  },
   "navigation": {
     "dashboard": {
       "title": "Dashboard",
@@ -301,6 +313,479 @@
       "priceMin": "Price cannot be negative",
       "variantNameRequired": "Variant name is required",
       "variantNameMax": "Variant name maximum is 200 characters"
+    }
+  },
+  "categories": {
+    "title": "Product Categories",
+    "description": "Manage your product category structure.",
+    "createLabel": "Add Category",
+    "create": {
+      "title": "Create New Category",
+      "subtitle": "Add a new product category to the system.",
+      "cardTitle": "Category Form",
+      "cardDesc": "Fill in the category data below."
+    },
+    "edit": {
+      "title": "Edit Category",
+      "subtitle": "Modify category information for {name}.",
+      "cardTitle": "Edit Category Form",
+      "cardDesc": "Please modify the category data below.",
+      "failedLoad": "Failed to load category data"
+    },
+    "searchPlaceholder": "Search categories...",
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "empty": "No categories yet",
+    "detail": {
+      "title": "Category Detail",
+      "empty": "Select a category to view details and sub-categories.",
+      "totalProducts": "Total Products",
+      "totalProductsDesc": "Items registered in this category",
+      "subCategories": "Sub-categories",
+      "subCategoriesDesc": "Direct child levels",
+      "description": "Description",
+      "noSubCategories": "No sub-categories.",
+      "productCount": "{count} products",
+      "createdAt": "Created: ",
+      "updatedAt": "Updated: ",
+      "delete": {
+        "titleActive": "Deactivate Category?",
+        "titlePermanent": "Permanently Delete Category?",
+        "descActive": "Category <bold>{name}</bold> will be deactivated. Category data will remain saved.",
+        "descPermanent1": "Category <bold>{name}</bold> will be permanently deleted. This action cannot be undone.",
+        "descPermanent2": "Warning: If the category still has active products or sub-categories, the system will reject permanent deletion.",
+        "btnDeactivate": "Deactivate",
+        "btnDeletePermanent": "Delete Permanently"
+      },
+      "addSubCategory": "Add Sub-category"
+    },
+    "form": {
+      "nameLabel": "Category Name",
+      "namePlaceholder": "e.g., Main Course",
+      "parentLabel": "Parent Category",
+      "parentPlaceholder": "Select parent category",
+      "parentSearch": "Search category...",
+      "parentEmpty": "Category not found.",
+      "parentClear": "-- None (Root) --",
+      "parentDesc": "Root category is the main category without a parent.",
+      "descLabel": "Description",
+      "descPlaceholder": "Short description about this category...",
+      "statusLabel": "Active Status",
+      "statusDesc": "Inactive categories will not appear in product selections.",
+      "cancel": "Cancel",
+      "save": "Save Changes",
+      "create": "Create Category",
+      "messages": {
+        "createSuccess": "Category successfully created",
+        "updateSuccess": "Category successfully updated",
+        "errorOccurred": "An error occurred"
+      }
+    },
+    "failedLoad": "Failed to load categories data",
+    "bulkDeleteSuccess": "{count} categories successfully processed",
+    "deleteFailed": "Failed to delete category",
+    "validation": {
+      "nameRequired": "Category name is required",
+      "nameMax": "Category name maximum is 100 characters",
+      "descriptionMax": "Description maximum is 500 characters"
+    }
+  },
+  "units": {
+    "title": "Units of Measure",
+    "description": "Product unit of measure management.",
+    "createLabel": "Add Unit",
+    "create": {
+      "title": "Create New Unit",
+      "subtitle": "Add a new unit for product measurement.",
+      "cardTitle": "Unit Form",
+      "cardDesc": "Fill in the new unit details below."
+    },
+    "edit": {
+      "title": "Edit Unit",
+      "subtitle": "Modify unit information for {name}.",
+      "cardTitle": "Edit Unit Form",
+      "cardDesc": "Update the unit information below.",
+      "failedLoad": "Unit not found"
+    },
+    "searchPlaceholder": "Search units...",
+    "failedLoad": "Failed to load units data",
+    "summary": {
+      "total": "Total",
+      "baseUnits": "Base Units",
+      "derivedUnits": "Derived Units"
+    },
+    "columns": {
+      "name": "Unit Name",
+      "symbol": "Symbol",
+      "baseUnit": "Base Unit",
+      "conversionRate": "Conversion"
+    },
+    "delete": {
+      "title": "Permanently Delete Unit?",
+      "desc1": "Unit <bold>{name}</bold> will be permanently deleted. This action cannot be undone.",
+      "desc2": "Warning: If the unit is still used in transactions or products, the system will reject permanent deletion.",
+      "confirm": "Delete Permanently",
+      "titleActive": "Deactivate Unit?",
+      "titlePermanent": "Permanently Delete Unit?",
+      "descActive": "Unit <bold>{name}</bold> will be deactivated. Data will remain saved.",
+      "descPermanent1": "Unit <bold>{name}</bold> will be permanently deleted. This action cannot be undone.",
+      "btnDeactivate": "Deactivate",
+      "btnDeletePermanent": "Delete Permanently"
+    },
+    "form": {
+      "nameLabel": "Unit Name",
+      "namePlaceholder": "e.g., Kilogram",
+      "symbolLabel": "Symbol",
+      "symbolPlaceholder": "e.g., kg",
+      "baseUnitLabel": "Base Unit",
+      "baseUnitPlaceholder": "Select base unit",
+      "baseUnitSearch": "Search unit...",
+      "baseUnitClear": "None (Primary Base Unit)",
+      "baseUnitDesc": "Base unit used as reference for conversion.",
+      "conversionLabel": "Conversion Rate",
+      "conversionPlaceholder": "e.g., 1000",
+      "conversionDesc": "1 {symbol} = {value} {baseSymbol}",
+      "cancel": "Cancel",
+      "save": "Save Changes",
+      "create": "Create Unit",
+      "thisUnit": "this unit",
+      "messages": {
+        "createSuccess": "Unit successfully created",
+        "updateSuccess": "Unit successfully updated",
+        "errorOccurred": "An error occurred"
+      }
+    },
+    "bulkDeleteSuccess": "{count} units successfully processed",
+    "deleteFailed": "Failed to delete unit",
+    "validation": {
+      "nameRequired": "Unit name is required",
+      "nameMax": "Unit name maximum is 50 characters",
+      "symbolRequired": "Symbol is required",
+      "symbolMax": "Symbol maximum is 10 characters",
+      "conversionRateMin": "Conversion rate must be greater than 0"
+    }
+  },
+  "customers": {
+    "title": "Customers",
+    "description": "Customer and client data management.",
+    "createLabel": "Add Customer",
+    "create": {
+      "title": "Create New Customer",
+      "subtitle": "Add a new customer to the system.",
+      "cardTitle": "Customer Form",
+      "cardDesc": "Fill in the new customer details below."
+    },
+    "edit": {
+      "title": "Edit Customer",
+      "subtitle": "Modify customer information for {name}.",
+      "cardTitle": "Edit Customer Form",
+      "cardDesc": "Update the customer information below.",
+      "failedLoad": "Customer not found"
+    },
+    "searchPlaceholder": "Search customers...",
+    "failedLoad": "Failed to load customers data",
+    "summary": {
+      "total": "Total",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "columns": {
+      "code": "Customer Code",
+      "name": "Customer Name",
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address",
+      "taxId": "Tax ID",
+      "creditLimit": "Credit Limit",
+      "isActive": "Status"
+    },
+    "delete": {
+      "title": "Permanently Delete Customer?",
+      "desc1": "Customer <bold>{name}</bold> will be permanently deleted. This action cannot be undone.",
+      "desc2": "Warning: If the customer has existing transactions, the system will reject permanent deletion.",
+      "confirm": "Delete Permanently",
+      "titleActive": "Deactivate Customer?",
+      "titlePermanent": "Permanently Delete Customer?",
+      "descActive": "Customer <bold>{name}</bold> will be deactivated. Data will remain saved.",
+      "descPermanent1": "Customer <bold>{name}</bold> will be permanently deleted. This action cannot be undone.",
+      "btnDeactivate": "Deactivate",
+      "btnDeletePermanent": "Delete Permanently"
+    },
+    "form": {
+      "codeLabel": "Customer Code",
+      "codePlaceholder": "Auto-generated",
+      "codeGenerateBtn": "Generate New Code",
+      "codeDesc": "Will be auto-generated if left blank.",
+      "nameLabel": "Customer Name",
+      "namePlaceholder": "Full Name / Company",
+      "emailLabel": "Email",
+      "emailPlaceholder": "example@email.com",
+      "phoneLabel": "Phone",
+      "phonePlaceholder": "08123456789",
+      "addressLabel": "Address",
+      "addressPlaceholder": "Full address",
+      "taxIdLabel": "NPWP / Tax ID",
+      "taxIdPlaceholder": "Tax ID Number",
+      "creditLimitLabel": "Credit Limit (Rp)",
+      "creditLimitPlaceholder": "0",
+      "creditLimitDesc": "Maximum credit limit. Enter 0 if unlimited or no credit feature.",
+      "statusLabel": "Active Status",
+      "statusDesc": "Active customers can make transactions.",
+      "cancel": "Cancel",
+      "save": "Save Changes",
+      "create": "Create Customer",
+      "messages": {
+        "createSuccess": "Customer successfully created",
+        "updateSuccess": "Customer successfully updated",
+        "errorOccurred": "An error occurred"
+      }
+    },
+    "bulkDeleteSuccess": "{count} customers successfully processed",
+    "deleteFailed": "Failed to delete customer",
+    "validation": {
+      "nameRequired": "Customer name is required",
+      "nameMax": "Customer name maximum is 100 characters",
+      "emailInvalid": "Invalid email format",
+      "phoneMax": "Phone number maximum is 20 characters"
+    }
+  },
+  "suppliers": {
+    "title": "Suppliers",
+    "description": "Vendor and supplier data management.",
+    "createLabel": "Add Supplier",
+    "create": {
+      "title": "Create New Supplier",
+      "subtitle": "Add a new supplier to the system.",
+      "cardTitle": "Supplier Form",
+      "cardDesc": "Fill in the new supplier details below."
+    },
+    "edit": {
+      "title": "Edit Supplier",
+      "subtitle": "Modify supplier information for {name}.",
+      "cardTitle": "Edit Supplier Form",
+      "cardDesc": "Update the supplier information below.",
+      "failedLoad": "Supplier not found"
+    },
+    "searchPlaceholder": "Search suppliers...",
+    "failedLoad": "Failed to load suppliers data",
+    "summary": {
+      "total": "Total",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "columns": {
+      "code": "Supplier Code",
+      "name": "Supplier Name",
+      "contact": "Contact",
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address",
+      "taxId": "Tax ID",
+      "isActive": "Status"
+    },
+    "delete": {
+      "title": "Permanently Delete Supplier?",
+      "desc1": "Supplier <bold>{name}</bold> will be permanently deleted. This action cannot be undone.",
+      "desc2": "Warning: If the supplier has existing transactions, the system will reject permanent deletion.",
+      "confirm": "Delete Permanently",
+      "titleActive": "Deactivate Supplier?",
+      "titlePermanent": "Permanently Delete Supplier?",
+      "descActive": "Supplier <bold>{name}</bold> will be deactivated. Data will remain saved.",
+      "descPermanent1": "Supplier <bold>{name}</bold> will be permanently deleted. This action cannot be undone.",
+      "btnDeactivate": "Deactivate",
+      "btnDeletePermanent": "Delete Permanently"
+    },
+    "form": {
+      "codeLabel": "Supplier Code",
+      "codePlaceholder": "Auto-generated",
+      "codeGenerateBtn": "Generate New Code",
+      "codeDesc": "Will be auto-generated if left blank.",
+      "nameLabel": "Supplier Name",
+      "namePlaceholder": "Full Name / Company",
+      "emailLabel": "Email",
+      "emailPlaceholder": "example@email.com",
+      "phoneLabel": "Phone",
+      "phonePlaceholder": "08123456789",
+      "addressLabel": "Address",
+      "addressPlaceholder": "Full address",
+      "taxIdLabel": "NPWP / Tax ID",
+      "taxIdPlaceholder": "Tax ID Number",
+      "paymentTermLabel": "Payment Term",
+      "paymentTermPlaceholder": "Select Term",
+      "bankNameLabel": "Bank Name",
+      "bankNamePlaceholder": "BCA, Mandiri, etc",
+      "bankAccountLabel": "Account No.",
+      "bankAccountPlaceholder": "Account Number",
+      "statusLabel": "Active Status",
+      "statusDesc": "Active suppliers can be used in transactions.",
+      "cancel": "Cancel",
+      "save": "Save Changes",
+      "create": "Create Supplier",
+      "messages": {
+        "createSuccess": "Supplier successfully created",
+        "updateSuccess": "Supplier successfully updated",
+        "errorOccurred": "An error occurred"
+      }
+    },
+    "bulkDeleteSuccess": "{count} suppliers successfully processed",
+    "deleteFailed": "Failed to delete supplier",
+    "validation": {
+      "nameRequired": "Supplier name is required",
+      "nameMax": "Supplier name maximum is 100 characters",
+      "emailInvalid": "Invalid email format"
+    }
+  },
+  "paymentTerms": {
+    "title": "Payment Terms",
+    "description": "Manage payment terms for transactions.",
+    "createLabel": "Add Term",
+    "create": {
+      "title": "Create New Term",
+      "subtitle": "Add a new payment term to the system.",
+      "cardTitle": "Term Form",
+      "cardDesc": "Fill in the new term details below."
+    },
+    "edit": {
+      "title": "Edit Term",
+      "subtitle": "Modify term information for {name}.",
+      "cardTitle": "Edit Term Form",
+      "cardDesc": "Update the term information below.",
+      "failedLoad": "Payment term not found"
+    },
+    "searchPlaceholder": "Search payment terms...",
+    "failedLoad": "Failed to load payment terms data",
+    "summary": {
+      "total": "Total",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "columns": {
+      "name": "Term Name",
+      "daysDue": "Days Due",
+      "description": "Description",
+      "isActive": "Status"
+    },
+    "delete": {
+      "title": "Permanently Delete Term?",
+      "desc1": "Payment term <bold>{name}</bold> will be permanently deleted. This action cannot be undone.",
+      "desc2": "Warning: If the term is used in transactions, the system will reject permanent deletion.",
+      "confirm": "Delete Permanently",
+      "titleActive": "Deactivate Payment term?",
+      "titlePermanent": "Permanently Delete Payment term?",
+      "descActive": "Payment term <bold>{name}</bold> will be deactivated. Data will remain saved.",
+      "descPermanent1": "Payment term <bold>{name}</bold> will be permanently deleted. This action cannot be undone.",
+      "btnDeactivate": "Deactivate",
+      "btnDeletePermanent": "Delete Permanently"
+    },
+    "form": {
+      "nameLabel": "Term Name",
+      "namePlaceholder": "e.g., Net 30, COD",
+      "daysDueLabel": "Days Due",
+      "daysDuePlaceholder": "0",
+      "daysDueDesc": "Number of days before overdue (Net)",
+      "descLabel": "Description",
+      "descPlaceholder": "Additional information",
+      "statusLabel": "Active Status",
+      "statusDesc": "Active payment terms can be selected during transactions.",
+      "cancel": "Cancel",
+      "save": "Save Changes",
+      "create": "Create Payment Term",
+      "messages": {
+        "createSuccess": "Payment term successfully created",
+        "updateSuccess": "Payment term successfully updated",
+        "errorOccurred": "An error occurred"
+      }
+    },
+    "bulkDeleteSuccess": "{count} payment terms successfully processed",
+    "deleteFailed": "Failed to delete payment term",
+    "validation": {
+      "nameRequired": "Term name is required",
+      "nameMax": "Term name maximum is 50 characters",
+      "daysDueMin": "Days due cannot be negative"
+    }
+  },
+  "warehouses": {
+    "title": "Warehouses",
+    "description": "Manage warehouse and storage locations.",
+    "createLabel": "Add Warehouse",
+    "create": {
+      "title": "Create New Warehouse",
+      "subtitle": "Add a new warehouse location to the system.",
+      "cardTitle": "Warehouse Form",
+      "cardDesc": "Fill in the new warehouse details below."
+    },
+    "edit": {
+      "title": "Edit Warehouse",
+      "subtitle": "Modify warehouse information for {name}.",
+      "cardTitle": "Edit Warehouse Form",
+      "cardDesc": "Update the warehouse information below.",
+      "failedLoad": "Warehouse not found"
+    },
+    "searchPlaceholder": "Search warehouses...",
+    "failedLoad": "Failed to load warehouses data",
+    "summary": {
+      "total": "Total",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "columns": {
+      "code": "Warehouse Code",
+      "name": "Warehouse Name",
+      "address": "Address",
+      "isDefault": "Default",
+      "isActive": "Status"
+    },
+    "delete": {
+      "title": "Permanently Delete Warehouse?",
+      "desc1": "Warehouse <bold>{name}</bold> will be permanently deleted. This action cannot be undone.",
+      "desc2": "Warning: If the warehouse has inventory, the system will reject permanent deletion.",
+      "confirm": "Delete Permanently",
+      "titleActive": "Deactivate Warehouse?",
+      "titlePermanent": "Permanently Delete Warehouse?",
+      "descActive": "Warehouse <bold>{name}</bold> will be deactivated. Data will remain saved.",
+      "descPermanent1": "Warehouse <bold>{name}</bold> will be permanently deleted. This action cannot be undone.",
+      "btnDeactivate": "Deactivate",
+      "btnDeletePermanent": "Delete Permanently"
+    },
+    "form": {
+      "codeLabel": "Warehouse Code",
+      "codePlaceholder": "Auto-generated",
+      "codeGenerateBtn": "Generate New Code",
+      "codeDesc": "Will be auto-generated if left blank.",
+      "nameLabel": "Warehouse Name",
+      "namePlaceholder": "e.g., Main Warehouse",
+      "addressLabel": "Address",
+      "addressPlaceholder": "Full warehouse address",
+      "defaultLabel": "Default Warehouse",
+      "defaultDesc": "Set as main warehouse for transactions.",
+      "statusLabel": "Active Status",
+      "statusDesc": "Active warehouses can be used in transactions.",
+      "cancel": "Cancel",
+      "save": "Save Changes",
+      "create": "Create Warehouse",
+      "messages": {
+        "createSuccess": "Warehouse successfully created",
+        "updateSuccess": "Warehouse successfully updated",
+        "errorOccurred": "An error occurred"
+      }
+    },
+    "bulkDeleteSuccess": "{count} warehouses successfully processed",
+    "deleteFailed": "Failed to delete warehouse",
+    "validation": {
+      "nameRequired": "Warehouse name is required",
+      "nameMax": "Warehouse name maximum is 100 characters"
+    }
+  },
+  "promotions": {
+    "title": "Promotions",
+    "description": "Manage automatic promos and discounts for POS",
+    "createLabel": "Create Promo",
+    "comingSoon": {
+      "title": "Promo Feature Coming Soon",
+      "desc1": "This page will later be used to manage automatic promos such as percentage discounts, nominal discounts, and buy X get Y which will be automatically applied in POS.",
+      "desc2": "Backend API is ready to use."
     }
   },
   "multiImageUpload": {

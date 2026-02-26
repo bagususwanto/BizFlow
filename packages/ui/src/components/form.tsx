@@ -28,6 +28,10 @@ const FormFieldContext = React.createContext<FormFieldContextValue | null>(
   null,
 );
 
+const FormErrorTranslatorContext = React.createContext<
+  ((message: string) => string) | null
+>(null);
+
 const FormField = <
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
@@ -161,7 +165,15 @@ const FormMessage = React.forwardRef<
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, children, ...props }, ref) => {
   const { error, formMessageId } = useFormField();
-  const body = error ? String(error?.message ?? '') : children;
+  const translator = React.useContext(FormErrorTranslatorContext);
+
+  let msg = error?.message;
+  if (msg && translator && msg.includes('.')) {
+    const translated = translator(msg);
+    if (translated) msg = translated;
+  }
+
+  const body = error ? String(msg ?? '') : children;
 
   if (!body) {
     return null;
@@ -189,4 +201,5 @@ export {
   FormDescription,
   FormMessage,
   FormField,
+  FormErrorTranslatorContext,
 };

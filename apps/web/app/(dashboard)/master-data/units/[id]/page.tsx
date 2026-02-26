@@ -12,14 +12,16 @@ import {
 import { UnitForm } from '@/components/master-data/units/unit-form';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { useUnit } from '@/hooks';
+import { useTranslations } from 'next-intl';
 
 export default function EditUnitPage() {
   const params = useParams();
   const id = params.id as string;
   const { data: unit, isLoading, isError } = useUnit(id);
+  const t = useTranslations('units');
 
   // Set dynamic breadcrumb
-  useBreadcrumb(`/master-data/units/${id}`, unit?.name || 'Edit Satuan');
+  useBreadcrumb(`/master-data/units/${id}`, unit?.name || t('edit.title'));
 
   if (isLoading) {
     return (
@@ -32,7 +34,7 @@ export default function EditUnitPage() {
   if (isError || !unit) {
     return (
       <div className="flex h-full flex-1 items-center justify-center text-muted-foreground">
-        Satuan tidak ditemukan
+        {t('edit.failedLoad')}
       </div>
     );
   }
@@ -40,18 +42,16 @@ export default function EditUnitPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Edit Satuan</h1>
+        <h1 className="text-2xl font-bold tracking-tight">{t('edit.title')}</h1>
         <p className="text-muted-foreground">
-          Ubah informasi satuan {unit.name}.
+          {t('edit.subtitle', { name: unit.name })}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Form Edit Satuan</CardTitle>
-          <CardDescription>
-            Perbarui informasi satuan di bawah ini.
-          </CardDescription>
+          <CardTitle>{t('edit.cardTitle')}</CardTitle>
+          <CardDescription>{t('edit.cardDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <UnitForm initialData={unit} isEdit />

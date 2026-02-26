@@ -27,11 +27,13 @@ import {
 } from '@bizflow/ui';
 import { useAuthStore } from '@/stores/auth.store';
 import { useLogoutMutation } from '@/hooks';
+import { useTranslations } from 'next-intl';
 
 export function NavUser() {
   const { isMobile } = useSidebar();
   const { user } = useAuthStore();
   const { mutate: logout } = useLogoutMutation();
+  const t = useTranslations('auth');
 
   const displayName = user?.name || user?.username || 'User';
   const displayEmail = user?.email || user?.role || '';
@@ -89,14 +91,14 @@ export function NavUser() {
               <DropdownMenuItem asChild>
                 <Link href="/settings/profile">
                   <BadgeCheck className="mr-2 h-4 w-4" />
-                  Profile
+                  {t('profile')}
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => logout()}>
               <LogOut className="mr-2 h-4 w-4" />
-              Log out
+              {t('logout')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

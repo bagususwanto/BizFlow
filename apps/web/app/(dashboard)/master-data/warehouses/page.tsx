@@ -10,11 +10,14 @@ import { DataListPage } from '@/components/shared/data-list-page';
 import { getColumns } from '@/components/master-data/warehouses/columns';
 import { ErrorState } from '@/components/common/error-state';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
+import { useTranslations } from 'next-intl';
 
 function WarehousesContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const t = useTranslations('warehouses');
+  const tCommon = useTranslations('common');
 
   // Get state from URL params
   const page = Number(searchParams.get('page')) || 1;
@@ -75,7 +78,7 @@ function WarehousesContent() {
   };
 
   const handleError = () => (
-    <ErrorState title="Gagal memuat data gudang" onRetry={() => refetch()} />
+    <ErrorState title={t('failedLoad')} onRetry={() => refetch()} />
   );
 
   const handleBulkDelete = (ids: string[]) => {
@@ -90,8 +93,10 @@ function WarehousesContent() {
     () =>
       getColumns({
         onDelete: (warehouse) => setWarehouseToDelete(warehouse),
+        t,
+        tCommon,
       }),
-    [],
+    [t, tCommon],
   );
 
   const data = warehouses || [];
@@ -105,10 +110,10 @@ function WarehousesContent() {
   return (
     <>
       <DataListPage
-        title="Gudang"
-        description="Manajemen data gudang penyimpanan."
+        title={t('title')}
+        description={t('description')}
         createLink="/master-data/warehouses/create"
-        createLabel="Tambah Gudang"
+        createLabel={t('createLabel')}
         data={data}
         columns={columns}
         isLoading={isLoading}
@@ -141,7 +146,7 @@ function WarehousesContent() {
         // Search
         search={search}
         onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
-        searchPlaceholder="Cari gudang..."
+        searchPlaceholder={t('searchPlaceholder')}
         // Filters
         filterValues={{ status }}
         onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
@@ -151,8 +156,8 @@ function WarehousesContent() {
             key: 'status',
             label: 'Status',
             options: [
-              { label: 'Aktif', value: 'active' },
-              { label: 'Non-aktif', value: 'inactive' },
+              { label: tCommon('status.active'), value: 'active' },
+              { label: tCommon('status.inactive'), value: 'inactive' },
             ],
             width: 'w-[150px]',
           },
@@ -170,34 +175,23 @@ function WarehousesContent() {
         onOpenChange={(open) => !open && setWarehouseToDelete(null)}
         title={
           warehouseToDelete?.isActive
-            ? 'Nonaktifkan Gudang?'
-            : 'Hapus Gudang Permanen?'
+            ? t('delete.titleActive')
+            : t('delete.titlePermanent')
         }
         description={
-          warehouseToDelete?.isActive ? (
-            <>
-              Gudang{' '}
-              <span className="font-medium text-foreground">
-                {warehouseToDelete?.name}
-              </span>{' '}
-              akan dinonaktifkan. Data gudang tetap tersimpan tapi tidak bisa
-              digunakan untuk transaksi baru.
-            </>
-          ) : (
-            <>
-              <p>
-                Gudang{' '}
-                <span className="font-medium text-foreground">
-                  {warehouseToDelete?.name}
-                </span>{' '}
-                akan dihapus secara permanen.
-              </p>
-              <p className="mt-2 text-sm text-warning">
-                Peringatan: Jika gudang masih memiliki riwayat transaksi (stok,
-                mutasi, dll), sistem akan menolak penghapusan permanen.
-              </p>
-            </>
-          )
+          warehouseToDelete?.isActive
+            ? t.rich('delete.descActive', {
+                name: warehouseToDelete?.name || '',
+                bold: (chunks) => (
+                  <span className="font-medium text-foreground">{chunks}</span>
+                ),
+              })
+            : t.rich('delete.descPermanent1', {
+                name: warehouseToDelete?.name || '',
+                bold: (chunks) => (
+                  <span className="font-medium text-foreground">{chunks}</span>
+                ),
+              })
         }
         onConfirm={() => {
           if (warehouseToDelete) {
@@ -208,9 +202,11 @@ function WarehousesContent() {
         }}
         isDeleting={isDeleting}
         confirmLabel={
-          warehouseToDelete?.isActive ? 'Nonaktifkan' : 'Hapus Permanen'
+          warehouseToDelete?.isActive
+            ? t('delete.btnDeactivate')
+            : t('delete.btnDeletePermanent')
         }
-        cancelLabel="Batal"
+        cancelLabel={tCommon('cancel')}
       />
     </>
   );

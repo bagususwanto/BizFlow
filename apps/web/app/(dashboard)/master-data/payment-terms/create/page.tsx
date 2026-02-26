@@ -1,29 +1,25 @@
-import { PaymentTermForm } from '@/components/master-data/payment-terms/payment-term-form';
-import { Card } from '@bizflow/ui';
-import { Metadata } from 'next';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'Tambah Termin Pembayaran - BizFlow',
-  description: 'Tambah termin pembayaran baru',
-};
+import { PaymentTermForm } from '@/components/master-data/payment-terms/payment-term-form';
+import { useBreadcrumb } from '@/contexts/breadcrumb-context';
+import { useTranslations } from 'next-intl';
 
 export default function CreatePaymentTermPage() {
+  const t = useTranslations('paymentTerms');
+  useBreadcrumb('/master-data/payment-terms/create', t('createLabel'));
+
   return (
-    <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">
-            Tambah Termin Pembayaran
+            {t('create.title')}
           </h2>
-          <p className="text-muted-foreground">
-            Buat termin pembayaran baru untuk digunakan pada transaksi
-          </p>
+          <p className="text-muted-foreground">{t('create.subtitle')}</p>
         </div>
       </div>
 
-      <div className="max-w-3xl">
-        <PaymentTermForm />
-      </div>
+      <PaymentTermForm />
     </div>
   );
 }

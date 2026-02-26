@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import i18next from 'i18next';
 import { z } from 'zod';
 import { zodI18nMap } from 'zod-i18n-map';
+import { FormErrorTranslatorContext } from '@bizflow/ui';
 
 const messageLoaders: Record<string, () => Promise<any>> = {
   en: () => import('../messages/en.json'),
@@ -74,9 +75,25 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     return null;
   }
 
+  const translateError = (message: string) => {
+    if (!messages || !message.includes('.')) return message;
+    const keys = message.split('.');
+    let val = messages;
+    for (const key of keys) {
+      if (val && val[key]) {
+        val = val[key];
+      } else {
+        return message;
+      }
+    }
+    return typeof val === 'string' ? val : message;
+  };
+
   return (
     <NextIntlClientProvider locale={language} messages={messages}>
-      {children}
+      <FormErrorTranslatorContext.Provider value={translateError}>
+        {children}
+      </FormErrorTranslatorContext.Provider>
     </NextIntlClientProvider>
   );
 }

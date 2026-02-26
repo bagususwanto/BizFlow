@@ -12,6 +12,7 @@ import { Loader2 } from 'lucide-react';
 import { useCategory } from '@/hooks';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { CategoryForm } from '@/components/master-data/categories/category-form';
+import { useTranslations } from 'next-intl';
 
 export default function EditCategoryPage({
   params,
@@ -20,11 +21,12 @@ export default function EditCategoryPage({
 }) {
   const { id } = use(params);
   const { data: category, isLoading, isError } = useCategory(id);
+  const t = useTranslations('categories');
 
   // Set dynamic breadcrumb
   useBreadcrumb(
     `/master-data/categories/${id}`,
-    category?.name || 'Edit Kategori',
+    category?.name || t('edit.title'),
   );
 
   if (isLoading) {
@@ -38,7 +40,7 @@ export default function EditCategoryPage({
   if (isError || !category) {
     return (
       <div className="flex h-full w-full items-center justify-center p-8 text-destructive">
-        Gagal memuat data kategori
+        {t('edit.failedLoad')}
       </div>
     );
   }
@@ -46,18 +48,16 @@ export default function EditCategoryPage({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-3xl font-bold tracking-tight">Edit Kategori</h2>
+        <h2 className="text-3xl font-bold tracking-tight">{t('edit.title')}</h2>
         <p className="text-muted-foreground">
-          Ubah informasi kategori {category.name}.
+          {t('edit.subtitle', { name: category.name })}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Formulir Edit Kategori</CardTitle>
-          <CardDescription>
-            Silakan ubah data kategori di bawah ini.
-          </CardDescription>
+          <CardTitle>{t('edit.cardTitle')}</CardTitle>
+          <CardDescription>{t('edit.cardDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <CategoryForm initialData={category} isEdit />

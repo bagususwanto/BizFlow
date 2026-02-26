@@ -1,7 +1,7 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useZodI18nResolver } from '@/hooks/use-zod-i18n-resolver';
 import {
   createCustomerSchema,
   updateCustomerSchema,
@@ -31,6 +31,7 @@ import {
   useUpdateCustomer,
   useGenerateCustomerCode,
 } from '@/hooks';
+import { useTranslations } from 'next-intl';
 
 interface CustomerFormProps {
   initialData?: Customer;
@@ -43,6 +44,8 @@ export function CustomerForm({
 }: CustomerFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const t = useTranslations('customers.form');
+  const tCommon = useTranslations('common');
 
   // Hooks for mutations
   const { mutateAsync: createCustomer, isPending: isCreating } =
@@ -56,8 +59,12 @@ export function CustomerForm({
     isFetching: isGenerating,
   } = useGenerateCustomerCode();
 
+  const resolver = useZodI18nResolver(
+    isEdit ? updateCustomerSchema : createCustomerSchema,
+  );
+
   const form = useForm<CreateCustomerValues | UpdateCustomerValues>({
-    resolver: zodResolver(isEdit ? updateCustomerSchema : createCustomerSchema),
+    resolver: resolver as any,
     defaultValues: isEdit
       ? {
           code: initialData?.code || '',
@@ -123,11 +130,11 @@ export function CustomerForm({
                 name="code"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel optional>Kode Pelanggan</FormLabel>
+                    <FormLabel optional>{t('codeLabel')}</FormLabel>
                     <div className="flex gap-2">
                       <FormControl>
                         <Input
-                          placeholder="Generate otomatis"
+                          placeholder={t('codePlaceholder')}
                           {...field}
                           value={field.value || ''}
                           disabled={isEdit}
@@ -140,7 +147,7 @@ export function CustomerForm({
                           size="icon"
                           onClick={handleGenerateCode}
                           disabled={isGenerating}
-                          title="Generate Kode Baru"
+                          title={t('codeGenerateBtn')}
                         >
                           <RefreshCw
                             className={`h-4 w-4 ${isGenerating ? 'animate-spin' : ''}`}
@@ -148,9 +155,7 @@ export function CustomerForm({
                         </Button>
                       )}
                     </div>
-                    <FormDescription>
-                      Akan di-generate otomatis jika kosong.
-                    </FormDescription>
+                    <FormDescription>{t('codeDesc')}</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -161,10 +166,10 @@ export function CustomerForm({
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel required>Nama Pelanggan</FormLabel>
+                    <FormLabel required>{t('nameLabel')}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Nama Lengkap / Perusahaan"
+                        placeholder={t('namePlaceholder')}
                         {...field}
                         value={field.value || ''}
                       />
@@ -181,11 +186,11 @@ export function CustomerForm({
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel optional>Email</FormLabel>
+                    <FormLabel optional>{t('emailLabel')}</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
-                        placeholder="contoh@email.com"
+                        placeholder={t('emailPlaceholder')}
                         {...field}
                         value={field.value || ''}
                       />
@@ -200,10 +205,10 @@ export function CustomerForm({
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel optional>Telepon</FormLabel>
+                    <FormLabel optional>{t('phoneLabel')}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="08123456789"
+                        placeholder={t('phonePlaceholder')}
                         {...field}
                         value={field.value || ''}
                       />
@@ -219,10 +224,10 @@ export function CustomerForm({
               name="address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel optional>Alamat</FormLabel>
+                  <FormLabel optional>{t('addressLabel')}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Alamat lengkap"
+                      placeholder={t('addressPlaceholder')}
                       {...field}
                       value={field.value || ''}
                     />
@@ -238,10 +243,10 @@ export function CustomerForm({
                 name="taxId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel optional>NPWP / Tax ID</FormLabel>
+                    <FormLabel optional>{t('taxIdLabel')}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Nomor NPWP"
+                        placeholder={t('taxIdPlaceholder')}
                         {...field}
                         value={field.value || ''}
                       />
@@ -256,21 +261,18 @@ export function CustomerForm({
                 name="creditLimit"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel optional>Credit Limit (Rp)</FormLabel>
+                    <FormLabel optional>{t('creditLimitLabel')}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         min="0"
-                        placeholder="0"
+                        placeholder={t('creditLimitPlaceholder')}
                         {...field}
                         onChange={(e) => field.onChange(Number(e.target.value))}
                         value={field.value || 0}
                       />
                     </FormControl>
-                    <FormDescription>
-                      Batas maksimal hutang pelanggan. Isi 0 jika tidak terbatas
-                      atau tidak ada fitur hutang.
-                    </FormDescription>
+                    <FormDescription>{t('creditLimitDesc')}</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -283,10 +285,10 @@ export function CustomerForm({
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base">Status Aktif</FormLabel>
-                    <FormDescription>
-                      Pelanggan aktif dapat melakukan transaksi.
-                    </FormDescription>
+                    <FormLabel className="text-base">
+                      {t('statusLabel')}
+                    </FormLabel>
+                    <FormDescription>{t('statusDesc')}</FormDescription>
                   </div>
                   <FormControl>
                     <Switch
@@ -307,12 +309,12 @@ export function CustomerForm({
             onClick={() => router.back()}
             disabled={isLoading}
           >
-            Batal
+            {tCommon('cancel')}
           </Button>
           <Button type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {!isLoading && <Save className="mr-2 h-4 w-4" />}
-            {isEdit ? 'Simpan Perubahan' : 'Buat Pelanggan'}
+            {isEdit ? tCommon('save') : t('create')}
           </Button>
         </div>
       </form>

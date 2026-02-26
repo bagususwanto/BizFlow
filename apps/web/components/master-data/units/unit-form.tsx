@@ -1,7 +1,7 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useZodI18nResolver } from '@/hooks/use-zod-i18n-resolver';
 import {
   createUnitSchema,
   updateUnitSchema,
@@ -25,6 +25,7 @@ import {
 } from '@bizflow/ui';
 import { Loader2, Save } from 'lucide-react';
 import { useUnits, useCreateUnit, useUpdateUnit } from '@/hooks';
+import { useTranslations } from 'next-intl';
 
 interface UnitFormProps {
   initialData?: UnitOfMeasure;
@@ -34,6 +35,7 @@ interface UnitFormProps {
 export function UnitForm({ initialData, isEdit = false }: UnitFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const t = useTranslations('units.form');
 
   // Hooks for mutations
   const { mutateAsync: createUnit, isPending: isCreating } = useCreateUnit();
@@ -41,8 +43,12 @@ export function UnitForm({ initialData, isEdit = false }: UnitFormProps) {
     initialData?.id || '',
   );
 
+  const resolver = useZodI18nResolver(
+    isEdit ? updateUnitSchema : createUnitSchema,
+  );
+
   const form = useForm<CreateUnitValues | UpdateUnitValues>({
-    resolver: zodResolver(isEdit ? updateUnitSchema : createUnitSchema),
+    resolver: resolver as any,
     defaultValues: isEdit
       ? {
           name: initialData?.name || '',
@@ -90,10 +96,10 @@ export function UnitForm({ initialData, isEdit = false }: UnitFormProps) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel required>Nama Satuan</FormLabel>
+              <FormLabel required>{t('nameLabel')}</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Contoh: Kilogram"
+                  placeholder={t('namePlaceholder')}
                   {...field}
                   value={field.value || ''}
                 />
@@ -108,10 +114,10 @@ export function UnitForm({ initialData, isEdit = false }: UnitFormProps) {
           name="symbol"
           render={({ field }) => (
             <FormItem>
-              <FormLabel required>Simbol</FormLabel>
+              <FormLabel required>{t('symbolLabel')}</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Contoh: kg"
+                  placeholder={t('symbolPlaceholder')}
                   {...field}
                   value={field.value || ''}
                 />
@@ -127,7 +133,7 @@ export function UnitForm({ initialData, isEdit = false }: UnitFormProps) {
             name="baseUnitId"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel optional>Base Unit</FormLabel>
+                <FormLabel optional>{t('baseUnitLabel')}</FormLabel>
                 <FormControl>
                   <Combobox
                     options={availableUnits
@@ -138,15 +144,13 @@ export function UnitForm({ initialData, isEdit = false }: UnitFormProps) {
                       }))}
                     value={field.value}
                     onChange={(val) => field.onChange(val || undefined)}
-                    placeholder="Pilih base unit"
-                    searchPlaceholder="Cari unit..."
+                    placeholder={t('baseUnitPlaceholder')}
+                    searchPlaceholder={t('baseUnitSearch')}
                     allowClear
-                    clearLabel="Tidak ada (Base Unit Utama)"
+                    clearLabel={t('baseUnitClear')}
                   />
                 </FormControl>
-                <FormDescription>
-                  Satuan dasar yang menjadi acuan konversi.
-                </FormDescription>
+                <FormDescription>{t('baseUnitDesc')}</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -158,24 +162,25 @@ export function UnitForm({ initialData, isEdit = false }: UnitFormProps) {
               name="conversionRate"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required>Nilai Konversi</FormLabel>
+                  <FormLabel required>{t('conversionLabel')}</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
                       step="0.0001"
-                      placeholder="Contoh: 1000"
+                      placeholder={t('conversionPlaceholder')}
                       {...field}
                       onChange={(e) => field.onChange(Number(e.target.value))}
                       value={field.value || ''}
                     />
                   </FormControl>
                   <FormDescription>
-                    1 {form.watch('symbol') || 'satuan ini'} ={' '}
-                    {field.value || 0}{' '}
-                    {
-                      availableUnits.find((u) => u.id === watchBaseUnitId)
-                        ?.symbol
-                    }
+                    {t('conversionDesc', {
+                      symbol: form.watch('symbol') || t('thisUnit'),
+                      value: field.value || 0,
+                      baseSymbol:
+                        availableUnits.find((u) => u.id === watchBaseUnitId)
+                          ?.symbol || '',
+                    })}
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -191,12 +196,12 @@ export function UnitForm({ initialData, isEdit = false }: UnitFormProps) {
             onClick={() => router.back()}
             disabled={isLoading}
           >
-            Batal
+            {t('cancel')}
           </Button>
           <Button type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {!isLoading && <Save className="mr-2 h-4 w-4" />}
-            {isEdit ? 'Simpan Perubahan' : 'Buat Satuan'}
+            {isEdit ? t('save') : t('create')}
           </Button>
         </div>
       </form>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useZodI18nResolver } from '@/hooks/use-zod-i18n-resolver';
 import {
   createPaymentTermSchema,
   updatePaymentTermSchema,
@@ -27,6 +27,7 @@ import {
   Textarea,
 } from '@bizflow/ui';
 import { Loader2, Save } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import {
   useCreatePaymentTerm,
   useUpdatePaymentTerm,
@@ -43,16 +44,21 @@ export function PaymentTermForm({
 }: PaymentTermFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const t = useTranslations('paymentTerms.form');
+  const tCommon = useTranslations('common');
 
+  // Hooks for mutations
   const { mutateAsync: createPaymentTerm, isPending: isCreating } =
     useCreatePaymentTerm();
   const { mutateAsync: updatePaymentTerm, isPending: isUpdating } =
     useUpdatePaymentTerm(initialData?.id || '');
 
+  const resolver = useZodI18nResolver(
+    isEdit ? updatePaymentTermSchema : createPaymentTermSchema,
+  );
+
   const form = useForm({
-    resolver: zodResolver(
-      isEdit ? updatePaymentTermSchema : createPaymentTermSchema,
-    ),
+    resolver: resolver as any,
     defaultValues: isEdit
       ? {
           name: initialData?.name || '',
@@ -99,10 +105,10 @@ export function PaymentTermForm({
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel required>Nama Termin</FormLabel>
+                    <FormLabel required>{t('nameLabel')}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="e.g., Net 30, COD"
+                        placeholder={t('namePlaceholder')}
                         {...field}
                         value={field.value || ''}
                       />
@@ -117,20 +123,18 @@ export function PaymentTermForm({
                 name="daysDue"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel optional>Lama Hari Jt. Tempo</FormLabel>
+                    <FormLabel required>{t('daysDueLabel')}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         min="0"
-                        placeholder="0"
+                        placeholder={t('daysDuePlaceholder')}
                         {...field}
                         onChange={(e) => field.onChange(Number(e.target.value))}
                         value={field.value || 0}
                       />
                     </FormControl>
-                    <FormDescription>
-                      Berapa hari sebelum lewat waktu (Net)
-                    </FormDescription>
+                    <FormDescription>{t('daysDueDesc')}</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -142,10 +146,10 @@ export function PaymentTermForm({
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel optional>Keterangan</FormLabel>
+                  <FormLabel optional>{t('descLabel')}</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Informasi tambahan"
+                      placeholder={t('descPlaceholder')}
                       {...field}
                       value={field.value || ''}
                     />
@@ -161,10 +165,10 @@ export function PaymentTermForm({
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base">Status Aktif</FormLabel>
-                    <FormDescription>
-                      Termin pembayaran aktif dapat dipilih saat transaksi.
-                    </FormDescription>
+                    <FormLabel className="text-base">
+                      {t('statusLabel')}
+                    </FormLabel>
+                    <FormDescription>{t('statusDesc')}</FormDescription>
                   </div>
                   <FormControl>
                     <Switch
@@ -185,12 +189,12 @@ export function PaymentTermForm({
             onClick={() => router.back()}
             disabled={isLoading}
           >
-            Batal
+            {tCommon('cancel')}
           </Button>
           <Button type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {!isLoading && <Save className="mr-2 h-4 w-4" />}
-            {isEdit ? 'Simpan Perubahan' : 'Buat Termin Pembayaran'}
+            {isEdit ? tCommon('save') : t('create')}
           </Button>
         </div>
       </form>

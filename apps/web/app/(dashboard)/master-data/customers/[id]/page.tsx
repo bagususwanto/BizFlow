@@ -5,16 +5,18 @@ import { CustomerForm } from '@/components/master-data/customers/customer-form';
 import { useCustomer } from '@/hooks/use-customers';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 export default function EditCustomerPage() {
   const params = useParams();
   const id = params.id as string;
   const { data: customer, isLoading, isError } = useCustomer(id);
+  const t = useTranslations('customers');
 
   // Set dynamic breadcrumb
   useBreadcrumb(
     `/master-data/customers/${id}`,
-    customer?.name || 'Edit Pelanggan',
+    customer?.name || t('edit.title'),
   );
 
   if (isLoading) {
@@ -22,16 +24,18 @@ export default function EditCustomerPage() {
   }
 
   if (isError || !customer) {
-    return <div>Gagal memuat data pelanggan</div>;
+    return <div>{t('edit.failedLoad')}</div>;
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Edit Pelanggan</h2>
+          <h2 className="text-2xl font-bold tracking-tight">
+            {t('edit.title')}
+          </h2>
           <p className="text-muted-foreground">
-            Perbarui informasi data pelanggan.
+            {t('edit.subtitle', { name: customer.name })}
           </p>
         </div>
       </div>

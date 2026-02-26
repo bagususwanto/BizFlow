@@ -5,16 +5,18 @@ import { WarehouseForm } from '@/components/master-data/warehouses/warehouse-for
 import { useWarehouse } from '@/hooks/use-warehouses';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 export default function EditWarehousePage() {
   const params = useParams();
   const id = params.id as string;
   const { data: warehouse, isLoading, isError } = useWarehouse(id);
+  const t = useTranslations('warehouses');
 
   // Set dynamic breadcrumb
   useBreadcrumb(
     `/master-data/warehouses/${id}`,
-    warehouse?.name || 'Edit Gudang',
+    warehouse?.name || t('edit.title'),
   );
 
   if (isLoading) {
@@ -22,16 +24,18 @@ export default function EditWarehousePage() {
   }
 
   if (isError || !warehouse) {
-    return <div>Gagal memuat data gudang</div>;
+    return <div>{t('edit.failedLoad')}</div>;
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Edit Gudang</h2>
+          <h2 className="text-2xl font-bold tracking-tight">
+            {t('edit.title')}
+          </h2>
           <p className="text-muted-foreground">
-            Perbarui informasi data gudang.
+            {t('edit.subtitle', { name: warehouse.name })}
           </p>
         </div>
       </div>

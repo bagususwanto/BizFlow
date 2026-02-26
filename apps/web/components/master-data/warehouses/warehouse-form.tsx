@@ -1,7 +1,7 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useZodI18nResolver } from '@/hooks/use-zod-i18n-resolver';
 import {
   createWarehouseSchema,
   updateWarehouseSchema,
@@ -32,6 +32,7 @@ import {
   useUpdateWarehouse,
   useGenerateWarehouseCode,
 } from '@/hooks';
+import { useTranslations } from 'next-intl';
 
 interface WarehouseFormProps {
   initialData?: Warehouse;
@@ -44,6 +45,8 @@ export function WarehouseForm({
 }: WarehouseFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const t = useTranslations('warehouses.form');
+  const tCommon = useTranslations('common');
 
   // Hooks for mutations
   const { mutateAsync: createWarehouse, isPending: isCreating } =
@@ -57,10 +60,12 @@ export function WarehouseForm({
     isFetching: isGenerating,
   } = useGenerateWarehouseCode();
 
+  const resolver = useZodI18nResolver(
+    isEdit ? updateWarehouseSchema : createWarehouseSchema,
+  );
+
   const form = useForm<CreateWarehouseValues | UpdateWarehouseValues>({
-    resolver: zodResolver(
-      isEdit ? updateWarehouseSchema : createWarehouseSchema,
-    ),
+    resolver: resolver as any,
     defaultValues: isEdit
       ? {
           code: initialData?.code || '',
@@ -117,11 +122,11 @@ export function WarehouseForm({
                 name="code"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel optional>Kode Gudang</FormLabel>
+                    <FormLabel optional>{t('codeLabel')}</FormLabel>
                     <div className="flex gap-2">
                       <FormControl>
                         <Input
-                          placeholder="Generate otomatis"
+                          placeholder={t('codePlaceholder')}
                           {...field}
                           value={field.value || ''}
                           disabled={isEdit}
@@ -134,7 +139,7 @@ export function WarehouseForm({
                           size="icon"
                           onClick={handleGenerateCode}
                           disabled={isGenerating}
-                          title="Generate Kode Baru"
+                          title={t('codeGenerateBtn')}
                         >
                           <RefreshCw
                             className={`h-4 w-4 ${isGenerating ? 'animate-spin' : ''}`}
@@ -142,9 +147,7 @@ export function WarehouseForm({
                         </Button>
                       )}
                     </div>
-                    <FormDescription>
-                      Akan di-generate otomatis jika kosong.
-                    </FormDescription>
+                    <FormDescription>{t('codeDesc')}</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -155,10 +158,10 @@ export function WarehouseForm({
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel required>Nama Gudang</FormLabel>
+                    <FormLabel required>{t('nameLabel')}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Contoh: Gudang Utama"
+                        placeholder={t('namePlaceholder')}
                         {...field}
                         value={field.value || ''}
                       />
@@ -174,10 +177,10 @@ export function WarehouseForm({
               name="address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel optional>Alamat</FormLabel>
+                  <FormLabel optional>{t('addressLabel')}</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Alamat lengkap gudang"
+                      placeholder={t('addressPlaceholder')}
                       {...field}
                       value={field.value || ''}
                     />
@@ -195,11 +198,9 @@ export function WarehouseForm({
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                     <div className="space-y-0.5">
                       <FormLabel className="text-base">
-                        Gudang Default
+                        {t('defaultLabel')}
                       </FormLabel>
-                      <FormDescription>
-                        Jadikan gudang utama untuk transaksi.
-                      </FormDescription>
+                      <FormDescription>{t('defaultDesc')}</FormDescription>
                     </div>
                     <FormControl>
                       <Switch
@@ -218,10 +219,10 @@ export function WarehouseForm({
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                     <div className="space-y-0.5">
-                      <FormLabel className="text-base">Status Aktif</FormLabel>
-                      <FormDescription>
-                        Gudang aktif dapat digunakan dalam transaksi.
-                      </FormDescription>
+                      <FormLabel className="text-base">
+                        {t('statusLabel')}
+                      </FormLabel>
+                      <FormDescription>{t('statusDesc')}</FormDescription>
                     </div>
                     <FormControl>
                       <Switch
@@ -243,12 +244,12 @@ export function WarehouseForm({
             onClick={() => router.back()}
             disabled={isLoading}
           >
-            Batal
+            {tCommon('cancel')}
           </Button>
           <Button type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {!isLoading && <Save className="mr-2 h-4 w-4" />}
-            {isEdit ? 'Simpan Perubahan' : 'Buat Gudang'}
+            {isEdit ? tCommon('save') : t('create')}
           </Button>
         </div>
       </form>

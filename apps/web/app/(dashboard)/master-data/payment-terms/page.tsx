@@ -9,11 +9,14 @@ import { DataListPage } from '@/components/shared/data-list-page';
 import { getColumns } from '@/components/master-data/payment-terms/columns';
 import { ErrorState } from '@/components/common/error-state';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
+import { useTranslations } from 'next-intl';
 
 function PaymentTermsContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const t = useTranslations('paymentTerms');
+  const tCommon = useTranslations('common');
 
   // Get state from URL params
   const page = Number(searchParams.get('page')) || 1;
@@ -72,10 +75,7 @@ function PaymentTermsContent() {
   };
 
   const handleError = () => (
-    <ErrorState
-      title="Gagal memuat data termin pembayaran"
-      onRetry={() => refetch()}
-    />
+    <ErrorState title={t('failedLoad')} onRetry={() => refetch()} />
   );
 
   const handleBulkDelete = (ids: string[]) => {
@@ -90,8 +90,10 @@ function PaymentTermsContent() {
     () =>
       getColumns({
         onDelete: (term) => setTermToDelete(term),
+        t,
+        tCommon,
       }),
-    [],
+    [t, tCommon],
   );
 
   const data = paymentTerms || [];
@@ -105,10 +107,10 @@ function PaymentTermsContent() {
   return (
     <>
       <DataListPage
-        title="Termin Pembayaran"
-        description="Manajemen data termin pembayaran (Payment Terms)."
+        title={t('title')}
+        description={t('description')}
         createLink="/master-data/payment-terms/create"
-        createLabel="Tambah Termin"
+        createLabel={t('createLabel')}
         data={data}
         columns={columns}
         isLoading={isLoading}
@@ -141,7 +143,7 @@ function PaymentTermsContent() {
         // Search
         search={search}
         onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
-        searchPlaceholder="Cari termin..."
+        searchPlaceholder={t('searchPlaceholder')}
         // Filters
         filterValues={{ status }}
         onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
@@ -151,8 +153,8 @@ function PaymentTermsContent() {
             key: 'status',
             label: 'Status',
             options: [
-              { label: 'Aktif', value: 'active' },
-              { label: 'Non-aktif', value: 'inactive' },
+              { label: tCommon('status.active'), value: 'active' },
+              { label: tCommon('status.inactive'), value: 'inactive' },
             ],
             width: 'w-[150px]',
           },
@@ -170,31 +172,23 @@ function PaymentTermsContent() {
         onOpenChange={(open) => !open && setTermToDelete(null)}
         title={
           termToDelete?.isActive
-            ? 'Nonaktifkan Termin Pembayaran?'
-            : 'Hapus Termin Pembayaran Permanen?'
+            ? t('delete.titleActive')
+            : t('delete.titlePermanent')
         }
         description={
-          termToDelete?.isActive ? (
-            <>
-              Termin{' '}
-              <span className="font-medium text-foreground">
-                {termToDelete?.name}
-              </span>{' '}
-              akan dinonaktifkan. Data ini tidak akan bisa dipilih pada
-              transaksi baru.
-            </>
-          ) : (
-            <>
-              <p>
-                Termin{' '}
-                <span className="font-medium text-foreground">
-                  {termToDelete?.name}
-                </span>{' '}
-                akan dihapus secara permanen. Tindakan ini tidak dapat
-                dibatalkan.
-              </p>
-            </>
-          )
+          termToDelete?.isActive
+            ? t.rich('delete.descActive', {
+                name: termToDelete?.name || '',
+                bold: (chunks) => (
+                  <span className="font-medium text-foreground">{chunks}</span>
+                ),
+              })
+            : t.rich('delete.descPermanent1', {
+                name: termToDelete?.name || '',
+                bold: (chunks) => (
+                  <span className="font-medium text-foreground">{chunks}</span>
+                ),
+              })
         }
         onConfirm={() => {
           if (termToDelete) {
@@ -204,8 +198,12 @@ function PaymentTermsContent() {
           }
         }}
         isDeleting={isDeleting}
-        confirmLabel={termToDelete?.isActive ? 'Nonaktifkan' : 'Hapus Permanen'}
-        cancelLabel="Batal"
+        confirmLabel={
+          termToDelete?.isActive
+            ? t('delete.btnDeactivate')
+            : t('delete.btnDeletePermanent')
+        }
+        cancelLabel={tCommon('cancel')}
       />
     </>
   );

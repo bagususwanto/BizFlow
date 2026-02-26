@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { customersService, CustomersQuery } from '@/services/customers.service';
 import { useAuthStore } from '@/stores/auth.store';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 export function useCustomers(params?: CustomersQuery) {
   const token = useAuthStore((state) => state.accessToken);
@@ -66,12 +67,13 @@ export function useCustomer(id: string) {
 
 export function useCreateCustomer() {
   const queryClient = useQueryClient();
+  const t = useTranslations('customers.form.messages');
 
   return useMutation({
     mutationFn: (data: Parameters<typeof customersService.create>[0]) =>
       customersService.create(data),
     onSuccess: () => {
-      toast.success('Pelanggan berhasil ditambahkan');
+      toast.success(t('createSuccess'));
       queryClient.invalidateQueries({ queryKey: ['customers'] });
     },
     onError: (error: Error) => {
@@ -82,12 +84,13 @@ export function useCreateCustomer() {
 
 export function useUpdateCustomer(id: string) {
   const queryClient = useQueryClient();
+  const t = useTranslations('customers.form.messages');
 
   return useMutation({
     mutationFn: (data: Parameters<typeof customersService.update>[1]) =>
       customersService.update(id, data),
     onSuccess: () => {
-      toast.success('Pelanggan berhasil diperbarui');
+      toast.success(t('updateSuccess'));
       queryClient.invalidateQueries({ queryKey: ['customers'] });
       queryClient.invalidateQueries({ queryKey: ['customer', id] });
     },

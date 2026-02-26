@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { unitsService, UnitsQuery } from '@/services/units.service';
 import { useAuthStore } from '@/stores/auth.store';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 export function useUnits(params?: UnitsQuery) {
   const token = useAuthStore((state) => state.accessToken);
@@ -66,12 +67,13 @@ export function useUnit(id: string) {
 
 export function useCreateUnit() {
   const queryClient = useQueryClient();
+  const t = useTranslations('units.form.messages');
 
   return useMutation({
     mutationFn: (data: Parameters<typeof unitsService.create>[0]) =>
       unitsService.create(data),
     onSuccess: () => {
-      toast.success('Satuan berhasil ditambahkan');
+      toast.success(t('createSuccess'));
       queryClient.invalidateQueries({ queryKey: ['units'] });
     },
     onError: (error: Error) => {
@@ -82,12 +84,13 @@ export function useCreateUnit() {
 
 export function useUpdateUnit(id: string) {
   const queryClient = useQueryClient();
+  const t = useTranslations('units.form.messages');
 
   return useMutation({
     mutationFn: (data: Parameters<typeof unitsService.update>[1]) =>
       unitsService.update(id, data),
     onSuccess: () => {
-      toast.success('Satuan berhasil diperbarui');
+      toast.success(t('updateSuccess'));
       queryClient.invalidateQueries({ queryKey: ['units'] });
       queryClient.invalidateQueries({ queryKey: ['unit', id] });
     },

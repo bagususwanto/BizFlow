@@ -13,6 +13,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { DeleteConfirmDialog } from '../../shared/delete-confirm-dialog';
+import { useTranslations } from 'next-intl';
 
 import type { CategoryWithRelations } from '@bizflow/types';
 import {
@@ -50,6 +51,8 @@ export function CategoryDetail({
 }: CategoryDetailProps) {
   const router = useRouter();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const t = useTranslations('categories');
+  const tCommon = useTranslations('common');
 
   if (isLoading) {
     return (
@@ -70,10 +73,10 @@ export function CategoryDetail({
     return (
       <div className="flex h-full flex-col items-center justify-center p-8 text-center text-muted-foreground">
         <Folder className="mb-4 h-12 w-12 text-muted-foreground/20" />
-        <h3 className="text-lg font-medium text-foreground">Detail Kategori</h3>
-        <p className="text-sm">
-          Pilih kategori untuk melihat detail dan sub-kategori.
-        </p>
+        <h3 className="text-lg font-medium text-foreground">
+          {t('detail.title')}
+        </h3>
+        <p className="text-sm">{t('detail.empty')}</p>
       </div>
     );
   }
@@ -88,7 +91,7 @@ export function CategoryDetail({
               {category.name}
             </h2>
             <Badge variant={category.isActive ? 'default' : 'secondary'}>
-              {category.isActive ? 'Aktif' : 'Nonaktif'}
+              {category.isActive ? t('status.active') : t('status.inactive')}
             </Badge>
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -114,7 +117,7 @@ export function CategoryDetail({
               onClick={() => onEdit(category.id)}
             >
               <Edit className="mr-2 h-4 w-4" />
-              Edit
+              {tCommon('edit')}
             </Button>
           )}
           {onDelete && (
@@ -125,47 +128,52 @@ export function CategoryDetail({
                 onClick={() => setDeleteDialogOpen(true)}
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                {category.isActive ? 'Nonaktifkan' : 'Hapus'}
+                {category.isActive
+                  ? t('detail.delete.btnDeactivate')
+                  : tCommon('delete')}
               </Button>
               <DeleteConfirmDialog
                 open={deleteDialogOpen}
                 onOpenChange={setDeleteDialogOpen}
                 title={
                   category.isActive
-                    ? 'Nonaktifkan Kategori?'
-                    : 'Hapus Kategori Permanen?'
+                    ? t('detail.delete.titleActive')
+                    : t('detail.delete.titlePermanent')
                 }
                 description={
                   category.isActive ? (
-                    <>
-                      Kategori{' '}
-                      <span className="font-medium text-foreground">
-                        {category.name}
-                      </span>{' '}
-                      akan dinonaktifkan. Data kategori tetap tersimpan.
-                    </>
+                    t.rich('detail.delete.descActive', {
+                      name: category.name,
+                      bold: (chunks) => (
+                        <span className="font-medium text-foreground">
+                          {chunks}
+                        </span>
+                      ),
+                    })
                   ) : (
                     <>
                       <p>
-                        Kategori{' '}
-                        <span className="font-medium text-foreground">
-                          {category.name}
-                        </span>{' '}
-                        akan dihapus secara permanen. Tindakan ini tidak dapat
-                        dibatalkan.
+                        {t.rich('detail.delete.descPermanent1', {
+                          name: category.name,
+                          bold: (chunks) => (
+                            <span className="font-medium text-foreground">
+                              {chunks}
+                            </span>
+                          ),
+                        })}
                       </p>
                       <p className="mt-2 text-sm text-warning">
-                        Peringatan: Jika kategori masih memiliki produk atau
-                        sub-kategori aktif, sistem akan menolak penghapusan
-                        permanen.
+                        {t('detail.delete.descPermanent2')}
                       </p>
                     </>
                   )
                 }
                 confirmLabel={
-                  category.isActive ? 'Nonaktifkan' : 'Hapus Permanen'
+                  category.isActive
+                    ? t('detail.delete.btnDeactivate')
+                    : t('detail.delete.btnDeletePermanent')
                 }
-                cancelLabel="Batal"
+                cancelLabel={tCommon('cancel')}
                 onConfirm={() => onDelete(category.id)}
                 isDeleting={isDeleting}
               />
@@ -187,7 +195,7 @@ export function CategoryDetail({
                 }
               >
                 <Folder className="mr-2 h-4 w-4" />
-                Tambah Sub-kategori
+                {t('detail.addSubCategory')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -200,7 +208,7 @@ export function CategoryDetail({
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total Produk
+                {t('detail.totalProducts')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -208,7 +216,7 @@ export function CategoryDetail({
                 {category.productCount || 0}
               </div>
               <p className="text-xs text-muted-foreground">
-                Item terdaftar dalam kategori ini
+                {t('detail.totalProductsDesc')}
               </p>
             </CardContent>
           </Card>
@@ -216,7 +224,7 @@ export function CategoryDetail({
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Sub-kategori
+                {t('detail.subCategories')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -224,7 +232,7 @@ export function CategoryDetail({
                 {category.children?.length || 0}
               </div>
               <p className="text-xs text-muted-foreground">
-                Level turunan langsung
+                {t('detail.subCategoriesDesc')}
               </p>
             </CardContent>
           </Card>
@@ -233,7 +241,9 @@ export function CategoryDetail({
         {/* Description */}
         {category.description && (
           <div className="space-y-2">
-            <h4 className="text-sm font-semibold leading-none">Deskripsi</h4>
+            <h4 className="text-sm font-semibold leading-none">
+              {t('detail.description')}
+            </h4>
             <p className="text-sm text-muted-foreground leading-relaxed">
               {category.description}
             </p>
@@ -246,12 +256,12 @@ export function CategoryDetail({
         <div className="space-y-3">
           <h4 className="text-sm font-semibold leading-none flex items-center gap-2">
             <Folder className="h-4 w-4 text-info" />
-            Sub-kategori
+            {t('detail.subCategories')}
           </h4>
 
           {!category.children || category.children.length === 0 ? (
             <p className="text-sm text-muted-foreground italic">
-              Tidak ada sub-kategori.
+              {t('detail.noSubCategories')}
             </p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -266,7 +276,9 @@ export function CategoryDetail({
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{child.name}</p>
                     <p className="text-xs text-muted-foreground truncate">
-                      {(child as any).productCount || 0} produk
+                      {t('detail.productCount', {
+                        count: (child as any).productCount || 0,
+                      })}
                     </p>
                   </div>
                 </div>
@@ -282,7 +294,7 @@ export function CategoryDetail({
           <div className="flex items-center gap-2">
             <History className="h-3 w-3" />
             <span>
-              Dibuat:{' '}
+              {t('detail.createdAt')}{' '}
               {format(new Date(category.createdAt), 'dd MMMM yyyy, HH:mm', {
                 locale: idLocale,
               })}
@@ -291,7 +303,7 @@ export function CategoryDetail({
           <div className="flex items-center gap-2">
             <Edit className="h-3 w-3" />
             <span>
-              Diupdate:{' '}
+              {t('detail.updatedAt')}{' '}
               {format(new Date(category.updatedAt), 'dd MMMM yyyy, HH:mm', {
                 locale: idLocale,
               })}

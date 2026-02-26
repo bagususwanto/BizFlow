@@ -11,8 +11,8 @@ import { z } from 'zod';
 export const createCategorySchema = z.object({
   name: z
     .string()
-    .min(1, { message: 'Nama kategori wajib diisi' })
-    .max(100, { message: 'Nama kategori maksimal 100 karakter' }),
+    .min(1, { message: 'categories.validation.nameRequired' })
+    .max(100, { message: 'categories.validation.nameMax' }),
   parentId: z.preprocess(
     (val) => (val === '' ? null : val),
     z.string().nullable().optional(),
@@ -21,7 +21,7 @@ export const createCategorySchema = z.object({
     (val) => (val === '' ? undefined : val),
     z
       .string()
-      .max(255, { message: 'Deskripsi maksimal 255 karakter' })
+      .max(255, { message: 'categories.validation.descriptionMax' })
       .optional(),
   ),
   isActive: z.boolean().default(true),
@@ -36,8 +36,8 @@ export type CreateCategoryValues = z.infer<typeof createCategorySchema>;
 export const updateCategorySchema = z.object({
   name: z
     .string()
-    .min(1, { message: 'Nama kategori wajib diisi' })
-    .max(100, { message: 'Nama kategori maksimal 100 karakter' })
+    .min(1, { message: 'categories.validation.nameRequired' })
+    .max(100, { message: 'categories.validation.nameMax' })
     .optional(),
   parentId: z.preprocess(
     (val) => (val === '' ? null : val),
@@ -47,7 +47,7 @@ export const updateCategorySchema = z.object({
     (val) => (val === '' ? undefined : val),
     z
       .string()
-      .max(255, { message: 'Deskripsi maksimal 255 karakter' })
+      .max(255, { message: 'categories.validation.descriptionMax' })
       .optional()
       .nullable(),
   ),

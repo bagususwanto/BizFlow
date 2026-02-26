@@ -3,6 +3,7 @@
 import { Suspense, useCallback, useState } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 import {
   useCategoryTree,
@@ -22,6 +23,7 @@ function CategoriesContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const t = useTranslations('categories');
 
   // Get state from URL params
   const search = searchParams.get('search') || '';
@@ -108,10 +110,10 @@ function CategoriesContent() {
 
   return (
     <DataListPage<CategoryWithRelations>
-      title="Kategori Produk"
-      description="Kelola struktur kategori produk Anda."
+      title={t('title')}
+      description={t('description')}
       createLink="/master-data/categories/create"
-      createLabel="Tambah Kategori"
+      createLabel={t('createLabel')}
       // Data (Passed but mostly used by renderCustomView)
       data={[]} // Not used in custom view
       columns={dummyColumns}
@@ -119,7 +121,7 @@ function CategoriesContent() {
       // Search & Filters
       search={search}
       onSearchChange={(v) => handleUpdateUrl({ search: v })}
-      searchPlaceholder="Cari kategori..."
+      searchPlaceholder={t('searchPlaceholder')}
       filterValues={{ status }}
       onFilterChange={(key, value) => handleUpdateUrl({ [key]: value })}
       onReset={() => router.push(pathname)}
@@ -128,8 +130,8 @@ function CategoriesContent() {
           key: 'status',
           label: 'Status',
           options: [
-            { label: 'Aktif', value: 'active' },
-            { label: 'Nonaktif', value: 'inactive' },
+            { label: t('status.active'), value: 'active' },
+            { label: t('status.inactive'), value: 'inactive' },
           ],
           width: 'w-[180px]',
         },

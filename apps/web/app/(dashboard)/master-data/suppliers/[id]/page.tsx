@@ -5,16 +5,18 @@ import { SupplierForm } from '@/components/master-data/suppliers/supplier-form';
 import { useSupplier } from '@/hooks/use-suppliers';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 export default function EditSupplierPage() {
   const params = useParams();
   const id = params.id as string;
   const { data: supplier, isLoading, isError } = useSupplier(id);
+  const t = useTranslations('suppliers');
 
   // Set dynamic breadcrumb
   useBreadcrumb(
     `/master-data/suppliers/${id}`,
-    supplier?.name || 'Edit Pemasok',
+    supplier?.name || t('edit.title'),
   );
 
   if (isLoading) {
@@ -22,16 +24,18 @@ export default function EditSupplierPage() {
   }
 
   if (isError || !supplier) {
-    return <div>Gagal memuat data pemasok</div>;
+    return <div>{t('edit.failedLoad')}</div>;
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Edit Pemasok</h2>
+          <h2 className="text-2xl font-bold tracking-tight">
+            {t('edit.title')}
+          </h2>
           <p className="text-muted-foreground">
-            Perbarui informasi data pemasok.
+            {t('edit.subtitle', { name: supplier.name })}
           </p>
         </div>
       </div>

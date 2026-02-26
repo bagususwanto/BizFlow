@@ -12,11 +12,14 @@ import { getColumns } from '@/components/master-data/customers/columns';
 import { ErrorState } from '@/components/common/error-state';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 function CustomersContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const t = useTranslations('customers');
+  const tCommon = useTranslations('common');
 
   // Get state from URL params
   const page = Number(searchParams.get('page')) || 1;
@@ -77,7 +80,7 @@ function CustomersContent() {
   };
 
   const handleError = () => (
-    <ErrorState title="Gagal memuat data pelanggan" onRetry={() => refetch()} />
+    <ErrorState title={t('failedLoad')} onRetry={() => refetch()} />
   );
 
   const handleBulkDelete = (ids: string[]) => {
@@ -92,8 +95,10 @@ function CustomersContent() {
     () =>
       getColumns({
         onDelete: (customer) => setCustomerToDelete(customer),
+        t,
+        tCommon,
       }),
-    [],
+    [t, tCommon],
   );
 
   const data = customers || [];
@@ -107,10 +112,10 @@ function CustomersContent() {
   return (
     <>
       <DataListPage
-        title="Pelanggan"
-        description="Manajemen data pelanggan dan credit limit."
+        title={t('title')}
+        description={t('description')}
         createLink="/master-data/customers/create"
-        createLabel="Tambah Pelanggan"
+        createLabel={t('createLabel')}
         data={data}
         columns={columns}
         isLoading={isLoading}
@@ -143,7 +148,7 @@ function CustomersContent() {
         // Search
         search={search}
         onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
-        searchPlaceholder="Cari pelanggan..."
+        searchPlaceholder={t('searchPlaceholder')}
         // Filters
         filterValues={{ status }}
         onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
@@ -153,8 +158,8 @@ function CustomersContent() {
             key: 'status',
             label: 'Status',
             options: [
-              { label: 'Aktif', value: 'active' },
-              { label: 'Non-aktif', value: 'inactive' },
+              { label: tCommon('status.active'), value: 'active' },
+              { label: tCommon('status.inactive'), value: 'inactive' },
             ],
             width: 'w-[150px]',
           },
@@ -172,35 +177,23 @@ function CustomersContent() {
         onOpenChange={(open) => !open && setCustomerToDelete(null)}
         title={
           customerToDelete?.isActive
-            ? 'Nonaktifkan Pelanggan?'
-            : 'Hapus Pelanggan Permanen?'
+            ? t('delete.titleActive')
+            : t('delete.titlePermanent')
         }
         description={
-          customerToDelete?.isActive ? (
-            <>
-              Pelanggan{' '}
-              <span className="font-medium text-foreground">
-                {customerToDelete?.name}
-              </span>{' '}
-              akan dinonaktifkan. Data pelanggan tetap tersimpan.
-            </>
-          ) : (
-            <>
-              <p>
-                Pelanggan{' '}
-                <span className="font-medium text-foreground">
-                  {customerToDelete?.name}
-                </span>{' '}
-                akan dihapus secara permanen. Tindakan ini tidak dapat
-                dibatalkan.
-              </p>
-              <p className="mt-2 text-sm text-warning">
-                Peringatan: Jika pelanggan masih memiliki riwayat transaksi
-                (penjualan, pembayaran, dll), sistem akan menolak penghapusan
-                permanen.
-              </p>
-            </>
-          )
+          customerToDelete?.isActive
+            ? t.rich('delete.descActive', {
+                name: customerToDelete?.name || '',
+                bold: (chunks) => (
+                  <span className="font-medium text-foreground">{chunks}</span>
+                ),
+              })
+            : t.rich('delete.descPermanent1', {
+                name: customerToDelete?.name || '',
+                bold: (chunks) => (
+                  <span className="font-medium text-foreground">{chunks}</span>
+                ),
+              })
         }
         onConfirm={() => {
           if (customerToDelete) {
@@ -211,9 +204,11 @@ function CustomersContent() {
         }}
         isDeleting={isDeleting}
         confirmLabel={
-          customerToDelete?.isActive ? 'Nonaktifkan' : 'Hapus Permanen'
+          customerToDelete?.isActive
+            ? t('delete.btnDeactivate')
+            : t('delete.btnDeletePermanent')
         }
-        cancelLabel="Batal"
+        cancelLabel={tCommon('cancel')}
       />
     </>
   );

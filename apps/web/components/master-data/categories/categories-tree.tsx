@@ -2,6 +2,7 @@
 
 import { ChevronDown, ChevronRight, Folder, FolderOpen } from 'lucide-react';
 import * as React from 'react';
+import { useTranslations } from 'next-intl';
 
 import type { CategoryTreeNode } from '@bizflow/types';
 import { cn, ScrollArea } from '@bizflow/ui';
@@ -138,6 +139,7 @@ export function CategoriesTree({
   className,
 }: CategoriesTreeProps) {
   const [expanded, setExpanded] = React.useState<Record<string, boolean>>({});
+  const t = useTranslations('categories');
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -237,7 +239,7 @@ export function CategoriesTree({
 
           {data.length === 0 && (
             <div className="px-4 py-8 text-center text-sm text-muted-foreground">
-              Belum ada kategori
+              {t('empty')}
             </div>
           )}
         </div>

@@ -2,11 +2,11 @@ import { z } from 'zod';
 
 const supplierBaseSchema = z.object({
   code: z.string().optional(),
-  name: z.string().min(1, 'Nama supplier wajib diisi'),
+  name: z.string().min(1, 'suppliers.validation.nameRequired'),
   phone: z.string().optional().nullable(),
   email: z
     .string()
-    .email('Email tidak valid')
+    .email('suppliers.validation.emailInvalid')
     .or(z.literal(''))
     .optional()
     .nullable(),

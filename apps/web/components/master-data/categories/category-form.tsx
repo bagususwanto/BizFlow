@@ -1,7 +1,7 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useZodI18nResolver } from '@/hooks/use-zod-i18n-resolver';
 import { useQueryClient } from '@tanstack/react-query';
 import { Loader2, Save } from 'lucide-react';
 import { toast } from 'sonner';
@@ -18,11 +18,11 @@ import {
   Input,
   Switch,
   Textarea,
+  Combobox,
 } from '@bizflow/ui';
 import {
   createCategorySchema,
   updateCategorySchema,
-  type Category,
   type CreateCategoryValues,
   type UpdateCategoryValues,
   type CategoryWithRelations,
@@ -33,7 +33,7 @@ import {
   useUpdateCategory,
 } from '@/hooks';
 import { useRouter } from 'next/navigation';
-import { Combobox } from '@bizflow/ui';
+import { useTranslations } from 'next-intl';
 
 interface CategoryFormProps {
   initialData?: CategoryWithRelations;
@@ -45,15 +45,18 @@ export function CategoryForm({
   isEdit = false,
 }: CategoryFormProps) {
   const router = useRouter();
+  const t = useTranslations('categories.form');
 
   const { data: activeCategories } = useActiveCategories();
   const createMutation = useCreateCategory();
   const updateMutation = useUpdateCategory(initialData?.id || '');
 
+  const resolver = useZodI18nResolver(
+    isEdit ? updateCategorySchema : createCategorySchema,
+  );
+
   const form = useForm<CreateCategoryValues | UpdateCategoryValues>({
-    resolver: zodResolver(
-      isEdit ? updateCategorySchema : createCategorySchema,
-    ) as any,
+    resolver: resolver as any,
     defaultValues: {
       name: initialData?.name || '',
       parentId: initialData?.parentId || null,
@@ -92,10 +95,10 @@ export function CategoryForm({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel required>Nama Kategori</FormLabel>
+                <FormLabel required>{t('nameLabel')}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Contoh: Makanan Berat"
+                    placeholder={t('namePlaceholder')}
                     {...field}
                     value={field.value || ''}
                   />
@@ -110,7 +113,7 @@ export function CategoryForm({
             name="parentId"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel optional>Induk Kategori</FormLabel>
+                <FormLabel optional>{t('parentLabel')}</FormLabel>
                 <FormControl>
                   <Combobox
                     options={parentOptions.map((cat) => ({
@@ -119,16 +122,14 @@ export function CategoryForm({
                     }))}
                     value={field.value}
                     onChange={field.onChange}
-                    placeholder="Pilih induk kategori"
-                    searchPlaceholder="Cari kategori..."
-                    emptyMessage="Kategori tidak ditemukan."
+                    placeholder={t('parentPlaceholder')}
+                    searchPlaceholder={t('parentSearch')}
+                    emptyMessage={t('parentEmpty')}
                     allowClear
-                    clearLabel="-- Tidak Ada (Root) --"
+                    clearLabel={t('parentClear')}
                   />
                 </FormControl>
-                <FormDescription>
-                  Kategori root adalah kategori utama tanpa induk.
-                </FormDescription>
+                <FormDescription>{t('parentDesc')}</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -140,10 +141,10 @@ export function CategoryForm({
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel optional>Deskripsi</FormLabel>
+              <FormLabel optional>{t('descLabel')}</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Deskripsi singkat tentang kategori ini..."
+                  placeholder={t('descPlaceholder')}
                   className="resize-none"
                   rows={3}
                   {...field}
@@ -161,9 +162,9 @@ export function CategoryForm({
           render={({ field }) => (
             <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
               <div className="space-y-0.5">
-                <FormLabel className="text-base">Status Aktif</FormLabel>
+                <FormLabel className="text-base">{t('statusLabel')}</FormLabel>
                 <div className="text-sm text-muted-foreground">
-                  Kategori nonaktif tidak akan muncul di pilihan produk.
+                  {t('statusDesc')}
                 </div>
               </div>
               <FormControl>
@@ -183,12 +184,12 @@ export function CategoryForm({
             onClick={() => router.back()}
             disabled={isSubmitting}
           >
-            Batal
+            {t('cancel')}
           </Button>
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {!isSubmitting && <Save className="mr-2 h-4 w-4" />}
-            {isEdit ? 'Simpan Perubahan' : 'Buat Kategori'}
+            {isEdit ? t('save') : t('create')}
           </Button>
         </div>
       </form>

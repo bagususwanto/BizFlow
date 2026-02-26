@@ -20,11 +20,14 @@ import {
 } from '@bizflow/ui';
 import { toast } from 'sonner';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
+import { useTranslations } from 'next-intl';
 
 function UnitsContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const t = useTranslations('units');
+  const tCommon = useTranslations('common');
 
   // Get state from URL params
   const page = Number(searchParams.get('page')) || 1;
@@ -81,7 +84,7 @@ function UnitsContent() {
   };
 
   const handleError = () => (
-    <ErrorState title="Gagal memuat data satuan" onRetry={() => refetch()} />
+    <ErrorState title={t('failedLoad')} onRetry={() => refetch()} />
   );
 
   const handleBulkDelete = (ids: string[]) => {
@@ -96,8 +99,10 @@ function UnitsContent() {
     () =>
       getColumns({
         onDelete: (unit) => setUnitToDelete(unit),
+        t,
+        tCommon,
       }),
-    [],
+    [t, tCommon],
   );
 
   const data = units || [];
@@ -111,10 +116,10 @@ function UnitsContent() {
   return (
     <>
       <DataListPage
-        title="Satuan"
-        description="Manajemen satuan produk (Unit of Measure)."
+        title={t('title')}
+        description={t('description')}
         createLink="/master-data/units/create"
-        createLabel="Tambah Satuan"
+        createLabel={t('createLabel')}
         data={data}
         columns={columns}
         isLoading={isLoading}
@@ -135,16 +140,16 @@ function UnitsContent() {
             : undefined
         }
         summaryConfig={[
-          { key: 'total', label: 'Total', icon: Box },
+          { key: 'total', label: t('summary.total'), icon: Box },
           {
             key: 'baseUnits',
-            label: 'Dasar',
+            label: t('summary.baseUnits'),
             icon: Box,
             className: 'text-info',
           },
           {
             key: 'derivedUnits',
-            label: 'Turunan',
+            label: t('summary.derivedUnits'),
             icon: Box,
             className: 'text-warning',
           },
@@ -162,7 +167,7 @@ function UnitsContent() {
         // Search
         search={search}
         onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
-        searchPlaceholder="Cari satuan..."
+        searchPlaceholder={t('searchPlaceholder')}
         onReset={() => router.push(pathname)}
         // No filters for Units currently based on existing implementation
 
@@ -177,20 +182,13 @@ function UnitsContent() {
       <DeleteConfirmDialog
         open={!!unitToDelete}
         onOpenChange={(open) => !open && setUnitToDelete(null)}
-        title="Hapus Satuan Permanen?"
-        description={
-          <>
-            Satuan{' '}
-            <span className="font-medium text-foreground">
-              {unitToDelete?.name}
-            </span>{' '}
-            akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.
-            <p className="mt-2 text-sm text-warning">
-              Peringatan: Jika satuan masih digunakan dalam transaksi atau
-              produk, sistem akan menolak penghapusan permanen.
-            </p>
-          </>
-        }
+        title={t('delete.titlePermanent')}
+        description={t.rich('delete.descPermanent1', {
+          name: unitToDelete?.name || '',
+          bold: (chunks) => (
+            <span className="font-medium text-foreground">{chunks}</span>
+          ),
+        })}
         onConfirm={() => {
           if (unitToDelete) {
             deleteUnit(unitToDelete.id, {
@@ -199,8 +197,8 @@ function UnitsContent() {
           }
         }}
         isDeleting={isDeleting}
-        confirmLabel="Hapus Permanen"
-        cancelLabel="Batal"
+        confirmLabel={t('delete.btnDeletePermanent')}
+        cancelLabel={tCommon('cancel')}
       />
     </>
   );

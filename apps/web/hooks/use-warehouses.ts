@@ -5,6 +5,7 @@ import {
 } from '@/services/warehouses.service';
 import { useAuthStore } from '@/stores/auth.store';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 export function useWarehouses(params?: WarehousesQuery) {
   const token = useAuthStore((state) => state.accessToken);
@@ -69,12 +70,13 @@ export function useWarehouse(id: string) {
 
 export function useCreateWarehouse() {
   const queryClient = useQueryClient();
+  const t = useTranslations('warehouses.form.messages');
 
   return useMutation({
     mutationFn: (data: Parameters<typeof warehousesService.create>[0]) =>
       warehousesService.create(data),
     onSuccess: () => {
-      toast.success('Gudang berhasil ditambahkan');
+      toast.success(t('createSuccess'));
       queryClient.invalidateQueries({ queryKey: ['warehouses'] });
     },
     onError: (error: Error) => {
@@ -85,12 +87,13 @@ export function useCreateWarehouse() {
 
 export function useUpdateWarehouse(id: string) {
   const queryClient = useQueryClient();
+  const t = useTranslations('warehouses.form.messages');
 
   return useMutation({
     mutationFn: (data: Parameters<typeof warehousesService.update>[1]) =>
       warehousesService.update(id, data),
     onSuccess: () => {
-      toast.success('Gudang berhasil diperbarui');
+      toast.success(t('updateSuccess'));
       queryClient.invalidateQueries({ queryKey: ['warehouses'] });
       queryClient.invalidateQueries({ queryKey: ['warehouse', id] });
     },

@@ -19,10 +19,14 @@ import { DataTableColumnHeader } from '@/components/ui/data-table-column-header'
 
 interface ColumnsProps {
   onDelete: (customer: Customer) => void;
+  t: (key: string) => string;
+  tCommon: (key: string) => string;
 }
 
 export const getColumns = ({
   onDelete,
+  t,
+  tCommon,
 }: ColumnsProps): ColumnDef<Customer>[] => [
   {
     id: 'select',
@@ -46,7 +50,7 @@ export const getColumns = ({
   {
     accessorKey: 'code',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Kode" />
+      <DataTableColumnHeader column={column} title={t('columns.code')} />
     ),
     meta: {
       title: 'Kode',
@@ -55,7 +59,7 @@ export const getColumns = ({
   {
     accessorKey: 'name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Nama Pelanggan" />
+      <DataTableColumnHeader column={column} title={t('columns.name')} />
     ),
     meta: {
       title: 'Nama Pelanggan',
@@ -63,17 +67,17 @@ export const getColumns = ({
   },
   {
     accessorKey: 'phone',
-    header: 'Telepon',
+    header: t('columns.phone'),
     cell: ({ row }) => row.original.phone || '-',
   },
   {
     accessorKey: 'email',
-    header: 'Email',
+    header: t('columns.email'),
     cell: ({ row }) => row.original.email || '-',
   },
   {
     accessorKey: 'creditLimit',
-    header: 'Batas Kredit',
+    header: t('columns.creditLimit'),
     cell: ({ row }) => {
       const amount = parseFloat(firstString(row.original.creditLimit));
       return new Intl.NumberFormat('id-ID', {
@@ -84,12 +88,12 @@ export const getColumns = ({
   },
   {
     accessorKey: 'isActive',
-    header: 'Status',
+    header: t('columns.isActive'),
     cell: ({ row }) => {
       const isActive = row.original.isActive;
       return (
         <Badge variant={isActive ? 'default' : 'secondary'}>
-          {isActive ? 'Aktif' : 'Non-aktif'}
+          {isActive ? tCommon('status.active') : tCommon('status.inactive')}
         </Badge>
       );
     },
@@ -103,16 +107,16 @@ export const getColumns = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Buka menu</span>
+              <span className="sr-only">{tCommon('openMenu')}</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+            <DropdownMenuLabel>{tCommon('actions')}</DropdownMenuLabel>
             <DropdownMenuItem asChild>
               <Link href={`/master-data/customers/${customer.id}`}>
                 <Edit className="mr-2 h-4 w-4" />
-                Edit
+                {tCommon('edit')}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem
@@ -120,7 +124,7 @@ export const getColumns = ({
               onClick={() => onDelete(customer)}
             >
               <Trash2 className="mr-2 h-4 w-4" />
-              Hapus
+              {tCommon('delete')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

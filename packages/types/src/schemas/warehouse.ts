@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const warehouseBaseSchema = z.object({
   code: z.string().optional(),
-  name: z.string().min(1, 'Nama gudang wajib diisi'),
+  name: z.string().min(1, 'warehouses.validation.nameRequired'),
   address: z.string().optional().nullable(),
   isDefault: z.boolean().optional().default(false),
   isActive: z.boolean().optional().default(true),

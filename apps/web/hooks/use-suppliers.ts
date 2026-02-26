@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { suppliersService, SuppliersQuery } from '@/services/suppliers.service';
 import { useAuthStore } from '@/stores/auth.store';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 export function useSuppliers(params?: SuppliersQuery) {
   const token = useAuthStore((state) => state.accessToken);
@@ -66,12 +67,13 @@ export function useSupplier(id: string) {
 
 export function useCreateSupplier() {
   const queryClient = useQueryClient();
+  const t = useTranslations('suppliers.form.messages');
 
   return useMutation({
     mutationFn: (data: Parameters<typeof suppliersService.create>[0]) =>
       suppliersService.create(data),
     onSuccess: () => {
-      toast.success('Pemasok berhasil ditambahkan');
+      toast.success(t('createSuccess'));
       queryClient.invalidateQueries({ queryKey: ['suppliers'] });
     },
     onError: (error: Error) => {
@@ -82,12 +84,13 @@ export function useCreateSupplier() {
 
 export function useUpdateSupplier(id: string) {
   const queryClient = useQueryClient();
+  const t = useTranslations('suppliers.form.messages');
 
   return useMutation({
     mutationFn: (data: Parameters<typeof suppliersService.update>[1]) =>
       suppliersService.update(id, data),
     onSuccess: () => {
-      toast.success('Pemasok berhasil diperbarui');
+      toast.success(t('updateSuccess'));
       queryClient.invalidateQueries({ queryKey: ['suppliers'] });
       queryClient.invalidateQueries({ queryKey: ['supplier', id] });
     },

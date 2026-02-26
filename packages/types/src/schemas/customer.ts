@@ -2,11 +2,11 @@ import { z } from 'zod';
 
 const customerBaseSchema = z.object({
   code: z.string().optional(),
-  name: z.string().min(1, 'Nama pelanggan wajib diisi'),
+  name: z.string().min(1, 'customers.validation.nameRequired'),
   phone: z.string().optional().nullable(),
   email: z
     .string()
-    .email('Email tidak valid')
+    .email('customers.validation.emailInvalid')
     .or(z.literal(''))
     .optional()
     .nullable(),
@@ -14,7 +14,7 @@ const customerBaseSchema = z.object({
   taxId: z.string().optional().nullable(),
   creditLimit: z
     .number()
-    .min(0, 'Credit limit tidak boleh negatif')
+    .min(0, 'customers.validation.creditLimitMin')
     .optional()
     .default(0),
   priceLevelId: z.string().optional().nullable(),

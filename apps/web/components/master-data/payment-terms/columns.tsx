@@ -19,10 +19,14 @@ import { DataTableColumnHeader } from '@/components/ui/data-table-column-header'
 
 interface ColumnsProps {
   onDelete: (term: PaymentTerm) => void;
+  t: (key: string) => string;
+  tCommon: (key: string) => string;
 }
 
 export const getColumns = ({
   onDelete,
+  t,
+  tCommon,
 }: ColumnsProps): ColumnDef<PaymentTerm>[] => [
   {
     id: 'select',
@@ -46,7 +50,7 @@ export const getColumns = ({
   {
     accessorKey: 'name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Nama Termin" />
+      <DataTableColumnHeader column={column} title={t('columns.name')} />
     ),
     meta: {
       title: 'Nama Termin',
@@ -55,13 +59,13 @@ export const getColumns = ({
   {
     accessorKey: 'daysDue',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Hari Jatuh Tempo" />
+      <DataTableColumnHeader column={column} title={t('columns.daysDue')} />
     ),
-    cell: ({ row }) => `${row.original.daysDue} hari`,
+    cell: ({ row }) => `${row.original.daysDue} ${tCommon('day')}`,
   },
   {
     accessorKey: 'description',
-    header: 'Keterangan',
+    header: t('columns.description'),
     cell: ({ row }) => (
       <span
         className="truncate max-w-[200px] block text-muted-foreground"
@@ -73,12 +77,12 @@ export const getColumns = ({
   },
   {
     accessorKey: 'isActive',
-    header: 'Status',
+    header: t('columns.isActive'),
     cell: ({ row }) => {
       const isActive = row.original.isActive;
       return (
         <Badge variant={isActive ? 'default' : 'secondary'}>
-          {isActive ? 'Aktif' : 'Non-aktif'}
+          {isActive ? tCommon('status.active') : tCommon('status.inactive')}
         </Badge>
       );
     },
@@ -92,16 +96,16 @@ export const getColumns = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Buka menu</span>
+              <span className="sr-only">{tCommon('openMenu')}</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+            <DropdownMenuLabel>{tCommon('actions')}</DropdownMenuLabel>
             <DropdownMenuItem asChild>
               <Link href={`/master-data/payment-terms/${term.id}`}>
                 <Edit className="mr-2 h-4 w-4" />
-                Edit
+                {tCommon('edit')}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem
@@ -109,7 +113,7 @@ export const getColumns = ({
               onClick={() => onDelete(term)}
             >
               <Trash2 className="mr-2 h-4 w-4" />
-              Hapus
+              {tCommon('delete')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

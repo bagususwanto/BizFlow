@@ -265,6 +265,67 @@
         "statusDesc": "Active customers can be selected in transactions."
       }
     },
+    "suppliers": {
+      "title": "Suppliers",
+      "description": "Manage your supplier list, contacts, and payment terms.",
+      "createLabel": "Add Supplier",
+      "failedLoad": "Failed to load suppliers",
+      "searchPlaceholder": "Search by name, code, phone, or email...",
+      "summary": {
+        "total": "Total Suppliers",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "columns": {
+        "code": "Code",
+        "name": "Supplier Name",
+        "phone": "Phone Number",
+        "email": "Email",
+        "address": "Address",
+        "isActive": "Status"
+      },
+      "delete": {
+        "titleActive": "Deactivate Supplier?",
+        "descActive": "Are you sure you want to deactivate {name}? Deactivated suppliers cannot be selected in new transactions.",
+        "titlePermanent": "Permanently Delete Supplier?",
+        "descPermanent1": "Are you sure you want to permanently delete the supplier {name}? This action cannot be undone.",
+        "btnDeactivate": "Deactivate",
+        "btnDeletePermanent": "Delete Permanently"
+      },
+      "create": {
+        "title": "Add New Supplier",
+        "subtitle": "Add a new supplier to the system."
+      },
+      "edit": {
+        "title": "Edit Supplier",
+        "subtitle": "Modify supplier information for {name}.",
+        "failedLoad": "Failed to load supplier details"
+      },
+      "form": {
+        "codeLabel": "Supplier Code",
+        "codePlaceholder": "Leave blank to auto-generate",
+        "codeDesc": "Will be automatically generated if left empty",
+        "codeGenerateBtn": "Generate Code",
+        "nameLabel": "Name / Company",
+        "namePlaceholder": "e.g., PT Sumber Makmur or John Doe",
+        "emailLabel": "Email",
+        "emailPlaceholder": "e.g., contact@company.com",
+        "phoneLabel": "Phone Number",
+        "phonePlaceholder": "e.g., 081234567890",
+        "addressLabel": "Address",
+        "addressPlaceholder": "Complete address...",
+        "taxIdLabel": "NPWP / Tax ID",
+        "taxIdPlaceholder": "e.g., 01.234.567.8-901.000",
+        "paymentTermLabel": "Payment Term (Default)",
+        "paymentTermPlaceholder": "Select Payment Term",
+        "bankNameLabel": "Bank Name",
+        "bankNamePlaceholder": "e.g., BCA, Mandiri",
+        "bankAccountLabel": "Bank Account Number",
+        "bankAccountPlaceholder": "e.g., 1234567890 a.n John Doe",
+        "statusLabel": "Active Status",
+        "statusDesc": "Active suppliers can be selected in transactions."
+      }
+    },
     "create": {
       "title": "Add New Product",
       "subtitle": "Add a new product or service to the catalog.",

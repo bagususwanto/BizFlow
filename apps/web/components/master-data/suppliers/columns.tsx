@@ -53,7 +53,7 @@ export const getColumns = ({
       <DataTableColumnHeader column={column} title={t('columns.code')} />
     ),
     meta: {
-      title: 'Kode',
+      title: t('columns.code'),
     },
   },
   {
@@ -62,7 +62,7 @@ export const getColumns = ({
       <DataTableColumnHeader column={column} title={t('columns.name')} />
     ),
     meta: {
-      title: 'Nama Pemasok',
+      title: t('columns.name'),
     },
   },
   {

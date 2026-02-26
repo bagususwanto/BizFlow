@@ -154,7 +154,7 @@ function SuppliersContent() {
         filters={[
           {
             key: 'status',
-            label: 'Status',
+            label: tCommon('status.label'),
             options: [
               { label: tCommon('status.active'), value: 'active' },
               { label: tCommon('status.inactive'), value: 'inactive' },

@@ -265,6 +265,67 @@
         "statusDesc": "Pelanggan yang aktif dapat dipilih dalam transaksi."
       }
     },
+    "suppliers": {
+      "title": "Pemasok",
+      "description": "Kelola daftar pemasok, kontak, dan termin pembayaran Anda.",
+      "createLabel": "Tambah Pemasok",
+      "failedLoad": "Gagal memuat daftar pemasok",
+      "searchPlaceholder": "Cari nama, kode, no. hp, atau email...",
+      "summary": {
+        "total": "Total Pemasok",
+        "active": "Aktif",
+        "inactive": "Nonaktif"
+      },
+      "columns": {
+        "code": "Kode",
+        "name": "Nama Pemasok",
+        "phone": "No. HP/Telepon",
+        "email": "Email",
+        "address": "Alamat",
+        "isActive": "Status"
+      },
+      "delete": {
+        "titleActive": "Nonaktifkan Pemasok?",
+        "descActive": "Apakah Anda yakin ingin menonaktifkan {name}? Pemasok yang nonaktif tidak dapat dipilih saat membuat transaksi baru.",
+        "titlePermanent": "Hapus Pemasok Permanen?",
+        "descPermanent1": "Apakah Anda yakin ingin menghapus pemasok {name} secara permanen? Tindakan ini tidak dapat dibatalkan.",
+        "btnDeactivate": "Nonaktifkan",
+        "btnDeletePermanent": "Hapus Permanen"
+      },
+      "create": {
+        "title": "Tambah Pemasok Baru",
+        "subtitle": "Tambahkan data pemasok baru ke dalam sistem."
+      },
+      "edit": {
+        "title": "Edit Pemasok",
+        "subtitle": "Ubah informasi pemasok {name}.",
+        "failedLoad": "Gagal memuat detail pemasok"
+      },
+      "form": {
+        "codeLabel": "Kode Pemasok",
+        "codePlaceholder": "Kosongkan untuk auto-generate",
+        "codeDesc": "Akan otomatis dibuat jika dikosongkan",
+        "codeGenerateBtn": "Generate Kode",
+        "nameLabel": "Nama / Perusahaan",
+        "namePlaceholder": "Contoh: PT Sumber Makmur atau John Doe",
+        "emailLabel": "Email",
+        "emailPlaceholder": "Contoh: kontak@perusahaan.com",
+        "phoneLabel": "No. Telepon / HP",
+        "phonePlaceholder": "Contoh: 081234567890",
+        "addressLabel": "Alamat Lengkap",
+        "addressPlaceholder": "Masukkan alamat lengkap...",
+        "taxIdLabel": "NPWP / Tax ID",
+        "taxIdPlaceholder": "Contoh: 01.234.567.8-901.000",
+        "paymentTermLabel": "Termin Pembayaran (Default)",
+        "paymentTermPlaceholder": "Pilih Termin Pembayaran",
+        "bankNameLabel": "Nama Bank",
+        "bankNamePlaceholder": "Contoh: BCA, Mandiri",
+        "bankAccountLabel": "No. Rekening & Atas Nama",
+        "bankAccountPlaceholder": "Contoh: 1234567890 a.n PT Sumber Makmur",
+        "statusLabel": "Status Aktif",
+        "statusDesc": "Pemasok yang aktif dapat dipilih dalam transaksi."
+      }
+    },
     "create": {
       "title": "Tambah Produk Baru",
       "subtitle": "Tambahkan produk atau jasa baru ke katalog.",

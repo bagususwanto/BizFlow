@@ -152,6 +152,60 @@
       "active": "Aktif",
       "inactive": "Nonaktif"
     },
+    "units": {
+      "title": "Satuan Ukur",
+      "description": "Kelola satuan ukur yang digunakan untuk produk Anda.",
+      "createLabel": "Tambah Satuan",
+      "failedLoad": "Gagal memuat daftar satuan",
+      "searchPlaceholder": "Cari nama satuan...",
+      "summary": {
+        "total": "Total Satuan",
+        "baseUnits": "Satuan Dasar (Base)",
+        "derivedUnits": "Satuan Turunan"
+      },
+      "columns": {
+        "name": "Nama Satuan",
+        "symbol": "Simbol",
+        "baseUnit": "Satuan Dasar",
+        "conversionRate": "Nilai Konversi"
+      },
+      "delete": {
+        "titlePermanent": "Hapus Satuan Permanen?",
+        "descPermanent1": "Apakah Anda yakin ingin menghapus satuan {name} secara permanen? Tindakan ini tidak dapat dibatalkan dan akan menghapus data ini sepenuhnya dari server.",
+        "btnDeletePermanent": "Hapus Permanen"
+      },
+      "create": {
+        "title": "Tambah Satuan Baru",
+        "subtitle": "Tambahkan satuan ukur baru ke dalam sistem.",
+        "cardTitle": "Informasi Satuan",
+        "cardDesc": "Isi formulir berikut untuk menambahkan satuan baru."
+      },
+      "edit": {
+        "title": "Edit Satuan",
+        "subtitle": "Ubah informasi satuan {name}.",
+        "failedLoad": "Gagal memuat detail satuan",
+        "cardTitle": "Edit Informasi Satuan",
+        "cardDesc": "Lakukan perubahan pada data satuan."
+      },
+      "form": {
+        "nameLabel": "Nama Satuan",
+        "namePlaceholder": "Contoh: Kilogram, Piece, Box",
+        "symbolLabel": "Simbol",
+        "symbolPlaceholder": "Contoh: kg, pcs, box",
+        "baseUnitLabel": "Satuan Dasar (Base Unit)",
+        "baseUnitPlaceholder": "Pilih Satuan Dasar (Opsional)",
+        "baseUnitSearch": "Cari satuan...",
+        "baseUnitClear": "Hapus pilihan",
+        "baseUnitDesc": "Biarkan kosong jika ini adalah satuan dasar (base unit).",
+        "conversionLabel": "Nilai Konversi",
+        "conversionPlaceholder": "0.00",
+        "conversionDesc": "1 {symbol} = {value} {baseSymbol}",
+        "thisUnit": "satuan ini",
+        "cancel": "Batal",
+        "save": "Simpan Perubahan",
+        "create": "Buat Satuan"
+      }
+    },
     "create": {
       "title": "Tambah Produk Baru",
       "subtitle": "Tambahkan produk atau jasa baru ke katalog.",

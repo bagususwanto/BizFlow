@@ -152,6 +152,60 @@
       "active": "Active",
       "inactive": "Inactive"
     },
+    "units": {
+      "title": "Units of Measure",
+      "description": "Manage units of measure used for your products.",
+      "createLabel": "Add Unit",
+      "failedLoad": "Failed to load units",
+      "searchPlaceholder": "Search by unit name...",
+      "summary": {
+        "total": "Total Units",
+        "baseUnits": "Base Units",
+        "derivedUnits": "Derived Units"
+      },
+      "columns": {
+        "name": "Unit Name",
+        "symbol": "Symbol",
+        "baseUnit": "Base Unit",
+        "conversionRate": "Conversion Rate"
+      },
+      "delete": {
+        "titlePermanent": "Permanently Delete Unit?",
+        "descPermanent1": "Are you sure you want to permanently delete the unit {name}? This action cannot be undone and will permanently remove this data from the server.",
+        "btnDeletePermanent": "Delete Permanently"
+      },
+      "create": {
+        "title": "Add New Unit",
+        "subtitle": "Add a new unit of measure to the system.",
+        "cardTitle": "Unit Information",
+        "cardDesc": "Fill in the form below to add a new unit."
+      },
+      "edit": {
+        "title": "Edit Unit",
+        "subtitle": "Change unit information for {name}.",
+        "failedLoad": "Failed to load unit details",
+        "cardTitle": "Edit Unit Information",
+        "cardDesc": "Make changes to unit data."
+      },
+      "form": {
+        "nameLabel": "Unit Name",
+        "namePlaceholder": "e.g., Kilogram, Piece, Box",
+        "symbolLabel": "Symbol",
+        "symbolPlaceholder": "e.g., kg, pcs, box",
+        "baseUnitLabel": "Base Unit",
+        "baseUnitPlaceholder": "Select Base Unit (Optional)",
+        "baseUnitSearch": "Search unit...",
+        "baseUnitClear": "Clear selection",
+        "baseUnitDesc": "Leave empty if this is a base unit.",
+        "conversionLabel": "Conversion Rate",
+        "conversionPlaceholder": "0.00",
+        "conversionDesc": "1 {symbol} = {value} {baseSymbol}",
+        "thisUnit": "unit",
+        "cancel": "Cancel",
+        "save": "Save Changes",
+        "create": "Create Unit"
+      }
+    },
     "create": {
       "title": "Add New Product",
       "subtitle": "Add a new product or service to the catalog.",

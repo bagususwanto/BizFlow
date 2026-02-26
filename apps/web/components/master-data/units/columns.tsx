@@ -57,7 +57,7 @@ export const getColumns = ({
       <div className="font-medium">{row.getValue('name')}</div>
     ),
     meta: {
-      title: 'Nama Satuan',
+      title: t('columns.name'),
     },
   },
   {
@@ -66,7 +66,7 @@ export const getColumns = ({
       <DataTableColumnHeader column={column} title={t('columns.symbol')} />
     ),
     meta: {
-      title: 'Simbol',
+      title: t('columns.symbol'),
     },
   },
   {
@@ -77,7 +77,7 @@ export const getColumns = ({
     ),
     cell: ({ row }) => row.original.baseUnit?.name || '-',
     meta: {
-      title: 'Satuan Dasar',
+      title: t('columns.baseUnit'),
     },
   },
   {

@@ -11,8 +11,8 @@ import {
 } from '@bizflow/ui';
 import { AuditLog } from '@/services/audit-logs.service';
 import { format } from 'date-fns';
-import { id } from 'date-fns/locale';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
+import { enUS, id } from 'date-fns/locale';
 
 interface AuditLogDetailSheetProps {
   log: AuditLog | null;
@@ -29,8 +29,12 @@ export function AuditLogDetailSheet({
 
   if (!log) return null;
 
+  const locale = useLocale();
+
   const formatDate = (date: string) =>
-    format(new Date(date), 'dd MMMM yyyy HH:mm:ss', { locale: id });
+    format(new Date(date), 'dd MMMM yyyy HH:mm:ss', {
+      locale: locale === 'id' ? id : enUS,
+    });
 
   let oldValueParsed = null;
   let newValueParsed = null;

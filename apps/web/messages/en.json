@@ -16,6 +16,7 @@
     "day": "Days",
     "default": "Default",
     "status": {
+      "label": "Status",
       "active": "Active",
       "inactive": "Inactive"
     }
@@ -204,6 +205,64 @@
         "cancel": "Cancel",
         "save": "Save Changes",
         "create": "Create Unit"
+      }
+    },
+    "customers": {
+      "title": "Customers",
+      "description": "Manage your customer list, contacts, and credit limits.",
+      "createLabel": "Add Customer",
+      "failedLoad": "Failed to load customers",
+      "searchPlaceholder": "Search by name, code, phone, or email...",
+      "summary": {
+        "total": "Total Customers",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "columns": {
+        "code": "Code",
+        "name": "Customer Name",
+        "phone": "Phone Number",
+        "email": "Email",
+        "creditLimit": "Credit Limit",
+        "isActive": "Status"
+      },
+      "delete": {
+        "titleActive": "Deactivate Customer?",
+        "descActive": "Are you sure you want to deactivate {name}? Deactivated customers cannot be selected in new transactions.",
+        "titlePermanent": "Permanently Delete Customer?",
+        "descPermanent1": "Are you sure you want to permanently delete the customer {name}? This action cannot be undone.",
+        "btnDeactivate": "Deactivate",
+        "btnDeletePermanent": "Delete Permanently"
+      },
+      "create": {
+        "title": "Add New Customer",
+        "subtitle": "Add a new customer to the system."
+      },
+      "edit": {
+        "title": "Edit Customer",
+        "subtitle": "Modify customer information for {name}.",
+        "failedLoad": "Failed to load customer details"
+      },
+      "form": {
+        "codeLabel": "Customer Code",
+        "codePlaceholder": "Leave blank to auto-generate",
+        "codeDesc": "Will be automatically generated if left empty",
+        "codeGenerateBtn": "Generate Code",
+        "nameLabel": "Name / Company",
+        "namePlaceholder": "e.g., PT Sumber Makmur or John Doe",
+        "emailLabel": "Email",
+        "emailPlaceholder": "e.g., contact@company.com",
+        "phoneLabel": "Phone Number",
+        "phonePlaceholder": "e.g., 081234567890",
+        "addressLabel": "Address",
+        "addressPlaceholder": "Complete address...",
+        "taxIdLabel": "NPWP / Tax ID",
+        "taxIdPlaceholder": "e.g., 01.234.567.8-901.000",
+        "creditLimitLabel": "Credit Limit",
+        "creditLimitPlaceholder": "0",
+        "creditLimitDesc": "Maximum allowed payable amount. 0 means unlimited.",
+        "statusLabel": "Active Status",
+        "statusDesc": "Active customers can be selected in transactions."
       }
     },
     "create": {

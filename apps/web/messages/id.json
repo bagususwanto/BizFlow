@@ -16,6 +16,7 @@
     "day": "Hari",
     "default": "Bawaan",
     "status": {
+      "label": "Status",
       "active": "Aktif",
       "inactive": "Nonaktif"
     }
@@ -204,6 +205,64 @@
         "cancel": "Batal",
         "save": "Simpan Perubahan",
         "create": "Buat Satuan"
+      }
+    },
+    "customers": {
+      "title": "Pelanggan",
+      "description": "Kelola daftar pelanggan, kontak, dan batas kredit.",
+      "createLabel": "Tambah Pelanggan",
+      "failedLoad": "Gagal memuat daftar pelanggan",
+      "searchPlaceholder": "Cari nama, kode, no. hp, atau email...",
+      "summary": {
+        "total": "Total Pelanggan",
+        "active": "Aktif",
+        "inactive": "Nonaktif"
+      },
+      "columns": {
+        "code": "Kode",
+        "name": "Nama Pelanggan",
+        "phone": "No. HP/Telepon",
+        "email": "Email",
+        "creditLimit": "Batas Kredit",
+        "isActive": "Status"
+      },
+      "delete": {
+        "titleActive": "Nonaktifkan Pelanggan?",
+        "descActive": "Apakah Anda yakin ingin menonaktifkan {name}? Pelanggan yang nonaktif tidak dapat dipilih saat membuat transaksi baru.",
+        "titlePermanent": "Hapus Pelanggan Permanen?",
+        "descPermanent1": "Apakah Anda yakin ingin menghapus pelanggan {name} secara permanen? Tindakan ini tidak dapat dibatalkan.",
+        "btnDeactivate": "Nonaktifkan",
+        "btnDeletePermanent": "Hapus Permanen"
+      },
+      "create": {
+        "title": "Tambah Pelanggan Baru",
+        "subtitle": "Tambahkan data pelanggan baru ke dalam sistem."
+      },
+      "edit": {
+        "title": "Edit Pelanggan",
+        "subtitle": "Ubah informasi pelanggan {name}.",
+        "failedLoad": "Gagal memuat detail pelanggan"
+      },
+      "form": {
+        "codeLabel": "Kode Pelanggan",
+        "codePlaceholder": "Kosongkan untuk auto-generate",
+        "codeDesc": "Akan otomatis dibuat jika dikosongkan",
+        "codeGenerateBtn": "Generate Kode",
+        "nameLabel": "Nama / Perusahaan",
+        "namePlaceholder": "Contoh: PT Sumber Makmur atau John Doe",
+        "emailLabel": "Email",
+        "emailPlaceholder": "Contoh: kontak@perusahaan.com",
+        "phoneLabel": "No. Telepon / HP",
+        "phonePlaceholder": "Contoh: 081234567890",
+        "addressLabel": "Alamat Lengkap",
+        "addressPlaceholder": "Masukkan alamat lengkap...",
+        "taxIdLabel": "NPWP / Tax ID",
+        "taxIdPlaceholder": "Contoh: 01.234.567.8-901.000",
+        "creditLimitLabel": "Batas Kredit (Piutang)",
+        "creditLimitPlaceholder": "0",
+        "creditLimitDesc": "Batas maksimal pelanggan boleh berhutang. Isi 0 untuk tidak terbatas.",
+        "statusLabel": "Status Aktif",
+        "statusDesc": "Pelanggan yang aktif dapat dipilih dalam transaksi."
       }
     },
     "create": {

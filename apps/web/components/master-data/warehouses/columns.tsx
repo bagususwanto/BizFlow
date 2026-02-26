@@ -53,7 +53,7 @@ export const getColumns = ({
       <DataTableColumnHeader column={column} title={t('columns.code')} />
     ),
     meta: {
-      title: 'Kode',
+      title: t('columns.code'),
     },
   },
   {
@@ -62,7 +62,7 @@ export const getColumns = ({
       <DataTableColumnHeader column={column} title={t('columns.name')} />
     ),
     meta: {
-      title: 'Nama Gudang',
+      title: t('columns.name'),
     },
   },
   {
@@ -70,7 +70,7 @@ export const getColumns = ({
     header: t('columns.address'),
     cell: ({ row }) => row.original.address || '-',
     meta: {
-      title: 'Alamat',
+      title: t('columns.address'),
     },
   },
   {
@@ -83,7 +83,7 @@ export const getColumns = ({
         </Badge>
       ) : null,
     meta: {
-      title: 'Default',
+      title: t('columns.isDefault'),
     },
   },
   {
@@ -98,7 +98,7 @@ export const getColumns = ({
       );
     },
     meta: {
-      title: 'Status',
+      title: t('columns.isActive'),
     },
   },
   {

@@ -374,6 +374,56 @@
         "statusDesc": "Active payment terms can be selected in transactions."
       }
     },
+    "warehouses": {
+      "title": "Warehouses",
+      "description": "Manage warehouse locations and their active status.",
+      "createLabel": "Add Warehouse",
+      "failedLoad": "Failed to load warehouses",
+      "searchPlaceholder": "Search by name, code, or address...",
+      "summary": {
+        "total": "Total Warehouses",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "columns": {
+        "code": "Code",
+        "name": "Warehouse Name",
+        "address": "Address",
+        "isDefault": "Default",
+        "isActive": "Status"
+      },
+      "delete": {
+        "titleActive": "Deactivate Warehouse?",
+        "descActive": "Are you sure you want to deactivate {name}? Deactivated warehouses cannot be selected in new transactions.",
+        "titlePermanent": "Permanently Delete Warehouse?",
+        "descPermanent1": "Are you sure you want to permanently delete warehouse {name}? This action cannot be undone.",
+        "btnDeactivate": "Deactivate",
+        "btnDeletePermanent": "Delete Permanently"
+      },
+      "create": {
+        "title": "Add New Warehouse",
+        "subtitle": "Add a new warehouse location to the system."
+      },
+      "edit": {
+        "title": "Edit Warehouse",
+        "subtitle": "Modify warehouse information for {name}.",
+        "failedLoad": "Failed to load warehouse details"
+      },
+      "form": {
+        "codeLabel": "Warehouse Code",
+        "codePlaceholder": "Leave blank to auto-generate",
+        "codeDesc": "Will be automatically generated if left empty",
+        "codeGenerateBtn": "Generate Code",
+        "nameLabel": "Warehouse Name",
+        "namePlaceholder": "e.g., Main Warehouse",
+        "addressLabel": "Address",
+        "addressPlaceholder": "Complete address...",
+        "defaultLabel": "Default Warehouse",
+        "defaultDesc": "Set as default warehouse for new transactions.",
+        "statusLabel": "Active Status",
+        "statusDesc": "Active warehouses can be used in transactions."
+      }
+    },
     "create": {
       "title": "Add New Product",
       "subtitle": "Add a new product or service to the catalog.",

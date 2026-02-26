@@ -374,6 +374,56 @@
         "statusDesc": "Termin pembayaran yang aktif dapat dipilih di dalam transaksi."
       }
     },
+    "warehouses": {
+      "title": "Gudang",
+      "description": "Kelola lokasi gudang penyimpanan dan status aktifnya.",
+      "createLabel": "Tambah Gudang",
+      "failedLoad": "Gagal memuat daftar gudang",
+      "searchPlaceholder": "Cari nama, kode, atau alamat...",
+      "summary": {
+        "total": "Total Gudang",
+        "active": "Aktif",
+        "inactive": "Nonaktif"
+      },
+      "columns": {
+        "code": "Kode",
+        "name": "Nama Gudang",
+        "address": "Alamat",
+        "isDefault": "Bawaan",
+        "isActive": "Status"
+      },
+      "delete": {
+        "titleActive": "Nonaktifkan Gudang?",
+        "descActive": "Apakah Anda yakin ingin menonaktifkan {name}? Gudang yang nonaktif tidak dapat digunakan untuk transaksi baru.",
+        "titlePermanent": "Hapus Gudang Permanen?",
+        "descPermanent1": "Apakah Anda yakin ingin menghapus gudang {name} secara permanen? Tindakan ini tidak dapat dibatalkan.",
+        "btnDeactivate": "Nonaktifkan",
+        "btnDeletePermanent": "Hapus Permanen"
+      },
+      "create": {
+        "title": "Tambah Gudang Baru",
+        "subtitle": "Tambahkan lokasi gudang baru ke dalam sistem."
+      },
+      "edit": {
+        "title": "Edit Gudang",
+        "subtitle": "Ubah informasi gudang {name}.",
+        "failedLoad": "Gagal memuat detail gudang"
+      },
+      "form": {
+        "codeLabel": "Kode Gudang",
+        "codePlaceholder": "Kosongkan untuk auto-generate",
+        "codeDesc": "Akan otomatis dibuat jika dikosongkan",
+        "codeGenerateBtn": "Generate Kode",
+        "nameLabel": "Nama Gudang",
+        "namePlaceholder": "Contoh: Gudang Utama",
+        "addressLabel": "Alamat Lengkap",
+        "addressPlaceholder": "Masukkan alamat lengkap...",
+        "defaultLabel": "Gudang Utama (Default)",
+        "defaultDesc": "Jadikan sebagai gudang utama untuk transaksi baru.",
+        "statusLabel": "Status Aktif",
+        "statusDesc": "Gudang yang aktif dapat dipilih dalam transaksi."
+      }
+    },
     "create": {
       "title": "Tambah Produk Baru",
       "subtitle": "Tambahkan produk atau jasa baru ke katalog.",

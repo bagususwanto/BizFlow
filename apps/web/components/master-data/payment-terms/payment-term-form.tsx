@@ -194,7 +194,7 @@ export function PaymentTermForm({
           <Button type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {!isLoading && <Save className="mr-2 h-4 w-4" />}
-            {isEdit ? tCommon('save') : t('create')}
+            {isEdit ? tCommon('save') : tCommon('create')}
           </Button>
         </div>
       </form>

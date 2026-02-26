@@ -326,6 +326,54 @@
         "statusDesc": "Pemasok yang aktif dapat dipilih dalam transaksi."
       }
     },
+    "paymentTerms": {
+      "title": "Termin Pembayaran",
+      "description": "Kelola termin pembayaran untuk transaksi bisnis Anda.",
+      "createLabel": "Tambah Termin",
+      "failedLoad": "Gagal memuat daftar termin",
+      "searchPlaceholder": "Cari nama termin atau deskripsi...",
+      "summary": {
+        "total": "Total Termin",
+        "active": "Aktif",
+        "inactive": "Nonaktif"
+      },
+      "columns": {
+        "name": "Nama Termin",
+        "daysDue": "Jatuh Tempo (Hari)",
+        "description": "Deskripsi",
+        "isActive": "Status"
+      },
+      "delete": {
+        "titleActive": "Nonaktifkan Termin?",
+        "descActive": "Apakah Anda yakin ingin menonaktifkan {name}? Termin yang nonaktif tidak dapat dipilih saat membuat transaksi baru.",
+        "titlePermanent": "Hapus Termin Permanen?",
+        "descPermanent1": "Apakah Anda yakin ingin menghapus termin {name} secara permanen? Tindakan ini tidak dapat dibatalkan.",
+        "btnDeactivate": "Nonaktifkan",
+        "btnDeletePermanent": "Hapus Permanen"
+      },
+      "create": {
+        "title": "Tambah Termin Baru",
+        "subtitle": "Tambahkan termin pembayaran baru ke dalam sistem."
+      },
+      "edit": {
+        "title": "Edit Termin",
+        "subtitle": "Ubah informasi termin untuk {name}.",
+        "failedLoad": "Gagal memuat detail termin",
+        "cardTitle": "Detail Termin",
+        "cardDesc": "Perbarui informasi termin pembayaran ini."
+      },
+      "form": {
+        "nameLabel": "Nama Termin",
+        "namePlaceholder": "Contoh: Net 30, Cash on Delivery (COD)",
+        "daysDueLabel": "Jatuh Tempo (Hari)",
+        "daysDuePlaceholder": "0",
+        "daysDueDesc": "Jumlah hari hingga pembayaran jatuh tempo (0 berarti langsung bayar/tunai).",
+        "descLabel": "Deskripsi",
+        "descPlaceholder": "Detail tambahan mengenai termin ini...",
+        "statusLabel": "Status Aktif",
+        "statusDesc": "Termin pembayaran yang aktif dapat dipilih di dalam transaksi."
+      }
+    },
     "create": {
       "title": "Tambah Produk Baru",
       "subtitle": "Tambahkan produk atau jasa baru ke katalog.",

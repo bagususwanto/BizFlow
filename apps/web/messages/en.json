@@ -326,6 +326,54 @@
         "statusDesc": "Active suppliers can be selected in transactions."
       }
     },
+    "paymentTerms": {
+      "title": "Payment Terms",
+      "description": "Manage payment terms for your business transactions.",
+      "createLabel": "Add Payment Term",
+      "failedLoad": "Failed to load payment terms",
+      "searchPlaceholder": "Search by term name or description...",
+      "summary": {
+        "total": "Total Terms",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "columns": {
+        "name": "Term Name",
+        "daysDue": "Days Due",
+        "description": "Description",
+        "isActive": "Status"
+      },
+      "delete": {
+        "titleActive": "Deactivate Payment Term?",
+        "descActive": "Are you sure you want to deactivate {name}? Deactivated terms cannot be selected in new transactions.",
+        "titlePermanent": "Permanently Delete Payment Term?",
+        "descPermanent1": "Are you sure you want to permanently delete the term {name}? This action cannot be undone.",
+        "btnDeactivate": "Deactivate",
+        "btnDeletePermanent": "Delete Permanently"
+      },
+      "create": {
+        "title": "Add New Payment Term",
+        "subtitle": "Add a new payment term to the system."
+      },
+      "edit": {
+        "title": "Edit Payment Term",
+        "subtitle": "Modify payment term information for {name}.",
+        "failedLoad": "Failed to load payment term details",
+        "cardTitle": "Term Details",
+        "cardDesc": "Update the information of this payment term."
+      },
+      "form": {
+        "nameLabel": "Term Name",
+        "namePlaceholder": "e.g., Net 30, Cash on Delivery",
+        "daysDueLabel": "Days Due",
+        "daysDuePlaceholder": "0",
+        "daysDueDesc": "Number of days until the payment is due (0 means immediate/cash).",
+        "descLabel": "Description",
+        "descPlaceholder": "Additional details about this term...",
+        "statusLabel": "Active Status",
+        "statusDesc": "Active payment terms can be selected in transactions."
+      }
+    },
     "create": {
       "title": "Add New Product",
       "subtitle": "Add a new product or service to the catalog.",

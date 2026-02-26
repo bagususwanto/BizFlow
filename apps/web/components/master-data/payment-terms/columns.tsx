@@ -53,7 +53,7 @@ export const getColumns = ({
       <DataTableColumnHeader column={column} title={t('columns.name')} />
     ),
     meta: {
-      title: 'Nama Termin',
+      title: t('columns.name'),
     },
   },
   {

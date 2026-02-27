@@ -26,6 +26,7 @@ import {
 import { AppSetting } from '@bizflow/types';
 import { useUpdateSettings } from '@/hooks';
 import { Save } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 const generalSettingsSchema = z.object({
   language: z.string().min(1, 'Bahasa wajib dipilih'),
@@ -43,6 +44,7 @@ interface GeneralSettingsFormProps {
 
 export function GeneralSettingsForm({ settings }: GeneralSettingsFormProps) {
   const { mutate: updateSettings, isPending } = useUpdateSettings();
+  const t = useTranslations('settings');
 
   const form = useForm<GeneralSettingsValues>({
     resolver: zodResolver(generalSettingsSchema) as any,
@@ -78,8 +80,8 @@ export function GeneralSettingsForm({ settings }: GeneralSettingsFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Pengaturan Umum System</CardTitle>
-        <CardDescription>Pengaturan dasar sistem aplikasi.</CardDescription>
+        <CardTitle>{t('general.title')}</CardTitle>
+        <CardDescription>{t('general.description')}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -89,11 +91,13 @@ export function GeneralSettingsForm({ settings }: GeneralSettingsFormProps) {
               name="language"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required>Bahasa</FormLabel>
+                  <FormLabel required>{t('general.languageLabel')}</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Pilih bahasa" />
+                        <SelectValue
+                          placeholder={t('general.languagePlaceholder')}
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent className="max-h-[300px] overflow-y-auto">
@@ -111,7 +115,9 @@ export function GeneralSettingsForm({ settings }: GeneralSettingsFormProps) {
               name="session_timeout"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required>Session Timeout (Menit)</FormLabel>
+                  <FormLabel required>
+                    {t('general.sessionTimeoutLabel')}
+                  </FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -121,8 +127,7 @@ export function GeneralSettingsForm({ settings }: GeneralSettingsFormProps) {
                     />
                   </FormControl>
                   <FormDescription>
-                    Durasi waktu sesi pengguna akan berakhir setelah tidak ada
-                    aktivitas.
+                    {t('general.sessionTimeoutDesc')}
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -132,11 +137,11 @@ export function GeneralSettingsForm({ settings }: GeneralSettingsFormProps) {
             <div className="flex justify-end">
               <Button type="submit" disabled={isPending}>
                 {isPending ? (
-                  'Menyimpan...'
+                  t('savingBtn')
                 ) : (
                   <>
                     <Save className="mr-2 h-4 w-4" />
-                    Simpan Perubahan
+                    {t('saveBtn')}
                   </>
                 )}
               </Button>

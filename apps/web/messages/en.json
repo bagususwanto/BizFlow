@@ -77,9 +77,10 @@
     },
     "settings": {
       "title": "Settings",
-      "general": "General",
+      "general": "General Setting",
+      "roles": "Roles",
+      "permissions": "Permissions",
       "users": "Users",
-      "roles": "Roles & Access",
       "outlets": "Outlets",
       "auditLogs": "Audit Logs",
       "printers": "Printers"
@@ -423,6 +424,87 @@
         "statusLabel": "Active Status",
         "statusDesc": "Active warehouses can be used in transactions."
       }
+    },
+    "settings": {
+      "title": "Application Settings",
+      "description": "Manage company information, tax, display, and other system configurations.",
+      "tabs": {
+        "company": "Company",
+        "tax": "Tax",
+        "receipt": "Receipt",
+        "display": "Display",
+        "general": "General"
+      },
+      "loadErrorTitle": "Failed to load settings",
+      "loadErrorMessage": "An error occurred while fetching application settings.",
+      "company": {
+        "title": "Company Information",
+        "description": "Company details that will be displayed on receipts and reports.",
+        "nameLabel": "Company Name",
+        "namePlaceholder": "e.g., PT BizFlow Indonesia",
+        "nameError": "Company name is required",
+        "emailLabel": "Email",
+        "emailPlaceholder": "email@company.com",
+        "emailError": "Invalid email format",
+        "phoneLabel": "Phone Number",
+        "phonePlaceholder": "021-xxxxxxx",
+        "addressLabel": "Address",
+        "addressPlaceholder": "Complete company address",
+        "taxIdLabel": "Tax ID (NPWP)",
+        "taxIdPlaceholder": "Tax Identification Number",
+        "logoLabel": "Logo URL",
+        "logoPlaceholder": "https://example.com/logo.png",
+        "logoError": "Invalid logo URL"
+      },
+      "tax": {
+        "title": "Tax Settings",
+        "description": "Default tax configuration for transactions.",
+        "rateLabel": "Default Tax Rate (%)",
+        "ratePlaceholder": "0",
+        "rateDesc": "Tax percentage applied automatically (e.g., 11 for VAT).",
+        "rateError": "Tax cannot be less than 0",
+        "inclusiveLabel": "Prices Include Tax",
+        "inclusiveDesc": "If active, product prices entered already include tax."
+      },
+      "display": {
+        "title": "Display & Format",
+        "description": "Currency, date, and time format settings.",
+        "currencyCodeLabel": "Currency Code",
+        "currencyCodePlaceholder": "IDR",
+        "currencyCodeError": "Currency code is required",
+        "currencySymbolLabel": "Currency Symbol",
+        "currencySymbolPlaceholder": "Rp",
+        "currencySymbolError": "Currency symbol is required",
+        "dateFormatLabel": "Date Format",
+        "dateFormatPlaceholder": "Select date format",
+        "dateFormatError": "Date format is required",
+        "timezoneLabel": "Timezone",
+        "timezonePlaceholder": "Select timezone",
+        "timezoneError": "Timezone is required"
+      },
+      "receipt": {
+        "title": "Receipt Settings",
+        "description": "Customize sales receipt appearance.",
+        "showLogoLabel": "Show Logo",
+        "showLogoDesc": "Print company logo at the top of the receipt.",
+        "headerLabel": "Receipt Header",
+        "headerPlaceholder": "Welcome greeting or additional info at the top of the receipt",
+        "footerLabel": "Receipt Footer",
+        "footerPlaceholder": "Thank you message or customer service info"
+      },
+      "general": {
+        "title": "General System Settings",
+        "description": "Basic application system settings.",
+        "languageLabel": "Language",
+        "languagePlaceholder": "Select language",
+        "languageError": "Language must be selected",
+        "sessionTimeoutLabel": "Session Timeout (Minutes)",
+        "sessionTimeoutDesc": "The duration until the user session expires when inactive.",
+        "sessionTimeoutErrorMin": "Session timeout must be at least 5 minutes",
+        "sessionTimeoutErrorMax": "Session timeout maximum is 24 hours (1440 minutes)"
+      },
+      "saveBtn": "Save Changes",
+      "savingBtn": "Saving..."
     },
     "create": {
       "title": "Add New Product",
@@ -1137,5 +1219,91 @@
     "internalError": "Internal server error",
     "unauthorized": "Unauthorized access",
     "INSUFFICIENT_STOCK": "Insufficient stock to process the request."
+  },
+  "settings": {
+    "title": "Application Settings",
+    "general": {
+      "title": "General System Settings",
+      "description": "Basic application system settings.",
+      "languageLabel": "Language",
+      "languagePlaceholder": "Select language",
+      "languageError": "Language must be selected",
+      "sessionTimeoutLabel": "Session Timeout (Minutes)",
+      "sessionTimeoutDesc": "The duration until the user session expires when inactive.",
+      "sessionTimeoutErrorMin": "Session timeout must be at least 5 minutes",
+      "sessionTimeoutErrorMax": "Session timeout maximum is 24 hours (1440 minutes)"
+    },
+    "users": "Users",
+    "roles": "Roles & Access",
+    "outlets": "Outlets",
+    "auditLogs": "Audit Logs",
+    "printers": "Printers",
+    "description": "Manage company information, tax, display, and other system configurations.",
+    "tabs": {
+      "company": "Company",
+      "tax": "Tax",
+      "receipt": "Receipt",
+      "display": "Display",
+      "general": "General"
+    },
+    "loadErrorTitle": "Failed to load settings",
+    "loadErrorMessage": "An error occurred while fetching application settings.",
+    "company": {
+      "title": "Company Information",
+      "description": "Company details that will be displayed on receipts and reports.",
+      "nameLabel": "Company Name",
+      "namePlaceholder": "e.g., PT BizFlow Indonesia",
+      "nameError": "Company name is required",
+      "emailLabel": "Email",
+      "emailPlaceholder": "email@company.com",
+      "emailError": "Invalid email format",
+      "phoneLabel": "Phone Number",
+      "phonePlaceholder": "021-xxxxxxx",
+      "addressLabel": "Address",
+      "addressPlaceholder": "Complete company address",
+      "taxIdLabel": "Tax ID (NPWP)",
+      "taxIdPlaceholder": "Tax Identification Number",
+      "logoLabel": "Logo URL",
+      "logoPlaceholder": "https://example.com/logo.png",
+      "logoError": "Invalid logo URL"
+    },
+    "tax": {
+      "title": "Tax Settings",
+      "description": "Default tax configuration for transactions.",
+      "rateLabel": "Default Tax Rate (%)",
+      "ratePlaceholder": "0",
+      "rateDesc": "Tax percentage applied automatically (e.g., 11 for VAT).",
+      "rateError": "Tax cannot be less than 0",
+      "inclusiveLabel": "Prices Include Tax",
+      "inclusiveDesc": "If active, product prices entered already include tax."
+    },
+    "display": {
+      "title": "Display & Format",
+      "description": "Currency, date, and time format settings.",
+      "currencyCodeLabel": "Currency Code",
+      "currencyCodePlaceholder": "IDR",
+      "currencyCodeError": "Currency code is required",
+      "currencySymbolLabel": "Currency Symbol",
+      "currencySymbolPlaceholder": "Rp",
+      "currencySymbolError": "Currency symbol is required",
+      "dateFormatLabel": "Date Format",
+      "dateFormatPlaceholder": "Select date format",
+      "dateFormatError": "Date format is required",
+      "timezoneLabel": "Timezone",
+      "timezonePlaceholder": "Select timezone",
+      "timezoneError": "Timezone is required"
+    },
+    "receipt": {
+      "title": "Receipt Settings",
+      "description": "Customize sales receipt appearance.",
+      "showLogoLabel": "Show Logo",
+      "showLogoDesc": "Print company logo at the top of the receipt.",
+      "headerLabel": "Receipt Header",
+      "headerPlaceholder": "Welcome greeting or additional info at the top of the receipt",
+      "footerLabel": "Receipt Footer",
+      "footerPlaceholder": "Thank you message or customer service info"
+    },
+    "saveBtn": "Save Changes",
+    "savingBtn": "Saving..."
   }
 }

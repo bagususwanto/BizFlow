@@ -26,6 +26,7 @@ import { AppSetting } from '@bizflow/types';
 import { useUpdateSettings } from '@/hooks';
 import { useSettingsStore } from '@/stores/settings.store';
 import { Save } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 const displaySettingsSchema = z.object({
   currency_code: z.string().min(1, 'Kode mata uang wajib diisi'),
@@ -43,6 +44,7 @@ interface DisplaySettingsFormProps {
 export function DisplaySettingsForm({ settings }: DisplaySettingsFormProps) {
   const { mutate: updateSettings, isPending } = useUpdateSettings();
   const setDateFormat = useSettingsStore((s) => s.setDateFormat);
+  const t = useTranslations('settings');
 
   const form = useForm<DisplaySettingsValues>({
     resolver: zodResolver(displaySettingsSchema),
@@ -84,10 +86,8 @@ export function DisplaySettingsForm({ settings }: DisplaySettingsFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Tampilan & Format</CardTitle>
-        <CardDescription>
-          Pengaturan format mata uang, tanggal, dan waktu.
-        </CardDescription>
+        <CardTitle>{t('display.title')}</CardTitle>
+        <CardDescription>{t('display.description')}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -98,9 +98,14 @@ export function DisplaySettingsForm({ settings }: DisplaySettingsFormProps) {
                 name="currency_code"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel required>Kode Mata Uang</FormLabel>
+                    <FormLabel required>
+                      {t('display.currencyCodeLabel')}
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="IDR" {...field} />
+                      <Input
+                        placeholder={t('display.currencyCodePlaceholder')}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -111,9 +116,14 @@ export function DisplaySettingsForm({ settings }: DisplaySettingsFormProps) {
                 name="currency_symbol"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel required>Simbol Mata Uang</FormLabel>
+                    <FormLabel required>
+                      {t('display.currencySymbolLabel')}
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="Rp" {...field} />
+                      <Input
+                        placeholder={t('display.currencySymbolPlaceholder')}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -126,11 +136,13 @@ export function DisplaySettingsForm({ settings }: DisplaySettingsFormProps) {
               name="date_format"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required>Format Tanggal</FormLabel>
+                  <FormLabel required>{t('display.dateFormatLabel')}</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Pilih format tanggal" />
+                        <SelectValue
+                          placeholder={t('display.dateFormatPlaceholder')}
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent className="max-h-[300px] overflow-y-auto">
@@ -161,11 +173,13 @@ export function DisplaySettingsForm({ settings }: DisplaySettingsFormProps) {
               name="timezone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required>Zona Waktu</FormLabel>
+                  <FormLabel required>{t('display.timezoneLabel')}</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Pilih zona waktu" />
+                        <SelectValue
+                          placeholder={t('display.timezonePlaceholder')}
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent className="max-h-[300px] overflow-y-auto">
@@ -188,11 +202,11 @@ export function DisplaySettingsForm({ settings }: DisplaySettingsFormProps) {
             <div className="flex justify-end">
               <Button type="submit" disabled={isPending}>
                 {isPending ? (
-                  'Menyimpan...'
+                  t('savingBtn')
                 ) : (
                   <>
                     <Save className="mr-2 h-4 w-4" />
-                    Simpan Perubahan
+                    {t('saveBtn')}
                   </>
                 )}
               </Button>

@@ -77,11 +77,12 @@
     },
     "settings": {
       "title": "Pengaturan",
-      "general": "Umum",
+      "general": "Pengaturan Umum",
+      "roles": "Peran",
+      "permissions": "Hak Akses",
       "users": "Pengguna",
-      "roles": "Peran & Akses",
       "outlets": "Outlet",
-      "auditLogs": "Log Audit",
+      "auditLogs": "Log Aktivitas",
       "printers": "Printer"
     }
   },
@@ -423,6 +424,87 @@
         "statusLabel": "Status Aktif",
         "statusDesc": "Gudang yang aktif dapat dipilih dalam transaksi."
       }
+    },
+    "settings": {
+      "title": "Pengaturan Aplikasi",
+      "description": "Kelola informasi perusahaan, pajak, tampilan, dan konfigurasi sistem lainnya.",
+      "tabs": {
+        "company": "Perusahaan",
+        "tax": "Pajak",
+        "receipt": "Struk",
+        "display": "Tampilan",
+        "general": "Umum"
+      },
+      "loadErrorTitle": "Gagal memuat pengaturan",
+      "loadErrorMessage": "Terjadi kesalahan saat mengambil data pengaturan aplikasi.",
+      "company": {
+        "title": "Informasi Perusahaan",
+        "description": "Detail perusahaan yang akan ditampilkan pada struk dan laporan.",
+        "nameLabel": "Nama Perusahaan",
+        "namePlaceholder": "Contoh: PT BizFlow Indonesia",
+        "nameError": "Nama perusahaan wajib diisi",
+        "emailLabel": "Email",
+        "emailPlaceholder": "email@perusahaan.com",
+        "emailError": "Email tidak valid",
+        "phoneLabel": "Nomor Telepon",
+        "phonePlaceholder": "021-xxxxxxx",
+        "addressLabel": "Alamat",
+        "addressPlaceholder": "Alamat lengkap perusahaan",
+        "taxIdLabel": "NPWP",
+        "taxIdPlaceholder": "Nomor Pokok Wajib Pajak",
+        "logoLabel": "URL Logo",
+        "logoPlaceholder": "https://example.com/logo.png",
+        "logoError": "URL logo tidak valid"
+      },
+      "tax": {
+        "title": "Pengaturan Pajak",
+        "description": "Konfigurasi pajak default untuk transaksi.",
+        "rateLabel": "Tarif Pajak Default (%)",
+        "ratePlaceholder": "0",
+        "rateDesc": "Persentase pajak yang diterapkan secara otomatis (contoh: 11 untuk PPN).",
+        "rateError": "Pajak tidak boleh kurang dari 0",
+        "inclusiveLabel": "Harga Termasuk Pajak",
+        "inclusiveDesc": "Jika aktif, harga produk yang diinput sudah termasuk pajak."
+      },
+      "display": {
+        "title": "Tampilan & Format",
+        "description": "Pengaturan format mata uang, tanggal, dan waktu.",
+        "currencyCodeLabel": "Kode Mata Uang",
+        "currencyCodePlaceholder": "IDR",
+        "currencyCodeError": "Kode mata uang wajib diisi",
+        "currencySymbolLabel": "Simbol Mata Uang",
+        "currencySymbolPlaceholder": "Rp",
+        "currencySymbolError": "Simbol mata uang wajib diisi",
+        "dateFormatLabel": "Format Tanggal",
+        "dateFormatPlaceholder": "Pilih format tanggal",
+        "dateFormatError": "Format tanggal wajib dipilih",
+        "timezoneLabel": "Zona Waktu",
+        "timezonePlaceholder": "Pilih zona waktu",
+        "timezoneError": "Zona waktu wajib dipilih"
+      },
+      "receipt": {
+        "title": "Pengaturan Struk",
+        "description": "Kustomisasi tampilan struk belanja.",
+        "showLogoLabel": "Tampilkan Logo",
+        "showLogoDesc": "Mencetak logo perusahaan pada bagian atas struk.",
+        "headerLabel": "Header Struk",
+        "headerPlaceholder": "Teks selamat datang atau informasi tambahan di atas struk",
+        "footerLabel": "Footer Struk",
+        "footerPlaceholder": "Ucapan terima kasih atau informasi layanan pelanggan"
+      },
+      "general": {
+        "title": "Pengaturan Umum System",
+        "description": "Pengaturan dasar sistem aplikasi.",
+        "languageLabel": "Bahasa",
+        "languagePlaceholder": "Pilih bahasa",
+        "languageError": "Bahasa wajib dipilih",
+        "sessionTimeoutLabel": "Session Timeout (Menit)",
+        "sessionTimeoutDesc": "Durasi waktu sesi pengguna akan berakhir setelah tidak ada aktivitas.",
+        "sessionTimeoutErrorMin": "Session timeout minimal 5 menit",
+        "sessionTimeoutErrorMax": "Session timeout maksimal 24 jam (1440 menit)"
+      },
+      "saveBtn": "Simpan Perubahan",
+      "savingBtn": "Menyimpan..."
     },
     "create": {
       "title": "Tambah Produk Baru",
@@ -1137,5 +1219,91 @@
     "internalError": "Kesalahan server internal",
     "unauthorized": "Akses tidak diizinkan",
     "INSUFFICIENT_STOCK": "Stok tidak mencukupi untuk memproses permintaan."
+  },
+  "settings": {
+    "title": "Pengaturan Aplikasi",
+    "general": {
+      "title": "Pengaturan Umum System",
+      "description": "Pengaturan dasar sistem aplikasi.",
+      "languageLabel": "Bahasa",
+      "languagePlaceholder": "Pilih bahasa",
+      "languageError": "Bahasa wajib dipilih",
+      "sessionTimeoutLabel": "Session Timeout (Menit)",
+      "sessionTimeoutDesc": "Durasi waktu sesi pengguna akan berakhir setelah tidak ada aktivitas.",
+      "sessionTimeoutErrorMin": "Session timeout minimal 5 menit",
+      "sessionTimeoutErrorMax": "Session timeout maksimal 24 jam (1440 menit)"
+    },
+    "users": "Pengguna",
+    "roles": "Peran & Akses",
+    "outlets": "Outlet",
+    "auditLogs": "Log Audit",
+    "printers": "Printer",
+    "description": "Kelola informasi perusahaan, pajak, tampilan, dan konfigurasi sistem lainnya.",
+    "tabs": {
+      "company": "Perusahaan",
+      "tax": "Pajak",
+      "receipt": "Struk",
+      "display": "Tampilan",
+      "general": "Umum"
+    },
+    "loadErrorTitle": "Gagal memuat pengaturan",
+    "loadErrorMessage": "Terjadi kesalahan saat mengambil data pengaturan aplikasi.",
+    "company": {
+      "title": "Informasi Perusahaan",
+      "description": "Detail perusahaan yang akan ditampilkan pada struk dan laporan.",
+      "nameLabel": "Nama Perusahaan",
+      "namePlaceholder": "Contoh: PT BizFlow Indonesia",
+      "nameError": "Nama perusahaan wajib diisi",
+      "emailLabel": "Email",
+      "emailPlaceholder": "email@perusahaan.com",
+      "emailError": "Email tidak valid",
+      "phoneLabel": "Nomor Telepon",
+      "phonePlaceholder": "021-xxxxxxx",
+      "addressLabel": "Alamat",
+      "addressPlaceholder": "Alamat lengkap perusahaan",
+      "taxIdLabel": "NPWP",
+      "taxIdPlaceholder": "Nomor Pokok Wajib Pajak",
+      "logoLabel": "URL Logo",
+      "logoPlaceholder": "https://example.com/logo.png",
+      "logoError": "URL logo tidak valid"
+    },
+    "tax": {
+      "title": "Pengaturan Pajak",
+      "description": "Konfigurasi pajak default untuk transaksi.",
+      "rateLabel": "Tarif Pajak Default (%)",
+      "ratePlaceholder": "0",
+      "rateDesc": "Persentase pajak yang diterapkan secara otomatis (contoh: 11 untuk PPN).",
+      "rateError": "Pajak tidak boleh kurang dari 0",
+      "inclusiveLabel": "Harga Termasuk Pajak",
+      "inclusiveDesc": "Jika aktif, harga produk yang diinput sudah termasuk pajak."
+    },
+    "display": {
+      "title": "Tampilan & Format",
+      "description": "Pengaturan format mata uang, tanggal, dan waktu.",
+      "currencyCodeLabel": "Kode Mata Uang",
+      "currencyCodePlaceholder": "IDR",
+      "currencyCodeError": "Kode mata uang wajib diisi",
+      "currencySymbolLabel": "Simbol Mata Uang",
+      "currencySymbolPlaceholder": "Rp",
+      "currencySymbolError": "Simbol mata uang wajib diisi",
+      "dateFormatLabel": "Format Tanggal",
+      "dateFormatPlaceholder": "Pilih format tanggal",
+      "dateFormatError": "Format tanggal wajib dipilih",
+      "timezoneLabel": "Zona Waktu",
+      "timezonePlaceholder": "Pilih zona waktu",
+      "timezoneError": "Zona waktu wajib dipilih"
+    },
+    "receipt": {
+      "title": "Pengaturan Struk",
+      "description": "Kustomisasi tampilan struk belanja.",
+      "showLogoLabel": "Tampilkan Logo",
+      "showLogoDesc": "Mencetak logo perusahaan pada bagian atas struk.",
+      "headerLabel": "Header Struk",
+      "headerPlaceholder": "Teks selamat datang atau informasi tambahan di atas struk",
+      "footerLabel": "Footer Struk",
+      "footerPlaceholder": "Ucapan terima kasih atau informasi layanan pelanggan"
+    },
+    "saveBtn": "Simpan Perubahan",
+    "savingBtn": "Menyimpan..."
   }
 }

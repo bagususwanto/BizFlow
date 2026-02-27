@@ -22,6 +22,7 @@ import {
 import { AppSetting } from '@bizflow/types';
 import { useUpdateSettings } from '@/hooks';
 import { Save } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 const taxSettingsSchema = z.object({
   default_tax_rate: z.coerce.number().min(0, 'Pajak tidak boleh kurang dari 0'),
@@ -36,6 +37,7 @@ interface TaxSettingsFormProps {
 
 export function TaxSettingsForm({ settings }: TaxSettingsFormProps) {
   const { mutate: updateSettings, isPending } = useUpdateSettings();
+  const t = useTranslations('settings');
 
   const form = useForm<TaxSettingsValues>({
     resolver: zodResolver(taxSettingsSchema) as any,
@@ -71,10 +73,8 @@ export function TaxSettingsForm({ settings }: TaxSettingsFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Pengaturan Pajak</CardTitle>
-        <CardDescription>
-          Konfigurasi pajak default untuk transaksi.
-        </CardDescription>
+        <CardTitle>{t('tax.title')}</CardTitle>
+        <CardDescription>{t('tax.description')}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -84,19 +84,16 @@ export function TaxSettingsForm({ settings }: TaxSettingsFormProps) {
               name="default_tax_rate"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required>Tarif Pajak Default (%)</FormLabel>
+                  <FormLabel required>{t('tax.rateLabel')}</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="0"
+                      placeholder={t('tax.ratePlaceholder')}
                       {...field}
                       onChange={(e) => field.onChange(e.target.value)}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Persentase pajak yang diterapkan secara otomatis (contoh: 11
-                    untuk PPN).
-                  </FormDescription>
+                  <FormDescription>{t('tax.rateDesc')}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -109,12 +106,9 @@ export function TaxSettingsForm({ settings }: TaxSettingsFormProps) {
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
                     <FormLabel className="text-base">
-                      Harga Termasuk Pajak
+                      {t('tax.inclusiveLabel')}
                     </FormLabel>
-                    <FormDescription>
-                      Jika aktif, harga produk yang diinput sudah termasuk
-                      pajak.
-                    </FormDescription>
+                    <FormDescription>{t('tax.inclusiveDesc')}</FormDescription>
                   </div>
                   <FormControl>
                     <Switch
@@ -129,11 +123,11 @@ export function TaxSettingsForm({ settings }: TaxSettingsFormProps) {
             <div className="flex justify-end">
               <Button type="submit" disabled={isPending}>
                 {isPending ? (
-                  'Menyimpan...'
+                  t('savingBtn')
                 ) : (
                   <>
                     <Save className="mr-2 h-4 w-4" />
-                    Simpan Perubahan
+                    {t('saveBtn')}
                   </>
                 )}
               </Button>

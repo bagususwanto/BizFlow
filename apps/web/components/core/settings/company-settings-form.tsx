@@ -21,6 +21,7 @@ import {
 import { AppSetting } from '@bizflow/types';
 import { useUpdateSettings } from '@/hooks';
 import { Save } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 const companySettingsSchema = z.object({
   company_name: z.string().min(1, 'Nama perusahaan wajib diisi'),
@@ -47,6 +48,7 @@ interface CompanySettingsFormProps {
 
 export function CompanySettingsForm({ settings }: CompanySettingsFormProps) {
   const { mutate: updateSettings, isPending } = useUpdateSettings();
+  const t = useTranslations('settings');
 
   const form = useForm<CompanySettingsValues>({
     resolver: zodResolver(companySettingsSchema),
@@ -85,10 +87,8 @@ export function CompanySettingsForm({ settings }: CompanySettingsFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Informasi Perusahaan</CardTitle>
-        <CardDescription>
-          Detail perusahaan yang akan ditampilkan pada struk dan laporan.
-        </CardDescription>
+        <CardTitle>{t('company.title')}</CardTitle>
+        <CardDescription>{t('company.description')}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -98,10 +98,10 @@ export function CompanySettingsForm({ settings }: CompanySettingsFormProps) {
               name="company_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required>Nama Perusahaan</FormLabel>
+                  <FormLabel required>{t('company.nameLabel')}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Contoh: PT BizFlow Indonesia"
+                      placeholder={t('company.namePlaceholder')}
                       {...field}
                     />
                   </FormControl>
@@ -116,10 +116,10 @@ export function CompanySettingsForm({ settings }: CompanySettingsFormProps) {
                 name="company_email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel optional>Email</FormLabel>
+                    <FormLabel optional>{t('company.emailLabel')}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="email@perusahaan.com"
+                        placeholder={t('company.emailPlaceholder')}
                         type="email"
                         {...field}
                       />
@@ -133,9 +133,12 @@ export function CompanySettingsForm({ settings }: CompanySettingsFormProps) {
                 name="company_phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel optional>Nomor Telepon</FormLabel>
+                    <FormLabel optional>{t('company.phoneLabel')}</FormLabel>
                     <FormControl>
-                      <Input placeholder="021-xxxxxxx" {...field} />
+                      <Input
+                        placeholder={t('company.phonePlaceholder')}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -148,10 +151,10 @@ export function CompanySettingsForm({ settings }: CompanySettingsFormProps) {
               name="company_address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel optional>Alamat</FormLabel>
+                  <FormLabel optional>{t('company.addressLabel')}</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Alamat lengkap perusahaan"
+                      placeholder={t('company.addressPlaceholder')}
                       className="resize-none"
                       {...field}
                     />
@@ -166,9 +169,12 @@ export function CompanySettingsForm({ settings }: CompanySettingsFormProps) {
               name="company_tax_id"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel optional>NPWP</FormLabel>
+                  <FormLabel optional>{t('company.taxIdLabel')}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nomor Pokok Wajib Pajak" {...field} />
+                    <Input
+                      placeholder={t('company.taxIdPlaceholder')}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -180,10 +186,10 @@ export function CompanySettingsForm({ settings }: CompanySettingsFormProps) {
               name="company_logo"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel optional>URL Logo</FormLabel>
+                  <FormLabel optional>{t('company.logoLabel')}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="https://example.com/logo.png"
+                      placeholder={t('company.logoPlaceholder')}
                       {...field}
                     />
                   </FormControl>
@@ -195,11 +201,11 @@ export function CompanySettingsForm({ settings }: CompanySettingsFormProps) {
             <div className="flex justify-end">
               <Button type="submit" disabled={isPending}>
                 {isPending ? (
-                  'Menyimpan...'
+                  t('savingBtn')
                 ) : (
                   <>
                     <Save className="mr-2 h-4 w-4" />
-                    Simpan Perubahan
+                    {t('saveBtn')}
                   </>
                 )}
               </Button>

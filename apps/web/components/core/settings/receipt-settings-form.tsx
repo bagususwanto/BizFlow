@@ -23,6 +23,7 @@ import {
 import { AppSetting } from '@bizflow/types';
 import { useUpdateSettings } from '@/hooks';
 import { Save } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 const receiptSettingsSchema = z.object({
   receipt_header: z.string().optional(),
@@ -38,6 +39,7 @@ interface ReceiptSettingsFormProps {
 
 export function ReceiptSettingsForm({ settings }: ReceiptSettingsFormProps) {
   const { mutate: updateSettings, isPending } = useUpdateSettings();
+  const t = useTranslations('settings');
 
   const form = useForm<ReceiptSettingsValues>({
     resolver: zodResolver(receiptSettingsSchema),
@@ -75,8 +77,8 @@ export function ReceiptSettingsForm({ settings }: ReceiptSettingsFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Pengaturan Struk</CardTitle>
-        <CardDescription>Kustomisasi tampilan struk belanja.</CardDescription>
+        <CardTitle>{t('receipt.title')}</CardTitle>
+        <CardDescription>{t('receipt.description')}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -87,9 +89,11 @@ export function ReceiptSettingsForm({ settings }: ReceiptSettingsFormProps) {
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base">Tampilkan Logo</FormLabel>
+                    <FormLabel className="text-base">
+                      {t('receipt.showLogoLabel')}
+                    </FormLabel>
                     <FormDescription>
-                      Mencetak logo perusahaan pada bagian atas struk.
+                      {t('receipt.showLogoDesc')}
                     </FormDescription>
                   </div>
                   <FormControl>
@@ -107,10 +111,10 @@ export function ReceiptSettingsForm({ settings }: ReceiptSettingsFormProps) {
               name="receipt_header"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel optional>Header Struk</FormLabel>
+                  <FormLabel optional>{t('receipt.headerLabel')}</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Teks selamat datang atau informasi tambahan di atas struk"
+                      placeholder={t('receipt.headerPlaceholder')}
                       className="resize-none"
                       {...field}
                     />
@@ -125,10 +129,10 @@ export function ReceiptSettingsForm({ settings }: ReceiptSettingsFormProps) {
               name="receipt_footer"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel optional>Footer Struk</FormLabel>
+                  <FormLabel optional>{t('receipt.footerLabel')}</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Ucapan terima kasih atau informasi layanan pelanggan"
+                      placeholder={t('receipt.footerPlaceholder')}
                       className="resize-none"
                       {...field}
                     />
@@ -141,11 +145,11 @@ export function ReceiptSettingsForm({ settings }: ReceiptSettingsFormProps) {
             <div className="flex justify-end">
               <Button type="submit" disabled={isPending}>
                 {isPending ? (
-                  'Menyimpan...'
+                  t('savingBtn')
                 ) : (
                   <>
                     <Save className="mr-2 h-4 w-4" />
-                    Simpan Perubahan
+                    {t('saveBtn')}
                   </>
                 )}
               </Button>

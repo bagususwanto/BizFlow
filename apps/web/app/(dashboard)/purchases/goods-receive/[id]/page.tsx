@@ -16,8 +16,7 @@ import {
   Clock,
   User,
 } from 'lucide-react';
-import { format } from 'date-fns';
-import { id } from 'date-fns/locale';
+import { useFormatDate } from '@/hooks';
 import { toast } from 'sonner';
 import Link from 'next/link';
 
@@ -62,6 +61,7 @@ export default function GoodsReceiveDetailPage({
   } = useGoodsReceive(resolvedParams.id);
 
   const deleteMutation = useDeleteGoodsReceive();
+  const { formatDate, formatDateTime } = useFormatDate();
 
   useBreadcrumb(
     `/purchases/goods-receive/${resolvedParams.id}`,
@@ -111,11 +111,7 @@ export default function GoodsReceiveDetailPage({
             <div className="flex items-center gap-4 text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Clock className="h-4 w-4" />
-                <span>
-                  {format(new Date(goodsReceive.receiveDate), 'dd MMMM yyyy', {
-                    locale: id,
-                  })}
-                </span>
+                <span>{formatDate(goodsReceive.receiveDate)}</span>
               </div>
             </div>
           </div>
@@ -199,13 +195,7 @@ export default function GoodsReceiveDetailPage({
                 <Clock className="h-4 w-4 text-muted-foreground" />
                 <span className="text-muted-foreground">Dibuat Pada:</span>
                 <span className="font-medium text-right flex-1">
-                  {format(
-                    new Date(goodsReceive.createdAt),
-                    'dd MMMM yyyy HH:mm',
-                    {
-                      locale: id,
-                    },
-                  )}
+                  {formatDateTime(goodsReceive.createdAt)}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-sm">

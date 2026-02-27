@@ -10,9 +10,8 @@ import {
   Badge,
 } from '@bizflow/ui';
 import { AuditLog } from '@/services/audit-logs.service';
-import { format } from 'date-fns';
-import { useLocale, useTranslations } from 'next-intl';
-import { enUS, id } from 'date-fns/locale';
+import { useFormatDate } from '@/hooks';
+import { useTranslations } from 'next-intl';
 
 interface AuditLogDetailSheetProps {
   log: AuditLog | null;
@@ -26,15 +25,9 @@ export function AuditLogDetailSheet({
   onOpenChange,
 }: AuditLogDetailSheetProps) {
   const t = useTranslations('auditLogs');
+  const { formatDateTimeFull } = useFormatDate();
 
   if (!log) return null;
-
-  const locale = useLocale();
-
-  const formatDate = (date: string) =>
-    format(new Date(date), 'dd MMMM yyyy HH:mm:ss', {
-      locale: locale === 'id' ? id : enUS,
-    });
 
   let oldValueParsed = null;
   let newValueParsed = null;
@@ -75,7 +68,9 @@ export function AuditLogDetailSheet({
                   <span className="text-muted-foreground">
                     {t('detail.time')}
                   </span>
-                  <p className="font-medium">{formatDate(log.createdAt)}</p>
+                  <p className="font-medium">
+                    {formatDateTimeFull(log.createdAt)}
+                  </p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">

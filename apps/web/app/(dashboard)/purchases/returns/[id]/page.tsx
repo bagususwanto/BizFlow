@@ -18,8 +18,7 @@ import {
   MapPin,
   User,
 } from 'lucide-react';
-import { format } from 'date-fns';
-import { id } from 'date-fns/locale';
+import { useFormatDate } from '@/hooks';
 import { toast } from 'sonner';
 
 import {
@@ -83,6 +82,7 @@ export default function PurchaseReturnDetailPage({
 
   const updateStatusMutation = useUpdatePurchaseReturnStatus();
   const deleteMutation = useDeletePurchaseReturn();
+  const { formatDateTime } = useFormatDate();
 
   useBreadcrumb(
     `/purchases/returns/${resolvedParams.id}`,
@@ -165,11 +165,7 @@ export default function PurchaseReturnDetailPage({
             <div className="flex items-center gap-4 text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Clock className="h-4 w-4" />
-                <span>
-                  {format(new Date(ret.createdAt), 'dd MMMM yyyy HH:mm', {
-                    locale: id,
-                  })}
-                </span>
+                <span>{formatDateTime(ret.createdAt)}</span>
               </div>
               <Badge variant={statusBadgeVariant(ret.status) as any}>
                 {ret.status.toUpperCase()}
@@ -296,9 +292,7 @@ export default function PurchaseReturnDetailPage({
                 <Clock className="h-4 w-4 text-muted-foreground" />
                 <span className="text-muted-foreground">Dibuat pada:</span>
                 <span className="font-medium text-right flex-1">
-                  {format(new Date(ret.createdAt), 'dd MMMM yyyy HH:mm', {
-                    locale: id,
-                  })}
+                  {formatDateTime(ret.createdAt)}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-sm">
@@ -331,9 +325,7 @@ export default function PurchaseReturnDetailPage({
                       : 'Disetujui pada:'}
                   </span>
                   <span className="font-medium text-right flex-1">
-                    {format(new Date(ret.approvedAt), 'dd MMMM yyyy HH:mm', {
-                      locale: id,
-                    })}
+                    {formatDateTime(ret.approvedAt)}
                   </span>
                 </div>
               )}

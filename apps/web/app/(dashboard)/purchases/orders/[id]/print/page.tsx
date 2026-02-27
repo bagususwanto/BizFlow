@@ -2,8 +2,7 @@
 
 import { use, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { format } from 'date-fns';
-import { id } from 'date-fns/locale';
+import { useFormatDate } from '@/hooks';
 import { purchaseOrdersService } from '@/services/purchase-orders.service';
 import { formatCurrency } from '@bizflow/ui';
 
@@ -13,6 +12,7 @@ export default function PurchaseOrderPrintPage({
   params: Promise<{ id: string }>;
 }) {
   const resolvedParams = use(params);
+  const { formatDate, formatDateTime } = useFormatDate();
 
   const { data: order, isLoading } = useQuery({
     queryKey: ['purchase-orders', resolvedParams.id],
@@ -74,19 +74,9 @@ export default function PurchaseOrderPrintPage({
             </div>
             <div className="text-right text-sm text-gray-600">
               <p className="font-semibold text-gray-900 text-base">BizFlow</p>
-              <p className="mt-1">
-                Tanggal:{' '}
-                {format(new Date(order.createdAt), 'dd MMMM yyyy', {
-                  locale: id,
-                })}
-              </p>
+              <p className="mt-1">Tanggal: {formatDate(order.createdAt)}</p>
               {order.expectedDate && (
-                <p>
-                  Exp. Tiba:{' '}
-                  {format(new Date(order.expectedDate), 'dd MMMM yyyy', {
-                    locale: id,
-                  })}
-                </p>
+                <p>Exp. Tiba: {formatDate(order.expectedDate)}</p>
               )}
               <div className="mt-2 inline-block border border-gray-400 px-3 py-1 rounded text-xs font-semibold uppercase tracking-wide">
                 {order.status}
@@ -239,9 +229,7 @@ export default function PurchaseOrderPrintPage({
                 <p className="text-xs text-gray-500 mt-1">Manager</p>
                 {order.approvedAt && (
                   <p className="text-[10px] text-gray-400 mt-1">
-                    {format(new Date(order.approvedAt), 'dd/MM/yyyy HH:mm', {
-                      locale: id,
-                    })}
+                    {formatDateTime(order.approvedAt)}
                   </p>
                 )}
               </div>
@@ -252,7 +240,7 @@ export default function PurchaseOrderPrintPage({
           <div className="mt-12 pt-4 border-t border-gray-200 text-center text-xs text-gray-400">
             <p>
               Dokumen ini digenerate oleh sistem BizFlow pada{' '}
-              {format(new Date(), 'dd MMMM yyyy HH:mm', { locale: id })}
+              {formatDateTime(new Date())}
             </p>
           </div>
         </div>

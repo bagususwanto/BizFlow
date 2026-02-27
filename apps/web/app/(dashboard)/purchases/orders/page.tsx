@@ -15,6 +15,7 @@ import { DataListPage } from '@/components/shared/data-list-page';
 import { getColumns } from '@/components/purchases/columns';
 import { ErrorState } from '@/components/common/error-state';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
+import { useFormatDate } from '@/hooks';
 
 function PurchaseOrdersContent() {
   const router = useRouter();
@@ -63,6 +64,7 @@ function PurchaseOrdersContent() {
   const [orderToDelete, setOrderToDelete] = useState<PurchaseOrder | null>(
     null,
   );
+  const formatters = useFormatDate();
 
   const handleCreateQueryString = useCallback(
     (params: Record<string, string | number | null>) => {
@@ -97,8 +99,9 @@ function PurchaseOrdersContent() {
     () =>
       getColumns({
         onDelete: (order) => setOrderToDelete(order),
+        formatters,
       }),
-    [],
+    [formatters],
   );
 
   const orders = ordersData?.data || [];

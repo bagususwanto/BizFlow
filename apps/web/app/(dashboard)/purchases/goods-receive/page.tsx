@@ -13,6 +13,7 @@ import { DataListPage } from '@/components/shared/data-list-page';
 import { getColumns } from '@/components/inventory/columns';
 import { ErrorState } from '@/components/common/error-state';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
+import { useFormatDate } from '@/hooks';
 
 function GoodsReceiveContent() {
   const router = useRouter();
@@ -51,6 +52,7 @@ function GoodsReceiveContent() {
 
   // Delete Dialog State
   const [itemToDelete, setItemToDelete] = useState<GoodsReceive | null>(null);
+  const formatters = useFormatDate();
 
   const handleCreateQueryString = useCallback(
     (params: Record<string, string | number | null>) => {
@@ -78,8 +80,9 @@ function GoodsReceiveContent() {
     () =>
       getColumns({
         onDelete: (item) => setItemToDelete(item),
+        formatters,
       }),
-    [],
+    [formatters],
   );
 
   const data = goodsReceiveData?.data || [];

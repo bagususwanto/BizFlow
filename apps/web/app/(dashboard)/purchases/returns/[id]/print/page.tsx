@@ -2,8 +2,7 @@
 
 import { use, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { format } from 'date-fns';
-import { id } from 'date-fns/locale';
+import { useFormatDate } from '@/hooks';
 import { purchaseReturnsService } from '@/services/purchase-returns.service';
 
 export default function PurchaseReturnPrintPage({
@@ -12,6 +11,7 @@ export default function PurchaseReturnPrintPage({
   params: Promise<{ id: string }>;
 }) {
   const resolvedParams = use(params);
+  const { formatDate, formatDateTime } = useFormatDate();
 
   const { data: ret, isLoading } = useQuery({
     queryKey: ['purchase-returns', resolvedParams.id],
@@ -73,12 +73,7 @@ export default function PurchaseReturnPrintPage({
             </div>
             <div className="text-right text-sm text-gray-600">
               <p className="font-semibold text-gray-900 text-base">BizFlow</p>
-              <p className="mt-1">
-                Tanggal:{' '}
-                {format(new Date(ret.createdAt), 'dd MMMM yyyy', {
-                  locale: id,
-                })}
-              </p>
+              <p className="mt-1">Tanggal: {formatDate(ret.createdAt)}</p>
               <div className="mt-2 inline-block border border-gray-400 px-3 py-1 rounded text-xs font-semibold uppercase tracking-wide">
                 {ret.status}
               </div>
@@ -242,7 +237,7 @@ export default function PurchaseReturnPrintPage({
           <div className="mt-12 pt-4 border-t border-gray-200 text-center text-xs text-gray-400">
             <p>
               Dokumen ini digenerate oleh sistem BizFlow pada{' '}
-              {format(new Date(), 'dd MMMM yyyy HH:mm', { locale: id })}
+              {formatDateTime(new Date())}
             </p>
           </div>
         </div>

@@ -20,6 +20,7 @@ import {
 } from '@bizflow/ui';
 import { useStockCard } from '@/hooks/use-stock-movements';
 import { format } from 'date-fns';
+import { useFormatDate } from '@/hooks';
 import { id } from 'date-fns/locale';
 import {
   Loader2,
@@ -197,6 +198,7 @@ function StockMovementRow({
 }) {
   const isIn = movement.quantity > 0;
   const qty = Math.abs(movement.quantity);
+  const { formatDate, formatTime } = useFormatDate();
 
   let color: 'default' | 'secondary' | 'destructive' | 'outline' = 'default';
   let icon = null;
@@ -227,11 +229,9 @@ function StockMovementRow({
     <TableRow>
       <TableCell className="whitespace-nowrap">
         <div className="flex flex-col">
-          <span className="font-medium">
-            {format(new Date(movement.createdAt), 'dd MMM yy', { locale: id })}
-          </span>
+          <span className="font-medium">{formatDate(movement.createdAt)}</span>
           <span className="text-xs text-muted-foreground">
-            {format(new Date(movement.createdAt), 'HH:mm', { locale: id })}
+            {formatTime(movement.createdAt)}
           </span>
         </div>
       </TableCell>

@@ -5,6 +5,7 @@ import { PosHeader } from '@/components/pos/pos-header';
 import { DataListPage } from '@/components/shared/data-list-page';
 import { getColumns, ReturnItem } from '@/components/pos/returns/columns';
 import { useReturns } from '@/hooks/use-returns';
+import { useFormatDate } from '@/hooks';
 
 export default function PosReturnsPage() {
   const [search, setSearch] = useState('');
@@ -29,7 +30,8 @@ export default function PosReturnsPage() {
     pageSize: 10,
   };
 
-  const columns = useMemo(() => getColumns(), []);
+  const formatters = useFormatDate();
+  const columns = useMemo(() => getColumns(formatters), [formatters]);
 
   const handleReset = () => {
     setSearch('');

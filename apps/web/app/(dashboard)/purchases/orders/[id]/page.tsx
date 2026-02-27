@@ -19,8 +19,7 @@ import {
   Phone,
   Mail,
 } from 'lucide-react';
-import { format } from 'date-fns';
-import { id } from 'date-fns/locale';
+import { useFormatDate } from '@/hooks';
 import { toast } from 'sonner';
 
 import {
@@ -83,6 +82,7 @@ export default function PurchaseOrderDetailPage({
 
   const deleteMutation = useDeletePurchaseOrder();
   const updateStatusMutation = useUpdatePurchaseOrderStatus(resolvedParams.id);
+  const { formatDate, formatDateTime } = useFormatDate();
 
   useBreadcrumb(
     `/purchases/orders/${resolvedParams.id}`,
@@ -188,11 +188,7 @@ export default function PurchaseOrderDetailPage({
               {order.orderNumber}
             </h1>
             <div className="flex items-center gap-2 text-muted-foreground">
-              <span>
-                {format(new Date(order.createdAt), 'dd MMMM yyyy HH:mm', {
-                  locale: id,
-                })}
-              </span>
+              <span>{formatDateTime(order.createdAt)}</span>
               <span>•</span>
               <Badge variant={statusBadgeVariant(order.status) as any}>
                 {order.status.toUpperCase()}
@@ -370,20 +366,14 @@ export default function PurchaseOrderDetailPage({
                 <CalendarIcon className="h-4 w-4 text-muted-foreground" />
                 <span className="text-muted-foreground">Tgl. Ekspektasi:</span>
                 <span className="font-medium">
-                  {order.expectedDate
-                    ? format(new Date(order.expectedDate), 'dd MMM yyyy', {
-                        locale: id,
-                      })
-                    : '-'}
+                  {order.expectedDate ? formatDate(order.expectedDate) : '-'}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <Clock className="h-4 w-4 text-muted-foreground" />
                 <span className="text-muted-foreground">Dibuat Pada:</span>
                 <span className="font-medium">
-                  {format(new Date(order.createdAt), 'dd MMMM yyyy HH:mm', {
-                    locale: id,
-                  })}
+                  {formatDateTime(order.createdAt)}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-sm">
@@ -410,13 +400,7 @@ export default function PurchaseOrderDetailPage({
                         Disetujui Pada:
                       </span>
                       <span className="font-medium">
-                        {format(
-                          new Date(order.approvedAt),
-                          'dd MMMM yyyy HH:mm',
-                          {
-                            locale: id,
-                          },
-                        )}
+                        {formatDateTime(order.approvedAt)}
                       </span>
                     </div>
                   )}

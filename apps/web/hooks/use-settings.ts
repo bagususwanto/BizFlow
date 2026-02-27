@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { settingsService } from '@/services/settings.service';
 import { QuerySettingsValues, UpdateSettingsValues } from '@bizflow/types';
 import { toast } from 'sonner';
+import { useSettingsStore } from '@/stores/settings.store';
 
 export const useSettings = (params?: QuerySettingsValues) => {
   const query = useQuery({
@@ -44,6 +45,14 @@ export const useUpdateSettings = () => {
       const langUpdate = variables.settings?.find((s) => s.key === 'language');
       if (langUpdate && langUpdate.value) {
         useAuthStore.getState().setLanguage(langUpdate.value as 'id' | 'en');
+      }
+
+      // If date_format was updated, sync it with the settings store immediately
+      const dateFormatUpdate = variables.settings?.find(
+        (s) => s.key === 'date_format',
+      );
+      if (dateFormatUpdate && dateFormatUpdate.value) {
+        useSettingsStore.getState().setDateFormat(dateFormatUpdate.value);
       }
 
       queryClient.invalidateQueries({ queryKey: ['settings'] });

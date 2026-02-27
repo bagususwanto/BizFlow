@@ -16,6 +16,7 @@ import { getColumns } from '@/components/purchases/payments/columns';
 import { ErrorState } from '@/components/common/error-state';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 import { formatCurrency } from '@bizflow/ui';
+import { useFormatDate } from '@/hooks';
 
 function SupplierPaymentsContent() {
   const router = useRouter();
@@ -61,6 +62,7 @@ function SupplierPaymentsContent() {
   // Delete Dialog State
   const [paymentToDelete, setPaymentToDelete] =
     useState<SupplierPayment | null>(null);
+  const formatters = useFormatDate();
 
   const handleCreateQueryString = useCallback(
     (params: Record<string, string | number | null>) => {
@@ -88,8 +90,9 @@ function SupplierPaymentsContent() {
     () =>
       getColumns({
         onDelete: (payment) => setPaymentToDelete(payment),
+        formatters,
       }),
-    [],
+    [formatters],
   );
 
   const payments = paymentsData?.data || [];

@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@bizflow/ui';
 import { AuditLogDetailSheet } from '@/components/audit-logs/audit-log-detail-sheet';
 import { ErrorState } from '@/components/common/error-state';
-import { useAuditLogs, useDebounce } from '@/hooks';
+import { useAuditLogs, useDebounce, useFormatDate } from '@/hooks';
 import { AuditLog, auditLogService } from '@/services/audit-logs.service';
 import { Download, Loader2, Box } from 'lucide-react';
 import { DataListPage } from '@/components/shared/data-list-page';
@@ -49,6 +49,7 @@ function AuditLogsContent() {
   const [selectedLog, setSelectedLog] = useState<AuditLog | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const formatters = useFormatDate();
 
   const debouncedSearch = useDebounce(search, 500);
 
@@ -147,8 +148,9 @@ function AuditLogsContent() {
           setSelectedLog(log);
           setIsDetailOpen(true);
         },
+        formatters,
       }),
-    [t],
+    [t, formatters],
   );
 
   const data = auditLogs || [];

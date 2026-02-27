@@ -4,13 +4,14 @@ import { Suspense, useMemo, useState, useCallback } from 'react';
 import { useStocks } from '@/hooks/use-stock';
 import { useWarehouses } from '@/hooks/use-warehouses';
 import { useActiveCategories } from '@/hooks/use-categories';
-import { columns } from './columns';
+import { getColumns } from './columns';
 import { useDebounce } from '@/hooks/use-debounce';
 import { DataListPage } from '@/components/shared/data-list-page';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Loader2, Box, Layers, Warehouse, History } from 'lucide-react';
 import { Button, Card, CardContent, CardHeader, CardTitle } from '@bizflow/ui';
 import { StockCardDialog } from '../movements/stock-card-dialog';
+import { useFormatDate } from '@/hooks';
 
 function StockContent() {
   const router = useRouter();
@@ -72,6 +73,7 @@ function StockContent() {
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
     null,
   );
+  const formatters = useFormatDate();
 
   const columnsWithActions = useMemo(() => {
     const actionColumn = {
@@ -88,8 +90,8 @@ function StockContent() {
         </Button>
       ),
     };
-    return [...columns, actionColumn];
-  }, []);
+    return [...getColumns(formatters), actionColumn];
+  }, [formatters]);
 
   return (
     <>

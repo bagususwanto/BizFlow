@@ -3,8 +3,9 @@
 import { useState, useMemo, Suspense } from 'react';
 import { useStockMovements } from '@/hooks/use-stock-movements';
 import { useWarehouses } from '@/hooks/use-warehouses';
-import { columns } from './columns';
+import { getColumns } from './columns';
 import { useDebounce } from '@/hooks/use-debounce';
+import { useFormatDate } from '@/hooks';
 import { DataListPage } from '@/components/shared/data-list-page';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Loader2, Download, History } from 'lucide-react';
@@ -26,6 +27,7 @@ function StockMovementsContent() {
     null,
   );
   const [isExporting, setIsExporting] = useState(false);
+  const formatters = useFormatDate();
 
   // Get state from URL params
   const page = Number(searchParams.get('page')) || 1;
@@ -99,9 +101,11 @@ function StockMovementsContent() {
     };
 
     // Remove existing actions column if any before adding ours
-    const baseColumns = columns.filter((c) => c.id !== 'actions');
+    const baseColumns = getColumns(formatters).filter(
+      (c) => c.id !== 'actions',
+    );
     return [...baseColumns, actionColumn];
-  }, []);
+  }, [formatters]);
 
   const handleExport = async () => {
     try {

@@ -11,8 +11,7 @@ import {
   Button,
 } from '@bizflow/ui';
 import { AuditLog } from '@/services/audit-logs.service';
-import { format } from 'date-fns';
-import { id } from 'date-fns/locale';
+import { useFormatDate } from '@/hooks';
 import { Eye, ArrowUp, ArrowDown } from 'lucide-react';
 
 interface AuditLogsTableProps {
@@ -34,6 +33,7 @@ export function AuditLogsTable({
   onSortChange,
 }: AuditLogsTableProps) {
   const isVisible = (columnId: string) => columnVisibility[columnId] !== false;
+  const { formatDateTimeFull } = useFormatDate();
 
   const renderSortButton = (label: string, field: string) => {
     if (!onSortChange) return label;
@@ -96,9 +96,7 @@ export function AuditLogsTable({
             <TableRow key={log.id}>
               {isVisible('time') && (
                 <TableCell className="whitespace-nowrap font-mono text-xs">
-                  {format(new Date(log.createdAt), 'dd/MM/yyyy HH:mm:ss', {
-                    locale: id,
-                  })}
+                  {formatDateTimeFull(log.createdAt)}
                 </TableCell>
               )}
               {isVisible('user') && (

@@ -25,6 +25,7 @@ export * from './use-promotions';
 export * from './use-returns';
 export * from './use-roles';
 export * from './use-settings';
+export * from './use-format-date';
 export * from './use-units';
 export * from './use-users';
 export * from './use-warehouses';

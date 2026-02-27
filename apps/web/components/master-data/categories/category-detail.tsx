@@ -31,8 +31,7 @@ import {
   Badge,
   Skeleton,
 } from '@bizflow/ui';
-import { format } from 'date-fns';
-import { id as idLocale } from 'date-fns/locale';
+import { useFormatDate } from '@/hooks';
 
 interface CategoryDetailProps {
   category?: CategoryWithRelations;
@@ -53,6 +52,7 @@ export function CategoryDetail({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const t = useTranslations('categories');
   const tCommon = useTranslations('common');
+  const { formatDateTime } = useFormatDate();
 
   if (isLoading) {
     return (
@@ -294,19 +294,13 @@ export function CategoryDetail({
           <div className="flex items-center gap-2">
             <History className="h-3 w-3" />
             <span>
-              {t('detail.createdAt')}{' '}
-              {format(new Date(category.createdAt), 'dd MMMM yyyy, HH:mm', {
-                locale: idLocale,
-              })}
+              {t('detail.createdAt')} {formatDateTime(category.createdAt)}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <Edit className="h-3 w-3" />
             <span>
-              {t('detail.updatedAt')}{' '}
-              {format(new Date(category.updatedAt), 'dd MMMM yyyy, HH:mm', {
-                locale: idLocale,
-              })}
+              {t('detail.updatedAt')} {formatDateTime(category.updatedAt)}
             </span>
           </div>
         </div>

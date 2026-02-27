@@ -8,6 +8,7 @@ import {
   TransactionItem,
 } from '@/components/pos/transactions/columns';
 import { usePosTransactions } from '@/hooks/use-pos';
+import { useFormatDate } from '@/hooks';
 
 export default function PosTransactionsPage() {
   const [search, setSearch] = useState('');
@@ -31,7 +32,8 @@ export default function PosTransactionsPage() {
     pageSize: 10,
   };
 
-  const columns = useMemo(() => getColumns(), []);
+  const formatters = useFormatDate();
+  const columns = useMemo(() => getColumns(formatters), [formatters]);
 
   const handleReset = () => {
     setSearch('');

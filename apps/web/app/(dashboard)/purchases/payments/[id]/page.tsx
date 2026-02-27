@@ -18,8 +18,7 @@ import {
   Phone,
   Mail,
 } from 'lucide-react';
-import { format } from 'date-fns';
-import { id as idLocale } from 'date-fns/locale';
+import { useFormatDate } from '@/hooks';
 import { toast } from 'sonner';
 
 import {
@@ -70,6 +69,7 @@ export default function SupplierPaymentDetailPage({
   } = useSupplierPayment(resolvedParams.id);
 
   const deleteMutation = useDeleteSupplierPayment();
+  const { formatDate, formatDateTime } = useFormatDate();
 
   useBreadcrumb(
     `/purchases/payments/${resolvedParams.id}`,
@@ -117,11 +117,7 @@ export default function SupplierPaymentDetailPage({
               {payment.paymentNumber}
             </h1>
             <div className="flex items-center gap-2 text-muted-foreground">
-              <span>
-                {format(new Date(payment.paymentDate), 'dd MMMM yyyy', {
-                  locale: idLocale,
-                })}
-              </span>
+              <span>{formatDate(payment.paymentDate)}</span>
               <span>•</span>
               <Badge variant="outline">{payment.paymentMethod}</Badge>
             </div>
@@ -238,11 +234,7 @@ export default function SupplierPaymentDetailPage({
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Clock className="h-4 w-4" />
                 <span>Dibuat pada:</span>
-                <span>
-                  {format(new Date(payment.createdAt), 'dd MMMM yyyy HH:mm', {
-                    locale: idLocale,
-                  })}
-                </span>
+                <span>{formatDateTime(payment.createdAt)}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <User className="h-4 w-4" />

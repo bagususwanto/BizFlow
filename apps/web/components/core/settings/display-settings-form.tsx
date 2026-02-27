@@ -24,6 +24,7 @@ import {
 } from '@bizflow/ui';
 import { AppSetting } from '@bizflow/types';
 import { useUpdateSettings } from '@/hooks';
+import { useSettingsStore } from '@/stores/settings.store';
 import { Save } from 'lucide-react';
 
 const displaySettingsSchema = z.object({
@@ -41,6 +42,7 @@ interface DisplaySettingsFormProps {
 
 export function DisplaySettingsForm({ settings }: DisplaySettingsFormProps) {
   const { mutate: updateSettings, isPending } = useUpdateSettings();
+  const setDateFormat = useSettingsStore((s) => s.setDateFormat);
 
   const form = useForm<DisplaySettingsValues>({
     resolver: zodResolver(displaySettingsSchema),
@@ -61,8 +63,14 @@ export function DisplaySettingsForm({ settings }: DisplaySettingsFormProps) {
         }
       });
       form.reset(values);
+
+      // Sync date_format to settings store so useFormatDate picks it up on load
+      const dateFormatSetting = settings.find((s) => s.key === 'date_format');
+      if (dateFormatSetting?.value) {
+        setDateFormat(dateFormatSetting.value);
+      }
     }
-  }, [settings, form]);
+  }, [settings, form, setDateFormat]);
 
   const onSubmit = (data: DisplaySettingsValues) => {
     const updateData = Object.entries(data).map(([key, value]) => ({
@@ -127,13 +135,19 @@ export function DisplaySettingsForm({ settings }: DisplaySettingsFormProps) {
                     </FormControl>
                     <SelectContent className="max-h-[300px] overflow-y-auto">
                       <SelectItem value="DD/MM/YYYY">
-                        DD/MM/YYYY (31/12/2024)
+                        DD/MM/YYYY &mdash; 26/02/2026
                       </SelectItem>
                       <SelectItem value="MM/DD/YYYY">
-                        MM/DD/YYYY (12/31/2024)
+                        MM/DD/YYYY &mdash; 02/26/2026
                       </SelectItem>
                       <SelectItem value="YYYY-MM-DD">
-                        YYYY-MM-DD (2024-12-31)
+                        YYYY-MM-DD &mdash; 2026-02-26
+                      </SelectItem>
+                      <SelectItem value="DD MMM YYYY">
+                        DD MMM YYYY &mdash; 26 Feb 2026
+                      </SelectItem>
+                      <SelectItem value="DD MMMM YYYY">
+                        DD MMMM YYYY &mdash; 26 Februari 2026
                       </SelectItem>
                     </SelectContent>
                   </Select>

@@ -24,18 +24,18 @@ import { Save } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 const companySettingsSchema = z.object({
-  company_name: z.string().min(1, 'Nama perusahaan wajib diisi'),
+  company_name: z.string().min(1, 'settings.company.nameError'),
   company_address: z.string().optional(),
   company_phone: z.string().optional(),
   company_email: z
     .string()
-    .email('Email tidak valid')
+    .email('settings.company.emailError')
     .optional()
     .or(z.literal('')),
   company_tax_id: z.string().optional(),
   company_logo: z
     .string()
-    .url('URL logo tidak valid')
+    .url('settings.company.logoError')
     .optional()
     .or(z.literal('')),
 });

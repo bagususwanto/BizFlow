@@ -29,10 +29,10 @@ import { Save } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 const displaySettingsSchema = z.object({
-  currency_code: z.string().min(1, 'Kode mata uang wajib diisi'),
-  currency_symbol: z.string().min(1, 'Simbol mata uang wajib diisi'),
-  date_format: z.string().min(1, 'Format tanggal wajib dipilih'),
-  timezone: z.string().min(1, 'Zona waktu wajib dipilih'),
+  currency_code: z.string().min(1, 'settings.display.currencyCodeError'),
+  currency_symbol: z.string().min(1, 'settings.display.currencySymbolError'),
+  date_format: z.string().min(1, 'settings.display.dateFormatError'),
+  timezone: z.string().min(1, 'settings.display.timezoneError'),
 });
 
 type DisplaySettingsValues = z.infer<typeof displaySettingsSchema>;

@@ -29,11 +29,11 @@ import { Save } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 const generalSettingsSchema = z.object({
-  language: z.string().min(1, 'Bahasa wajib dipilih'),
+  language: z.string().min(1, 'settings.general.languageError'),
   session_timeout: z.coerce
     .number()
-    .min(5, 'Session timeout minimal 5 menit')
-    .max(1440, 'Session timeout maksimal 24 jam (1440 menit)'),
+    .min(5, 'settings.general.sessionTimeoutErrorMin')
+    .max(1440, 'settings.general.sessionTimeoutErrorMax'),
 });
 
 type GeneralSettingsValues = z.infer<typeof generalSettingsSchema>;

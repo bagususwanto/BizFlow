@@ -25,7 +25,7 @@ import { Save } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 const taxSettingsSchema = z.object({
-  default_tax_rate: z.coerce.number().min(0, 'Pajak tidak boleh kurang dari 0'),
+  default_tax_rate: z.coerce.number().min(0, 'settings.tax.rateError'),
   tax_inclusive: z.boolean(),
 });
 

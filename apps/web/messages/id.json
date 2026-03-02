@@ -106,7 +106,9 @@
     "inactive": "Non-aktif",
     "service": "Jasa",
     "rowsPerPage": "Baris per halaman",
-    "pageInfo": "Halaman {page} dari {totalPages}"
+    "pageInfo": "Halaman {page} dari {totalPages}",
+    "previousPage": "Sebelumnya",
+    "nextPage": "Selanjutnya"
   },
   "products": {
     "title": "Produk",
@@ -1305,5 +1307,74 @@
     },
     "saveBtn": "Simpan Perubahan",
     "savingBtn": "Menyimpan..."
+  },
+  "outlets": {
+    "title": "Outlet",
+    "description": "Kelola data outlet dan cabang perusahaan.",
+    "createLabel": "Tambah Outlet",
+    "failedLoad": "Gagal memuat data outlet",
+    "searchPlaceholder": "Cari outlet...",
+    "summary": {
+      "total": "Total Outlet",
+      "active": "Aktif",
+      "inactive": "Non-aktif"
+    },
+    "columns": {
+      "code": "Kode Outlet",
+      "name": "Nama Outlet",
+      "address": "Alamat",
+      "users": "Pengguna",
+      "status": "Status"
+    },
+    "delete": {
+      "titleActive": "Nonaktifkan Outlet?",
+      "descActive": "Outlet {name} akan dinonaktifkan. Data outlet tetap tersimpan.",
+      "titlePermanent": "Hapus Outlet Permanen?",
+      "descPermanent1": "Outlet {name} akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.",
+      "descPermanent2": "Peringatan: Jika outlet masih memiliki riwayat transaksi (stok, penjualan, dll), sistem akan menolak penghapusan permanen.",
+      "btnDeactivate": "Nonaktifkan",
+      "btnDeletePermanent": "Hapus Permanen"
+    },
+    "create": {
+      "title": "Buat Outlet Baru",
+      "subtitle": "Tambahkan outlet atau cabang baru ke dalam sistem.",
+      "cardTitle": "Formulir Outlet",
+      "cardDesc": "Lengkapi data outlet di bawah ini. Kode outlet harus unik."
+    },
+    "edit": {
+      "title": "Edit Outlet",
+      "subtitle": "Ubah informasi outlet {name}.",
+      "failedLoad": "Gagal memuat data outlet",
+      "cardTitle": "Formulir Edit Outlet",
+      "cardDesc": "Silakan ubah data outlet di bawah ini."
+    },
+    "form": {
+      "codeLabel": "Kode Outlet",
+      "codePlaceholder": "O-XXX (Otomatis jika kosong)",
+      "codeDesc": "Akan otomatis di-generate jika dikosongkan.",
+      "nameLabel": "Nama Outlet",
+      "namePlaceholder": "Contoh: Cabang Utama, Toko 1",
+      "addressLabel": "Alamat",
+      "addressPlaceholder": "Alamat lengkap outlet",
+      "phoneLabel": "Nomor Telepon",
+      "phonePlaceholder": "021-xxxxxxx (Opsional)",
+      "statusLabel": "Status Aktif",
+      "statusDesc": "Outlet yang aktif dapat digunakan untuk transaksi.",
+      "saveBtn": "Simpan Outlet",
+      "savingBtn": "Menyimpan..."
+    },
+    "messages": {
+      "createSuccess": "Outlet berhasil dibuat",
+      "updateSuccess": "Outlet berhasil diperbarui",
+      "deleteSuccess": "Outlet berhasil dihapus",
+      "errorOccurred": "Terjadi kesalahan"
+    },
+    "validation": {
+      "nameRequired": "Nama outlet wajib diisi",
+      "nameMax": "Nama outlet maksimal 100 karakter",
+      "codeMax": "Kode outlet maksimal 20 karakter",
+      "addressMax": "Alamat maksimal 255 karakter",
+      "phoneMax": "Nomor telepon maksimal 20 karakter"
+    }
   }
 }

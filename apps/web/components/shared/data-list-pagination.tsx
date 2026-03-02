@@ -222,7 +222,9 @@ export function DataListPagination({
                   if (page > 1) onPageChange(page - 1);
                 }}
                 className={page <= 1 ? 'pointer-events-none opacity-50' : ''}
-              />
+              >
+                {tDataList('previousPage')}
+              </PaginationPrevious>
             </PaginationItem>
             <PaginationItem>
               <span className="flex h-9 items-center justify-center px-4 text-sm">
@@ -240,7 +242,9 @@ export function DataListPagination({
                 className={
                   page >= totalPages ? 'pointer-events-none opacity-50' : ''
                 }
-              />
+              >
+                {tDataList('nextPage')}
+              </PaginationNext>
             </PaginationItem>
           </PaginationContent>
         </Pagination>

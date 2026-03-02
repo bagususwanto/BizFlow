@@ -9,11 +9,14 @@ import { getColumns } from '@/components/core/outlets/columns';
 import { DataListPage } from '@/components/shared/data-list-page';
 import { Outlet } from '@/services/outlets.service';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
+import { useTranslations } from 'next-intl';
 
 function OutletsContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const t = useTranslations('outlets');
+  const tCommon = useTranslations('common');
 
   // Get state from URL params
   const page = Number(searchParams.get('page')) || 1;
@@ -89,8 +92,9 @@ function OutletsContent() {
     () =>
       getColumns({
         onDelete: setOutletToDelete,
+        t,
       }),
-    [],
+    [t],
   );
 
   const data = outlets || [];
@@ -104,10 +108,10 @@ function OutletsContent() {
   return (
     <>
       <DataListPage
-        title="Outlet"
-        description="Kelola data outlet dan cabang perusahaan."
+        title={t('title')}
+        description={t('description')}
         createLink="/settings/outlets/create"
-        createLabel="Tambah Outlet"
+        createLabel={t('createLabel')}
         data={data}
         columns={columns}
         isLoading={isLoading}
@@ -140,7 +144,7 @@ function OutletsContent() {
         // Search
         search={search}
         onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
-        searchPlaceholder="Cari outlet..."
+        searchPlaceholder={t('searchPlaceholder')}
         // Filters
         filterValues={{ status }}
         onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
@@ -148,10 +152,10 @@ function OutletsContent() {
         filters={[
           {
             key: 'status',
-            label: 'Status',
+            label: tCommon('status.label'),
             options: [
-              { label: 'Aktif', value: 'active' },
-              { label: 'Non-aktif', value: 'inactive' },
+              { label: tCommon('status.active'), value: 'active' },
+              { label: tCommon('status.inactive'), value: 'inactive' },
             ],
             width: 'w-[150px]',
           },
@@ -173,37 +177,41 @@ function OutletsContent() {
         onOpenChange={(open) => !open && setOutletToDelete(null)}
         title={
           outletToDelete?.isActive
-            ? 'Nonaktifkan Outlet?'
-            : 'Hapus Outlet Permanen?'
+            ? t('delete.titleActive')
+            : t('delete.titlePermanent')
         }
         description={
           outletToDelete?.isActive ? (
-            <>
-              Outlet{' '}
-              <span className="font-medium text-foreground">
-                {outletToDelete?.name}
-              </span>{' '}
-              akan dinonaktifkan. Data outlet tetap tersimpan.
-            </>
+            t.rich('delete.descActive', {
+              name: outletToDelete?.name || '',
+              bold: (chunks) => (
+                <span key="bold1" className="font-medium text-foreground">
+                  {chunks}
+                </span>
+              ),
+            })
           ) : (
             <>
               <p>
-                Outlet{' '}
-                <span className="font-medium text-foreground">
-                  {outletToDelete?.name}
-                </span>{' '}
-                akan dihapus secara permanen. Tindakan ini tidak dapat
-                dibatalkan.
+                {t.rich('delete.descPermanent1', {
+                  name: outletToDelete?.name || '',
+                  bold: (chunks) => (
+                    <span key="bold2" className="font-medium text-foreground">
+                      {chunks}
+                    </span>
+                  ),
+                })}
               </p>
               <p className="mt-2 text-sm text-warning">
-                Peringatan: Jika outlet masih memiliki riwayat transaksi (stok,
-                penjualan, dll), sistem akan menolak penghapusan permanen.
+                {t('delete.descPermanent2')}
               </p>
             </>
           )
         }
         confirmLabel={
-          outletToDelete?.isActive ? 'Nonaktifkan' : 'Hapus Permanen'
+          outletToDelete?.isActive
+            ? t('delete.btnDeactivate')
+            : t('delete.btnDeletePermanent')
         }
         isDeleting={isDeleting}
         onConfirm={() => {

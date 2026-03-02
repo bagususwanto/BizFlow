@@ -106,7 +106,9 @@
     "inactive": "Inactive",
     "service": "Service",
     "rowsPerPage": "Rows per page",
-    "pageInfo": "Page {page} of {totalPages}"
+    "pageInfo": "Page {page} of {totalPages}",
+    "previousPage": "Previous",
+    "nextPage": "Next"
   },
   "products": {
     "title": "Products",
@@ -1305,5 +1307,74 @@
     },
     "saveBtn": "Save Changes",
     "savingBtn": "Saving..."
+  },
+  "outlets": {
+    "title": "Outlets",
+    "description": "Manage outlet data and company branches.",
+    "createLabel": "Add Outlet",
+    "failedLoad": "Failed to load outlets data",
+    "searchPlaceholder": "Search outlets...",
+    "summary": {
+      "total": "Total Outlets",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "columns": {
+      "code": "Outlet Code",
+      "name": "Outlet Name",
+      "address": "Address",
+      "users": "Users",
+      "status": "Status"
+    },
+    "delete": {
+      "titleActive": "Deactivate Outlet?",
+      "descActive": "Outlet {name} will be deactivated. Outlet data will remain saved.",
+      "titlePermanent": "Permanently Delete Outlet?",
+      "descPermanent1": "Outlet {name} will be permanently deleted. This action cannot be undone.",
+      "descPermanent2": "Warning: If the outlet still has transaction history (stock, sales, etc.), the system will reject permanent deletion.",
+      "btnDeactivate": "Deactivate",
+      "btnDeletePermanent": "Delete Permanently"
+    },
+    "create": {
+      "title": "Create New Outlet",
+      "subtitle": "Add a new outlet or branch to the system.",
+      "cardTitle": "Outlet Form",
+      "cardDesc": "Complete the outlet data below. Outlet code must be unique."
+    },
+    "edit": {
+      "title": "Edit Outlet",
+      "subtitle": "Modify outlet {name} information.",
+      "failedLoad": "Failed to load outlet data",
+      "cardTitle": "Edit Outlet Form",
+      "cardDesc": "Please modify the outlet data below."
+    },
+    "form": {
+      "codeLabel": "Outlet Code",
+      "codePlaceholder": "O-XXX (Auto-generated if blank)",
+      "codeDesc": "Will be auto-generated if left blank.",
+      "nameLabel": "Outlet Name",
+      "namePlaceholder": "e.g., Main Branch, Store 1",
+      "addressLabel": "Address",
+      "addressPlaceholder": "Complete outlet address",
+      "phoneLabel": "Phone Number",
+      "phonePlaceholder": "021-xxxxxxx (Optional)",
+      "statusLabel": "Active Status",
+      "statusDesc": "Active outlets can be used for transactions.",
+      "saveBtn": "Save Outlet",
+      "savingBtn": "Saving..."
+    },
+    "messages": {
+      "createSuccess": "Outlet successfully created",
+      "updateSuccess": "Outlet successfully updated",
+      "deleteSuccess": "Outlet successfully deleted",
+      "errorOccurred": "An error occurred"
+    },
+    "validation": {
+      "nameRequired": "Outlet name is required",
+      "nameMax": "Outlet name maximum 100 characters",
+      "codeMax": "Outlet code maximum 20 characters",
+      "addressMax": "Address maximum 255 characters",
+      "phoneMax": "Phone number maximum 20 characters"
+    }
   }
 }

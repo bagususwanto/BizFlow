@@ -9,6 +9,7 @@ import {
 } from '@tanstack/react-table';
 import { Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 import { outletsService } from '@/services/outlets.service';
 import { DataTable } from '../../ui/data-table';
@@ -43,13 +44,15 @@ export function OutletsTable({
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
+  const t = useTranslations('outlets');
 
   const columns = useMemo(
     () =>
       getColumns({
         onDelete: setOutletToDelete,
+        t,
       }),
-    [],
+    [t],
   );
 
   const sorting: SortingState = useMemo(

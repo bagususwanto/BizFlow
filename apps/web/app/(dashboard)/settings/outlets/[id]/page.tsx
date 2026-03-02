@@ -12,6 +12,7 @@ import { Loader2 } from 'lucide-react';
 import { useOutlet } from '@/hooks';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { OutletForm } from '@/components/core/outlets/outlet-form';
+import { useTranslations } from 'next-intl';
 
 export default function EditOutletPage({
   params,
@@ -20,9 +21,10 @@ export default function EditOutletPage({
 }) {
   const { id } = use(params);
   const { data: outlet, isLoading, isError } = useOutlet(id);
+  const t = useTranslations('outlets');
 
   // Set dynamic breadcrumb
-  useBreadcrumb(`/settings/outlets/${id}`, outlet?.name || 'Edit Outlet');
+  useBreadcrumb(`/settings/outlets/${id}`, outlet?.name || t('edit.title'));
 
   if (isLoading) {
     return (
@@ -35,7 +37,7 @@ export default function EditOutletPage({
   if (isError || !outlet) {
     return (
       <div className="flex h-full w-full items-center justify-center p-8 text-destructive">
-        Gagal memuat data outlet
+        {t('edit.failedLoad')}
       </div>
     );
   }
@@ -43,18 +45,16 @@ export default function EditOutletPage({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-3xl font-bold tracking-tight">Edit Outlet</h2>
+        <h2 className="text-3xl font-bold tracking-tight">{t('edit.title')}</h2>
         <p className="text-muted-foreground">
-          Ubah informasi outlet {outlet.name}.
+          {t('edit.subtitle', { name: outlet.name })}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Formulir Edit Outlet</CardTitle>
-          <CardDescription>
-            Silakan ubah data outlet di bawah ini.
-          </CardDescription>
+          <CardTitle>{t('edit.cardTitle')}</CardTitle>
+          <CardDescription>{t('edit.cardDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <OutletForm initialData={outlet} isEdit />

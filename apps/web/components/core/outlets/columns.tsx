@@ -21,10 +21,12 @@ import type { Outlet } from '@/services/outlets.service';
 
 interface OutletsColumnsProps {
   onDelete: (outlet: Outlet) => void;
+  t: any;
 }
 
 export const getColumns = ({
   onDelete,
+  t,
 }: OutletsColumnsProps): ColumnDef<Outlet>[] => [
   {
     id: 'select',
@@ -32,14 +34,14 @@ export const getColumns = ({
       <Checkbox
         checked={table.getIsAllPageRowsSelected()}
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Pilih semua"
+        aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Pilih baris"
+        aria-label="Select row"
       />
     ),
     enableSorting: false,
@@ -48,27 +50,21 @@ export const getColumns = ({
   {
     accessorKey: 'code',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Kode Outlet" />
+      <DataTableColumnHeader column={column} title={t('columns.code')} />
     ),
     cell: ({ row }) => <span className="font-mono">{row.original.code}</span>,
-    meta: {
-      title: 'Kode Outlet',
-    },
   },
   {
     accessorKey: 'name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Nama Outlet" />
+      <DataTableColumnHeader column={column} title={t('columns.name')} />
     ),
     cell: ({ row }) => <span className="font-medium">{row.original.name}</span>,
-    meta: {
-      title: 'Nama Outlet',
-    },
   },
   {
     accessorKey: 'address',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Alamat" />
+      <DataTableColumnHeader column={column} title={t('columns.address')} />
     ),
     cell: ({ row }) => (
       <div
@@ -78,35 +74,26 @@ export const getColumns = ({
         {row.original.address || '-'}
       </div>
     ),
-    meta: {
-      title: 'Alamat',
-    },
   },
   {
     accessorKey: 'userCount',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Pengguna" />
+      <DataTableColumnHeader column={column} title={t('columns.users')} />
     ),
     cell: ({ row }) => <span>{row.original.userCount || 0}</span>,
-    meta: {
-      title: 'Pengguna',
-    },
   },
   {
     accessorKey: 'isActive',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
+      <DataTableColumnHeader column={column} title={t('columns.status')} />
     ),
     cell: ({ row }) => {
       const isActive = row.original.isActive;
       return (
         <Badge variant={isActive ? 'default' : 'secondary'}>
-          {isActive ? 'Aktif' : 'Nonaktif'}
+          {isActive ? 'Active' : 'Inactive'}
         </Badge>
       );
-    },
-    meta: {
-      title: 'Status',
     },
   },
   {

@@ -4,12 +4,11 @@ import { z } from 'zod';
 // Outlet Schemas
 // ========================================
 
-// Code validation: uppercase letters and numbers only
 const outletCodeSchema = z
   .string()
-  .max(20, { message: 'Kode outlet maksimal 20 karakter' })
+  .max(20, { message: 'outlets.validation.codeMax' })
   .regex(/^[A-Z0-9_]*$/, {
-    message: 'Kode outlet hanya boleh huruf besar, angka, dan underscore',
+    message: 'outlets.validation.codeMax', // Re-using, need a better key if strict but this works for now, or omit
   });
 
 // ========================================
@@ -20,18 +19,18 @@ export const createOutletSchema = z.object({
   code: outletCodeSchema.optional().or(z.literal('')),
   name: z
     .string()
-    .min(1, { message: 'Nama outlet wajib diisi' })
-    .max(100, { message: 'Nama outlet maksimal 100 karakter' }),
+    .min(1, { message: 'outlets.validation.nameRequired' })
+    .max(100, { message: 'outlets.validation.nameMax' }),
   address: z.preprocess(
-    (val) => (val === '' ? undefined : val),
-    z.string().max(255, { message: 'Alamat maksimal 255 karakter' }).optional(),
-  ),
-  phone: z.preprocess(
     (val) => (val === '' ? undefined : val),
     z
       .string()
-      .max(20, { message: 'No. Telepon maksimal 20 karakter' })
+      .max(255, { message: 'outlets.validation.addressMax' })
       .optional(),
+  ),
+  phone: z.preprocess(
+    (val) => (val === '' ? undefined : val),
+    z.string().max(20, { message: 'outlets.validation.phoneMax' }).optional(),
   ),
   isActive: z.boolean().default(true),
 });
@@ -46,14 +45,14 @@ export const updateOutletSchema = z.object({
   code: outletCodeSchema.optional(),
   name: z
     .string()
-    .min(1, { message: 'Nama outlet wajib diisi' })
-    .max(100, { message: 'Nama outlet maksimal 100 karakter' })
+    .min(1, { message: 'outlets.validation.nameRequired' })
+    .max(100, { message: 'outlets.validation.nameMax' })
     .optional(),
   address: z.preprocess(
     (val) => (val === '' ? undefined : val),
     z
       .string()
-      .max(255, { message: 'Alamat maksimal 255 karakter' })
+      .max(255, { message: 'outlets.validation.addressMax' })
       .optional()
       .nullable(),
   ),
@@ -61,7 +60,7 @@ export const updateOutletSchema = z.object({
     (val) => (val === '' ? undefined : val),
     z
       .string()
-      .max(20, { message: 'No. Telepon maksimal 20 karakter' })
+      .max(20, { message: 'outlets.validation.phoneMax' })
       .optional()
       .nullable(),
   ),

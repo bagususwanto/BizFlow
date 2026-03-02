@@ -39,9 +39,13 @@ interface OutletFormProps {
   isEdit?: boolean;
 }
 
+import { useTranslations } from 'next-intl';
+
 export function OutletForm({ initialData, isEdit = false }: OutletFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const t = useTranslations('outlets');
+  const tCommon = useTranslations('common');
 
   // Hooks for mutations
   const { mutateAsync: createOutlet, isPending: isCreating } =
@@ -84,13 +88,17 @@ export function OutletForm({ initialData, isEdit = false }: OutletFormProps) {
     try {
       if (isEdit && initialData) {
         await updateOutlet(data as UpdateOutletValues);
+        toast.success(t('messages.updateSuccess'));
       } else {
         await createOutlet(data as CreateOutletValues);
+        toast.success(t('messages.createSuccess'));
       }
       router.back();
       router.refresh();
     } catch (error: any) {
-      toast.error(error instanceof Error ? error.message : 'Terjadi kesalahan');
+      toast.error(
+        error instanceof Error ? error.message : t('messages.errorOccurred'),
+      );
     }
   };
 
@@ -103,11 +111,11 @@ export function OutletForm({ initialData, isEdit = false }: OutletFormProps) {
             name="code"
             render={({ field }) => (
               <FormItem>
-                <FormLabel optional>Kode Outlet</FormLabel>
+                <FormLabel optional>{t('form.codeLabel')}</FormLabel>
                 <div className="flex gap-2">
                   <FormControl>
                     <Input
-                      placeholder="Generate otomatis"
+                      placeholder={t('form.codePlaceholder')}
                       {...field}
                       value={field.value || ''}
                       disabled={isEdit}
@@ -129,9 +137,7 @@ export function OutletForm({ initialData, isEdit = false }: OutletFormProps) {
                     </Button>
                   )}
                 </div>
-                <FormDescription>
-                  Akan di-generate otomatis jika kosong.
-                </FormDescription>
+                <FormDescription>{t('form.codeDesc')}</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -142,10 +148,10 @@ export function OutletForm({ initialData, isEdit = false }: OutletFormProps) {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel required>Nama Outlet</FormLabel>
+                <FormLabel required>{t('form.nameLabel')}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Outlet Pusat"
+                    placeholder={t('form.namePlaceholder')}
                     {...field}
                     value={field.value || ''}
                   />
@@ -160,10 +166,10 @@ export function OutletForm({ initialData, isEdit = false }: OutletFormProps) {
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel optional>No. Telepon</FormLabel>
+                <FormLabel optional>{t('form.phoneLabel')}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="021-1234567"
+                    placeholder={t('form.phonePlaceholder')}
                     {...field}
                     value={field.value || ''}
                   />
@@ -179,10 +185,10 @@ export function OutletForm({ initialData, isEdit = false }: OutletFormProps) {
           name="address"
           render={({ field }) => (
             <FormItem>
-              <FormLabel optional>Alamat</FormLabel>
+              <FormLabel optional>{t('form.addressLabel')}</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Jl. Contoh No. 123, Jakarta Selatan"
+                  placeholder={t('form.addressPlaceholder')}
                   className="resize-none"
                   rows={3}
                   {...field}
@@ -200,9 +206,11 @@ export function OutletForm({ initialData, isEdit = false }: OutletFormProps) {
           render={({ field }) => (
             <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
               <div className="space-y-0.5">
-                <FormLabel className="text-base">Status Aktif</FormLabel>
+                <FormLabel className="text-base">
+                  {t('form.statusLabel')}
+                </FormLabel>
                 <div className="text-sm text-muted-foreground">
-                  Outlet yang nonaktif tidak dapat digunakan untuk transaksi.
+                  {t('form.statusDesc')}
                 </div>
               </div>
               <FormControl>
@@ -222,12 +230,12 @@ export function OutletForm({ initialData, isEdit = false }: OutletFormProps) {
             onClick={() => router.back()}
             disabled={isLoading}
           >
-            Batal
+            {tCommon('cancel')}
           </Button>
           <Button type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {!isLoading && <Save className="mr-2 h-4 w-4" />}
-            {isEdit ? 'Simpan Perubahan' : 'Buat Outlet'}
+            {isLoading ? t('form.savingBtn') : t('form.saveBtn')}
           </Button>
         </div>
       </form>

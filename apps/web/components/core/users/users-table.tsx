@@ -20,6 +20,7 @@ import {
   Label,
 } from '@bizflow/ui';
 import { useState, useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   SortingState,
   OnChangeFn,
@@ -57,6 +58,7 @@ export function UsersTable({
   onColumnVisibilityChange,
   onRefresh,
 }: UsersTableProps) {
+  const t = useTranslations('users');
   const [userToDelete, setUserToDelete] = useState<UserWithUsage | null>(null);
   const [userToReset, setUserToReset] = useState<User | null>(null);
   const [userToChangePin, setUserToChangePin] = useState<User | null>(null);
@@ -76,8 +78,9 @@ export function UsersTable({
           setUserToChangePin(user);
           setNewPin('');
         },
+        t,
       }),
-    [],
+    [t],
   );
 
   const sorting: SortingState = useMemo(

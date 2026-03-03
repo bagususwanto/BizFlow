@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   SortingState,
   OnChangeFn,
@@ -36,12 +37,16 @@ export function RolesTable({
   onColumnVisibilityChange,
   onRefresh,
 }: RolesTableProps) {
+  const t = useTranslations('roles');
   const [roleToDelete, setRoleToDelete] = useState<Role | null>(null);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
 
-  const columns = useMemo(() => getColumns({ onDelete: setRoleToDelete }), []);
+  const columns = useMemo(
+    () => getColumns({ onDelete: setRoleToDelete, t }),
+    [t],
+  );
 
   const sorting: SortingState = useMemo(
     () => [{ id: sortBy, desc: sortOrder === 'desc' }],

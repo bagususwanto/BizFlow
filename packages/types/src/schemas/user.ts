@@ -52,13 +52,13 @@ export const createUserSchema = z.object({
   ),
   name: z
     .string()
-    .min(1, { message: 'profile.validation.nameRequired' })
-    .max(100, { message: 'profile.validation.nameMax' }),
+    .min(1, { message: 'users.validation.nameRequired' })
+    .max(100, { message: 'users.validation.nameMax' }),
   phoneNumber: z.preprocess(
     (val) => (val === '' ? undefined : val),
-    z.string().max(20, { message: 'profile.validation.phoneMax' }).optional(),
+    z.string().max(20, { message: 'users.validation.phoneMax' }).optional(),
   ),
-  roleId: z.string().min(1, { message: 'profile.validation.roleRequired' }),
+  roleId: z.string().min(1, { message: 'users.validation.roleRequired' }),
   outletIds: z.array(z.string()).optional(),
   isActive: z.boolean().default(true),
 });
@@ -76,20 +76,20 @@ export const updateUserSchema = z.object({
   ),
   name: z
     .string()
-    .min(1, { message: 'profile.validation.nameRequired' })
-    .max(100, { message: 'profile.validation.nameMax' })
+    .min(1, { message: 'users.validation.nameRequired' })
+    .max(100, { message: 'users.validation.nameMax' })
     .optional(),
   phoneNumber: z.preprocess(
     (val) => (val === '' ? undefined : val),
     z
       .string()
-      .max(20, { message: 'profile.validation.phoneMax' })
+      .max(20, { message: 'users.validation.phoneMax' })
       .optional()
       .nullable(),
   ),
   roleId: z
     .string()
-    .min(1, { message: 'profile.validation.roleRequired' })
+    .min(1, { message: 'users.validation.roleRequired' })
     .optional(),
   outletIds: z.array(z.string()).optional(),
   isActive: z.boolean().optional(),

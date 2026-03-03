@@ -23,12 +23,14 @@ interface UsersColumnsProps {
   onDelete: (user: User) => void;
   onResetPassword: (user: User) => void;
   onChangePin: (user: User) => void;
+  t: (key: string) => string;
 }
 
 export const getColumns = ({
   onDelete,
   onResetPassword,
   onChangePin,
+  t,
 }: UsersColumnsProps): ColumnDef<User>[] => [
   {
     id: 'select',
@@ -52,7 +54,7 @@ export const getColumns = ({
   {
     accessorKey: 'username',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Username" />
+      <DataTableColumnHeader column={column} title={t('columns.username')} />
     ),
     cell: ({ row }) => (
       <div className="flex flex-col">
@@ -63,22 +65,22 @@ export const getColumns = ({
       </div>
     ),
     meta: {
-      title: 'Username',
+      title: t('columns.username'),
     },
   },
   {
     accessorKey: 'name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Nama Lengkap" />
+      <DataTableColumnHeader column={column} title={t('columns.name')} />
     ),
     meta: {
-      title: 'Nama Lengkap',
+      title: t('columns.name'),
     },
   },
   {
     accessorKey: 'role.name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Peran" />
+      <DataTableColumnHeader column={column} title={t('columns.role')} />
     ),
     cell: ({ row }) => (
       <Badge variant="outline" className="capitalize">
@@ -86,30 +88,30 @@ export const getColumns = ({
       </Badge>
     ),
     meta: {
-      title: 'Peran',
+      title: t('columns.role'),
     },
   },
   {
     accessorKey: 'isActive',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
+      <DataTableColumnHeader column={column} title={t('columns.status')} />
     ),
     cell: ({ row }) => {
       const isActive = row.original.isActive;
       return (
         <Badge variant={isActive ? 'default' : 'secondary'}>
-          {isActive ? 'Aktif' : 'Nonaktif'}
+          {isActive ? t('status.active') : t('status.inactive')}
         </Badge>
       );
     },
     meta: {
-      title: 'Status',
+      title: t('columns.status'),
     },
   },
   {
     accessorKey: 'lastLogin',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Login Terakhir" />
+      <DataTableColumnHeader column={column} title={t('columns.lastLogin')} />
     ),
     cell: ({ row }) => {
       if (!row.original.lastLogin) return '-';
@@ -122,7 +124,7 @@ export const getColumns = ({
       });
     },
     meta: {
-      title: 'Login Terakhir',
+      title: t('columns.lastLogin'),
     },
   },
   {
@@ -137,25 +139,25 @@ export const getColumns = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Buka menu</span>
+              <span className="sr-only">{t('actions.viewMenu')}</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+            <DropdownMenuLabel>{t('columns.actions')}</DropdownMenuLabel>
             <DropdownMenuItem asChild>
               <Link href={`/settings/users/${user.id}`}>
                 <Edit className="mr-2 h-4 w-4" />
-                Edit
+                {t('actions.edit')}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onResetPassword(user)}>
               <RotateCcw className="mr-2 h-4 w-4" />
-              Reset Password
+              {t('actions.resetPassword')}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onChangePin(user)}>
               <Lock className="mr-2 h-4 w-4" />
-              Ganti PIN
+              {t('actions.changePin')}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
@@ -163,7 +165,7 @@ export const getColumns = ({
               onClick={() => onDelete(user as any)}
             >
               <Trash2 className="mr-2 h-4 w-4" />
-              Hapus
+              {t('actions.delete')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

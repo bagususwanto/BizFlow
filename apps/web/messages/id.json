@@ -1628,5 +1628,117 @@
       "nameFormat": "Nama role hanya boleh huruf kecil dan underscore",
       "descMax": "Deskripsi maksimal 255 karakter"
     }
+  },
+  "users": {
+    "title": "Pengguna",
+    "description": "Manajemen pengguna yang terdaftar di sistem.",
+    "createLabel": "Tambah Pengguna",
+    "searchPlaceholder": "Cari pengguna...",
+    "summary": {
+      "total": "Total Pengguna",
+      "active": "Aktif",
+      "inactive": "Non-aktif"
+    },
+    "filter": {
+      "roleLabel": "Peran",
+      "statusLabel": "Status",
+      "statusActive": "Aktif",
+      "statusInactive": "Non-aktif"
+    },
+    "columns": {
+      "username": "Username",
+      "name": "Nama Lengkap",
+      "role": "Peran",
+      "status": "Status",
+      "lastLogin": "Login Terakhir",
+      "actions": "Aksi"
+    },
+    "status": {
+      "active": "Aktif",
+      "inactive": "Nonaktif"
+    },
+    "actions": {
+      "edit": "Edit",
+      "resetPassword": "Reset Password",
+      "changePin": "Ganti PIN",
+      "delete": "Hapus",
+      "viewMenu": "Buka menu"
+    },
+    "delete": {
+      "titleDeactivate": "Nonaktifkan User?",
+      "titleDelete": "Hapus User Permanen?",
+      "descDeactivate1": "User <bold>{username}</bold> akan dinonaktifkan. Data user tetap tersimpan.",
+      "descPermanent1": "User <bold>{username}</bold> akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.",
+      "descWarning": "Peringatan: Jika user masih memiliki riwayat aktivitas (transaksi, log, dll), sistem akan menolak penghapusan permanen.",
+      "deactivateBtn": "Nonaktifkan",
+      "deleteBtn": "Hapus Permanen",
+      "cancelBtn": "Batal",
+      "successMsg": "{count} user berhasil dihapus"
+    },
+    "resetPassword": {
+      "title": "Reset Password?",
+      "description": "Password untuk user <bold>{username}</bold> akan direset menjadi password acak baru.",
+      "resetBtn": "Reset Password",
+      "successTitle": "Password berhasil direset",
+      "successCopy": "Salin password ini sekarang.",
+      "errorMsg": "Gagal reset password"
+    },
+    "changePin": {
+      "title": "Ganti PIN Pengguna",
+      "description": "Masukkan 6 digit angka baru untuk PIN <bold>{username}</bold>.",
+      "newPinLabel": "PIN Baru",
+      "newPinPlaceholder": "123456",
+      "cancelBtn": "Batal",
+      "saveBtn": "Simpan PIN",
+      "savingBtn": "Menyimpan...",
+      "successMsg": "PIN pengguna berhasil diubah",
+      "errorMsg": "Gagal mengubah PIN",
+      "validationMsg": "PIN harus terdiri dari 6 digit angka"
+    },
+    "create": {
+      "title": "Buat User Baru",
+      "subtitle": "Isi detail untuk membuat akun pengguna baru.",
+      "cardTitle": "Informasi User",
+      "cardDesc": "Informasi dasar dan hak akses pengguna.",
+      "successMsg": "User berhasil dibuat"
+    },
+    "edit": {
+      "title": "Edit User",
+      "subtitle": "Ubah informasi akun pengguna dan hak aksesnya.",
+      "cardTitle": "Edit User: {username}",
+      "cardDesc": "Sesuaikan informasi dasar dan hak akses pengguna.",
+      "successMsg": "User berhasil diperbarui",
+      "errorMsg": "Gagal memuat data user"
+    },
+    "form": {
+      "usernameLabel": "Username",
+      "usernamePlaceholder": "johndoe",
+      "usernameDescEdit": "Username tidak dapat diubah.",
+      "nameLabel": "Nama Lengkap",
+      "namePlaceholder": "John Doe",
+      "emailLabel": "Email",
+      "emailPlaceholder": "john@example.com",
+      "roleLabel": "Role",
+      "rolePlaceholder": "Pilih Role",
+      "roleSearch": "Cari Role...",
+      "roleEmpty": "Role tidak ditemukan.",
+      "outletLabel": "Assign ke Outlet",
+      "outletPlaceholder": "Pilih Outlet...",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "******",
+      "pinLabel": "PIN",
+      "pinPlaceholder": "123456",
+      "statusLabel": "Status Aktif",
+      "statusDesc": "User yang nonaktif tidak dapat login ke sistem.",
+      "cancelBtn": "Batal",
+      "createBtn": "Buat User",
+      "saveBtn": "Simpan Perubahan"
+    },
+    "validation": {
+      "nameRequired": "Nama Lengkap wajib diisi",
+      "nameMax": "Nama Lengkap maksimal 100 karakter",
+      "phoneMax": "Nomor Telepon maksimal 20 karakter",
+      "roleRequired": "Peran wajib diisi"
+    }
   }
 }

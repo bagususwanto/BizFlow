@@ -9,27 +9,25 @@ import {
 } from '@bizflow/ui';
 import { UserForm } from '@/components/core/users/user-form';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
+import { useTranslations } from 'next-intl';
 
 export default function CreateUserPage() {
-  useBreadcrumb('/settings/users/create', 'Tambah Pengguna');
+  const t = useTranslations('users');
+  useBreadcrumb('/settings/users/create', t('create.title'));
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">
-          Buat Pengguna Baru
-        </h1>
-        <p className="text-muted-foreground">
-          Buat pengguna baru untuk mengakses sistem.
-        </p>
+        <h2 className="text-2xl font-bold tracking-tight">
+          {t('create.title')}
+        </h2>
+        <p className="text-muted-foreground">{t('create.subtitle')}</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Form Pengguna</CardTitle>
-          <CardDescription>
-            Isi detail pengguna baru di bawah ini.
-          </CardDescription>
+          <CardTitle>{t('create.cardTitle')}</CardTitle>
+          <CardDescription>{t('create.cardDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <UserForm />

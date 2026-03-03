@@ -23,8 +23,10 @@ import { usersService, UserWithUsage } from '@/services/users.service';
 import { User } from '@bizflow/types';
 import { DataListPage } from '@/components/shared/data-list-page';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
+import { useTranslations } from 'next-intl';
 
 function UsersContent() {
+  const t = useTranslations('users');
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -129,12 +131,12 @@ function UsersContent() {
 
       toast.success(
         <div className="flex flex-col gap-1">
-          <span>Password berhasil direset</span>
+          <span>{t('resetPassword.successTitle')}</span>
           <span className="font-mono bg-muted p-1 rounded select-all">
             {newPassword}
           </span>
           <span className="text-xs text-muted-foreground">
-            Salin password ini sekarang.
+            {t('resetPassword.successCopy')}
           </span>
         </div>,
         { duration: 10000 },
@@ -143,7 +145,7 @@ function UsersContent() {
       setUserToReset(null);
     } catch (error: any) {
       toast.error(
-        error instanceof Error ? error.message : 'Gagal reset password',
+        error instanceof Error ? error.message : t('resetPassword.errorMsg'),
       );
     } finally {
       setIsResetting(false);
@@ -155,7 +157,7 @@ function UsersContent() {
     if (!userToChangePin || !newPin) return;
 
     if (!/^\d{6}$/.test(newPin)) {
-      toast.error('PIN harus terdiri dari 6 digit angka');
+      toast.error(t('changePin.validationMsg'));
       return;
     }
 
@@ -164,12 +166,12 @@ function UsersContent() {
       await usersService.changePin(userToChangePin.id, {
         newPin,
       });
-      toast.success('PIN pengguna berhasil diubah');
+      toast.success(t('changePin.successMsg'));
       setUserToChangePin(null);
       setNewPin('');
     } catch (error: any) {
       toast.error(
-        error instanceof Error ? error.message : 'Gagal mengubah PIN',
+        error instanceof Error ? error.message : t('changePin.errorMsg'),
       );
     } finally {
       setIsChangingPin(false);
@@ -185,8 +187,9 @@ function UsersContent() {
           setUserToChangePin(user);
           setNewPin('');
         },
+        t,
       }),
-    [],
+    [t],
   );
 
   const data = (users || []) as UserWithUsage[];
@@ -200,10 +203,10 @@ function UsersContent() {
   return (
     <>
       <DataListPage
-        title="Pengguna"
-        description="Manajemen pengguna yang terdaftar di sistem."
+        title={t('title')}
+        description={t('description')}
         createLink="/settings/users/create"
-        createLabel="Tambah Pengguna"
+        createLabel={t('createLabel')}
         data={data}
         columns={columns}
         isLoading={isLoading}
@@ -236,7 +239,7 @@ function UsersContent() {
         // Search
         search={search}
         onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
-        searchPlaceholder="Cari pengguna..."
+        searchPlaceholder={t('searchPlaceholder')}
         // Filters
         filterValues={{ roleId, status }}
         onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
@@ -244,17 +247,17 @@ function UsersContent() {
         filters={[
           {
             key: 'roleId',
-            label: 'Peran',
+            label: t('filter.roleLabel'),
             options: roleOptions,
             // For now leaving generic, but we need to check if we can populate roles options.
             // If UsersToolbar fetched roles, we need to fetch them here or pass empty for now.
           },
           {
             key: 'status',
-            label: 'Status',
+            label: t('filter.statusLabel'),
             options: [
-              { label: 'Aktif', value: 'active' },
-              { label: 'Non-aktif', value: 'inactive' },
+              { label: t('filter.statusActive'), value: 'active' },
+              { label: t('filter.statusInactive'), value: 'inactive' },
             ],
             width: 'w-[150px]',
           },
@@ -274,35 +277,44 @@ function UsersContent() {
         open={!!userToDelete}
         onOpenChange={(open) => !open && setUserToDelete(null)}
         title={
-          userToDelete?.isActive ? 'Nonaktifkan User?' : 'Hapus User Permanen?'
+          userToDelete?.isActive
+            ? t('delete.titleDeactivate')
+            : t('delete.titleDelete')
         }
         description={
           userToDelete?.isActive ? (
             <>
-              User{' '}
-              <span className="font-medium text-foreground">
-                {userToDelete?.username}
-              </span>{' '}
-              akan dinonaktifkan. Data user tetap tersimpan.
+              {t.rich('delete.descDeactivate1', {
+                username: userToDelete?.username || '',
+                bold: (chunks) => (
+                  <span className="font-medium text-foreground">{chunks}</span>
+                ),
+              })}
             </>
           ) : (
             <>
               <p>
-                User{' '}
-                <span className="font-medium text-foreground">
-                  {userToDelete?.username}
-                </span>{' '}
-                akan dihapus secara permanen. Tindakan ini tidak dapat
-                dibatalkan.
+                {t.rich('delete.descPermanent1', {
+                  username: userToDelete?.username || '',
+                  bold: (chunks) => (
+                    <span className="font-medium text-foreground">
+                      {chunks}
+                    </span>
+                  ),
+                })}
               </p>
               <p className="mt-2 text-sm text-warning">
-                Peringatan: Jika user masih memiliki riwayat aktivitas
-                (transaksi, log, dll), sistem akan menolak penghapusan permanen.
+                {t('delete.descWarning')}
               </p>
             </>
           )
         }
-        confirmLabel={userToDelete?.isActive ? 'Nonaktifkan' : 'Hapus Permanen'}
+        confirmLabel={
+          userToDelete?.isActive
+            ? t('delete.deactivateBtn')
+            : t('delete.deleteBtn')
+        }
+        cancelLabel={t('delete.cancelBtn')}
         isDeleting={isDeleting}
         onConfirm={() => {
           if (userToDelete) {
@@ -316,17 +328,19 @@ function UsersContent() {
       <DeleteConfirmDialog
         open={!!userToReset}
         onOpenChange={(open) => !open && setUserToReset(null)}
-        title="Reset Password?"
+        title={t('resetPassword.title')}
         description={
           <>
-            Password untuk user{' '}
-            <span className="font-medium text-foreground">
-              {userToReset?.username}
-            </span>{' '}
-            akan direset menjadi password acak baru.
+            {t.rich('resetPassword.description', {
+              username: userToReset?.username || '',
+              bold: (chunks) => (
+                <span className="font-medium text-foreground">{chunks}</span>
+              ),
+            })}
           </>
         }
-        confirmLabel="Reset Password"
+        confirmLabel={t('resetPassword.resetBtn')}
+        cancelLabel={t('delete.cancelBtn')}
         variant="default"
         isDeleting={isResetting}
         onConfirm={handleResetPassword}
@@ -340,19 +354,22 @@ function UsersContent() {
         <DialogContent>
           <form onSubmit={handleChangePin}>
             <DialogHeader>
-              <DialogTitle>Ganti PIN Pengguna</DialogTitle>
+              <DialogTitle>{t('changePin.title')}</DialogTitle>
               <DialogDescription>
-                Masukkan 6 digit angka baru untuk PIN{' '}
-                <span className="font-medium text-foreground">
-                  {userToChangePin?.username}
-                </span>
-                .
+                {t.rich('changePin.description', {
+                  username: userToChangePin?.username || '',
+                  bold: (chunks) => (
+                    <span className="font-medium text-foreground">
+                      {chunks}
+                    </span>
+                  ),
+                })}
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="pin" className="text-right">
-                  PIN Baru
+                  {t('changePin.newPinLabel')}
                 </Label>
                 <Input
                   id="pin"
@@ -360,7 +377,7 @@ function UsersContent() {
                   inputMode="numeric"
                   pattern="\d{6}"
                   maxLength={6}
-                  placeholder="123456"
+                  placeholder={t('changePin.newPinPlaceholder')}
                   className="col-span-3"
                   value={newPin}
                   onChange={(e) => {
@@ -379,13 +396,15 @@ function UsersContent() {
                 onClick={() => setUserToChangePin(null)}
                 disabled={isChangingPin}
               >
-                Batal
+                {t('changePin.cancelBtn')}
               </Button>
               <Button
                 type="submit"
                 disabled={isChangingPin || newPin.length !== 6}
               >
-                {isChangingPin ? 'Menyimpan...' : 'Simpan PIN'}
+                {isChangingPin
+                  ? t('changePin.savingBtn')
+                  : t('changePin.saveBtn')}
               </Button>
             </DialogFooter>
           </form>

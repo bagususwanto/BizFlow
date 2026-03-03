@@ -30,6 +30,7 @@ import {
 import { usersService } from '@/services/users.service';
 import { useRoles, useActiveOutlets } from '@/hooks';
 import { MultiSelect } from '@/components/common/multi-select';
+import { useTranslations } from 'next-intl';
 
 interface UserFormProps {
   initialData?: User;
@@ -37,6 +38,7 @@ interface UserFormProps {
 }
 
 export function UserForm({ initialData, isEdit = false }: UserFormProps) {
+  const t = useTranslations('users');
   const router = useRouter();
   const queryClient = useQueryClient();
   const { roles, isLoading: isLoadingRoles } = useRoles();
@@ -76,10 +78,10 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
     try {
       if (isEdit && initialData) {
         await usersService.update(initialData.id, data as UpdateUserValues);
-        toast.success('User berhasil diperbarui');
+        toast.success(t('edit.successMsg'));
       } else {
         await usersService.create(data as CreateUserValues);
-        toast.success('User berhasil dibuat');
+        toast.success(t('create.successMsg'));
       }
 
       // Invalidate users query to refresh data on the list page
@@ -102,10 +104,10 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
             name="username"
             render={({ field }) => (
               <FormItem>
-                <FormLabel required>Username</FormLabel>
+                <FormLabel required>{t('form.usernameLabel')}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="johndoe"
+                    placeholder={t('form.usernamePlaceholder')}
                     {...field}
                     value={field.value as string}
                     disabled={isEdit}
@@ -113,7 +115,7 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
                 </FormControl>
                 {isEdit && (
                   <FormDescription>
-                    Username tidak dapat diubah.
+                    {t('form.usernameDescEdit')}
                   </FormDescription>
                 )}
                 <FormMessage />
@@ -126,10 +128,10 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel required>Nama Lengkap</FormLabel>
+                <FormLabel required>{t('form.nameLabel')}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="John Doe"
+                    placeholder={t('form.namePlaceholder')}
                     {...field}
                     value={field.value || ''}
                   />
@@ -144,11 +146,11 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel optional>Email</FormLabel>
+                <FormLabel optional>{t('form.emailLabel')}</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
-                    placeholder="john@example.com"
+                    placeholder={t('form.emailPlaceholder')}
                     {...field}
                     value={field.value || ''}
                   />
@@ -163,7 +165,7 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
             name="roleId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel required>Role</FormLabel>
+                <FormLabel required>{t('form.roleLabel')}</FormLabel>
                 <Combobox
                   options={roles.map((role) => ({
                     label: role.name,
@@ -171,9 +173,9 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
                   }))}
                   value={field.value as string}
                   onChange={field.onChange}
-                  placeholder="Pilih Role"
-                  searchPlaceholder="Cari Role..."
-                  emptyMessage="Role tidak ditemukan."
+                  placeholder={t('form.rolePlaceholder')}
+                  searchPlaceholder={t('form.roleSearch')}
+                  emptyMessage={t('form.roleEmpty')}
                 />
                 <FormMessage />
               </FormItem>
@@ -185,13 +187,13 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
             name="outletIds"
             render={({ field }) => (
               <FormItem className="col-span-2">
-                <FormLabel optional>Assign ke Outlet</FormLabel>
+                <FormLabel optional>{t('form.outletLabel')}</FormLabel>
                 <FormControl>
                   <MultiSelect
                     selected={field.value as string[]}
                     options={outletOptions}
                     onChange={field.onChange}
-                    placeholder="Pilih Outlet..."
+                    placeholder={t('form.outletPlaceholder')}
                   />
                 </FormControl>
                 <FormMessage />
@@ -206,11 +208,11 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel required>Password</FormLabel>
+                    <FormLabel required>{t('form.passwordLabel')}</FormLabel>
                     <FormControl>
                       <Input
                         type="password"
-                        placeholder="******"
+                        placeholder={t('form.passwordPlaceholder')}
                         {...field}
                         value={field.value as string}
                       />
@@ -225,12 +227,12 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
                 name="pin"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel optional>PIN</FormLabel>
+                    <FormLabel optional>{t('form.pinLabel')}</FormLabel>
                     <FormControl>
                       <Input
                         type="password"
                         inputMode="numeric"
-                        placeholder="123456"
+                        placeholder={t('form.pinPlaceholder')}
                         maxLength={6}
                         {...field}
                         value={field.value as string}
@@ -250,9 +252,11 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
           render={({ field }) => (
             <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
               <div className="space-y-0.5">
-                <FormLabel className="text-base">Status Aktif</FormLabel>
+                <FormLabel className="text-base">
+                  {t('form.statusLabel')}
+                </FormLabel>
                 <div className="text-sm text-muted-foreground">
-                  User yang nonaktif tidak dapat login ke sistem.
+                  {t('form.statusDesc')}
                 </div>
               </div>
               <FormControl>
@@ -272,12 +276,12 @@ export function UserForm({ initialData, isEdit = false }: UserFormProps) {
             onClick={() => router.back()}
             disabled={isSubmitting}
           >
-            Batal
+            {t('form.cancelBtn')}
           </Button>
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {!isSubmitting && <Save className="mr-2 h-4 w-4" />}
-            {isEdit ? 'Simpan Perubahan' : 'Buat User'}
+            {isEdit ? t('form.saveBtn') : t('form.createBtn')}
           </Button>
         </div>
       </form>

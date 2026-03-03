@@ -1628,5 +1628,117 @@
       "nameFormat": "Role name can only contain lowercase letters and underscores",
       "descMax": "Description must be at most 255 characters"
     }
+  },
+  "users": {
+    "title": "Users",
+    "description": "Management of users registered in the system.",
+    "createLabel": "Add User",
+    "searchPlaceholder": "Search users...",
+    "summary": {
+      "total": "Total Users",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "filter": {
+      "roleLabel": "Role",
+      "statusLabel": "Status",
+      "statusActive": "Active",
+      "statusInactive": "Inactive"
+    },
+    "columns": {
+      "username": "Username",
+      "name": "Full Name",
+      "role": "Role",
+      "status": "Status",
+      "lastLogin": "Last Login",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "actions": {
+      "edit": "Edit",
+      "resetPassword": "Reset Password",
+      "changePin": "Change PIN",
+      "delete": "Delete",
+      "viewMenu": "Open menu"
+    },
+    "delete": {
+      "titleDeactivate": "Deactivate User?",
+      "titleDelete": "Delete User Permanently?",
+      "descDeactivate1": "User <bold>{username}</bold> will be deactivated. User data remains saved.",
+      "descPermanent1": "User <bold>{username}</bold> will be permanently deleted. This action cannot be undone.",
+      "descWarning": "Warning: If the user still has activity history (transactions, logs, etc.), the system will reject permanent deletion.",
+      "deactivateBtn": "Deactivate",
+      "deleteBtn": "Delete Permanently",
+      "cancelBtn": "Cancel",
+      "successMsg": "{count} user(s) successfully deleted"
+    },
+    "resetPassword": {
+      "title": "Reset Password?",
+      "description": "Password for user <bold>{username}</bold> will be reset to a new random password.",
+      "resetBtn": "Reset Password",
+      "successTitle": "Password successfully reset",
+      "successCopy": "Copy this password now.",
+      "errorMsg": "Failed to reset password"
+    },
+    "changePin": {
+      "title": "Change User PIN",
+      "description": "Enter a new 6-digit number for <bold>{username}</bold>'s PIN.",
+      "newPinLabel": "New PIN",
+      "newPinPlaceholder": "123456",
+      "cancelBtn": "Cancel",
+      "saveBtn": "Save PIN",
+      "savingBtn": "Saving...",
+      "successMsg": "User PIN successfully changed",
+      "errorMsg": "Failed to change PIN",
+      "validationMsg": "PIN must be 6 digits"
+    },
+    "create": {
+      "title": "Create New User",
+      "subtitle": "Fill in the details to create a new user account.",
+      "cardTitle": "User Information",
+      "cardDesc": "Basic information and user access rights.",
+      "successMsg": "User successfully created"
+    },
+    "edit": {
+      "title": "Edit User",
+      "subtitle": "Update user account information and access rights.",
+      "cardTitle": "Edit User: {username}",
+      "cardDesc": "Customize user basic information and access rights.",
+      "successMsg": "User successfully updated",
+      "errorMsg": "Failed to load user data"
+    },
+    "form": {
+      "usernameLabel": "Username",
+      "usernamePlaceholder": "johndoe",
+      "usernameDescEdit": "Username cannot be changed.",
+      "nameLabel": "Full Name",
+      "namePlaceholder": "John Doe",
+      "emailLabel": "Email",
+      "emailPlaceholder": "john@example.com",
+      "roleLabel": "Role",
+      "rolePlaceholder": "Select Role",
+      "roleSearch": "Search Role...",
+      "roleEmpty": "Role not found.",
+      "outletLabel": "Assign to Outlet",
+      "outletPlaceholder": "Select Outlet...",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "******",
+      "pinLabel": "PIN",
+      "pinPlaceholder": "123456",
+      "statusLabel": "Active Status",
+      "statusDesc": "Inactive users cannot log into the system.",
+      "cancelBtn": "Cancel",
+      "createBtn": "Create User",
+      "saveBtn": "Save Changes"
+    },
+    "validation": {
+      "nameRequired": "Full Name is required",
+      "nameMax": "Full Name must be at most 100 characters",
+      "phoneMax": "Phone Number must be at most 20 characters",
+      "roleRequired": "Role is required"
+    }
   }
 }

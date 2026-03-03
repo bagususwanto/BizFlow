@@ -13,14 +13,16 @@ import {
 import { UserForm } from '@/components/core/users/user-form';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { useUser } from '@/hooks';
+import { useTranslations } from 'next-intl';
 
 export default function EditUserPage() {
+  const t = useTranslations('users');
   const params = useParams();
-  const id = params.id as string;
+  const id = params?.id as string;
   const { data: user, isLoading, isError } = useUser(id);
 
   // Set dynamic breadcrumb
-  useBreadcrumb(`/settings/users/${id}`, user?.username || 'Edit Pengguna');
+  useBreadcrumb(`/settings/users/${id}`, user?.name || t('edit.title'));
 
   if (isLoading) {
     return (
@@ -32,8 +34,8 @@ export default function EditUserPage() {
 
   if (isError || !user) {
     return (
-      <div className="flex h-full flex-1 items-center justify-center text-muted-foreground">
-        User tidak ditemukan
+      <div className="flex h-[50vh] items-center justify-center text-destructive">
+        {t('edit.errorMsg')}
       </div>
     );
   }
@@ -41,18 +43,16 @@ export default function EditUserPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Edit User</h1>
-        <p className="text-muted-foreground">
-          Ubah informasi user {user.username}.
-        </p>
+        <h2 className="text-2xl font-bold tracking-tight">{t('edit.title')}</h2>
+        <p className="text-muted-foreground">{t('edit.subtitle')}</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Form Edit User</CardTitle>
-          <CardDescription>
-            Perbarui informasi pengguna di bawah ini.
-          </CardDescription>
+          <CardTitle>
+            {t('edit.cardTitle', { username: user.username })}
+          </CardTitle>
+          <CardDescription>{t('edit.cardDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <UserForm initialData={user} isEdit />

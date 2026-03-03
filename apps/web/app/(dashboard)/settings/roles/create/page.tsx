@@ -16,9 +16,11 @@ import { rolesService } from '@/services/roles.service';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { RoleForm } from '@/components/core/roles/role-form';
 import type { CreateRoleValues } from '@bizflow/types';
+import { useTranslations } from 'next-intl';
 
 export default function CreateRolePage() {
-  useBreadcrumb('/settings/roles/create', 'Tambah Peran');
+  const t = useTranslations('roles');
+  useBreadcrumb('/settings/roles/create', t('create.title'));
 
   const router = useRouter();
   const token = useAuthStore((state) => state.accessToken);
@@ -43,7 +45,7 @@ export default function CreateRolePage() {
       return rolesService.create(values);
     },
     onSuccess: () => {
-      toast.success('Role berhasil dibuat');
+      toast.success(t('create.successMsg'));
       queryClient.invalidateQueries({ queryKey: ['roles'] });
       router.back();
       router.refresh();
@@ -64,7 +66,7 @@ export default function CreateRolePage() {
   if (isError || !permissionData) {
     return (
       <div className="flex h-[50vh] items-center justify-center text-destructive">
-        Gagal memuat data permissions
+        {t('create.errorMsg')}
       </div>
     );
   }
@@ -72,18 +74,16 @@ export default function CreateRolePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Buat Peran Baru</h2>
-        <p className="text-muted-foreground">
-          Buat peran baru dan tentukan hak aksesnya.
-        </p>
+        <h2 className="text-2xl font-bold tracking-tight">
+          {t('create.title')}
+        </h2>
+        <p className="text-muted-foreground">{t('create.subtitle')}</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Form Peran</CardTitle>
-          <CardDescription>
-            Isi detail peran dan pilih hak akses yang sesuai.
-          </CardDescription>
+          <CardTitle>{t('create.cardTitle')}</CardTitle>
+          <CardDescription>{t('create.cardDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <RoleForm

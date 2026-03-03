@@ -1546,5 +1546,87 @@
       "confirmPasswordRequired": "Konfirmasi password wajib diisi",
       "confirmPasswordMismatch": "Konfirmasi password tidak cocok"
     }
+  },
+  "roles": {
+    "title": "Peran & Akses",
+    "description": "Kelola hak akses pengguna aplikasi sesuai perannya.",
+    "createLabel": "Tambah Peran",
+    "searchPlaceholder": "Cari peran...",
+    "summary": {
+      "total": "Total",
+      "systemRoles": "System",
+      "customRoles": "Custom",
+      "totalUsersAssigned": "Pengguna (Terkait)"
+    },
+    "filter": {
+      "typeLabel": "Tipe Role",
+      "typeSystem": "System",
+      "typeCustom": "Custom"
+    },
+    "columns": {
+      "name": "Nama Role",
+      "description": "Deskripsi",
+      "users": "Pengguna",
+      "lastUpdate": "Update Terakhir",
+      "actions": "Aksi",
+      "systemBadge": "System"
+    },
+    "actions": {
+      "edit": "Edit",
+      "delete": "Hapus",
+      "viewMenu": "Buka menu"
+    },
+    "delete": {
+      "title": "Hapus Role?",
+      "descPermanent1": "Role <bold>{name}</bold> akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.",
+      "descWarning": "Peringatan: Jika role masih digunakan oleh user, sistem akan menolak penghapusan permanen.",
+      "cancelBtn": "Batal",
+      "successMsg": "{count} role berhasil dihapus",
+      "errorMsg": "Gagal menghapus role"
+    },
+    "create": {
+      "title": "Buat Peran Baru",
+      "subtitle": "Buat peran baru dan tentukan hak aksesnya.",
+      "cardTitle": "Form Peran",
+      "cardDesc": "Isi detail peran dan pilih hak akses yang sesuai.",
+      "successMsg": "Role berhasil dibuat",
+      "errorMsg": "Gagal memuat data permissions"
+    },
+    "edit": {
+      "title": "Edit Role",
+      "subtitle": "Ubah detail role dan sesuaikan hak aksesnya.",
+      "cardTitle": "Edit Role: {name}",
+      "sysDesc": "Role sistem memiliki batasan pengeditan.",
+      "customDesc": "Sesuaikan informasi dan hak akses role ini.",
+      "successMsg": "Role berhasil diperbarui",
+      "errorMsg": "Gagal memuat data role"
+    },
+    "form": {
+      "nameLabel": "Nama Role",
+      "namePlaceholder": "misal: staff_gudang",
+      "nameDesc1": "Gunakan huruf kecil dan underscore (a-z, _).",
+      "nameDescSystem": " Nama role sistem tidak dapat diubah.",
+      "descLabel": "Deskripsi",
+      "descPlaceholder": "Deskripsi singkat role ini",
+      "permissionsLabel": "Permissions",
+      "cancelBtn": "Batal",
+      "createBtn": "Buat Role",
+      "saveBtn": "Simpan Perubahan",
+      "savingBtn": "Menyimpan..."
+    },
+    "permissions": {
+      "title": "Hak Akses",
+      "description": "Atur hak akses untuk role ini berdasarkan modul dan aksi.",
+      "selectAll": "Pilih semua",
+      "accessCount": "{selected} / {total} akses"
+    },
+    "validation": {
+      "moduleRequired": "Module wajib diisi",
+      "actionRequired": "Action wajib diisi",
+      "nameRequired": "Nama role wajib diisi",
+      "nameMax": "Nama role maksimal 50 karakter",
+      "nameFormat": "Nama role hanya boleh huruf kecil dan underscore",
+      "descMax": "Deskripsi maksimal 255 karakter"
+    }
   }
 }

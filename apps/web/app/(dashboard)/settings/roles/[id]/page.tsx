@@ -16,8 +16,10 @@ import { rolesService } from '@/services/roles.service';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { RoleForm } from '@/components/core/roles/role-form';
 import type { UpdateRoleValues } from '@bizflow/types';
+import { useTranslations } from 'next-intl';
 
 export default function EditRolePage() {
+  const t = useTranslations('roles');
   const router = useRouter();
   const params = useParams();
   const id = params?.id as string;
@@ -51,7 +53,7 @@ export default function EditRolePage() {
   });
 
   // Set dynamic breadcrumb
-  useBreadcrumb(`/settings/roles/${id}`, role?.name || 'Edit Peran');
+  useBreadcrumb(`/settings/roles/${id}`, role?.name || t('edit.title'));
 
   const updateMutation = useMutation({
     mutationFn: (values: UpdateRoleValues) => {
@@ -59,7 +61,7 @@ export default function EditRolePage() {
       return rolesService.update(id, values);
     },
     onSuccess: () => {
-      toast.success('Role berhasil diperbarui');
+      toast.success(t('edit.successMsg'));
       queryClient.invalidateQueries({ queryKey: ['roles'] });
       queryClient.invalidateQueries({ queryKey: ['role', id] });
       router.back();
@@ -84,7 +86,7 @@ export default function EditRolePage() {
   if (isError || !permissionData || !role) {
     return (
       <div className="flex h-[50vh] items-center justify-center text-destructive">
-        Gagal memuat data role
+        {t('edit.errorMsg')}
       </div>
     );
   }
@@ -92,19 +94,15 @@ export default function EditRolePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Edit Role</h2>
-        <p className="text-muted-foreground">
-          Ubah detail role dan sesuaikan hak aksesnya.
-        </p>
+        <h2 className="text-2xl font-bold tracking-tight">{t('edit.title')}</h2>
+        <p className="text-muted-foreground">{t('edit.subtitle')}</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Edit Role: {role.name}</CardTitle>
+          <CardTitle>{t('edit.cardTitle', { name: role.name })}</CardTitle>
           <CardDescription>
-            {role.isSystemRole
-              ? 'Role sistem memiliki batasan pengeditan.'
-              : 'Sesuaikan informasi dan hak akses role ini.'}
+            {role.isSystemRole ? t('edit.sysDesc') : t('edit.customDesc')}
           </CardDescription>
         </CardHeader>
         <CardContent>

@@ -13,8 +13,10 @@ import { Role, rolesService } from '@/services/roles.service';
 import { DataListPage } from '@/components/shared/data-list-page';
 import { Box } from 'lucide-react';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
+import { useTranslations } from 'next-intl';
 
 function RolesContent() {
+  const t = useTranslations('roles');
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -78,29 +80,36 @@ function RolesContent() {
     try {
       setIsBulkDeleting(true);
       await rolesService.bulkDelete(ids);
-      toast.success(`${ids.length} role berhasil dihapus`);
+      toast.success(t('delete.successMsg', { count: ids.length }));
       refetch();
     } catch (error: any) {
       toast.error(
-        error instanceof Error ? error.message : 'Gagal menghapus role',
+        error instanceof Error ? error.message : t('delete.errorMsg'),
       );
     } finally {
       setIsBulkDeleting(false);
     }
   };
 
-  const columns = useMemo(() => getColumns({ onDelete: setRoleToDelete }), []);
+  const columns = useMemo(
+    () =>
+      getColumns({
+        t,
+        onDelete: (role) => setRoleToDelete(role),
+      }),
+    [t, roles],
+  );
 
-  const totalPages = meta?.totalPages || 1;
+  const totalPages = meta?.totalPages || 0;
   const totalItems = meta?.totalItems || 0;
 
   return (
     <>
       <DataListPage
-        title="Peran & Akses"
-        description="Kelola hak akses pengguna aplikasi sesuai perannya."
+        title={t('title')}
+        description={t('description')}
         createLink="/settings/roles/create"
-        createLabel="Tambah Peran"
+        createLabel={t('createLabel')}
         data={roles || []}
         columns={columns}
         isLoading={isLoading}
@@ -122,15 +131,19 @@ function RolesContent() {
             : undefined
         }
         summaryConfig={[
-          { key: 'total', label: 'Total', icon: Box },
+          { key: 'total', label: t('summary.total'), icon: Box },
           {
             key: 'systemRoles',
-            label: 'System',
+            label: t('summary.systemRoles'),
             icon: Box,
             className: 'text-info',
           },
-          { key: 'customRoles', label: 'Custom', icon: Box },
-          { key: 'totalUsersAssigned', label: 'Users Assigned', icon: Box },
+          { key: 'customRoles', label: t('summary.customRoles'), icon: Box },
+          {
+            key: 'totalUsersAssigned',
+            label: t('summary.totalUsersAssigned'),
+            icon: Box,
+          },
         ]}
         // Sorting
         sortBy={sortBy}
@@ -146,7 +159,7 @@ function RolesContent() {
         search={search} // Note: search here is the immediate value, but useRoles uses debounced.
         // If we want immediate feedback in input, we use 'search'.
         onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
-        searchPlaceholder="Cari peran..."
+        searchPlaceholder={t('searchPlaceholder')}
         // Filters
         filterValues={{ isSystemRole }}
         onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
@@ -154,10 +167,10 @@ function RolesContent() {
         filters={[
           {
             key: 'isSystemRole',
-            label: 'Tipe Role',
+            label: t('filter.typeLabel'),
             options: [
-              { label: 'System', value: 'true' },
-              { label: 'Custom', value: 'false' },
+              { label: t('filter.typeSystem'), value: 'true' },
+              { label: t('filter.typeCustom'), value: 'false' },
             ],
             width: 'w-[220px]',
           },
@@ -176,23 +189,23 @@ function RolesContent() {
       <DeleteConfirmDialog
         open={!!roleToDelete}
         onOpenChange={(open) => !open && setRoleToDelete(null)}
-        title="Hapus Role?"
+        title={t('delete.title')}
         description={
           <>
             <p>
-              Role{' '}
-              <span className="font-medium text-foreground">
-                {roleToDelete?.name}
-              </span>{' '}
-              akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.
+              {t.rich('delete.descPermanent1', {
+                name: roleToDelete?.name || '',
+                bold: (chunks) => (
+                  <span className="font-medium text-foreground">{chunks}</span>
+                ),
+              })}
             </p>
             <p className="mt-2 text-sm text-warning">
-              Peringatan: Jika role masih digunakan oleh user, sistem akan
-              menolak penghapusan permanen.
+              {t('delete.descWarning')}
             </p>
           </>
         }
-        cancelLabel="Batal"
+        cancelLabel={t('delete.cancelBtn')}
         onConfirm={() => {
           if (roleToDelete) {
             deleteRole(roleToDelete.id, {

@@ -1546,5 +1546,87 @@
       "confirmPasswordRequired": "Confirm password is required",
       "confirmPasswordMismatch": "Passwords do not match"
     }
+  },
+  "roles": {
+    "title": "Roles & Access",
+    "description": "Manage user application access rights according to their roles.",
+    "createLabel": "Add Role",
+    "searchPlaceholder": "Search roles...",
+    "summary": {
+      "total": "Total",
+      "systemRoles": "System",
+      "customRoles": "Custom",
+      "totalUsersAssigned": "Users Assigned"
+    },
+    "filter": {
+      "typeLabel": "Role Type",
+      "typeSystem": "System",
+      "typeCustom": "Custom"
+    },
+    "columns": {
+      "name": "Role Name",
+      "description": "Description",
+      "users": "Users",
+      "lastUpdate": "Last Update",
+      "actions": "Actions",
+      "systemBadge": "System"
+    },
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "viewMenu": "Open menu"
+    },
+    "delete": {
+      "title": "Delete Role?",
+      "descPermanent1": "Role <bold>{name}</bold> will be permanently deleted. This action cannot be undone.",
+      "descWarning": "Warning: If the role is still used by users, the system will reject permanent deletion.",
+      "cancelBtn": "Cancel",
+      "successMsg": "{count} role(s) successfully deleted",
+      "errorMsg": "Failed to delete role"
+    },
+    "create": {
+      "title": "Create New Role",
+      "subtitle": "Create a new role and specify its access rights.",
+      "cardTitle": "Role Form",
+      "cardDesc": "Fill in the role details and select appropriate access rights.",
+      "successMsg": "Role successfully created",
+      "errorMsg": "Failed to load permissions data"
+    },
+    "edit": {
+      "title": "Edit Role",
+      "subtitle": "Change role details and adjust its access rights.",
+      "cardTitle": "Edit Role: {name}",
+      "sysDesc": "System roles have editing restrictions.",
+      "customDesc": "Adjust the information and access rights of this role.",
+      "successMsg": "Role successfully updated",
+      "errorMsg": "Failed to load role data"
+    },
+    "form": {
+      "nameLabel": "Role Name",
+      "namePlaceholder": "e.g., warehouse_staff",
+      "nameDesc1": "Use lowercase letters and underscores (a-z, _).",
+      "nameDescSystem": " System role names cannot be changed.",
+      "descLabel": "Description",
+      "descPlaceholder": "Brief description of this role",
+      "permissionsLabel": "Permissions",
+      "cancelBtn": "Cancel",
+      "createBtn": "Create Role",
+      "saveBtn": "Save Changes",
+      "savingBtn": "Saving..."
+    },
+    "permissions": {
+      "title": "Access Rights",
+      "description": "Set access rights for this role based on modules and actions.",
+      "selectAll": "Select all",
+      "accessCount": "{selected} / {total} access"
+    },
+    "validation": {
+      "moduleRequired": "Module is required",
+      "actionRequired": "Action is required",
+      "nameRequired": "Role name is required",
+      "nameMax": "Role name must be at most 50 characters",
+      "nameFormat": "Role name can only contain lowercase letters and underscores",
+      "descMax": "Description must be at most 255 characters"
+    }
   }
 }

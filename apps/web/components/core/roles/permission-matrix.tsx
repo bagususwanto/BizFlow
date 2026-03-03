@@ -9,6 +9,7 @@ import {
 import type { PermissionData } from '@/services/roles.service';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '@bizflow/ui/utils';
+import { useTranslations } from 'next-intl';
 
 interface PermissionMatrixProps {
   data: PermissionData;
@@ -23,6 +24,7 @@ export function PermissionMatrix({
   onChange,
   disabled = false,
 }: PermissionMatrixProps) {
+  const t = useTranslations('roles');
   const { modules, actions } = data;
 
   const getPermission = (module: string, action: string) => {
@@ -84,9 +86,9 @@ export function PermissionMatrix({
     <div className="space-y-4 border rounded-lg p-4 bg-muted/10">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-lg font-medium">Hak Akses</h3>
+          <h3 className="text-lg font-medium">{t('permissions.title')}</h3>
           <p className="text-sm text-muted-foreground">
-            Atur hak akses untuk role ini berdasarkan modul dan aksi.
+            {t('permissions.description')}
           </p>
         </div>
       </div>
@@ -122,11 +124,12 @@ export function PermissionMatrix({
               >
                 <div className="flex items-center gap-4 mr-2">
                   <div className="text-xs text-muted-foreground no-underline">
-                    {
-                      selectedPermissions.filter((p) => p.module === module)
-                        .length
-                    }{' '}
-                    / {actions.length} akses
+                    {t('permissions.accessCount', {
+                      selected: selectedPermissions.filter(
+                        (p) => p.module === module,
+                      ).length,
+                      total: actions.length,
+                    })}
                   </div>
                   <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
                 </div>

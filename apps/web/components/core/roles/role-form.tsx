@@ -15,6 +15,7 @@ import {
 } from '@bizflow/ui';
 import { Loader2, Save } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 import { PermissionMatrix } from './permission-matrix';
 import type { PermissionData, Role } from '@/services/roles.service';
@@ -32,6 +33,7 @@ export function RoleForm({
   onSubmit,
   isSubmitting = false,
 }: RoleFormProps) {
+  const t = useTranslations('roles');
   const router = useRouter();
   const isEditing = !!initialData;
   const isSystemRole = initialData?.isSystemRole;
@@ -65,19 +67,17 @@ export function RoleForm({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel required>Nama Role</FormLabel>
+                <FormLabel required>{t('form.nameLabel')}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="misal: staff_gudang"
+                    placeholder={t('form.namePlaceholder')}
                     {...field}
                     disabled={isSubmitting || (isEditing && isSystemRole)}
                   />
                 </FormControl>
                 <FormDescription>
-                  Gunakan huruf kecil dan underscore (a-z, _).
-                  {isEditing &&
-                    isSystemRole &&
-                    ' Nama role sistem tidak dapat diubah.'}
+                  {t('form.nameDesc1')}
+                  {isEditing && isSystemRole && t('form.nameDescSystem')}
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -89,10 +89,10 @@ export function RoleForm({
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel optional>Deskripsi</FormLabel>
+                <FormLabel optional>{t('form.descLabel')}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Deskripsi singkat role ini"
+                    placeholder={t('form.descPlaceholder')}
                     {...field}
                     disabled={isSubmitting}
                   />
@@ -109,7 +109,7 @@ export function RoleForm({
           name="permissions"
           render={({ field }) => (
             <FormItem>
-              <FormLabel required>Permissions</FormLabel>
+              <FormLabel required>{t('form.permissionsLabel')}</FormLabel>
               <FormControl>
                 <PermissionMatrix
                   data={permissionData}
@@ -130,12 +130,12 @@ export function RoleForm({
             onClick={() => router.back()}
             disabled={isSubmitting}
           >
-            Batal
+            {t('form.cancelBtn')}
           </Button>
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {!isSubmitting && <Save className="mr-2 h-4 w-4" />}
-            {isEditing ? 'Simpan Perubahan' : 'Buat Role'}
+            {isEditing ? t('form.saveBtn') : t('form.createBtn')}
           </Button>
         </div>
       </form>

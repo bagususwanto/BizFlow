@@ -21,10 +21,12 @@ import type { Role } from '@/services/roles.service';
 
 interface RolesColumnsProps {
   onDelete: (role: Role) => void;
+  t: (key: string) => string;
 }
 
 export const getColumns = ({
   onDelete,
+  t,
 }: RolesColumnsProps): ColumnDef<Role>[] => [
   {
     id: 'select',
@@ -48,7 +50,7 @@ export const getColumns = ({
   {
     accessorKey: 'name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Nama Role" />
+      <DataTableColumnHeader column={column} title={t('columns.name')} />
     ),
     cell: ({ row }) => {
       const role = row.original;
@@ -57,30 +59,30 @@ export const getColumns = ({
           {role.name}
           {role.isSystemRole && (
             <Badge variant="secondary" className="text-xs">
-              System
+              {t('columns.systemBadge')}
             </Badge>
           )}
         </div>
       );
     },
     meta: {
-      title: 'Nama Role',
+      title: t('columns.name'),
     },
   },
   {
     accessorKey: 'description',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Deskripsi" />
+      <DataTableColumnHeader column={column} title={t('columns.description')} />
     ),
     cell: ({ row }) => row.getValue('description') || '-',
     meta: {
-      title: 'Deskripsi',
+      title: t('columns.description'),
     },
   },
   {
     accessorKey: 'userCount',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Pengguna" />
+      <DataTableColumnHeader column={column} title={t('columns.users')} />
     ),
     cell: ({ row }) => (
       <div className="flex items-center gap-1 text-muted-foreground">
@@ -89,23 +91,19 @@ export const getColumns = ({
       </div>
     ),
     meta: {
-      title: 'Pengguna',
+      title: t('columns.users'),
     },
   },
   {
     accessorKey: 'updatedAt',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Update Terakhir" />
+      <DataTableColumnHeader column={column} title={t('columns.lastUpdate')} />
     ),
     cell: ({ row }) => {
-      return new Date(row.original.updatedAt).toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-      });
+      return new Date(row.original.updatedAt).toLocaleDateString();
     },
     meta: {
-      title: 'Update Terakhir',
+      title: t('columns.lastUpdate'),
     },
   },
   {
@@ -118,16 +116,16 @@ export const getColumns = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Buka menu</span>
+              <span className="sr-only">{t('actions.viewMenu')}</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+            <DropdownMenuLabel>{t('columns.actions')}</DropdownMenuLabel>
             <DropdownMenuItem asChild>
               <Link href={`/settings/roles/${role.id}`}>
                 <Edit className="mr-2 h-4 w-4" />
-                Edit
+                {t('actions.edit')}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -137,7 +135,7 @@ export const getColumns = ({
               disabled={role.isSystemRole}
             >
               <Trash2 className="mr-2 h-4 w-4" />
-              Hapus
+              {t('actions.delete')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

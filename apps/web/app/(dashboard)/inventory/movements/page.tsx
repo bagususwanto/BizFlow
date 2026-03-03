@@ -18,8 +18,10 @@ import {
   generateFilename,
   formatDateForExport,
 } from '@/lib/export';
+import { useTranslations } from 'next-intl';
 
 function StockMovementsContent() {
+  const t = useTranslations('inventory.movements');
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -75,13 +77,13 @@ function StockMovementsContent() {
   const totalItems = data?.meta?.totalItems || 0;
 
   const movementTypes = [
-    { label: 'Penjualan (POS)', value: 'SALE' },
-    { label: 'Pembelian', value: 'PURCHASE' },
-    { label: 'Transfer Masuk', value: 'TRANSFER_IN' },
-    { label: 'Transfer Keluar', value: 'TRANSFER_OUT' },
-    { label: 'Adjustment', value: 'ADJUSTMENT' },
-    { label: 'Opname', value: 'OPNAME' },
-    { label: 'Retur', value: 'RETURN' },
+    { label: t('movementTypes.SALE'), value: 'SALE' },
+    { label: t('movementTypes.PURCHASE'), value: 'PURCHASE' },
+    { label: t('movementTypes.TRANSFER_IN'), value: 'TRANSFER_IN' },
+    { label: t('movementTypes.TRANSFER_OUT'), value: 'TRANSFER_OUT' },
+    { label: t('movementTypes.ADJUSTMENT'), value: 'ADJUSTMENT' },
+    { label: t('movementTypes.OPNAME'), value: 'OPNAME' },
+    { label: t('movementTypes.RETURN'), value: 'RETURN' },
   ];
 
   const columnsWithActions = useMemo(() => {
@@ -93,7 +95,7 @@ function StockMovementsContent() {
           variant="ghost"
           size="icon"
           onClick={() => setSelectedVariantId(row.original.variantId)}
-          title="Lihat Kartu Stok"
+          title={t('actions.viewCardTitle')}
         >
           <History className="h-4 w-4" />
         </Button>
@@ -101,16 +103,16 @@ function StockMovementsContent() {
     };
 
     // Remove existing actions column if any before adding ours
-    const baseColumns = getColumns(formatters).filter(
+    const baseColumns = getColumns(formatters, t as any).filter(
       (c) => c.id !== 'actions',
     );
     return [...baseColumns, actionColumn];
-  }, [formatters]);
+  }, [formatters, t]);
 
   const handleExport = async () => {
     try {
       setIsExporting(true);
-      toast.info('Mengekspor data riwayat stok...');
+      toast.info(t('exportMsg'));
 
       const movements = await stockService.exportMovements({
         search: debouncedSearch,
@@ -128,33 +130,37 @@ function StockMovementsContent() {
           { key: 'id', label: 'ID', width: 30 },
           {
             key: 'createdAt',
-            label: 'Tanggal',
+            label: t('columns.date'),
             format: formatDateForExport,
             width: 20,
           },
-          { key: 'type', label: 'Tipe', width: 18 },
-          { key: 'variant.product.name', label: 'Produk', width: 30 },
+          { key: 'type', label: t('columns.type'), width: 18 },
+          {
+            key: 'variant.product.name',
+            label: t('columns.product'),
+            width: 30,
+          },
           { key: 'variant.name', label: 'Varian', width: 25 },
           { key: 'variant.sku', label: 'SKU', width: 15 },
-          { key: 'warehouse.name', label: 'Gudang', width: 20 },
+          { key: 'warehouse.name', label: t('columns.warehouse'), width: 20 },
           {
             key: 'quantity',
-            label: 'Kuantitas',
+            label: t('columns.quantity'),
             width: 12,
             format: (val: any) =>
               `${val} ${movements.find((m) => m.id)?.variant?.product?.unit?.symbol || ''}`.trim(),
           },
           { key: 'referenceType', label: 'Tipe Referensi', width: 18 },
-          { key: 'referenceId', label: 'ID Referensi', width: 30 },
-          { key: 'notes', label: 'Catatan', width: 30 },
+          { key: 'referenceId', label: t('columns.reference'), width: 30 },
+          { key: 'notes', label: t('columns.notes'), width: 30 },
         ],
         generateFilename('stock-movements'),
-        'Riwayat Stok',
+        t('title'),
       );
-      toast.success(`Berhasil mengekspor ${movements.length} riwayat stok`);
+      toast.success(t('exportSuccess', { count: movements.length.toString() }));
     } catch (error) {
       console.error('Export error:', error);
-      toast.error('Gagal mengekspor riwayat stok');
+      toast.error(t('exportError'));
     } finally {
       setIsExporting(false);
     }
@@ -163,8 +169,8 @@ function StockMovementsContent() {
   return (
     <>
       <DataListPage
-        title="Riwayat Stok"
-        description="Monitor pergerakan stok masuk dan keluar"
+        title={t('title')}
+        description={t('description')}
         data={data?.data || []}
         columns={columnsWithActions}
         isLoading={isLoading}
@@ -188,7 +194,7 @@ function StockMovementsContent() {
         // Search
         search={search}
         onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
-        searchPlaceholder="Cari produk, SKU, atau no. referensi..."
+        searchPlaceholder={t('searchPlaceholder')}
         // Filters
         filterValues={{ warehouseId, type }}
         onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
@@ -196,14 +202,14 @@ function StockMovementsContent() {
         filters={[
           {
             key: 'warehouseId',
-            label: 'Gudang',
+            label: t('filter.warehouseLabel'),
             options:
               warehouses?.map((w) => ({ label: w.name, value: w.id })) || [],
             width: 'w-full md:w-[200px]',
           },
           {
             key: 'type',
-            label: 'Tipe Pergerakan',
+            label: t('filter.typeLabel'),
             options: movementTypes,
             width: 'w-full md:w-[200px]',
           },
@@ -221,7 +227,7 @@ function StockMovementsContent() {
             ) : (
               <Download className="mr-2 h-4 w-4" />
             )}
-            {isExporting ? 'Mengekspor...' : 'Export Excel'}
+            {isExporting ? t('exportingBtn') : t('exportBtn')}
           </Button>
         }
       />

@@ -1771,6 +1771,63 @@
       "actions": {
         "viewCardTitle": "View Stock Card"
       }
+    },
+    "movements": {
+      "title": "Stock Movements",
+      "description": "Monitor inward and outward stock movements",
+      "searchPlaceholder": "Search product, SKU, or reference no...",
+      "exportBtn": "Export Excel",
+      "exportingBtn": "Exporting...",
+      "exportSuccess": "Successfully exported {count} stock movements",
+      "exportError": "Failed to export stock movements",
+      "exportMsg": "Exporting stock movements data...",
+      "filter": {
+        "warehouseLabel": "Warehouse",
+        "typeLabel": "Movement Type"
+      },
+      "movementTypes": {
+        "SALE": "Sale (POS)",
+        "PURCHASE": "Purchase",
+        "TRANSFER_IN": "Transfer In",
+        "TRANSFER_OUT": "Transfer Out",
+        "ADJUSTMENT": "Adjustment",
+        "OPNAME": "Stocktake",
+        "RETURN": "Return",
+        "in": "In",
+        "out": "Out",
+        "IN": "In",
+        "OUT": "Out"
+      },
+      "columns": {
+        "date": "Date",
+        "type": "Type",
+        "product": "Product",
+        "warehouse": "Warehouse",
+        "reference": "Reference",
+        "quantity": "Quantity",
+        "notes": "Notes"
+      },
+      "actions": {
+        "viewCardTitle": "View Stock Card"
+      },
+      "card": {
+        "title": "Stock Card",
+        "description": "Stock movement history and running balance",
+        "datePlaceholder": "Select Date",
+        "openingBalance": "Opening Balance",
+        "netMovement": "Net Movement",
+        "closingBalance": "Closing Balance",
+        "table": {
+          "date": "Date",
+          "ref": "Ref No.",
+          "type": "Type",
+          "warehouse": "Warehouse",
+          "in": "In",
+          "out": "Out",
+          "balance": "Balance",
+          "empty": "No movement history"
+        }
+      }
     }
   }
 }

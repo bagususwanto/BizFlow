@@ -1771,6 +1771,63 @@
       "actions": {
         "viewCardTitle": "Lihat Kartu Stok"
       }
+    },
+    "movements": {
+      "title": "Riwayat Stok",
+      "description": "Monitor pergerakan stok masuk dan keluar",
+      "searchPlaceholder": "Cari produk, SKU, atau no. referensi...",
+      "exportBtn": "Export Excel",
+      "exportingBtn": "Mengekspor...",
+      "exportSuccess": "Berhasil mengekspor {count} riwayat stok",
+      "exportError": "Gagal mengekspor riwayat stok",
+      "exportMsg": "Mengekspor data riwayat stok...",
+      "filter": {
+        "warehouseLabel": "Gudang",
+        "typeLabel": "Tipe Pergerakan"
+      },
+      "movementTypes": {
+        "SALE": "Penjualan (POS)",
+        "PURCHASE": "Pembelian",
+        "TRANSFER_IN": "Transfer Masuk",
+        "TRANSFER_OUT": "Transfer Keluar",
+        "ADJUSTMENT": "Adjustment",
+        "OPNAME": "Opname",
+        "RETURN": "Retur",
+        "in": "Masuk",
+        "out": "Keluar",
+        "IN": "Masuk",
+        "OUT": "Keluar"
+      },
+      "columns": {
+        "date": "Tanggal",
+        "type": "Tipe",
+        "product": "Produk",
+        "warehouse": "Gudang",
+        "reference": "Referensi",
+        "quantity": "Jumlah",
+        "notes": "Catatan"
+      },
+      "actions": {
+        "viewCardTitle": "Lihat Kartu Stok"
+      },
+      "card": {
+        "title": "Kartu Stok",
+        "description": "Riwayat pergerakan stok dan saldo berjalan",
+        "datePlaceholder": "Pilih Tanggal",
+        "openingBalance": "Saldo Awal",
+        "netMovement": "Pergerakan Net",
+        "closingBalance": "Saldo Akhir",
+        "table": {
+          "date": "Tanggal",
+          "ref": "No. Ref",
+          "type": "Tipe",
+          "warehouse": "Gudang",
+          "in": "Masuk",
+          "out": "Keluar",
+          "balance": "Saldo",
+          "empty": "Tidak ada riwayat pergerakan"
+        }
+      }
     }
   }
 }

@@ -31,6 +31,7 @@ import {
 } from 'lucide-react';
 import { StockMovement } from '@/services/stock.service';
 import { cn } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 
 type DateRange = {
   from: Date | undefined;
@@ -50,6 +51,7 @@ export function StockCardDialog({
   onOpenChange,
   warehouseId,
 }: StockCardDialogProps) {
+  const t = useTranslations('inventory.movements');
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
 
   // Reset filter when dialog opens/closes or variant changes
@@ -77,9 +79,7 @@ export function StockCardDialog({
         <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <div className="space-y-1">
             <DialogTitle>{variantName}</DialogTitle>
-            <DialogDescription>
-              Riwayat pergerakan stok dan saldo berjalan
-            </DialogDescription>
+            <DialogDescription>{t('card.description')}</DialogDescription>
           </div>
           <div className="flex items-center gap-2 mr-4">
             <Popover>
@@ -103,7 +103,7 @@ export function StockCardDialog({
                       format(dateRange.from, 'dd MMM yyyy', { locale: id })
                     )
                   ) : (
-                    <span>Pilih Tanggal</span>
+                    <span>{t('card.datePlaceholder')}</span>
                   )}
                 </Button>
               </PopoverTrigger>
@@ -130,7 +130,7 @@ export function StockCardDialog({
             <div className="grid grid-cols-3 gap-4 mb-4">
               <div className="rounded-lg border p-3 text-center">
                 <div className="text-sm font-medium text-muted-foreground">
-                  Saldo Awal
+                  {t('card.openingBalance')}
                 </div>
                 <div className="text-xl font-bold">
                   {data?.openingBalance || 0}
@@ -138,7 +138,7 @@ export function StockCardDialog({
               </div>
               <div className="rounded-lg border p-3 text-center">
                 <div className="text-sm font-medium text-muted-foreground">
-                  Pergerakan Net
+                  {t('card.netMovement')}
                 </div>
                 <div className="text-xl font-bold">
                   {(data?.closingBalance || 0) - (data?.openingBalance || 0)}
@@ -146,7 +146,7 @@ export function StockCardDialog({
               </div>
               <div className="rounded-lg border p-3 text-center bg-muted/50">
                 <div className="text-sm font-medium text-muted-foreground">
-                  Saldo Akhir
+                  {t('card.closingBalance')}
                 </div>
                 <div className="text-xl font-bold text-primary">
                   {data?.closingBalance || 0}
@@ -158,13 +158,19 @@ export function StockCardDialog({
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Tanggal</TableHead>
-                    <TableHead>No. Ref</TableHead>
-                    <TableHead>Tipe</TableHead>
-                    <TableHead>Gudang</TableHead>
-                    <TableHead className="text-right">Masuk</TableHead>
-                    <TableHead className="text-right">Keluar</TableHead>
-                    <TableHead className="text-right">Saldo</TableHead>
+                    <TableHead>{t('card.table.date')}</TableHead>
+                    <TableHead>{t('card.table.ref')}</TableHead>
+                    <TableHead>{t('card.table.type')}</TableHead>
+                    <TableHead>{t('card.table.warehouse')}</TableHead>
+                    <TableHead className="text-right">
+                      {t('card.table.in')}
+                    </TableHead>
+                    <TableHead className="text-right">
+                      {t('card.table.out')}
+                    </TableHead>
+                    <TableHead className="text-right">
+                      {t('card.table.balance')}
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -177,7 +183,7 @@ export function StockCardDialog({
                         colSpan={7}
                         className="h-24 text-center text-muted-foreground"
                       >
-                        Tidak ada riwayat pergerakan
+                        {t('card.table.empty')}
                       </TableCell>
                     </TableRow>
                   )}
@@ -196,6 +202,7 @@ function StockMovementRow({
 }: {
   movement: StockMovement & { balance: number };
 }) {
+  const t = useTranslations('inventory.movements');
   const isIn = movement.quantity > 0;
   const qty = Math.abs(movement.quantity);
   const { formatDate, formatTime } = useFormatDate();
@@ -248,7 +255,7 @@ function StockMovementRow({
           variant={color}
           className="flex w-fit items-center text-[10px] px-1 py-0 h-5"
         >
-          {movement.type.replace('_', ' ')}
+          {t(`movementTypes.${movement.type}`)}
         </Badge>
       </TableCell>
       <TableCell className="text-sm">{movement.warehouse.name}</TableCell>

@@ -10,6 +10,7 @@ import { useFormatDate, DateFormatters } from '@/hooks';
 // Columns are defined as a function so useFormatDate hook can be called at the top.
 export function getColumns(
   formatters: DateFormatters,
+  t: (key: string) => string,
 ): ColumnDef<StockMovement>[] {
   const { formatDate, formatTime } = formatters;
   return [
@@ -17,7 +18,7 @@ export function getColumns(
       id: 'createdAt',
       accessorKey: 'createdAt',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Tanggal" />
+        <DataTableColumnHeader column={column} title={t('columns.date')} />
       ),
       cell: ({ row }) => {
         return (
@@ -36,7 +37,7 @@ export function getColumns(
       id: 'type',
       accessorKey: 'type',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Tipe" />
+        <DataTableColumnHeader column={column} title={t('columns.type')} />
       ),
       cell: ({ row }) => {
         const type = row.original.type;
@@ -69,14 +70,14 @@ export function getColumns(
         return (
           <Badge variant={color} className="flex w-fit items-center text-xs">
             {icon}
-            {type.replace('_', ' ')}
+            {t(`movementTypes.${type}`)}
           </Badge>
         );
       },
     },
     {
       id: 'product',
-      header: 'Produk',
+      header: t('columns.product'),
       cell: ({ row }) => {
         const variant = row.original.variant;
         return (
@@ -99,12 +100,12 @@ export function getColumns(
     },
     {
       accessorKey: 'warehouse',
-      header: 'Gudang',
+      header: t('columns.warehouse'),
       cell: ({ row }) => row.original.warehouse.name,
     },
     {
       accessorKey: 'reference',
-      header: 'Referensi',
+      header: t('columns.reference'),
       cell: ({ row }) => {
         const refId = row.original.referenceId;
         const refType = row.original.referenceType;
@@ -127,7 +128,10 @@ export function getColumns(
       accessorKey: 'quantity',
       header: ({ column }) => (
         <div className="flex justify-end pr-2">
-          <DataTableColumnHeader column={column} title="Jumlah" />
+          <DataTableColumnHeader
+            column={column}
+            title={t('columns.quantity')}
+          />
         </div>
       ),
       cell: ({ row }) => {
@@ -149,7 +153,7 @@ export function getColumns(
     },
     {
       accessorKey: 'notes',
-      header: 'Catatan',
+      header: t('columns.notes'),
       cell: ({ row }) => (
         <span
           className="text-sm text-muted-foreground line-clamp-1 max-w-[200px]"

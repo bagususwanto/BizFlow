@@ -77,6 +77,7 @@
     },
     "settings": {
       "title": "Pengaturan",
+      "myProfile": "Profil Saya",
       "general": "Pengaturan Umum",
       "roles": "Peran",
       "permissions": "Hak Akses",
@@ -1465,6 +1466,85 @@
       "outletRequired": "Outlet wajib dipilih",
       "typeRequired": "Tipe koneksi wajib dipilih",
       "widthRequired": "Lebar kertas wajib dipilih"
+    }
+  },
+  "profile": {
+    "page": {
+      "title": "Profil Saya",
+      "description": "Kelola informasi profil dan akun Anda.",
+      "failedLoad": "Gagal memuat profil",
+      "infoTitle": "Informasi Profil",
+      "infoDesc": "Perbarui nama, email, dan pengaturan keamanan Anda."
+    },
+    "form": {
+      "nameLabel": "Nama Lengkap",
+      "namePlaceholder": "Nama Lengkap",
+      "usernameLabel": "Username",
+      "usernameDesc": "Username tidak dapat diubah.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "email@example.com",
+      "roleLabel": "Role",
+      "roleDesc": "Hubungi admin untuk mengubah role.",
+      "saveBtn": "Simpan Profil",
+      "savingBtn": "Menyimpan...",
+      "successMsg": "Profil berhasil diperbarui",
+      "errorMsg": "Gagal memperbarui profil"
+    },
+    "security": {
+      "title": "Keamanan",
+      "description": "Kelola password dan PIN untuk login.",
+      "btnPassword": "Ganti Password",
+      "btnPin": "Ganti PIN"
+    },
+    "passwordDialog": {
+      "title": "Ganti Password",
+      "description": "Masukkan password saat ini dan password baru Anda.",
+      "currentLabel": "Password Lama",
+      "currentPlaceholder": "********",
+      "newLabel": "Password Baru",
+      "newPlaceholder": "********",
+      "newDesc": "Minimal 8 karakter, 1 huruf besar, dan 1 angka.",
+      "confirmLabel": "Konfirmasi Password",
+      "confirmPlaceholder": "********",
+      "cancelBtn": "Batal",
+      "saveBtn": "Simpan Password",
+      "successMsg": "Password berhasil diubah",
+      "errorMsg": "Gagal mengubah password"
+    },
+    "pinDialog": {
+      "title": "Ganti PIN",
+      "description": "Masukkan PIN saat ini (jika ada) dan PIN baru Anda.",
+      "currentLabel": "PIN Lama",
+      "currentOptional": "(Opsional)",
+      "currentPlaceholder": "Kosongkan jika belum punya PIN",
+      "newLabel": "PIN Baru",
+      "newPlaceholder": "6 digit angka",
+      "cancelBtn": "Batal",
+      "saveBtn": "Simpan PIN",
+      "savingBtn": "Menyimpan...",
+      "validationError": "PIN harus terdiri dari 6 digit angka",
+      "successMsg": "PIN berhasil diubah",
+      "errorMsg": "Gagal mengubah PIN"
+    },
+    "validation": {
+      "passwordMin": "Password minimal 8 karakter",
+      "passwordUppercase": "Password harus mengandung minimal 1 huruf besar",
+      "passwordNumber": "Password harus mengandung minimal 1 angka",
+      "pinMin": "PIN minimal 4 digit",
+      "pinMax": "PIN maksimal 6 digit",
+      "pinNumber": "PIN hanya boleh berisi angka",
+      "usernameMin": "Username minimal 4 karakter",
+      "usernameMax": "Username maksimal 50 karakter",
+      "usernameFormat": "Username hanya boleh huruf kecil, angka, dan underscore",
+      "emailInvalid": "Format email tidak valid",
+      "emailMax": "Email maksimal 100 karakter",
+      "nameRequired": "Nama wajib diisi",
+      "nameMax": "Nama maksimal 100 karakter",
+      "phoneMax": "No. Telepon maksimal 20 karakter",
+      "roleRequired": "Role wajib dipilih",
+      "currentPasswordRequired": "Password lama wajib diisi",
+      "confirmPasswordRequired": "Konfirmasi password wajib diisi",
+      "confirmPasswordMismatch": "Konfirmasi password tidak cocok"
     }
   }
 }

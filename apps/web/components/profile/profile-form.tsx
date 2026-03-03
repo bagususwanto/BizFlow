@@ -26,12 +26,14 @@ import {
 import { usersService } from '@/services/users.service';
 import { ChangePasswordDialog } from './dialog/change-password-dialog';
 import { ChangePinDialog } from './dialog/change-pin-dialog';
+import { useTranslations } from 'next-intl';
 
 interface ProfileFormProps {
   initialData: User;
 }
 
 export function ProfileForm({ initialData }: ProfileFormProps) {
+  const t = useTranslations('profile');
   const [showPinDialog, setShowPinDialog] = useState(false);
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
 
@@ -56,11 +58,9 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
         email: data.email,
         phoneNumber: data.phoneNumber,
       });
-      toast.success('Profil berhasil diperbarui');
+      toast.success(t('form.successMsg'));
     } catch (error: any) {
-      toast.error(
-        error instanceof Error ? error.message : 'Gagal memperbarui profil',
-      );
+      toast.error(error instanceof Error ? error.message : t('form.errorMsg'));
     }
   };
 
@@ -74,10 +74,10 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required>Nama Lengkap</FormLabel>
+                  <FormLabel required>{t('form.nameLabel')}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Nama Lengkap"
+                      placeholder={t('form.namePlaceholder')}
                       {...field}
                       value={field.value || ''}
                     />
@@ -88,10 +88,10 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
             />
 
             <div className="space-y-2">
-              <Label>Username</Label>
+              <Label>{t('form.usernameLabel')}</Label>
               <Input value={initialData.username} disabled />
               <p className="text-sm text-muted-foreground">
-                Username tidak dapat diubah.
+                {t('form.usernameDesc')}
               </p>
             </div>
 
@@ -100,11 +100,11 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel optional>Email</FormLabel>
+                  <FormLabel optional>{t('form.emailLabel')}</FormLabel>
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="email@example.com"
+                      placeholder={t('form.emailPlaceholder')}
                       {...field}
                       value={field.value || ''}
                     />
@@ -115,14 +115,14 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
             />
 
             <div className="space-y-2">
-              <Label>Role</Label>
+              <Label>{t('form.roleLabel')}</Label>
               <Input
                 value={initialData.role?.name || '-'}
                 disabled
                 className="capitalize"
               />
               <p className="text-sm text-muted-foreground">
-                Hubungi admin untuk mengubah role.
+                {t('form.roleDesc')}
               </p>
             </div>
           </div>
@@ -133,7 +133,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
               {!isSubmitting && <Save className="mr-2 h-4 w-4" />}
-              Simpan Profil
+              {isSubmitting ? t('form.savingBtn') : t('form.saveBtn')}
             </Button>
           </div>
         </form>
@@ -143,9 +143,9 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
 
       <div className="space-y-4">
         <div>
-          <h3 className="text-lg font-medium">Keamanan</h3>
+          <h3 className="text-lg font-medium">{t('security.title')}</h3>
           <p className="text-sm text-muted-foreground">
-            Kelola password dan PIN untuk login.
+            {t('security.description')}
           </p>
         </div>
 
@@ -156,7 +156,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
             onClick={() => setShowPasswordDialog(true)}
           >
             <Lock className="mr-2 h-4 w-4" />
-            Ganti Password
+            {t('security.btnPassword')}
           </Button>
 
           <Button
@@ -165,7 +165,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
             onClick={() => setShowPinDialog(true)}
           >
             <Lock className="mr-2 h-4 w-4" />
-            Ganti PIN
+            {t('security.btnPin')}
           </Button>
         </div>
       </div>

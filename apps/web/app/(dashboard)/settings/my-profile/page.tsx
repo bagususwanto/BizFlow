@@ -11,8 +11,10 @@ import {
   CardTitle,
 } from '@bizflow/ui';
 import { ProfileForm } from '@/components/profile/profile-form';
+import { useTranslations } from 'next-intl';
 
 export default function ProfilePage() {
+  const t = useTranslations('profile');
   const { user: authUser } = useAuthStore();
   const { data: user, isLoading, isError } = useUser(authUser?.id || '');
 
@@ -27,7 +29,7 @@ export default function ProfilePage() {
   if (isError || !user) {
     return (
       <div className="flex h-full flex-1 items-center justify-center text-muted-foreground">
-        Gagal memuat profil
+        {t('page.failedLoad')}
       </div>
     );
   }
@@ -35,18 +37,14 @@ export default function ProfilePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Profil Saya</h1>
-        <p className="text-muted-foreground">
-          Kelola informasi profil dan akun Anda.
-        </p>
+        <h1 className="text-2xl font-bold tracking-tight">{t('page.title')}</h1>
+        <p className="text-muted-foreground">{t('page.description')}</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Informasi Profil</CardTitle>
-          <CardDescription>
-            Perbarui nama, email, dan pengaturan keamanan Anda.
-          </CardDescription>
+          <CardTitle>{t('page.infoTitle')}</CardTitle>
+          <CardDescription>{t('page.infoDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <ProfileForm initialData={user} />

@@ -77,6 +77,7 @@
     },
     "settings": {
       "title": "Settings",
+      "myProfile": "My Profile",
       "general": "General Setting",
       "roles": "Roles",
       "permissions": "Permissions",
@@ -1465,6 +1466,85 @@
       "outletRequired": "Outlet is required",
       "typeRequired": "Connection type is required",
       "widthRequired": "Paper width is required"
+    }
+  },
+  "profile": {
+    "page": {
+      "title": "My Profile",
+      "description": "Manage your profile information and account.",
+      "failedLoad": "Failed to load profile",
+      "infoTitle": "Profile Information",
+      "infoDesc": "Update your name, email, and security settings."
+    },
+    "form": {
+      "nameLabel": "Full Name",
+      "namePlaceholder": "Full Name",
+      "usernameLabel": "Username",
+      "usernameDesc": "Username cannot be changed.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "email@example.com",
+      "roleLabel": "Role",
+      "roleDesc": "Contact admin to change role.",
+      "saveBtn": "Save Profile",
+      "savingBtn": "Saving...",
+      "successMsg": "Profile successfully updated",
+      "errorMsg": "Failed to update profile"
+    },
+    "security": {
+      "title": "Security",
+      "description": "Manage password and PIN for login.",
+      "btnPassword": "Change Password",
+      "btnPin": "Change PIN"
+    },
+    "passwordDialog": {
+      "title": "Change Password",
+      "description": "Enter your current password and new password.",
+      "currentLabel": "Current Password",
+      "currentPlaceholder": "********",
+      "newLabel": "New Password",
+      "newPlaceholder": "********",
+      "newDesc": "Minimum 8 characters, 1 uppercase, and 1 number.",
+      "confirmLabel": "Confirm Password",
+      "confirmPlaceholder": "********",
+      "cancelBtn": "Cancel",
+      "saveBtn": "Save Password",
+      "successMsg": "Password successfully changed",
+      "errorMsg": "Failed to change password"
+    },
+    "pinDialog": {
+      "title": "Change PIN",
+      "description": "Enter your current PIN (if any) and your new PIN.",
+      "currentLabel": "Current PIN",
+      "currentOptional": "(Optional)",
+      "currentPlaceholder": "Leave blank if you don't have a PIN",
+      "newLabel": "New PIN",
+      "newPlaceholder": "6 digit number",
+      "cancelBtn": "Cancel",
+      "saveBtn": "Save PIN",
+      "savingBtn": "Saving...",
+      "validationError": "PIN must be exactly 6 digits",
+      "successMsg": "PIN successfully changed",
+      "errorMsg": "Failed to change PIN"
+    },
+    "validation": {
+      "passwordMin": "Password must be at least 8 characters",
+      "passwordUppercase": "Password must contain at least 1 uppercase letter",
+      "passwordNumber": "Password must contain at least 1 number",
+      "pinMin": "PIN must be at least 4 digits",
+      "pinMax": "PIN must be at most 6 digits",
+      "pinNumber": "PIN can only contain numbers",
+      "usernameMin": "Username must be at least 4 characters",
+      "usernameMax": "Username must be at most 50 characters",
+      "usernameFormat": "Username can only contain lowercase letters, numbers, and underscores",
+      "emailInvalid": "Invalid email format",
+      "emailMax": "Email must be at most 100 characters",
+      "nameRequired": "Name is required",
+      "nameMax": "Name must be at most 100 characters",
+      "phoneMax": "Phone number must be at most 20 characters",
+      "roleRequired": "Role is required",
+      "currentPasswordRequired": "Current password is required",
+      "confirmPasswordRequired": "Confirm password is required",
+      "confirmPasswordMismatch": "Passwords do not match"
     }
   }
 }

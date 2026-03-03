@@ -16,6 +16,7 @@ import {
   Label,
 } from '@bizflow/ui';
 import { usersService } from '@/services/users.service';
+import { useTranslations } from 'next-intl';
 
 interface ChangePinDialogProps {
   userId: string;
@@ -28,6 +29,7 @@ export function ChangePinDialog({
   open,
   onOpenChange,
 }: ChangePinDialogProps) {
+  const t = useTranslations('profile');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [newPin, setNewPin] = useState('');
   const [currentPin, setCurrentPin] = useState('');
@@ -49,7 +51,7 @@ export function ChangePinDialog({
     if (!newPin) return;
 
     if (!/^\d{6}$/.test(newPin)) {
-      toast.error('PIN harus terdiri dari 6 digit angka');
+      toast.error(t('pinDialog.validationError'));
       return;
     }
 
@@ -59,11 +61,11 @@ export function ChangePinDialog({
         currentPin: currentPin || undefined,
         newPin,
       });
-      toast.success('PIN berhasil diubah');
+      toast.success(t('pinDialog.successMsg'));
       handleOpenChange(false);
     } catch (error: any) {
       toast.error(
-        error instanceof Error ? error.message : 'Gagal mengubah PIN',
+        error instanceof Error ? error.message : t('pinDialog.errorMsg'),
       );
     } finally {
       setIsSubmitting(false);
@@ -75,17 +77,15 @@ export function ChangePinDialog({
       <DialogContent>
         <form onSubmit={onSubmit}>
           <DialogHeader>
-            <DialogTitle>Ganti PIN</DialogTitle>
-            <DialogDescription>
-              Masukkan PIN saat ini (jika ada) dan PIN baru Anda.
-            </DialogDescription>
+            <DialogTitle>{t('pinDialog.title')}</DialogTitle>
+            <DialogDescription>{t('pinDialog.description')}</DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="currentPin" className="text-right">
-                PIN Lama{' '}
+                {t('pinDialog.currentLabel')}{' '}
                 <span className="text-xs font-normal text-muted-foreground ml-1">
-                  (Opsional)
+                  {t('pinDialog.currentOptional')}
                 </span>
               </Label>
               <Input
@@ -98,12 +98,12 @@ export function ChangePinDialog({
                 onChange={(e) =>
                   setCurrentPin(e.target.value.replace(/\D/g, ''))
                 }
-                placeholder="Kosongkan jika belum punya PIN"
+                placeholder={t('pinDialog.currentPlaceholder')}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="newPin" className="text-right">
-                PIN Baru{' '}
+                {t('pinDialog.newLabel')}{' '}
                 <span className="text-destructive font-bold ml-1">*</span>
               </Label>
               <Input
@@ -117,7 +117,7 @@ export function ChangePinDialog({
                   const val = e.target.value.replace(/\D/g, '');
                   if (val.length <= 6) setNewPin(val);
                 }}
-                placeholder="6 digit angka"
+                placeholder={t('pinDialog.newPlaceholder')}
               />
             </div>
           </div>
@@ -128,7 +128,7 @@ export function ChangePinDialog({
               onClick={() => handleOpenChange(false)}
               disabled={isSubmitting}
             >
-              Batal
+              {t('pinDialog.cancelBtn')}
             </Button>
             <Button
               type="submit"
@@ -137,12 +137,12 @@ export function ChangePinDialog({
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Menyimpan...
+                  {t('pinDialog.savingBtn')}
                 </>
               ) : (
                 <>
                   <Save className="mr-2 h-4 w-4" />
-                  Simpan PIN
+                  {t('pinDialog.saveBtn')}
                 </>
               )}
             </Button>

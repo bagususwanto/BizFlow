@@ -27,6 +27,7 @@ import {
   type ChangePasswordValues,
 } from '@bizflow/types';
 import { authService } from '@/services/auth.service';
+import { useTranslations } from 'next-intl';
 
 interface ChangePasswordDialogProps {
   open: boolean;
@@ -37,6 +38,7 @@ export function ChangePasswordDialog({
   open,
   onOpenChange,
 }: ChangePasswordDialogProps) {
+  const t = useTranslations('profile');
   const form = useForm<ChangePasswordValues>({
     resolver: zodResolver(changePasswordSchema),
     defaultValues: {
@@ -51,12 +53,12 @@ export function ChangePasswordDialog({
   const onSubmit = async (data: ChangePasswordValues) => {
     try {
       await authService.changePassword(data);
-      toast.success('Password berhasil diubah');
+      toast.success(t('passwordDialog.successMsg'));
       onOpenChange(false);
       form.reset();
     } catch (error: any) {
       toast.error(
-        error instanceof Error ? error.message : 'Gagal mengubah password',
+        error instanceof Error ? error.message : t('passwordDialog.errorMsg'),
       );
     }
   };
@@ -65,9 +67,9 @@ export function ChangePasswordDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Ganti Password</DialogTitle>
+          <DialogTitle>{t('passwordDialog.title')}</DialogTitle>
           <DialogDescription>
-            Masukkan password saat ini dan password baru Anda.
+            {t('passwordDialog.description')}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -77,9 +79,15 @@ export function ChangePasswordDialog({
               name="currentPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required>Password Lama</FormLabel>
+                  <FormLabel required>
+                    {t('passwordDialog.currentLabel')}
+                  </FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="********" {...field} />
+                    <Input
+                      type="password"
+                      placeholder={t('passwordDialog.currentPlaceholder')}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -90,12 +98,16 @@ export function ChangePasswordDialog({
               name="newPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required>Password Baru</FormLabel>
+                  <FormLabel required>{t('passwordDialog.newLabel')}</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="********" {...field} />
+                    <Input
+                      type="password"
+                      placeholder={t('passwordDialog.newPlaceholder')}
+                      {...field}
+                    />
                   </FormControl>
                   <FormDescription>
-                    Minimal 8 karakter, 1 huruf besar, dan 1 angka.
+                    {t('passwordDialog.newDesc')}
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -106,9 +118,15 @@ export function ChangePasswordDialog({
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required>Konfirmasi Password</FormLabel>
+                  <FormLabel required>
+                    {t('passwordDialog.confirmLabel')}
+                  </FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="********" {...field} />
+                    <Input
+                      type="password"
+                      placeholder={t('passwordDialog.confirmPlaceholder')}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -121,14 +139,14 @@ export function ChangePasswordDialog({
                 onClick={() => onOpenChange(false)}
                 disabled={isSubmitting}
               >
-                Batal
+                {t('passwordDialog.cancelBtn')}
               </Button>
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
                 {!isSubmitting && <Save className="mr-2 h-4 w-4" />}
-                Simpan Password
+                {t('passwordDialog.saveBtn')}
               </Button>
             </DialogFooter>
           </form>

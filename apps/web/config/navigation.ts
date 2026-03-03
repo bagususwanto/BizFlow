@@ -180,6 +180,10 @@ export const navigationConfig = {
       icon: Settings,
       items: [
         {
+          title: 'settings.myProfile',
+          url: '/settings/my-profile',
+        },
+        {
           title: 'settings.general',
           url: '/settings/general',
         },

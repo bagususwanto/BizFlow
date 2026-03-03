@@ -7,33 +7,33 @@ import { z } from 'zod';
 // Password validation: min 8 chars, 1 uppercase, 1 number
 const passwordSchema = z
   .string()
-  .min(8, { message: 'Password minimal 8 karakter' })
+  .min(8, { message: 'profile.validation.passwordMin' })
   .regex(/[A-Z]/, {
-    message: 'Password harus mengandung minimal 1 huruf besar',
+    message: 'profile.validation.passwordUppercase',
   })
-  .regex(/[0-9]/, { message: 'Password harus mengandung minimal 1 angka' });
+  .regex(/[0-9]/, { message: 'profile.validation.passwordNumber' });
 
 // PIN validation: 4-6 digits
 const pinSchema = z
   .string()
-  .min(4, { message: 'PIN minimal 4 digit' })
-  .max(6, { message: 'PIN maksimal 6 digit' })
-  .regex(/^\d+$/, { message: 'PIN hanya boleh berisi angka' });
+  .min(4, { message: 'profile.validation.pinMin' })
+  .max(6, { message: 'profile.validation.pinMax' })
+  .regex(/^\d+$/, { message: 'profile.validation.pinNumber' });
 
 // Username validation
 const usernameSchema = z
   .string()
-  .min(4, { message: 'Username minimal 4 karakter' })
-  .max(50, { message: 'Username maksimal 50 karakter' })
+  .min(4, { message: 'profile.validation.usernameMin' })
+  .max(50, { message: 'profile.validation.usernameMax' })
   .regex(/^[a-z0-9_]+$/, {
-    message: 'Username hanya boleh huruf kecil, angka, dan underscore',
+    message: 'profile.validation.usernameFormat',
   });
 
 // Email validation
 const emailSchema = z
   .string()
-  .email({ message: 'Format email tidak valid' })
-  .max(100, { message: 'Email maksimal 100 karakter' });
+  .email({ message: 'profile.validation.emailInvalid' })
+  .max(100, { message: 'profile.validation.emailMax' });
 
 // ========================================
 // Create User Schema
@@ -52,16 +52,13 @@ export const createUserSchema = z.object({
   ),
   name: z
     .string()
-    .min(1, { message: 'Nama wajib diisi' })
-    .max(100, { message: 'Nama maksimal 100 karakter' }),
+    .min(1, { message: 'profile.validation.nameRequired' })
+    .max(100, { message: 'profile.validation.nameMax' }),
   phoneNumber: z.preprocess(
     (val) => (val === '' ? undefined : val),
-    z
-      .string()
-      .max(20, { message: 'No. Telepon maksimal 20 karakter' })
-      .optional(),
+    z.string().max(20, { message: 'profile.validation.phoneMax' }).optional(),
   ),
-  roleId: z.string().min(1, { message: 'Role wajib dipilih' }),
+  roleId: z.string().min(1, { message: 'profile.validation.roleRequired' }),
   outletIds: z.array(z.string()).optional(),
   isActive: z.boolean().default(true),
 });
@@ -79,18 +76,21 @@ export const updateUserSchema = z.object({
   ),
   name: z
     .string()
-    .min(1, { message: 'Nama wajib diisi' })
-    .max(100, { message: 'Nama maksimal 100 karakter' })
+    .min(1, { message: 'profile.validation.nameRequired' })
+    .max(100, { message: 'profile.validation.nameMax' })
     .optional(),
   phoneNumber: z.preprocess(
     (val) => (val === '' ? undefined : val),
     z
       .string()
-      .max(20, { message: 'No. Telepon maksimal 20 karakter' })
+      .max(20, { message: 'profile.validation.phoneMax' })
       .optional()
       .nullable(),
   ),
-  roleId: z.string().min(1, { message: 'Role wajib dipilih' }).optional(),
+  roleId: z
+    .string()
+    .min(1, { message: 'profile.validation.roleRequired' })
+    .optional(),
   outletIds: z.array(z.string()).optional(),
   isActive: z.boolean().optional(),
 });
@@ -115,14 +115,14 @@ export const changePasswordSchema = z
   .object({
     currentPassword: z
       .string()
-      .min(1, { message: 'Password lama wajib diisi' }),
+      .min(1, { message: 'profile.validation.currentPasswordRequired' }),
     newPassword: passwordSchema,
     confirmPassword: z
       .string()
-      .min(1, { message: 'Konfirmasi password wajib diisi' }),
+      .min(1, { message: 'profile.validation.confirmPasswordRequired' }),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
-    message: 'Konfirmasi password tidak cocok',
+    message: 'profile.validation.confirmPasswordMismatch',
     path: ['confirmPassword'],
   });
 

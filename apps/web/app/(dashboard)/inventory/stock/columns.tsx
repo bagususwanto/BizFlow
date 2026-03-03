@@ -6,16 +6,19 @@ import { Badge } from '@bizflow/ui';
 import { DataTableColumnHeader } from '@/components/ui/data-table-column-header';
 import { useFormatDate, DateFormatters } from '@/hooks';
 
-export function getColumns(formatters: DateFormatters): ColumnDef<StockItem>[] {
+export function getColumns(
+  formatters: DateFormatters,
+  t: (key: string) => string,
+): ColumnDef<StockItem>[] {
   const { formatDateTime } = formatters;
   return [
     {
       id: 'name',
       accessorKey: 'variant.product.name',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Produk" />
+        <DataTableColumnHeader column={column} title={t('columns.product')} />
       ),
-      meta: { title: 'Produk' },
+      meta: { title: t('columns.product') },
       cell: ({ row }) => {
         const variant = row.original.variant;
         const product = variant.product;
@@ -37,17 +40,17 @@ export function getColumns(formatters: DateFormatters): ColumnDef<StockItem>[] {
       id: 'sku',
       accessorKey: 'variant.sku',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="SKU" />
+        <DataTableColumnHeader column={column} title={t('columns.sku')} />
       ),
-      meta: { title: 'SKU' },
+      meta: { title: t('columns.sku') },
       cell: ({ row }) => (
         <span className="font-mono text-xs">{row.original.variant.sku}</span>
       ),
     },
     {
       accessorKey: 'variant.product.category.name',
-      header: 'Kategori',
-      meta: { title: 'Kategori' },
+      header: t('columns.category'),
+      meta: { title: t('columns.category') },
       cell: ({ row }) => (
         <Badge variant="outline">
           {row.original.variant.product.category.name}
@@ -58,9 +61,9 @@ export function getColumns(formatters: DateFormatters): ColumnDef<StockItem>[] {
       id: 'warehouse',
       accessorKey: 'warehouse.name',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Gudang" />
+        <DataTableColumnHeader column={column} title={t('columns.warehouse')} />
       ),
-      meta: { title: 'Gudang' },
+      meta: { title: t('columns.warehouse') },
       cell: ({ row }) => (
         <div className="flex flex-col">
           <span>{row.original.warehouse.name}</span>
@@ -75,10 +78,13 @@ export function getColumns(formatters: DateFormatters): ColumnDef<StockItem>[] {
       accessorKey: 'quantity',
       header: ({ column }) => (
         <div className="flex justify-end pr-2">
-          <DataTableColumnHeader column={column} title="Total Stok" />
+          <DataTableColumnHeader
+            column={column}
+            title={t('columns.totalStock')}
+          />
         </div>
       ),
-      meta: { title: 'Total Stok' },
+      meta: { title: t('columns.totalStock') },
       cell: ({ row }) => {
         const unit = row.original.variant.product.unit.symbol;
         return (
@@ -90,8 +96,8 @@ export function getColumns(formatters: DateFormatters): ColumnDef<StockItem>[] {
     },
     {
       accessorKey: 'reservedQty',
-      header: () => <div className="text-right">Dipesan</div>,
-      meta: { title: 'Dipesan' },
+      header: () => <div className="text-right">{t('columns.reserved')}</div>,
+      meta: { title: t('columns.reserved') },
       cell: ({ row }) => {
         const unit = row.original.variant.product.unit.symbol;
         return (
@@ -103,8 +109,8 @@ export function getColumns(formatters: DateFormatters): ColumnDef<StockItem>[] {
     },
     {
       accessorKey: 'availableQty',
-      header: () => <div className="text-right">Tersedia</div>,
-      meta: { title: 'Tersedia' },
+      header: () => <div className="text-right">{t('columns.available')}</div>,
+      meta: { title: t('columns.available') },
       cell: ({ row }) => {
         const unit = row.original.variant.product.unit.symbol;
         const available = row.original.availableQty;
@@ -120,8 +126,8 @@ export function getColumns(formatters: DateFormatters): ColumnDef<StockItem>[] {
     },
     {
       accessorKey: 'updatedAt',
-      header: 'Update Terakhir',
-      meta: { title: 'Update Terakhir' },
+      header: t('columns.lastUpdate'),
+      meta: { title: t('columns.lastUpdate') },
       cell: ({ row }) => (
         <span className="text-xs text-muted-foreground">
           {formatDateTime(row.original.updatedAt)}

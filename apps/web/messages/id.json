@@ -1740,5 +1740,37 @@
       "phoneMax": "Nomor Telepon maksimal 20 karakter",
       "roleRequired": "Peran wajib diisi"
     }
+  },
+  "inventory": {
+    "stock": {
+      "title": "Stok Overview",
+      "description": "Monitor stok barang di semua gudang",
+      "searchPlaceholder": "Cari produk atau SKU...",
+      "summary": {
+        "totalRecords": "Total Record",
+        "totalRecordsDesc": "Semua record stok",
+        "stockVariants": "Varian Stok",
+        "stockVariantsDesc": "Produk dengan stok",
+        "warehouses": "Gudang",
+        "warehousesDesc": "Lokasi gudang"
+      },
+      "filter": {
+        "warehouseLabel": "Gudang",
+        "categoryLabel": "Kategori"
+      },
+      "columns": {
+        "product": "Produk",
+        "sku": "SKU",
+        "category": "Kategori",
+        "warehouse": "Gudang",
+        "totalStock": "Total Stok",
+        "reserved": "Dipesan",
+        "available": "Tersedia",
+        "lastUpdate": "Update Terakhir"
+      },
+      "actions": {
+        "viewCardTitle": "Lihat Kartu Stok"
+      }
+    }
   }
 }

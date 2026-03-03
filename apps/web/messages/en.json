@@ -1740,5 +1740,37 @@
       "phoneMax": "Phone Number must be at most 20 characters",
       "roleRequired": "Role is required"
     }
+  },
+  "inventory": {
+    "stock": {
+      "title": "Stock Overview",
+      "description": "Monitor stock levels across all warehouses",
+      "searchPlaceholder": "Search product or SKU...",
+      "summary": {
+        "totalRecords": "Total Records",
+        "totalRecordsDesc": "All stock records",
+        "stockVariants": "Stock Variants",
+        "stockVariantsDesc": "Products with stock",
+        "warehouses": "Warehouses",
+        "warehousesDesc": "Warehouse locations"
+      },
+      "filter": {
+        "warehouseLabel": "Warehouse",
+        "categoryLabel": "Category"
+      },
+      "columns": {
+        "product": "Product",
+        "sku": "SKU",
+        "category": "Category",
+        "warehouse": "Warehouse",
+        "totalStock": "Total Stock",
+        "reserved": "Reserved",
+        "available": "Available",
+        "lastUpdate": "Last Update"
+      },
+      "actions": {
+        "viewCardTitle": "View Stock Card"
+      }
+    }
   }
 }

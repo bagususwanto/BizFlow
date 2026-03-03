@@ -12,8 +12,10 @@ import { Loader2, Box, Layers, Warehouse, History } from 'lucide-react';
 import { Button, Card, CardContent, CardHeader, CardTitle } from '@bizflow/ui';
 import { StockCardDialog } from '../movements/stock-card-dialog';
 import { useFormatDate } from '@/hooks';
+import { useTranslations } from 'next-intl';
 
 function StockContent() {
+  const t = useTranslations('inventory.stock');
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -84,20 +86,20 @@ function StockContent() {
           variant="ghost"
           size="icon"
           onClick={() => setSelectedVariantId(row.original.variantId)}
-          title="Lihat Kartu Stok"
+          title={t('actions.viewCardTitle')}
         >
           <History className="h-4 w-4" />
         </Button>
       ),
     };
-    return [...getColumns(formatters), actionColumn];
-  }, [formatters]);
+    return [...getColumns(formatters, t as any), actionColumn];
+  }, [formatters, t]);
 
   return (
     <>
       <DataListPage
-        title="Stok Overview"
-        description="Monitor stok barang di semua gudang"
+        title={t('title')}
+        description={t('description')}
         data={data?.data || []}
         columns={columnsWithActions}
         isLoading={isLoading}
@@ -121,7 +123,7 @@ function StockContent() {
         // Search
         search={search}
         onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
-        searchPlaceholder="Cari produk atau SKU..."
+        searchPlaceholder={t('searchPlaceholder')}
         // Filters
         filterValues={{ warehouseId, categoryId }}
         onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
@@ -129,14 +131,14 @@ function StockContent() {
         filters={[
           {
             key: 'warehouseId',
-            label: 'Gudang',
+            label: t('filter.warehouseLabel'),
             options:
               warehouses?.map((w) => ({ label: w.name, value: w.id })) || [],
             width: 'w-full md:w-[200px]',
           },
           {
             key: 'categoryId',
-            label: 'Kategori',
+            label: t('filter.categoryLabel'),
             options:
               categories?.map((c) => ({ label: c.name, value: c.id })) || [],
             width: 'w-full md:w-[200px]',
@@ -151,7 +153,7 @@ function StockContent() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Total Record
+                  {t('summary.totalRecords')}
                 </CardTitle>
                 <Box className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
@@ -160,14 +162,14 @@ function StockContent() {
                   {summary.totalStockRecords || 0}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Semua record stok
+                  {t('summary.totalRecordsDesc')}
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Varian Stok
+                  {t('summary.stockVariants')}
                 </CardTitle>
                 <Layers className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
@@ -176,20 +178,24 @@ function StockContent() {
                   {summary.totalVariantsWithStock || 0}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Produk dengan stok
+                  {t('summary.stockVariantsDesc')}
                 </p>
               </CardContent>
             </Card>
             <Card className="md:col-span-2 lg:col-span-1">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Gudang</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  {t('summary.warehouses')}
+                </CardTitle>
                 <Warehouse className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
                   {summary.totalWarehouses || 0}
                 </div>
-                <p className="text-xs text-muted-foreground">Lokasi gudang</p>
+                <p className="text-xs text-muted-foreground">
+                  {t('summary.warehousesDesc')}
+                </p>
               </CardContent>
             </Card>
           </div>

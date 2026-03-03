@@ -30,6 +30,7 @@ import {
 } from '@bizflow/types';
 import type { Printer } from '@/services/printers.service';
 import { useCreatePrinter, useUpdatePrinter, useActiveOutlets } from '@/hooks';
+import { useTranslations } from 'next-intl';
 
 interface PrinterFormProps {
   initialData?: Printer;
@@ -38,6 +39,8 @@ interface PrinterFormProps {
 
 export function PrinterForm({ initialData, isEdit = false }: PrinterFormProps) {
   const router = useRouter();
+  const t = useTranslations('printers');
+  const tCommon = useTranslations('common');
 
   // Hooks for mutations
   const { mutateAsync: createPrinter, isPending: isCreating } =
@@ -93,13 +96,17 @@ export function PrinterForm({ initialData, isEdit = false }: PrinterFormProps) {
     try {
       if (isEdit && initialData) {
         await updatePrinter(data as UpdatePrinterValues);
+        toast.success(t('messages.updateSuccess'));
       } else {
         await createPrinter(data as CreatePrinterValues);
+        toast.success(t('messages.createSuccess'));
       }
       router.push('/settings/printers');
       router.refresh();
     } catch (error: any) {
-      toast.error(error instanceof Error ? error.message : 'Terjadi kesalahan');
+      toast.error(
+        error instanceof Error ? error.message : t('messages.errorOccurred'),
+      );
     }
   };
 
@@ -112,10 +119,10 @@ export function PrinterForm({ initialData, isEdit = false }: PrinterFormProps) {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel required>Nama Printer</FormLabel>
+                <FormLabel required>{t('form.nameLabel')}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Contoh: Kasir Depan"
+                    placeholder={t('form.namePlaceholder')}
                     {...field}
                     value={field.value || ''}
                   />
@@ -130,7 +137,7 @@ export function PrinterForm({ initialData, isEdit = false }: PrinterFormProps) {
             name="outletId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel required>Outlet</FormLabel>
+                <FormLabel required>{t('form.outletLabel')}</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   value={field.value as string}
@@ -138,7 +145,7 @@ export function PrinterForm({ initialData, isEdit = false }: PrinterFormProps) {
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Pilih Outlet" />
+                      <SelectValue placeholder={t('form.outletPlaceholder')} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -149,9 +156,7 @@ export function PrinterForm({ initialData, isEdit = false }: PrinterFormProps) {
                     ))}
                   </SelectContent>
                 </Select>
-                <FormDescription>
-                  Printer akan dikaitkan dengan outlet ini.
-                </FormDescription>
+                <FormDescription>{t('form.outletDesc')}</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -162,19 +167,23 @@ export function PrinterForm({ initialData, isEdit = false }: PrinterFormProps) {
             name="type"
             render={({ field }) => (
               <FormItem>
-                <FormLabel required>Tipe Koneksi</FormLabel>
+                <FormLabel required>{t('form.typeLabel')}</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   value={field.value as string}
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Pilih Tipe" />
+                      <SelectValue placeholder={t('form.typePlaceholder')} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="network">Network (LAN/WiFi)</SelectItem>
-                    <SelectItem value="usb">USB (Desktop App)</SelectItem>
+                    <SelectItem value="network">
+                      {t('form.typeOptions.network')}
+                    </SelectItem>
+                    <SelectItem value="usb">
+                      {t('form.typeOptions.usb')}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -187,14 +196,14 @@ export function PrinterForm({ initialData, isEdit = false }: PrinterFormProps) {
             name="width"
             render={({ field }) => (
               <FormItem>
-                <FormLabel required>Lebar Kertas</FormLabel>
+                <FormLabel required>{t('form.widthLabel')}</FormLabel>
                 <Select
                   onValueChange={(val) => field.onChange(parseInt(val))}
                   value={field.value ? String(field.value) : '58'}
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Pilih Lebar" />
+                      <SelectValue placeholder={t('form.widthPlaceholder')} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -213,18 +222,15 @@ export function PrinterForm({ initialData, isEdit = false }: PrinterFormProps) {
               name="address"
               render={({ field }) => (
                 <FormItem className="md:col-span-2">
-                  <FormLabel required>Alamat IP</FormLabel>
+                  <FormLabel required>{t('form.addressLabelIP')}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Contoh: 192.168.1.200:9100"
+                      placeholder={t('form.addressPlaceholderIP')}
                       {...field}
                       value={field.value || ''}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Format: DOmain/IP:PORT (Default port thermal printer
-                    biasanya 9100)
-                  </FormDescription>
+                  <FormDescription>{t('form.addressDescIP')}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -237,10 +243,10 @@ export function PrinterForm({ initialData, isEdit = false }: PrinterFormProps) {
               name="address"
               render={({ field }) => (
                 <FormItem className="md:col-span-2">
-                  <FormLabel>Path Device (Optional)</FormLabel>
+                  <FormLabel>{t('form.addressLabelUSB')}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Contoh: /dev/usb/lp0 (Linux/Mac) atau COM1 (Windows)"
+                      placeholder={t('form.addressPlaceholderUSB')}
                       {...field}
                       value={field.value || ''}
                     />
@@ -259,9 +265,11 @@ export function PrinterForm({ initialData, isEdit = false }: PrinterFormProps) {
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                 <div className="space-y-0.5">
-                  <FormLabel className="text-base">Printer Utama</FormLabel>
+                  <FormLabel className="text-base">
+                    {t('form.isDefaultLabel')}
+                  </FormLabel>
                   <div className="text-sm text-muted-foreground">
-                    Gunakan sebagai printer default untuk outlet ini.
+                    {t('form.isDefaultDesc')}
                   </div>
                 </div>
                 <FormControl>
@@ -280,9 +288,11 @@ export function PrinterForm({ initialData, isEdit = false }: PrinterFormProps) {
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                 <div className="space-y-0.5">
-                  <FormLabel className="text-base">Status Aktif</FormLabel>
+                  <FormLabel className="text-base">
+                    {t('form.statusLabel')}
+                  </FormLabel>
                   <div className="text-sm text-muted-foreground">
-                    Printer nonaktif tidak akan muncul di opsi cetak.
+                    {t('form.statusDesc')}
                   </div>
                 </div>
                 <FormControl>
@@ -303,12 +313,12 @@ export function PrinterForm({ initialData, isEdit = false }: PrinterFormProps) {
             onClick={() => router.back()}
             disabled={isLoading}
           >
-            Batal
+            {t('form.cancelBtn')}
           </Button>
           <Button type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {!isLoading && <Save className="mr-2 h-4 w-4" />}
-            {isEdit ? 'Simpan Perubahan' : 'Tambah Printer'}
+            {isLoading ? t('form.savingBtn') : t('form.saveBtn')}
           </Button>
         </div>
       </form>

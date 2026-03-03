@@ -9,11 +9,14 @@ import { getColumns } from '@/components/core/printers/columns';
 import { DataListPage } from '@/components/shared/data-list-page';
 import { Printer } from '@/services/printers.service';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
+import { useTranslations } from 'next-intl';
 
 function PrintersContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
+  const t = useTranslations('printers');
+  const tCommon = useTranslations('common');
 
   // Get state from URL params
   const page = Number(searchParams.get('page')) || 1;
@@ -87,8 +90,9 @@ function PrintersContent() {
       getColumns({
         onDelete: setPrinterToDelete,
         onTestPrint: handleTestPrint,
+        t,
       }),
-    [setPrinterToDelete],
+    [setPrinterToDelete, t],
   );
 
   const data = printers || [];
@@ -102,10 +106,10 @@ function PrintersContent() {
   return (
     <>
       <DataListPage
-        title="Printer Thermal"
-        description="Kelola printer thermal untuk struk dan dapur."
+        title={t('title')}
+        description={t('description')}
         createLink="/settings/printers/create"
-        createLabel="Tambah Printer"
+        createLabel={t('createLabel')}
         data={data}
         columns={columns}
         isLoading={isLoading}
@@ -137,7 +141,7 @@ function PrintersContent() {
         // Search
         search={search}
         onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
-        searchPlaceholder="Cari printer..."
+        searchPlaceholder={t('searchPlaceholder')}
         // Actions
         onBulkDelete={(ids) => {
           bulkDeletePrinters(ids, {
@@ -152,10 +156,10 @@ function PrintersContent() {
         filters={[
           {
             key: 'status',
-            label: 'Status',
+            label: tCommon('status.label'),
             options: [
-              { label: 'Aktif', value: 'active' },
-              { label: 'Non-aktif', value: 'inactive' },
+              { label: tCommon('status.active'), value: 'active' },
+              { label: tCommon('status.inactive'), value: 'inactive' },
             ],
             width: 'w-[150px]',
           },
@@ -174,36 +178,42 @@ function PrintersContent() {
         onOpenChange={(open) => !open && setPrinterToDelete(null)}
         title={
           printerToDelete?.isActive
-            ? 'Non-aktifkan Printer?'
-            : 'Aktifkan Printer?'
+            ? t('delete.titleActive')
+            : t('delete.titlePermanent')
         }
         description={
           printerToDelete?.isActive ? (
-            <>
-              Printer{' '}
-              <span className="font-medium text-foreground">
-                {printerToDelete?.name}
-              </span>{' '}
-              akan dinonaktifkan. Data printer tetap tersimpan.
-            </>
+            t.rich('delete.descActive', {
+              name: printerToDelete?.name || '',
+              bold: (chunks) => (
+                <span key="bold1" className="font-medium text-foreground">
+                  {chunks}
+                </span>
+              ),
+            })
           ) : (
             <>
               <p>
-                Printer{' '}
-                <span className="font-medium text-foreground">
-                  {printerToDelete?.name}
-                </span>{' '}
-                akan dihapus secara permanen. Tindakan ini tidak dapat
-                dibatalkan.
+                {t.rich('delete.descPermanent1', {
+                  name: printerToDelete?.name || '',
+                  bold: (chunks) => (
+                    <span key="bold2" className="font-medium text-foreground">
+                      {chunks}
+                    </span>
+                  ),
+                })}
               </p>
               <p className="mt-2 text-sm text-warning">
-                Peringatan: Jika printer masih memiliki riwayat transaksi,
-                sistem akan menolak penghapusan permanen.
+                {t('delete.descPermanent2')}
               </p>
             </>
           )
         }
-        confirmLabel={printerToDelete?.isActive ? 'Non-aktifkan' : 'Aktifkan'}
+        confirmLabel={
+          printerToDelete?.isActive
+            ? t('delete.btnDeactivate')
+            : t('delete.btnDeletePermanent')
+        }
         isDeleting={isDeleting}
         onConfirm={() => {
           if (printerToDelete) {

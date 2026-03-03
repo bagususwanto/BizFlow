@@ -11,28 +11,30 @@ import { z } from 'zod';
 export const createPrinterSchema = z.object({
   name: z
     .string()
-    .min(1, { message: 'Nama printer wajib diisi' })
-    .max(100, { message: 'Nama printer maksimal 100 karakter' }),
+    .min(1, { message: 'printers.validation.nameRequired' })
+    .max(100, { message: 'printers.validation.nameMax' }),
   type: z.enum(['network', 'usb'], {
-    message: 'Tipe printer harus network atau usb',
+    message: 'printers.validation.typeRequired',
   }),
   address: z.preprocess(
     (val) => (val === '' ? undefined : val),
     z
       .string()
-      .max(100, { message: 'Alamat printer maksimal 100 karakter' })
+      .max(255, { message: 'printers.validation.addressMax' })
       .optional(),
   ),
   width: z.coerce
     .number()
     .int()
     .refine((v) => v === 58 || v === 80, {
-      message: 'Lebar kertas harus 58 atau 80 mm',
+      message: 'printers.validation.widthRequired',
     })
     .default(58),
   isDefault: z.boolean().default(false),
   isActive: z.boolean().default(true),
-  outletId: z.string().min(1, { message: 'Outlet harus dipilih' }),
+  outletId: z
+    .string()
+    .min(1, { message: 'printers.validation.outletRequired' }),
 });
 
 export type CreatePrinterValues = z.infer<typeof createPrinterSchema>;
@@ -44,19 +46,19 @@ export type CreatePrinterValues = z.infer<typeof createPrinterSchema>;
 export const updatePrinterSchema = z.object({
   name: z
     .string()
-    .min(1, { message: 'Nama printer wajib diisi' })
-    .max(100, { message: 'Nama printer maksimal 100 karakter' })
+    .min(1, { message: 'printers.validation.nameRequired' })
+    .max(100, { message: 'printers.validation.nameMax' })
     .optional(),
   type: z
     .enum(['network', 'usb'], {
-      message: 'Tipe printer harus network atau usb',
+      message: 'printers.validation.typeRequired',
     })
     .optional(),
   address: z.preprocess(
     (val) => (val === '' ? undefined : val),
     z
       .string()
-      .max(100, { message: 'Alamat printer maksimal 100 karakter' })
+      .max(255, { message: 'printers.validation.addressMax' })
       .optional()
       .nullable(),
   ),
@@ -64,7 +66,7 @@ export const updatePrinterSchema = z.object({
     .number()
     .int()
     .refine((v) => v === 58 || v === 80, {
-      message: 'Lebar kertas harus 58 atau 80 mm',
+      message: 'printers.validation.widthRequired',
     })
     .optional(),
   isDefault: z.boolean().optional(),

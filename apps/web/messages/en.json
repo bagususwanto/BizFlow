@@ -1239,7 +1239,6 @@
     "roles": "Roles & Access",
     "outlets": "Outlets",
     "auditLogs": "Audit Logs",
-    "printers": "Printers",
     "description": "Manage company information, tax, display, and other system configurations.",
     "tabs": {
       "company": "Company",
@@ -1306,7 +1305,8 @@
       "footerPlaceholder": "Thank you message or customer service info"
     },
     "saveBtn": "Save Changes",
-    "savingBtn": "Saving..."
+    "savingBtn": "Saving...",
+    "printers": "Thermal Printers"
   },
   "outlets": {
     "title": "Outlets",
@@ -1375,6 +1375,96 @@
       "codeMax": "Outlet code maximum 20 characters",
       "addressMax": "Address maximum 255 characters",
       "phoneMax": "Phone number maximum 20 characters"
+    }
+  },
+  "printers": {
+    "title": "Thermal Printers",
+    "description": "Manage thermal printers for receipts and kitchen.",
+    "createLabel": "Add Printer",
+    "failedLoad": "Failed to load printers data",
+    "searchPlaceholder": "Search printers...",
+    "summary": {
+      "total": "Total Printers",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "columns": {
+      "name": "Printer Name",
+      "mainPrinter": "Main Printer",
+      "outlet": "Outlet",
+      "type": "Type",
+      "address": "Address / Port",
+      "width": "Paper Width",
+      "status": "Status",
+      "actions": {
+        "edit": "Edit",
+        "testPrint": "Test Print",
+        "delete": "Delete"
+      }
+    },
+    "delete": {
+      "titleActive": "Deactivate Printer?",
+      "descActive": "Printer <bold>{name}</bold> will be deactivated. Data will remain saved.",
+      "titlePermanent": "Permanently Delete Printer?",
+      "descPermanent1": "Printer <bold>{name}</bold> will be permanently deleted. This action cannot be undone.",
+      "descPermanent2": "Warning: If the printer still has transaction history, the system will reject permanent deletion.",
+      "btnDeactivate": "Deactivate",
+      "btnDeletePermanent": "Delete Permanently"
+    },
+    "create": {
+      "title": "Create New Printer",
+      "subtitle": "Add a new thermal printer to the system.",
+      "cardTitle": "Printer Form",
+      "cardDesc": "Complete the printer data below."
+    },
+    "edit": {
+      "title": "Edit Printer",
+      "subtitle": "Modify printer {name} information.",
+      "failedLoad": "Failed to load printer data",
+      "cardTitle": "Edit Printer Form",
+      "cardDesc": "Please modify the printer data below."
+    },
+    "form": {
+      "nameLabel": "Printer Name",
+      "namePlaceholder": "e.g., Cashier Front",
+      "outletLabel": "Outlet",
+      "outletPlaceholder": "Select Outlet",
+      "outletDesc": "Printer will be associated with this outlet.",
+      "typeLabel": "Connection Type",
+      "typePlaceholder": "Select Type",
+      "typeOptions": {
+        "network": "Network (LAN/WiFi)",
+        "usb": "USB (Desktop App)"
+      },
+      "widthLabel": "Paper Width",
+      "widthPlaceholder": "Select Width",
+      "addressLabelIP": "IP Address",
+      "addressPlaceholderIP": "e.g., 192.168.1.200:9100",
+      "addressDescIP": "Format: IP:PORT (Default thermal printer port is usually 9100)",
+      "addressLabelUSB": "Device Path (Optional)",
+      "addressPlaceholderUSB": "e.g., /dev/usb/lp0 (Linux/Mac) or COM1 (Windows)",
+      "isDefaultLabel": "Main Printer",
+      "isDefaultDesc": "Use as default printer for this outlet.",
+      "statusLabel": "Active Status",
+      "statusDesc": "Inactive printers won't appear in print options.",
+      "saveBtn": "Save Printer",
+      "savingBtn": "Saving...",
+      "cancelBtn": "Cancel"
+    },
+    "messages": {
+      "createSuccess": "Printer successfully created",
+      "updateSuccess": "Printer successfully updated",
+      "deleteSuccess": "Printer successfully deleted",
+      "errorOccurred": "An error occurred"
+    },
+    "validation": {
+      "nameRequired": "Printer name is required",
+      "nameMax": "Printer name maximum 100 characters",
+      "addressMax": "Address maximum 255 characters",
+      "invalidIp": "Invalid IP Address format",
+      "outletRequired": "Outlet is required",
+      "typeRequired": "Connection type is required",
+      "widthRequired": "Paper width is required"
     }
   }
 }

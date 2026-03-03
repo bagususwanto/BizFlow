@@ -27,11 +27,13 @@ import type { Printer } from '@/services/printers.service';
 interface PrintersColumnsProps {
   onDelete: (printer: Printer) => void;
   onTestPrint: (printer: Printer) => void;
+  t: any;
 }
 
 export const getColumns = ({
   onDelete,
   onTestPrint,
+  t,
 }: PrintersColumnsProps): ColumnDef<Printer>[] => [
   {
     id: 'select',
@@ -39,14 +41,14 @@ export const getColumns = ({
       <Checkbox
         checked={table.getIsAllPageRowsSelected()}
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Pilih semua"
+        aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Pilih baris"
+        aria-label="Select row"
       />
     ),
     enableSorting: false,
@@ -55,34 +57,30 @@ export const getColumns = ({
   {
     accessorKey: 'name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Nama Printer" />
+      <DataTableColumnHeader column={column} title={t('columns.name')} />
     ),
     cell: ({ row }) => (
       <div className="flex flex-col">
         <span className="font-medium">{row.original.name}</span>
         {row.original.isDefault && (
-          <span className="text-xs text-muted-foreground">Printer Utama</span>
+          <span className="text-xs text-muted-foreground">
+            {t('columns.mainPrinter')}
+          </span>
         )}
       </div>
     ),
-    meta: {
-      title: 'Nama Printer',
-    },
   },
   {
     accessorKey: 'outlet',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Outlet" />
+      <DataTableColumnHeader column={column} title={t('columns.outlet')} />
     ),
     cell: ({ row }) => <span>{row.original.outlet?.name || '-'}</span>,
-    meta: {
-      title: 'Outlet',
-    },
   },
   {
     accessorKey: 'type',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Tipe" />
+      <DataTableColumnHeader column={column} title={t('columns.type')} />
     ),
     cell: ({ row }) => {
       const type = row.original.type;
@@ -92,14 +90,11 @@ export const getColumns = ({
         </Badge>
       );
     },
-    meta: {
-      title: 'Tipe',
-    },
   },
   {
     accessorKey: 'address',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Alamat / Port" />
+      <DataTableColumnHeader column={column} title={t('columns.address')} />
     ),
     cell: ({ row }) => (
       <div
@@ -109,35 +104,26 @@ export const getColumns = ({
         {row.original.address || '-'}
       </div>
     ),
-    meta: {
-      title: 'Alamat / Port',
-    },
   },
   {
     accessorKey: 'width',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Kertas" />
+      <DataTableColumnHeader column={column} title={t('columns.width')} />
     ),
     cell: ({ row }) => <span>{row.original.width}mm</span>,
-    meta: {
-      title: 'Kertas',
-    },
   },
   {
     accessorKey: 'isActive',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
+      <DataTableColumnHeader column={column} title={t('columns.status')} />
     ),
     cell: ({ row }) => {
       const isActive = row.original.isActive;
       return (
         <Badge variant={isActive ? 'default' : 'secondary'}>
-          {isActive ? 'Aktif' : 'Nonaktif'}
+          {isActive ? 'Active' : 'Inactive'}
         </Badge>
       );
-    },
-    meta: {
-      title: 'Status',
     },
   },
   {
@@ -155,11 +141,11 @@ export const getColumns = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem asChild>
               <Link href={`/settings/printers/${printer.id}`}>
                 <Edit className="mr-2 h-4 w-4" />
-                Edit
+                {t('columns.actions.edit')}
               </Link>
             </DropdownMenuItem>
 
@@ -170,7 +156,7 @@ export const getColumns = ({
               disabled={!printer.isActive}
             >
               <PrinterIcon className="mr-2 h-4 w-4" />
-              Test Print
+              {t('columns.actions.testPrint')}
             </DropdownMenuItem>
 
             <DropdownMenuSeparator />
@@ -180,7 +166,7 @@ export const getColumns = ({
               onClick={() => onDelete(printer)}
             >
               <Trash2 className="mr-2 h-4 w-4" />
-              Hapus
+              {t('columns.actions.delete')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

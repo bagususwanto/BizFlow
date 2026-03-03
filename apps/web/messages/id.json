@@ -1239,7 +1239,6 @@
     "roles": "Peran & Akses",
     "outlets": "Outlet",
     "auditLogs": "Log Audit",
-    "printers": "Printer",
     "description": "Kelola informasi perusahaan, pajak, tampilan, dan konfigurasi sistem lainnya.",
     "tabs": {
       "company": "Perusahaan",
@@ -1306,7 +1305,8 @@
       "footerPlaceholder": "Ucapan terima kasih atau informasi layanan pelanggan"
     },
     "saveBtn": "Simpan Perubahan",
-    "savingBtn": "Menyimpan..."
+    "savingBtn": "Menyimpan...",
+    "printers": "Printer Thermal"
   },
   "outlets": {
     "title": "Outlet",
@@ -1375,6 +1375,96 @@
       "codeMax": "Kode outlet maksimal 20 karakter",
       "addressMax": "Alamat maksimal 255 karakter",
       "phoneMax": "Nomor telepon maksimal 20 karakter"
+    }
+  },
+  "printers": {
+    "title": "Printer Thermal",
+    "description": "Kelola printer thermal untuk struk dan dapur.",
+    "createLabel": "Tambah Printer",
+    "failedLoad": "Gagal memuat data printer",
+    "searchPlaceholder": "Cari printer...",
+    "summary": {
+      "total": "Total Printer",
+      "active": "Aktif",
+      "inactive": "Non-aktif"
+    },
+    "columns": {
+      "name": "Nama Printer",
+      "mainPrinter": "Printer Utama",
+      "outlet": "Outlet",
+      "type": "Tipe",
+      "address": "Alamat / Port",
+      "width": "Kertas",
+      "status": "Status",
+      "actions": {
+        "edit": "Edit",
+        "testPrint": "Test Print",
+        "delete": "Hapus"
+      }
+    },
+    "delete": {
+      "titleActive": "Non-aktifkan Printer?",
+      "descActive": "Printer <bold>{name}</bold> akan dinonaktifkan. Data printer tetap tersimpan.",
+      "titlePermanent": "Hapus Printer Permanen?",
+      "descPermanent1": "Printer <bold>{name}</bold> akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.",
+      "descPermanent2": "Peringatan: Jika printer masih memiliki riwayat transaksi, sistem akan menolak penghapusan permanen.",
+      "btnDeactivate": "Non-aktifkan",
+      "btnDeletePermanent": "Hapus Permanen"
+    },
+    "create": {
+      "title": "Buat Printer Baru",
+      "subtitle": "Tambahkan printer thermal baru ke dalam sistem.",
+      "cardTitle": "Formulir Printer",
+      "cardDesc": "Lengkapi data printer di bawah ini."
+    },
+    "edit": {
+      "title": "Edit Printer",
+      "subtitle": "Ubah informasi printer {name}.",
+      "failedLoad": "Gagal memuat data printer",
+      "cardTitle": "Formulir Edit Printer",
+      "cardDesc": "Silakan ubah data printer di bawah ini."
+    },
+    "form": {
+      "nameLabel": "Nama Printer",
+      "namePlaceholder": "Contoh: Kasir Depan",
+      "outletLabel": "Outlet",
+      "outletPlaceholder": "Pilih Outlet",
+      "outletDesc": "Printer akan dikaitkan dengan outlet ini.",
+      "typeLabel": "Tipe Koneksi",
+      "typePlaceholder": "Pilih Tipe",
+      "typeOptions": {
+        "network": "Network (LAN/WiFi)",
+        "usb": "USB (Desktop App)"
+      },
+      "widthLabel": "Lebar Kertas",
+      "widthPlaceholder": "Pilih Lebar",
+      "addressLabelIP": "Alamat IP",
+      "addressPlaceholderIP": "Contoh: 192.168.1.200:9100",
+      "addressDescIP": "Format: IP:PORT (Default port thermal printer biasanya 9100)",
+      "addressLabelUSB": "Path Device (Optional)",
+      "addressPlaceholderUSB": "Contoh: /dev/usb/lp0 (Linux/Mac) atau COM1 (Windows)",
+      "isDefaultLabel": "Printer Utama",
+      "isDefaultDesc": "Gunakan sebagai printer default untuk outlet ini.",
+      "statusLabel": "Status Aktif",
+      "statusDesc": "Printer nonaktif tidak akan muncul di opsi cetak.",
+      "saveBtn": "Simpan Printer",
+      "savingBtn": "Menyimpan...",
+      "cancelBtn": "Batal"
+    },
+    "messages": {
+      "createSuccess": "Printer berhasil dibuat",
+      "updateSuccess": "Printer berhasil diperbarui",
+      "deleteSuccess": "Printer berhasil dihapus",
+      "errorOccurred": "Terjadi kesalahan"
+    },
+    "validation": {
+      "nameRequired": "Nama printer wajib diisi",
+      "nameMax": "Nama printer maksimal 100 karakter",
+      "addressMax": "Alamat maksimal 255 karakter",
+      "invalidIp": "Format IP Address tidak valid",
+      "outletRequired": "Outlet wajib dipilih",
+      "typeRequired": "Tipe koneksi wajib dipilih",
+      "widthRequired": "Lebar kertas wajib dipilih"
     }
   }
 }

@@ -12,6 +12,8 @@ import {
 } from '@bizflow/ui';
 import { ReactNode } from 'react';
 
+import { useTranslations } from 'next-intl';
+
 interface DeleteConfirmDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -28,27 +30,34 @@ interface DeleteConfirmDialogProps {
 export function DeleteConfirmDialog({
   open,
   onOpenChange,
-  title = 'Apakah anda yakin?',
-  description = 'Tindakan ini tidak dapat dibatalkan. Data akan dihapus secara permanen.',
+  title,
+  description,
   onConfirm,
   isDeleting = false,
-  confirmLabel = 'Hapus',
-  cancelLabel = 'Batal',
+  confirmLabel,
+  cancelLabel,
   variant = 'destructive',
   showConfirm = true,
 }: DeleteConfirmDialogProps) {
+  const t = useTranslations('common');
+
+  const displayTitle = title || t('confirmDeleteTitle');
+  const displayDesc = description || t('confirmDeleteDesc');
+  const displayConfirm = confirmLabel || t('delete');
+  const displayCancel = cancelLabel || t('cancel');
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogTitle>{displayTitle}</AlertDialogTitle>
           <AlertDialogDescription asChild>
-            <div className="text-sm text-muted-foreground">{description}</div>
+            <div className="text-sm text-muted-foreground">{displayDesc}</div>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isDeleting}>
-            {cancelLabel}
+            {displayCancel}
           </AlertDialogCancel>
           {showConfirm && (
             <AlertDialogAction
@@ -63,7 +72,7 @@ export function DeleteConfirmDialog({
               }}
               disabled={isDeleting}
             >
-              {isDeleting ? 'Memproses...' : confirmLabel}
+              {isDeleting ? t('processing') : displayConfirm}
             </AlertDialogAction>
           )}
         </AlertDialogFooter>

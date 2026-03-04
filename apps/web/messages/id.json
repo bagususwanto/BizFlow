@@ -2428,6 +2428,8 @@
       }
     },
     "columns": {
+      "selectAll": "Pilih semua",
+      "selectRow": "Pilih baris",
       "adjustmentNumber": "Nomor",
       "date": "Tanggal",
       "warehouse": "Gudang",
@@ -2436,7 +2438,10 @@
       "status": "Status",
       "totalQty": "Total Qty",
       "createdBy": "Dibuat Oleh",
-      "actions": "Aksi"
+      "actions": "Aksi",
+      "viewDetails": "Lihat detail",
+      "edit": "Ubah",
+      "delete": "Hapus"
     },
     "filters": {
       "status": {

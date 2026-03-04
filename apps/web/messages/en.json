@@ -2428,6 +2428,8 @@
       }
     },
     "columns": {
+      "selectAll": "Select all",
+      "selectRow": "Select row",
       "adjustmentNumber": "Number",
       "date": "Date",
       "warehouse": "Warehouse",
@@ -2436,7 +2438,10 @@
       "status": "Status",
       "totalQty": "Total Qty",
       "createdBy": "Created By",
-      "actions": "Actions"
+      "actions": "Actions",
+      "viewDetails": "View details",
+      "edit": "Edit",
+      "delete": "Delete"
     },
     "filters": {
       "status": {

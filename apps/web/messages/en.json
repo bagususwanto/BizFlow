@@ -2914,7 +2914,10 @@
         "generalCustomer": "General",
         "status": "Status",
         "total": "Total"
-      }
+      },
+      "title": "Transaction History",
+      "description": "View and manage POS sales transaction history.",
+      "searchPlaceholder": "Search Order No..."
     }
   }
 }

@@ -48,8 +48,11 @@ export default function PosTransactionsPage() {
 
       <div className="flex-1 p-6 overflow-auto">
         <DataListPage
-          title="Riwayat Transaksi"
-          description="Lihat dan kelola riwayat transaksi penjualan POS."
+          title={t('transactions.title') || 'Riwayat Transaksi'}
+          description={
+            t('transactions.description') ||
+            'Lihat dan kelola riwayat transaksi penjualan POS.'
+          }
           data={transactions}
           columns={columns}
           isLoading={isLoading}
@@ -70,7 +73,9 @@ export default function PosTransactionsPage() {
             setSearch(v);
             setPage(1);
           }}
-          searchPlaceholder="Cari No. Order..."
+          searchPlaceholder={
+            t('transactions.searchPlaceholder') || 'Cari No. Order...'
+          }
           onReset={handleReset}
         />
       </div>

@@ -2399,6 +2399,193 @@
       }
     }
   },
+  "adjustments": {
+    "title": "Penyesuaian Stok",
+    "description": "Buat dan kelola penyesuaian stok, termasuk koreksi dan penghapusan.",
+    "createLabel": "Buat Penyesuaian",
+    "searchPlaceholder": "Cari nomor penyesuaian, gudang, atau catatan...",
+    "failedLoad": "Gagal memuat daftar penyesuaian stok",
+    "summary": {
+      "total": {
+        "title": "Total Penyesuaian",
+        "desc": "Semua catatan"
+      },
+      "draft": {
+        "title": "Draf",
+        "desc": "Belum diajukan"
+      },
+      "pending": {
+        "title": "Menunggu Persetujuan",
+        "desc": "Menunggu di-review"
+      },
+      "approved": {
+        "title": "Disetujui",
+        "desc": "Stok diperbarui"
+      },
+      "rejected": {
+        "title": "Ditolak",
+        "desc": "Pengajuan ditolak"
+      }
+    },
+    "columns": {
+      "adjustmentNumber": "Nomor",
+      "date": "Tanggal",
+      "warehouse": "Gudang",
+      "type": "Tipe",
+      "reason": "Alasan",
+      "status": "Status",
+      "totalQty": "Total Qty",
+      "createdBy": "Dibuat Oleh",
+      "actions": "Aksi"
+    },
+    "filters": {
+      "status": {
+        "label": "Status",
+        "draft": "Draf",
+        "pending": "Pending",
+        "approved": "Disetujui",
+        "rejected": "Ditolak"
+      },
+      "type": {
+        "label": "Tipe",
+        "increase": "Penambahan",
+        "decrease": "Pengurangan",
+        "correction": "Koreksi"
+      },
+      "warehouse": {
+        "label": "Gudang",
+        "searchPlaceholder": "Cari gudang..."
+      }
+    },
+    "typeEnums": {
+      "increase": "Penambahan (Increase)",
+      "decrease": "Pengurangan (Decrease)",
+      "correction": "Koreksi Stok (Hitung Ulang)"
+    },
+    "reasonEnums": {
+      "damaged": "Barang Rusak",
+      "expired": "Kedaluwarsa",
+      "lost": "Hilang",
+      "theft": "Pencurian",
+      "correction": "Koreksi Sistem",
+      "other": "Lainnya"
+    },
+    "status": {
+      "draft": "Draf",
+      "pending": "Pending",
+      "approved": "Disetujui",
+      "rejected": "Ditolak"
+    },
+    "actions": {
+      "viewMenu": "Buka menu",
+      "edit": "Edit",
+      "viewDetails": "Lihat Detail",
+      "delete": "Hapus"
+    },
+    "delete": {
+      "title": "Hapus Penyesuaian Stok?",
+      "desc1": "Apakah Anda yakin ingin menghapus penyesuaian ",
+      "desc2": "? Tindakan ini tidak dapat dibatalkan.",
+      "confirmBtn": "Hapus"
+    },
+    "create": {
+      "title": "Buat Penyesuaian Stok",
+      "subtitle": "Catat koreksi stok manual baru.",
+      "headerTitle": "Detail Penyesuaian",
+      "headerDesc": "Informasi mengenai penyesuaian stok ini.",
+      "itemsTitle": "Item Penyesuaian",
+      "itemsDesc": "Pilih produk yang akan disesuaikan.",
+      "form": {
+        "numberLabel": "Nomor Penyesuaian",
+        "numberPlaceholder": "Kosongkan untuk auto-generate",
+        "warehouseLabel": "Gudang",
+        "typeLabel": "Tipe Penyesuaian",
+        "reasonLabel": "Alasan",
+        "notesLabel": "Catatan Tambahan",
+        "notesPlaceholder": "Tambahkan catatan (opsional)...",
+        "submitDraft": "Simpan Draf",
+        "submitApproval": "Ajukan untuk Persetujuan",
+        "searchProduct": "Cari produk untuk ditambahkan..."
+      },
+      "itemsTable": {
+        "sku": "SKU",
+        "productName": "Nama Produk",
+        "systemQty": "Qty Sistem",
+        "adjQty": "Qty Penyesuaian",
+        "finalQty": "Qty Akhir",
+        "notes": "Catatan Item",
+        "actions": "Aksi"
+      },
+      "messages": {
+        "success": "Penyesuaian stok berhasil dibuat",
+        "error": "Gagal membuat penyesuaian stok"
+      }
+    },
+    "detail": {
+      "title": "Detail Penyesuaian",
+      "subtitle": "Informasi lengkap tentang penyesuaian stok.",
+      "infoTitle": "Informasi",
+      "datesTitle": "Tanggal & Persetujuan",
+      "itemsTitle": "Item yang Disesuaikan",
+      "number": "Nomor",
+      "warehouse": "Gudang",
+      "type": "Tipe",
+      "reason": "Alasan",
+      "status": "Status",
+      "notes": "Catatan",
+      "date": "Tanggal",
+      "createdBy": "Dibuat Oleh",
+      "approvedBy": "Disetujui Oleh",
+      "approvedAt": "Disetujui Pada",
+      "summary": "Ringkasan",
+      "totalItems": "Total Item",
+      "totalSystemQty": "Total Qty Sistem",
+      "totalAdjQty": "Total Qty Penyesuaian",
+      "buttons": {
+        "back": "Kembali",
+        "edit": "Edit",
+        "submit": "Ajukan",
+        "approve": "Setujui (Approve)",
+        "reject": "Tolak (Reject)",
+        "delete": "Hapus"
+      },
+      "dialogs": {
+        "submit": {
+          "title": "Ajukan Penyesuaian?",
+          "desc": "Penyesuaian ini akan diajukan untuk di-review manajer.",
+          "confirm": "Ajukan"
+        },
+        "approve": {
+          "title": "Setujui Penyesuaian?",
+          "desc": "Apakah Anda yakin ingin menyetujui penyesuaian ini? Stok barang akan segera diperbarui secara permanen.",
+          "notes": "Catatan Persetujuan (Opsional)",
+          "confirm": "Setujui"
+        },
+        "reject": {
+          "title": "Tolak Penyesuaian?",
+          "desc": "Apakah Anda yakin ingin menolak penyesuaian ini?",
+          "notes": "Alasan Penolakan (Wajib)",
+          "confirm": "Tolak"
+        }
+      },
+      "messages": {
+        "success": "Status penyesuaian berhasil diperbarui",
+        "error": "Gagal memperbarui status"
+      }
+    },
+    "validation": {
+      "warehouseRequired": "Gudang wajib dipilih",
+      "typeRequired": "Tipe penyesuaian wajib dipilih",
+      "reasonRequired": "Alasan wajib dipilih",
+      "notesMax": "Catatan maksimal 1000 karakter",
+      "itemsMin": "Minimal 1 produk dibutuhkan",
+      "variantRequired": "Variant wajib dipilih",
+      "adjQtyNonZero": "Jumlah penyesuaian tidak boleh nol",
+      "itemNotesMax": "Catatan item maksimal 500 karakter",
+      "statusRequired": "Status wajib ada",
+      "statusNotesMax": "Catatan status maksimal 500 karakter"
+    }
+  },
   "reports": {
     "sales": {
       "title": "Laporan Penjualan",

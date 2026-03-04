@@ -2399,6 +2399,193 @@
       }
     }
   },
+  "adjustments": {
+    "title": "Stock Adjustments",
+    "description": "Create and manage stock adjustments, including corrections and write-offs.",
+    "createLabel": "Create Adjustment",
+    "searchPlaceholder": "Search by adjustment number, warehouse, or notes...",
+    "failedLoad": "Failed to load stock adjustments",
+    "summary": {
+      "total": {
+        "title": "Total Adjustments",
+        "desc": "All records"
+      },
+      "draft": {
+        "title": "Drafts",
+        "desc": "Not yet submitted"
+      },
+      "pending": {
+        "title": "Pending Approval",
+        "desc": "Waiting for review"
+      },
+      "approved": {
+        "title": "Approved",
+        "desc": "Stock updated"
+      },
+      "rejected": {
+        "title": "Rejected",
+        "desc": "Request denied"
+      }
+    },
+    "columns": {
+      "adjustmentNumber": "Number",
+      "date": "Date",
+      "warehouse": "Warehouse",
+      "type": "Type",
+      "reason": "Reason",
+      "status": "Status",
+      "totalQty": "Total Qty",
+      "createdBy": "Created By",
+      "actions": "Actions"
+    },
+    "filters": {
+      "status": {
+        "label": "Status",
+        "draft": "Draft",
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "type": {
+        "label": "Type",
+        "increase": "Increase",
+        "decrease": "Decrease",
+        "correction": "Correction"
+      },
+      "warehouse": {
+        "label": "Warehouse",
+        "searchPlaceholder": "Search warehouse..."
+      }
+    },
+    "typeEnums": {
+      "increase": "Increase",
+      "decrease": "Decrease",
+      "correction": "Correction"
+    },
+    "reasonEnums": {
+      "damaged": "Damaged",
+      "expired": "Expired",
+      "lost": "Lost",
+      "theft": "Theft",
+      "correction": "System Correction",
+      "other": "Other"
+    },
+    "status": {
+      "draft": "Draft",
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "actions": {
+      "viewMenu": "Open menu",
+      "edit": "Edit",
+      "viewDetails": "View Details",
+      "delete": "Delete"
+    },
+    "delete": {
+      "title": "Delete Stock Adjustment?",
+      "desc1": "Are you sure you want to delete adjustment ",
+      "desc2": "? This action cannot be undone.",
+      "confirmBtn": "Delete"
+    },
+    "create": {
+      "title": "Create Stock Adjustment",
+      "subtitle": "Record a new manual stock correction.",
+      "headerTitle": "Adjustment Details",
+      "headerDesc": "Information regarding this stock adjustment.",
+      "itemsTitle": "Adjustment Items",
+      "itemsDesc": "Select products to adjust.",
+      "form": {
+        "numberLabel": "Adjustment Number",
+        "numberPlaceholder": "Leave blank to auto-generate",
+        "warehouseLabel": "Warehouse",
+        "typeLabel": "Adjustment Type",
+        "reasonLabel": "Reason",
+        "notesLabel": "Notes",
+        "notesPlaceholder": "Add additional notes (optional)...",
+        "submitDraft": "Save as Draft",
+        "submitApproval": "Submit for Approval",
+        "searchProduct": "Search product to add..."
+      },
+      "itemsTable": {
+        "sku": "SKU",
+        "productName": "Product Name",
+        "systemQty": "System Qty",
+        "adjQty": "Adj. Qty",
+        "finalQty": "Final Qty",
+        "notes": "Item Notes",
+        "actions": "Actions"
+      },
+      "messages": {
+        "success": "Stock adjustment successfully created",
+        "error": "Failed to create stock adjustment"
+      }
+    },
+    "detail": {
+      "title": "Adjustment Details",
+      "subtitle": "Stock adjustment complete information.",
+      "infoTitle": "Information",
+      "datesTitle": "Dates & Approval",
+      "itemsTitle": "Adjusted Items",
+      "number": "Number",
+      "warehouse": "Warehouse",
+      "type": "Type",
+      "reason": "Reason",
+      "status": "Status",
+      "notes": "Notes",
+      "date": "Date",
+      "createdBy": "Created By",
+      "approvedBy": "Approved By",
+      "approvedAt": "Approved At",
+      "summary": "Summary",
+      "totalItems": "Total Items",
+      "totalSystemQty": "Total System Qty",
+      "totalAdjQty": "Total Adj Qty",
+      "buttons": {
+        "back": "Back",
+        "edit": "Edit",
+        "submit": "Submit for Approval",
+        "approve": "Approve",
+        "reject": "Reject",
+        "delete": "Delete"
+      },
+      "dialogs": {
+        "submit": {
+          "title": "Submit for Approval?",
+          "desc": "This adjustment will be submitted for review.",
+          "confirm": "Submit"
+        },
+        "approve": {
+          "title": "Approve Adjustment?",
+          "desc": "Are you sure you want to approve this adjustment? Stock will be updated immediately.",
+          "notes": "Approval Notes (Optional)",
+          "confirm": "Approve"
+        },
+        "reject": {
+          "title": "Reject Adjustment?",
+          "desc": "Are you sure you want to reject this adjustment?",
+          "notes": "Rejection Reason (Required)",
+          "confirm": "Reject"
+        }
+      },
+      "messages": {
+        "success": "Adjustment status successfully updated",
+        "error": "Failed to update status"
+      }
+    },
+    "validation": {
+      "warehouseRequired": "Warehouse is required",
+      "typeRequired": "Adjustment type is required",
+      "reasonRequired": "Reason is required",
+      "notesMax": "Notes maximum is 1000 characters",
+      "itemsMin": "At least one product item is required",
+      "variantRequired": "Variant is required",
+      "adjQtyNonZero": "Adjustment quantity cannot be zero",
+      "itemNotesMax": "Item notes maximum is 500 characters",
+      "statusRequired": "Status is required",
+      "statusNotesMax": "Status notes maximum is 500 characters"
+    }
+  },
   "reports": {
     "sales": {
       "title": "Sales Report",

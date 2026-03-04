@@ -2004,10 +2004,17 @@
         "desc3": "Are you sure you want to delete this receipt?"
       },
       "columns": {
+        "selectAll": "Select all",
+        "selectRow": "Select row",
         "receiveNumber": "Receive No.",
         "date": "Date",
         "poNumber": "PO No.",
-        "warehouse": "Warehouse"
+        "warehouse": "Warehouse",
+        "actions": {
+          "label": "Actions",
+          "detail": "View details",
+          "delete": "Delete"
+        }
       },
       "actions": {
         "detail": "Detail",

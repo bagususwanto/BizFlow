@@ -2004,10 +2004,17 @@
         "desc3": "Apakah Anda yakin ingin menghapus penerimaan ini?"
       },
       "columns": {
+        "selectAll": "Pilih semua",
+        "selectRow": "Pilih baris",
         "receiveNumber": "No. Penerimaan",
         "date": "Tanggal",
         "poNumber": "No. PO",
-        "warehouse": "Gudang"
+        "warehouse": "Gudang",
+        "actions": {
+          "label": "Aksi",
+          "detail": "Lihat detail",
+          "delete": "Hapus"
+        }
       },
       "actions": {
         "detail": "Detail",

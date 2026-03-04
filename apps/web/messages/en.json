@@ -1986,6 +1986,103 @@
         "itemsMin": "At least 1 item is required",
         "autoReorderVariantsRequired": "At least 1 product variant is required"
       }
+    },
+    "goodsReceive": {
+      "title": "Goods Receive",
+      "description": "Manage goods received from purchase orders.",
+      "createLabel": "Receive Goods",
+      "searchPlaceholder": "Search Receive No. or PO...",
+      "failedLoad": "Failed to load goods receive data",
+      "delete": {
+        "title": "Delete Goods Receipt?",
+        "desc1": "Are you sure you want to delete Receipt ",
+        "desc2": "?",
+        "warningTitle": "WARNING:",
+        "warning1": "Received stock will be deducted back.",
+        "warning2": "Purchase Order status will be adjusted.",
+        "confirmBtn": "Delete & Revert Stock",
+        "desc3": "Are you sure you want to delete this receipt?"
+      },
+      "columns": {
+        "receiveNumber": "Receive No.",
+        "date": "Date",
+        "poNumber": "PO No.",
+        "warehouse": "Warehouse"
+      },
+      "actions": {
+        "detail": "Detail",
+        "delete": "Delete",
+        "cancel": "Cancel",
+        "submit": "Create Receipt"
+      },
+      "detail": {
+        "failedLoad": "Failed to load goods receive details",
+        "sourceInfo": {
+          "title": "Source Information",
+          "poNumber": "PO No.",
+          "supplier": "Supplier"
+        },
+        "otherInfo": {
+          "title": "Other Information",
+          "warehouse": "Warehouse:",
+          "createdAt": "Created At:",
+          "createdBy": "Created By:"
+        },
+        "items": {
+          "title": "Received Items",
+          "product": "Product",
+          "orderedQty": "Ordered Qty",
+          "receivedQty": "Received Qty",
+          "notes": "Notes",
+          "productDeleted": "Product deleted"
+        },
+        "notes": {
+          "title": "Receipt Notes"
+        }
+      },
+      "form": {
+        "createTitle": "New Goods Receive",
+        "createSubtitle": "Record goods received from supplier based on Purchase Order.",
+        "info": {
+          "title": "Receipt Information",
+          "desc": "Receipt details from Purchase Order."
+        },
+        "fields": {
+          "receiveNumber": "Receive No.",
+          "auto": "Automatic",
+          "purchaseOrder": "Purchase Order",
+          "selectPo": "Select PO",
+          "searchPo": "Search PO...",
+          "poDesc": "Only POs with Ordered status are shown.",
+          "warehouse": "Destination Warehouse",
+          "selectWarehouse": "Select Warehouse",
+          "searchWarehouse": "Search warehouse...",
+          "receiveDate": "Receive Date",
+          "selectDate": "Select date",
+          "notes": "Notes",
+          "notesPlaceholder": "Additional notes..."
+        },
+        "items": {
+          "title": "Item Details",
+          "loading": "Loading items...",
+          "desc": "Validate received quantity.",
+          "product": "Product",
+          "ordered": "Ordered",
+          "received": "Received",
+          "receivingNow": "Receiving Now",
+          "itemNotes": "Item Notes",
+          "receive": "Receive:",
+          "notesPlaceholder": "Notes...",
+          "empty": "Select a Purchase Order first to view items."
+        }
+      },
+      "validation": {
+        "poItemRequired": "Purchase Order Item is required",
+        "quantityMin": "Quantity must be greater than 0",
+        "poRequired": "Purchase Order is required",
+        "warehouseRequired": "Warehouse is required",
+        "itemsMin": "At least 1 item is required"
+      }
     }
   }
 }

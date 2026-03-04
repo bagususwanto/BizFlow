@@ -14,8 +14,10 @@ import { getColumns } from '@/components/inventory/columns';
 import { ErrorState } from '@/components/common/error-state';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 import { useFormatDate } from '@/hooks';
+import { useTranslations } from 'next-intl';
 
 function GoodsReceiveContent() {
+  const t = useTranslations('purchases.goodsReceive');
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -81,8 +83,9 @@ function GoodsReceiveContent() {
       getColumns({
         onDelete: (item) => setItemToDelete(item),
         formatters,
+        t: t as any,
       }),
-    [formatters],
+    [formatters, t],
   );
 
   const data = goodsReceiveData?.data || [];
@@ -95,10 +98,10 @@ function GoodsReceiveContent() {
 
   return (
     <DataListPage
-      title="Penerimaan Barang"
-      description="Kelola penerimaan barang dari purchase order."
+      title={t('title')}
+      description={t('description')}
       createLink="/purchases/goods-receive/new"
-      createLabel="Terima Barang"
+      createLabel={t('createLabel')}
       data={data}
       columns={columns}
       isLoading={isLoading}
@@ -122,7 +125,7 @@ function GoodsReceiveContent() {
       // Search
       search={search}
       onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
-      searchPlaceholder="Cari No. Terima atau PO..."
+      searchPlaceholder={t('searchPlaceholder')}
       onReset={() => router.push(pathname)}
       showDateRange={true}
       startDate={startDate ? new Date(startDate) : undefined}
@@ -143,18 +146,20 @@ function GoodsReceiveContent() {
       <DeleteConfirmDialog
         open={!!itemToDelete}
         onOpenChange={(open) => !open && setItemToDelete(null)}
-        title="Hapus Penerimaan Barang?"
+        title={t('delete.title')}
         description={
           <>
-            Apakah Anda yakin ingin menghapus Penerimaan{' '}
+            {t('delete.desc1')}
             <span className="font-semibold">{itemToDelete?.receiveNumber}</span>
-            ?
+            {t('delete.desc2')}
             <br />
             <br />
-            <span className="text-destructive font-semibold">PERINGATAN:</span>
+            <span className="text-destructive font-semibold">
+              {t('delete.warningTitle')}
+            </span>
             <ul className="list-disc list-inside text-sm mt-2">
-              <li>Stok yang sudah diterima akan dikurangi kembali.</li>
-              <li>Status Purchase Order akan disesuaikan.</li>
+              <li>{t('delete.warning1')}</li>
+              <li>{t('delete.warning2')}</li>
             </ul>
           </>
         }
@@ -166,7 +171,7 @@ function GoodsReceiveContent() {
           }
         }}
         isDeleting={deleteMutation.isPending}
-        confirmLabel="Hapus & Balikkan Stok"
+        confirmLabel={t('delete.confirmBtn')}
       />
     </DataListPage>
   );

@@ -43,6 +43,7 @@ import {
   useDeleteGoodsReceive,
   useGoodsReceive,
 } from '@/hooks/use-goods-receive';
+import { useTranslations } from 'next-intl';
 
 export default function GoodsReceiveDetailPage({
   params,
@@ -52,6 +53,7 @@ export default function GoodsReceiveDetailPage({
   const resolvedParams = use(params);
   const router = useRouter();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const t = useTranslations('purchases.goodsReceive');
 
   const {
     data: goodsReceive,
@@ -65,7 +67,7 @@ export default function GoodsReceiveDetailPage({
 
   useBreadcrumb(
     `/purchases/goods-receive/${resolvedParams.id}`,
-    goodsReceive?.receiveNumber || 'Detail',
+    goodsReceive?.receiveNumber || t('actions.detail'),
   );
 
   if (isLoading) {
@@ -78,10 +80,7 @@ export default function GoodsReceiveDetailPage({
 
   if (isError || !goodsReceive) {
     return (
-      <ErrorState
-        title="Gagal memuat detail penerimaan barang"
-        onRetry={() => refetch()}
-      />
+      <ErrorState title={t('detail.failedLoad')} onRetry={() => refetch()} />
     );
   }
 
@@ -122,7 +121,7 @@ export default function GoodsReceiveDetailPage({
             variant="destructive"
             onClick={() => setDeleteDialogOpen(true)}
           >
-            <Trash className="mr-2 h-4 w-4" /> Hapus
+            <Trash className="mr-2 h-4 w-4" /> {t('actions.delete')}
           </Button>
         </div>
       </div>
@@ -132,13 +131,15 @@ export default function GoodsReceiveDetailPage({
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>Informasi Sumber</CardTitle>
+              <CardTitle>{t('detail.sourceInfo.title')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-start gap-4">
                 <FileText className="mt-1 h-5 w-5 text-muted-foreground" />
                 <div>
-                  <div className="text-sm text-muted-foreground">No. PO</div>
+                  <div className="text-sm text-muted-foreground">
+                    {t('detail.sourceInfo.poNumber')}
+                  </div>
                   <Link
                     href={`/purchases/orders/${goodsReceive.purchaseOrderId}`}
                     className="font-medium text-primary hover:underline"
@@ -150,7 +151,9 @@ export default function GoodsReceiveDetailPage({
               <div className="flex items-start gap-4">
                 <StoreIcon className="mt-1 h-5 w-5 text-muted-foreground" />
                 <div className="space-y-1">
-                  <div className="text-sm text-muted-foreground">Pemasok</div>
+                  <div className="text-sm text-muted-foreground">
+                    {t('detail.sourceInfo.supplier')}
+                  </div>
                   <div className="font-medium">
                     {goodsReceive.purchaseOrder?.supplier?.name}
                   </div>
@@ -181,26 +184,32 @@ export default function GoodsReceiveDetailPage({
 
           <Card>
             <CardHeader>
-              <CardTitle>Informasi Lainnya</CardTitle>
+              <CardTitle>{t('detail.otherInfo.title')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center gap-2 text-sm">
                 <Building2 className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Gudang:</span>
+                <span className="text-muted-foreground">
+                  {t('detail.otherInfo.warehouse')}
+                </span>
                 <span className="font-medium text-right flex-1">
                   {goodsReceive.warehouse?.name}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <Clock className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Dibuat Pada:</span>
+                <span className="text-muted-foreground">
+                  {t('detail.otherInfo.createdAt')}
+                </span>
                 <span className="font-medium text-right flex-1">
                   {formatDateTime(goodsReceive.createdAt)}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <User className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Dibuat Oleh:</span>
+                <span className="text-muted-foreground">
+                  {t('detail.otherInfo.createdBy')}
+                </span>
                 <span className="font-medium text-right flex-1">
                   {goodsReceive.creator?.name || goodsReceive.createdBy}
                 </span>
@@ -212,16 +221,20 @@ export default function GoodsReceiveDetailPage({
         {/* Items Section */}
         <Card>
           <CardHeader>
-            <CardTitle>Item Diterima</CardTitle>
+            <CardTitle>{t('detail.items.title')}</CardTitle>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Produk</TableHead>
-                  <TableHead className="text-right">Qty Dipesan</TableHead>
-                  <TableHead className="text-right">Qty Diterima</TableHead>
-                  <TableHead>Catatan</TableHead>
+                  <TableHead>{t('detail.items.product')}</TableHead>
+                  <TableHead className="text-right">
+                    {t('detail.items.orderedQty')}
+                  </TableHead>
+                  <TableHead className="text-right">
+                    {t('detail.items.receivedQty')}
+                  </TableHead>
+                  <TableHead>{t('detail.items.notes')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -230,7 +243,7 @@ export default function GoodsReceiveDetailPage({
                     <TableCell>
                       <div className="font-medium">
                         {item.purchaseOrderItem?.variant?.product?.name ||
-                          'Produk dihapus'}
+                          t('detail.items.productDeleted')}
                       </div>
                       <div className="text-sm text-muted-foreground">
                         {item.purchaseOrderItem?.variant?.sku}
@@ -254,7 +267,7 @@ export default function GoodsReceiveDetailPage({
         {goodsReceive.notes && (
           <Card>
             <CardHeader>
-              <CardTitle>Catatan Penerimaan</CardTitle>
+              <CardTitle>{t('detail.notes.title')}</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
@@ -270,16 +283,18 @@ export default function GoodsReceiveDetailPage({
         onOpenChange={setDeleteDialogOpen}
         onConfirm={handleDelete}
         isDeleting={deleteMutation.isPending}
-        title="Hapus Penerimaan Barang?"
+        title={t('delete.title')}
         description={
           <>
-            Apakah Anda yakin ingin menghapus penerimaan ini?
+            {t('delete.desc3')}
             <br />
             <br />
-            <span className="text-destructive font-semibold">PERINGATAN:</span>
+            <span className="text-destructive font-semibold">
+              {t('delete.warningTitle')}
+            </span>
             <ul className="list-disc list-inside text-sm mt-2">
-              <li>Stok yang sudah diterima akan dikurangi kembali.</li>
-              <li>Status Purchase Order akan disesuaikan.</li>
+              <li>{t('delete.warning1')}</li>
+              <li>{t('delete.warning2')}</li>
             </ul>
           </>
         }

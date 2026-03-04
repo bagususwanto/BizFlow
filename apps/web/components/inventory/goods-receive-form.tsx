@@ -43,12 +43,14 @@ import { purchaseOrdersService } from '@/services/purchase-orders.service';
 import { warehousesService } from '@/services/warehouses.service';
 import { usePurchaseOrder } from '@/hooks/use-purchase-orders';
 import { useCreateGoodsReceive } from '@/hooks/use-goods-receive';
+import { useTranslations } from 'next-intl';
 
 interface GoodsReceiveFormProps {
   initialData?: any;
 }
 
 export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
+  const t = useTranslations('purchases.goodsReceive');
   const router = useRouter();
   const searchParams = useSearchParams();
   const createMutation = useCreateGoodsReceive();
@@ -155,10 +157,8 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
         {/* Top Section */}
         <Card>
           <CardHeader>
-            <CardTitle>Informasi Penerimaan</CardTitle>
-            <CardDescription>
-              Detail penerimaan barang dari Purchase Order.
-            </CardDescription>
+            <CardTitle>{t('form.info.title')}</CardTitle>
+            <CardDescription>{t('form.info.desc')}</CardDescription>
           </CardHeader>
           <CardContent className="grid gap-6 md:grid-cols-2">
             <div className="space-y-4">
@@ -167,9 +167,15 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
                 name="receiveNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel optional>No. Penerimaan</FormLabel>
+                    <FormLabel optional>
+                      {t('form.fields.receiveNumber')}
+                    </FormLabel>
                     <FormControl>
-                      <Input {...field} disabled placeholder="Otomatis" />
+                      <Input
+                        {...field}
+                        disabled
+                        placeholder={t('form.fields.auto')}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -181,7 +187,9 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
                 name="purchaseOrderId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel required>Purchase Order</FormLabel>
+                    <FormLabel required>
+                      {t('form.fields.purchaseOrder')}
+                    </FormLabel>
                     <Combobox
                       options={
                         purchaseOrders?.map((po) => ({
@@ -192,12 +200,10 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
                       value={field.value}
                       onChange={field.onChange}
                       disabled={!!initialData || !!preselectedPOId}
-                      placeholder="Pilih PO"
-                      searchPlaceholder="Cari PO..."
+                      placeholder={t('form.fields.selectPo')}
+                      searchPlaceholder={t('form.fields.searchPo')}
                     />
-                    <FormDescription>
-                      Hanya PO dengan status Ordered yang muncul.
-                    </FormDescription>
+                    <FormDescription>{t('form.fields.poDesc')}</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -208,7 +214,7 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
                 name="warehouseId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel required>Gudang Tujuan</FormLabel>
+                    <FormLabel required>{t('form.fields.warehouse')}</FormLabel>
                     <Combobox
                       options={
                         warehouses?.map((w) => ({
@@ -218,8 +224,8 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
                       }
                       value={field.value}
                       onChange={field.onChange}
-                      placeholder="Pilih Gudang"
-                      searchPlaceholder="Cari gudang..."
+                      placeholder={t('form.fields.selectWarehouse')}
+                      searchPlaceholder={t('form.fields.searchWarehouse')}
                     />
                     <FormMessage />
                   </FormItem>
@@ -233,7 +239,9 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
                 name="receiveDate"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel optional>Tanggal Penerimaan</FormLabel>
+                    <FormLabel optional>
+                      {t('form.fields.receiveDate')}
+                    </FormLabel>
                     <Popover
                       open={isCalendarOpen}
                       onOpenChange={setIsCalendarOpen}
@@ -252,7 +260,7 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
                                 locale: id,
                               })
                             ) : (
-                              <span>Pilih tanggal</span>
+                              <span>{t('form.fields.selectDate')}</span>
                             )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
@@ -284,10 +292,10 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
                 name="notes"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel optional>Catatan</FormLabel>
+                    <FormLabel optional>{t('form.fields.notes')}</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Catatan tambahan..."
+                        placeholder={t('form.fields.notesPlaceholder')}
                         className="resize-none"
                         {...field}
                         value={field.value || ''}
@@ -304,25 +312,26 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
         {/* Items Section */}
         <Card>
           <CardHeader>
-            <CardTitle>Item Barang</CardTitle>
+            <CardTitle>{t('form.items.title')}</CardTitle>
             <CardDescription>
               {isLoadingPO ? (
                 <span className="flex items-center gap-2">
-                  <Loader2 className="h-4 w-4 animate-spin" /> Memuat item...
+                  <Loader2 className="h-4 w-4 animate-spin" />{' '}
+                  {t('form.items.loading')}
                 </span>
               ) : (
-                'Validasi jumlah barang yang diterima.'
+                t('form.items.desc')
               )}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="rounded-md border">
               <div className="hidden sm:grid grid-cols-[1fr_100px_100px_100px_1fr] gap-4 items-center p-4 bg-muted/40 text-sm font-medium text-muted-foreground border-b">
-                <div>Produk</div>
-                <div className="text-right">Dipesan</div>
-                <div className="text-right">Sudah Diterima</div>
-                <div className="text-right">Diterima Sekarang</div>
-                <div className="pl-4">Catatan Item</div>
+                <div>{t('form.items.product')}</div>
+                <div className="text-right">{t('form.items.ordered')}</div>
+                <div className="text-right">{t('form.items.received')}</div>
+                <div className="text-right">{t('form.items.receivingNow')}</div>
+                <div className="pl-4">{t('form.items.itemNotes')}</div>
               </div>
 
               <div className="divide-y sm:divide-y-0">
@@ -360,21 +369,21 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
 
                       <div className="flex justify-between sm:block text-right">
                         <span className="sm:hidden text-muted-foreground text-sm">
-                          Dipesan:
+                          {t('form.items.ordered')}:
                         </span>
                         <span>{ordered}</span>
                       </div>
 
                       <div className="flex justify-between sm:block text-right">
                         <span className="sm:hidden text-muted-foreground text-sm">
-                          Sudah Diterima:
+                          {t('form.items.received')}:
                         </span>
                         <span>{received}</span>
                       </div>
 
                       <div className="flex justify-between sm:block items-center">
                         <span className="sm:hidden text-muted-foreground text-sm mr-2">
-                          Terima:
+                          {t('form.items.receive')}
                         </span>
                         <FormField
                           control={form.control}
@@ -410,7 +419,7 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
                               <FormControl>
                                 <Input
                                   className="h-8"
-                                  placeholder="Catatan..."
+                                  placeholder={t('form.items.notesPlaceholder')}
                                   {...field}
                                   value={field.value || ''}
                                 />
@@ -426,7 +435,7 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
 
                 {fields.length === 0 && !isLoadingPO && (
                   <div className="p-8 text-center text-muted-foreground">
-                    Pilih Purchase Order terlebih dahulu untuk melihat item.
+                    {t('form.items.empty')}
                   </div>
                 )}
               </div>
@@ -441,12 +450,12 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
             onClick={() => router.back()}
             disabled={isSubmitting}
           >
-            Batal
+            {t('actions.cancel')}
           </Button>
           <Button type="submit" disabled={isSubmitting || fields.length === 0}>
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {!isSubmitting && <Save className="mr-2 h-4 w-4" />}
-            Buat Penerimaan
+            {t('actions.submit')}
           </Button>
         </div>
       </form>

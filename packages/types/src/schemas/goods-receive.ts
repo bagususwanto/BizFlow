@@ -1,18 +1,28 @@
 import { z } from 'zod';
 
 const goodsReceiveItemSchema = z.object({
-  purchaseOrderItemId: z.string().min(1, 'Purchase Order Item wajib dipilih'),
-  receivedQty: z.number().positive('Quantity harus lebih dari 0'),
+  purchaseOrderItemId: z
+    .string()
+    .min(1, 'purchases.goodsReceive.validation.poItemRequired'),
+  receivedQty: z
+    .number()
+    .positive('purchases.goodsReceive.validation.quantityMin'),
   notes: z.string().optional().nullable(),
 });
 
 export const createGoodsReceiveSchema = z.object({
   receiveNumber: z.string().optional(),
-  purchaseOrderId: z.string().min(1, 'Purchase Order wajib dipilih'),
-  warehouseId: z.string().min(1, 'Gudang wajib dipilih'),
+  purchaseOrderId: z
+    .string()
+    .min(1, 'purchases.goodsReceive.validation.poRequired'),
+  warehouseId: z
+    .string()
+    .min(1, 'purchases.goodsReceive.validation.warehouseRequired'),
   receiveDate: z.string().datetime().or(z.date()).optional().nullable(),
   notes: z.string().optional().nullable(),
-  items: z.array(goodsReceiveItemSchema).min(1, 'Minimal 1 item diperlukan'),
+  items: z
+    .array(goodsReceiveItemSchema)
+    .min(1, 'purchases.goodsReceive.validation.itemsMin'),
 });
 
 export const queryGoodsReceivesSchema = z.object({

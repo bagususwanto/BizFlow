@@ -4,19 +4,19 @@ import { Suspense } from 'react';
 import { Loader2 } from 'lucide-react';
 import { GoodsReceiveForm } from '@/components/inventory/goods-receive-form';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
+import { useTranslations } from 'next-intl';
 
 export default function CreateGoodsReceivePage() {
-  useBreadcrumb('/purchases/goods-receive/new', 'Terima Barang');
+  const t = useTranslations('purchases.goodsReceive');
+  useBreadcrumb('/purchases/goods-receive/new', t('createLabel'));
 
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold tracking-tight">
-          Penerimaan Barang Baru
+          {t('form.createTitle')}
         </h2>
-        <p className="text-muted-foreground">
-          Catat penerimaan barang dari pemasok berdasarkan Purchase Order.
-        </p>
+        <p className="text-muted-foreground">{t('form.createSubtitle')}</p>
       </div>
 
       <Suspense

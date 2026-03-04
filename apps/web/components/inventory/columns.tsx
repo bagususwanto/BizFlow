@@ -20,11 +20,13 @@ import { DateFormatters } from '@/hooks';
 interface ColumnsProps {
   onDelete: (goodsReceive: GoodsReceive) => void;
   formatters: DateFormatters;
+  t: (key: string) => string;
 }
 
 export const getColumns = ({
   onDelete,
   formatters,
+  t,
 }: ColumnsProps): ColumnDef<GoodsReceive>[] => {
   const { formatDate } = formatters;
 
@@ -53,7 +55,10 @@ export const getColumns = ({
     {
       accessorKey: 'receiveNumber',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="No. Penerimaan" />
+        <DataTableColumnHeader
+          column={column}
+          title={t('columns.receiveNumber')}
+        />
       ),
       cell: ({ row }) => (
         <div className="font-medium">{row.getValue('receiveNumber')}</div>
@@ -62,7 +67,7 @@ export const getColumns = ({
     {
       accessorKey: 'createdAt',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Tanggal" />
+        <DataTableColumnHeader column={column} title={t('columns.date')} />
       ),
       cell: ({ row }) => {
         const date = new Date(row.getValue('createdAt'));
@@ -71,7 +76,7 @@ export const getColumns = ({
     },
     {
       accessorKey: 'purchaseOrder.orderNumber',
-      header: 'No. PO',
+      header: t('columns.poNumber'),
       cell: ({ row }) => {
         return (
           <Link
@@ -85,7 +90,7 @@ export const getColumns = ({
     },
     {
       accessorKey: 'warehouse.name',
-      header: 'Gudang',
+      header: t('columns.warehouse'),
       cell: ({ row }) => <div>{row.original.warehouse?.name}</div>,
     },
     {

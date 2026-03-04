@@ -1986,6 +1986,103 @@
         "itemsMin": "Minimal 1 item diperlukan",
         "autoReorderVariantsRequired": "Minimal 1 varian produk diperlukan"
       }
+    },
+    "goodsReceive": {
+      "title": "Penerimaan Barang",
+      "description": "Kelola penerimaan barang dari purchase order.",
+      "createLabel": "Terima Barang",
+      "searchPlaceholder": "Cari No. Terima atau PO...",
+      "failedLoad": "Gagal memuat data penerimaan barang",
+      "delete": {
+        "title": "Hapus Penerimaan Barang?",
+        "desc1": "Apakah Anda yakin ingin menghapus Penerimaan ",
+        "desc2": "?",
+        "warningTitle": "PERINGATAN:",
+        "warning1": "Stok yang sudah diterima akan dikurangi kembali.",
+        "warning2": "Status Purchase Order akan disesuaikan.",
+        "confirmBtn": "Hapus & Balikkan Stok",
+        "desc3": "Apakah Anda yakin ingin menghapus penerimaan ini?"
+      },
+      "columns": {
+        "receiveNumber": "No. Penerimaan",
+        "date": "Tanggal",
+        "poNumber": "No. PO",
+        "warehouse": "Gudang"
+      },
+      "actions": {
+        "detail": "Detail",
+        "delete": "Hapus",
+        "cancel": "Batal",
+        "submit": "Buat Penerimaan"
+      },
+      "detail": {
+        "failedLoad": "Gagal memuat detail penerimaan barang",
+        "sourceInfo": {
+          "title": "Informasi Sumber",
+          "poNumber": "No. PO",
+          "supplier": "Pemasok"
+        },
+        "otherInfo": {
+          "title": "Informasi Lainnya",
+          "warehouse": "Gudang:",
+          "createdAt": "Dibuat Pada:",
+          "createdBy": "Dibuat Oleh:"
+        },
+        "items": {
+          "title": "Item Diterima",
+          "product": "Produk",
+          "orderedQty": "Qty Dipesan",
+          "receivedQty": "Qty Diterima",
+          "notes": "Catatan",
+          "productDeleted": "Produk dihapus"
+        },
+        "notes": {
+          "title": "Catatan Penerimaan"
+        }
+      },
+      "form": {
+        "createTitle": "Penerimaan Barang Baru",
+        "createSubtitle": "Catat penerimaan barang dari pemasok berdasarkan Purchase Order.",
+        "info": {
+          "title": "Informasi Penerimaan",
+          "desc": "Detail penerimaan barang dari Purchase Order."
+        },
+        "fields": {
+          "receiveNumber": "No. Penerimaan",
+          "auto": "Otomatis",
+          "purchaseOrder": "Purchase Order",
+          "selectPo": "Pilih PO",
+          "searchPo": "Cari PO...",
+          "poDesc": "Hanya PO dengan status Ordered yang muncul.",
+          "warehouse": "Gudang Tujuan",
+          "selectWarehouse": "Pilih Gudang",
+          "searchWarehouse": "Cari gudang...",
+          "receiveDate": "Tanggal Penerimaan",
+          "selectDate": "Pilih tanggal",
+          "notes": "Catatan",
+          "notesPlaceholder": "Catatan tambahan..."
+        },
+        "items": {
+          "title": "Item Barang",
+          "loading": "Memuat item...",
+          "desc": "Validasi jumlah barang yang diterima.",
+          "product": "Produk",
+          "ordered": "Dipesan",
+          "received": "Sudah Diterima",
+          "receivingNow": "Diterima Sekarang",
+          "itemNotes": "Catatan Item",
+          "receive": "Terima:",
+          "notesPlaceholder": "Catatan...",
+          "empty": "Pilih Purchase Order terlebih dahulu untuk melihat item."
+        }
+      },
+      "validation": {
+        "poItemRequired": "Purchase Order Item wajib dipilih",
+        "quantityMin": "Quantity harus lebih dari 0",
+        "poRequired": "Purchase Order wajib dipilih",
+        "warehouseRequired": "Gudang wajib dipilih",
+        "itemsMin": "Minimal 1 item diperlukan"
+      }
     }
   }
 }

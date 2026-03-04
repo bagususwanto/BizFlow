@@ -1829,5 +1829,163 @@
         }
       }
     }
+  },
+  "purchases": {
+    "orders": {
+      "title": "Purchase Orders",
+      "description": "Manage purchase orders to suppliers.",
+      "createLabel": "Create New PO",
+      "searchPlaceholder": "Search PO Number or Supplier...",
+      "failedLoad": "Failed to load purchase orders data",
+      "summary": {
+        "total": "Total POs",
+        "totalDesc": "All order statuses",
+        "draft": "Draft",
+        "draftDesc": "Unprocessed orders",
+        "ordered": "Ordered",
+        "orderedDesc": "Awaiting delivery",
+        "received": "Received",
+        "receivedDesc": "Items received"
+      },
+      "filter": {
+        "status": "Status",
+        "supplier": "Supplier",
+        "supplierPlaceholder": "Select supplier..."
+      },
+      "status": {
+        "draft": "Draft",
+        "pending_approval": "Pending Approval",
+        "approved": "Approved",
+        "ordered": "Ordered",
+        "received": "Received",
+        "completed": "Completed",
+        "cancelled": "Cancelled",
+        "partial": "Partial"
+      },
+      "paymentStatus": {
+        "unpaid": "Unpaid",
+        "paid": "Paid",
+        "partial": "Partial"
+      },
+      "columns": {
+        "poNumber": "PO No.",
+        "date": "Date",
+        "supplier": "Supplier",
+        "expectedDate": "Expected Date",
+        "total": "Total",
+        "status": "Status",
+        "payment": "Payment"
+      },
+      "actions": {
+        "detail": "Detail",
+        "edit": "Edit",
+        "delete": "Delete",
+        "printBtn": "Print PO",
+        "submitApprovalBtn": "Submit for Approval",
+        "rejectBtn": "Reject PO",
+        "approveBtn": "Approve PO",
+        "cancelBtn": "Cancel",
+        "orderBtn": "Order to Supplier",
+        "receiveBtn": "Receive Goods",
+        "completeBtn": "Complete"
+      },
+      "delete": {
+        "title": "Delete Purchase Order?",
+        "desc1": "Are you sure you want to delete Purchase Order ",
+        "desc2": "? This action cannot be undone."
+      },
+      "detail": {
+        "title": "Purchase Order Details",
+        "failedLoad": "Failed to load purchase order details",
+        "supplierInfo": {
+          "title": "Supplier Information"
+        },
+        "otherInfo": {
+          "title": "Other Information",
+          "expectedDate": "Expected Date:",
+          "createdAt": "Created At:",
+          "createdBy": "Created By:",
+          "approvedBy": "Approved By:",
+          "approvedAt": "Approved At:"
+        },
+        "items": {
+          "title": "Order Items",
+          "product": "Product",
+          "qty": "Qty",
+          "price": "Price",
+          "total": "Total"
+        },
+        "notes": {
+          "title": "Notes"
+        },
+        "paymentDetails": {
+          "title": "Payment Details",
+          "subtotal": "Subtotal",
+          "discount": "Discount",
+          "tax": "Tax",
+          "total": "Total",
+          "paid": "Amount Paid",
+          "remaining": "Remaining Payment"
+        },
+        "statusDialog": {
+          "title": "Confirm Status Change",
+          "desc1": "Are you sure you want to change the status to ",
+          "desc2": "?",
+          "cancel": "Cancel",
+          "confirm": "Yes, Change Status"
+        }
+      },
+      "form": {
+        "createTitle": "Create Purchase Order",
+        "createSubtitle": "Create a new purchase order to a supplier.",
+        "editTitle": "Edit Purchase Order",
+        "cancelBtn": "Cancel",
+        "saveBtn": "Save Changes",
+        "createBtn": "Create Purchase Order",
+        "generalInfo": {
+          "title": "Order Information",
+          "description": "General information about the purchase order."
+        },
+        "poNumber": "PO No.",
+        "poNumberPlaceholder": "Automatic",
+        "supplierLabel": "Supplier",
+        "supplierPlaceholder": "Select Supplier",
+        "expectedDate": "Expected Date",
+        "expectedDatePlaceholder": "Select date",
+        "expectedDateDesc": "Estimated date goods will be received.",
+        "items": {
+          "title": "Order Items",
+          "description": "List of items to be ordered.",
+          "addBtn": "Add Item",
+          "product": "Product",
+          "productPlaceholder": "Select Product",
+          "qty": "Qty",
+          "price": "Unit Price",
+          "subtotal": "Subtotal"
+        },
+        "notes": {
+          "title": "Notes",
+          "optional": "(Optional)",
+          "placeholder": "Additional notes for the supplier..."
+        },
+        "payment": {
+          "title": "Payment Details",
+          "subtotal": "Subtotal",
+          "discount": "Discount (%)",
+          "discountAmount": "Discount Amount",
+          "tax": "Tax (%)",
+          "taxAmount": "Tax (VAT)",
+          "total": "Total"
+        }
+      },
+      "validation": {
+        "variantRequired": "Product variant is required",
+        "quantityMin": "Quantity must be greater than 0",
+        "priceMin": "Unit price cannot be negative",
+        "supplierRequired": "Supplier is required",
+        "itemsMin": "At least 1 item is required",
+        "autoReorderVariantsRequired": "At least 1 product variant is required"
+      }
+    }
   }
 }

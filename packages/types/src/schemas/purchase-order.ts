@@ -1,15 +1,15 @@
 import { z } from 'zod';
 
 const purchaseOrderItemSchema = z.object({
-  variantId: z.string().min(1, 'Product variant wajib dipilih'),
-  quantity: z.number().positive('Quantity harus lebih dari 0'),
-  unitPrice: z.number().nonnegative('Unit price tidak boleh negatif'),
+  variantId: z.string().min(1, 'purchases.orders.validation.variantRequired'),
+  quantity: z.number().positive('purchases.orders.validation.quantityMin'),
+  unitPrice: z.number().nonnegative('purchases.orders.validation.priceMin'),
   notes: z.string().optional().nullable(),
 });
 
 const purchaseOrderBaseSchema = z.object({
   orderNumber: z.string().optional(),
-  supplierId: z.string().min(1, 'Supplier wajib dipilih'),
+  supplierId: z.string().min(1, 'purchases.orders.validation.supplierRequired'),
   expectedDate: z.string().datetime().or(z.date()).optional().nullable(),
   status: z
     .enum([
@@ -27,7 +27,9 @@ const purchaseOrderBaseSchema = z.object({
   discountAmount: z.number().nonnegative().optional().default(0),
   taxPercent: z.number().min(0).max(100).optional().default(0),
   notes: z.string().optional().nullable(),
-  items: z.array(purchaseOrderItemSchema).min(1, 'Minimal 1 item diperlukan'),
+  items: z
+    .array(purchaseOrderItemSchema)
+    .min(1, 'purchases.orders.validation.itemsMin'),
 });
 
 export const createPurchaseOrderSchema = purchaseOrderBaseSchema;
@@ -90,7 +92,7 @@ export type UpdatePurchaseOrderStatusValues = z.infer<
 export const autoReorderSchema = z.object({
   variantIds: z
     .array(z.string().min(1))
-    .min(1, 'Minimal 1 varian produk diperlukan'),
+    .min(1, 'purchases.orders.validation.autoReorderVariantsRequired'),
 });
 
 export type AutoReorderValues = z.infer<typeof autoReorderSchema>;

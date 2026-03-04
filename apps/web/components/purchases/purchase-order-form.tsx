@@ -46,12 +46,13 @@ import {
   CreatePurchaseOrderValues,
 } from '@bizflow/types';
 import { purchaseOrdersService } from '@/services/purchase-orders.service';
-import { suppliersService } from '@/services/suppliers.service';
 import { productsService } from '@/services/products.service';
+import { suppliersService } from '@/services/suppliers.service';
 import {
   useCreatePurchaseOrder,
   useUpdatePurchaseOrder,
 } from '@/hooks/use-purchase-orders';
+import { useTranslations } from 'next-intl';
 
 interface PurchaseOrderFormProps {
   initialData?: any;
@@ -63,6 +64,7 @@ export function PurchaseOrderForm({
   isCustomOrderNumber = false,
 }: PurchaseOrderFormProps) {
   const router = useRouter();
+  const t = useTranslations('purchases.orders');
   const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
 
   // Initialize hooks unconditionally
@@ -161,9 +163,9 @@ export function PurchaseOrderForm({
         {/* Top Section: General Info */}
         <Card>
           <CardHeader>
-            <CardTitle>Informasi Pesanan</CardTitle>
+            <CardTitle>{t('form.generalInfo.title')}</CardTitle>
             <CardDescription>
-              Informasi umum mengenai purchase order.
+              {t('form.generalInfo.description')}
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-6 md:grid-cols-2">
@@ -173,12 +175,12 @@ export function PurchaseOrderForm({
                 name="orderNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel optional>No. PO</FormLabel>
+                    <FormLabel optional>{t('form.poNumber')}</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
                         disabled={!isCustomOrderNumber}
-                        placeholder="Otomatis"
+                        placeholder={t('form.poNumberPlaceholder')}
                       />
                     </FormControl>
                     <FormMessage />
@@ -191,7 +193,7 @@ export function PurchaseOrderForm({
                 name="supplierId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel required>Pemasok</FormLabel>
+                    <FormLabel required>{t('form.supplierLabel')}</FormLabel>
                     <Combobox
                       options={
                         suppliers?.map((s) => ({
@@ -202,8 +204,8 @@ export function PurchaseOrderForm({
                       value={field.value}
                       onChange={field.onChange}
                       disabled={!!initialData?.id} // Only disable if editing existing PO
-                      placeholder="Pilih Pemasok"
-                      searchPlaceholder="Cari pemasok..."
+                      placeholder={t('form.supplierPlaceholder')}
+                      searchPlaceholder={t('filter.supplierPlaceholder')}
                     />
                     <FormMessage />
                   </FormItem>
@@ -217,7 +219,7 @@ export function PurchaseOrderForm({
                 name="expectedDate"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel optional>Tanggal Ekspektasi</FormLabel>
+                    <FormLabel optional>{t('form.expectedDate')}</FormLabel>
                     <Popover
                       open={isCalendarOpen}
                       onOpenChange={setIsCalendarOpen}
@@ -236,7 +238,7 @@ export function PurchaseOrderForm({
                                 locale: id,
                               })
                             ) : (
-                              <span>Pilih tanggal</span>
+                              <span>{t('form.expectedDatePlaceholder')}</span>
                             )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
@@ -261,7 +263,7 @@ export function PurchaseOrderForm({
                       </PopoverContent>
                     </Popover>
                     <FormDescription>
-                      Perkiraan barang akan diterima.
+                      {t('form.expectedDateDesc')}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -275,10 +277,8 @@ export function PurchaseOrderForm({
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <div className="space-y-1">
-              <CardTitle>Item Pesanan</CardTitle>
-              <CardDescription>
-                Daftar barang yang akan dipesan.
-              </CardDescription>
+              <CardTitle>{t('form.items.title')}</CardTitle>
+              <CardDescription>{t('form.items.description')}</CardDescription>
             </div>
             <Button
               type="button"
@@ -294,17 +294,17 @@ export function PurchaseOrderForm({
               }
             >
               <Plus className="mr-2 h-4 w-4" />
-              Tambah Item
+              {t('form.items.addBtn')}
             </Button>
           </CardHeader>
           <CardContent>
             <div className="rounded-md border">
               {/* Desktop Header */}
               <div className="hidden sm:grid grid-cols-[1fr_100px_160px_160px_50px] gap-4 items-center p-4 bg-muted/40 text-sm font-medium text-muted-foreground border-b">
-                <div>Produk</div>
-                <div className="text-right">Qty</div>
-                <div className="text-right">Harga Satuan</div>
-                <div className="text-right">Subtotal</div>
+                <div>{t('form.items.product')}</div>
+                <div className="text-right">{t('form.items.qty')}</div>
+                <div className="text-right">{t('form.items.price')}</div>
+                <div className="text-right">{t('form.items.subtotal')}</div>
                 <div></div>
               </div>
 
@@ -323,7 +323,7 @@ export function PurchaseOrderForm({
                         render={({ field }) => (
                           <FormItem className="space-y-0">
                             <label className="sm:hidden text-sm font-medium mb-1.5 block">
-                              Produk
+                              {t('form.items.product')}
                             </label>
                             <Combobox
                               options={
@@ -345,7 +345,7 @@ export function PurchaseOrderForm({
                                   );
                                 }
                               }}
-                              placeholder="Pilih Produk"
+                              placeholder={t('form.items.productPlaceholder')}
                               searchPlaceholder="Cari produk..."
                               className="w-full h-auto whitespace-normal text-left"
                             />
@@ -363,7 +363,7 @@ export function PurchaseOrderForm({
                         render={({ field }) => (
                           <FormItem className="space-y-0">
                             <label className="sm:hidden text-sm font-medium mb-1.5 block">
-                              Qty
+                              {t('form.items.qty')}
                             </label>
                             <FormControl>
                               <Input
@@ -389,7 +389,7 @@ export function PurchaseOrderForm({
                         render={({ field }) => (
                           <FormItem className="space-y-0">
                             <label className="sm:hidden text-sm font-medium mb-1.5 block">
-                              Harga
+                              {t('form.items.price')}
                             </label>
                             <FormControl>
                               <Input
@@ -414,7 +414,7 @@ export function PurchaseOrderForm({
                     <div className="flex items-center justify-between sm:justify-end sm:contents">
                       <div className="flex flex-col sm:block text-right sm:col-span-1">
                         <span className="sm:hidden text-sm text-muted-foreground mr-2">
-                          Subtotal:
+                          {t('form.items.subtotal')}:
                         </span>
                         <span className="text-sm font-medium">
                           {formatCurrency(
@@ -449,9 +449,9 @@ export function PurchaseOrderForm({
           <Card>
             <CardHeader>
               <CardTitle>
-                Catatan{' '}
+                {t('form.notes.title')}{' '}
                 <span className="text-xs font-normal text-muted-foreground">
-                  (Opsional)
+                  {t('form.notes.optional')}
                 </span>
               </CardTitle>
             </CardHeader>
@@ -463,7 +463,7 @@ export function PurchaseOrderForm({
                   <FormItem>
                     <FormControl>
                       <Textarea
-                        placeholder="Catatan tambahan untuk pemasok..."
+                        placeholder={t('form.notes.placeholder')}
                         className="resize-none min-h-[100px]"
                         {...field}
                         value={field.value || ''}
@@ -478,11 +478,13 @@ export function PurchaseOrderForm({
 
           <Card>
             <CardHeader>
-              <CardTitle>Rincian Pembayaran</CardTitle>
+              <CardTitle>{t('form.payment.title')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Subtotal</span>
+                <span className="text-muted-foreground">
+                  {t('form.payment.subtotal')}
+                </span>
                 <span>{formatCurrency(subtotal)}</span>
               </div>
 
@@ -495,7 +497,7 @@ export function PurchaseOrderForm({
                       optional
                       className="text-sm font-normal text-muted-foreground"
                     >
-                      Diskon (%)
+                      {t('form.payment.discount')}
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -514,7 +516,7 @@ export function PurchaseOrderForm({
               />
 
               <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Potongan Diskon</span>
+                <span>{t('form.payment.discountAmount')}</span>
                 <span className="text-destructive">
                   - {formatCurrency(discountAmount)}
                 </span>
@@ -529,7 +531,7 @@ export function PurchaseOrderForm({
                       optional
                       className="text-sm font-normal text-muted-foreground"
                     >
-                      Pajak (%)
+                      {t('form.payment.tax')}
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -548,14 +550,14 @@ export function PurchaseOrderForm({
               />
 
               <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Pajak (PPN)</span>
+                <span>{t('form.payment.taxAmount')}</span>
                 <span>+ {formatCurrency(taxAmount)}</span>
               </div>
 
               <Separator />
 
               <div className="flex justify-between text-lg font-bold">
-                <span>Total</span>
+                <span>{t('form.payment.total')}</span>
                 <span className="text-primary">{formatCurrency(total)}</span>
               </div>
             </CardContent>
@@ -569,12 +571,12 @@ export function PurchaseOrderForm({
             onClick={() => router.back()}
             disabled={isSubmitting}
           >
-            Batal
+            {t('form.cancelBtn')}
           </Button>
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {!isSubmitting && <Save className="mr-2 h-4 w-4" />}
-            {initialData ? 'Simpan Perubahan' : 'Buat Purchase Order'}
+            {initialData ? t('form.saveBtn') : t('form.createBtn')}
           </Button>
         </div>
       </form>

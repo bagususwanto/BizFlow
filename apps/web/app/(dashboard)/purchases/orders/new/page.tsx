@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { PurchaseOrderForm } from '@/components/purchases/purchase-order-form';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
+import { useTranslations } from 'next-intl';
 
 function CreatePurchaseOrderContent() {
   const searchParams = useSearchParams();
@@ -43,17 +44,16 @@ function CreatePurchaseOrderContent() {
 }
 
 export default function CreatePurchaseOrderPage() {
-  useBreadcrumb('/purchases/orders/new', 'Buat PO');
+  const t = useTranslations('purchases.orders');
+  useBreadcrumb('/purchases/orders/new', t('form.createTitle'));
 
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold tracking-tight">
-          Buat Purchase Order
+          {t('form.createTitle')}
         </h2>
-        <p className="text-muted-foreground">
-          Buat pesanan pembelian baru ke pemasok.
-        </p>
+        <p className="text-muted-foreground">{t('form.createSubtitle')}</p>
       </div>
 
       <Suspense

@@ -1829,5 +1829,163 @@
         }
       }
     }
+  },
+  "purchases": {
+    "orders": {
+      "title": "Purchase Orders",
+      "description": "Kelola pesanan pembelian barang ke pemasok.",
+      "createLabel": "Buat PO Baru",
+      "searchPlaceholder": "Cari No. PO atau Pemasok...",
+      "failedLoad": "Gagal memuat data purchase order",
+      "summary": {
+        "total": "Total PO",
+        "totalDesc": "Semua status pesanan",
+        "draft": "Draft",
+        "draftDesc": "Pesanan belum diproses",
+        "ordered": "Dipesan",
+        "orderedDesc": "Menunggu pengiriman",
+        "received": "Diterima",
+        "receivedDesc": "Barang sudah diterima"
+      },
+      "filter": {
+        "status": "Status",
+        "supplier": "Pemasok",
+        "supplierPlaceholder": "Cari pemasok..."
+      },
+      "status": {
+        "draft": "Draft",
+        "pending_approval": "Menunggu Persetujuan",
+        "approved": "Disetujui",
+        "ordered": "Dipesan",
+        "received": "Diterima",
+        "completed": "Selesai",
+        "cancelled": "Dibatalkan",
+        "partial": "Sebagian"
+      },
+      "paymentStatus": {
+        "unpaid": "Belum Dibayar",
+        "paid": "Lunas",
+        "partial": "Sebagian"
+      },
+      "columns": {
+        "poNumber": "No. PO",
+        "date": "Tanggal",
+        "supplier": "Pemasok",
+        "expectedDate": "Tgl. Ekspektasi",
+        "total": "Total",
+        "status": "Status",
+        "payment": "Pembayaran"
+      },
+      "actions": {
+        "detail": "Detail",
+        "edit": "Edit",
+        "delete": "Hapus",
+        "printBtn": "Print PO",
+        "submitApprovalBtn": "Ajukan Approval",
+        "rejectBtn": "Tolak PO",
+        "approveBtn": "Approve PO",
+        "cancelBtn": "Batalkan",
+        "orderBtn": "Pesan ke Pemasok",
+        "receiveBtn": "Terima Barang",
+        "completeBtn": "Selesai"
+      },
+      "delete": {
+        "title": "Hapus Purchase Order?",
+        "desc1": "Apakah Anda yakin ingin menghapus Purchase Order ",
+        "desc2": "? Tindakan ini tidak dapat dibatalkan."
+      },
+      "detail": {
+        "title": "Detail Purchase Order",
+        "failedLoad": "Gagal memuat detail purchase order",
+        "supplierInfo": {
+          "title": "Informasi Pemasok"
+        },
+        "otherInfo": {
+          "title": "Informasi Lainnya",
+          "expectedDate": "Tgl. Ekspektasi:",
+          "createdAt": "Dibuat Pada:",
+          "createdBy": "Dibuat Oleh:",
+          "approvedBy": "Disetujui Oleh:",
+          "approvedAt": "Disetujui Pada:"
+        },
+        "items": {
+          "title": "Item Pesanan",
+          "product": "Produk",
+          "qty": "Qty",
+          "price": "Harga",
+          "total": "Total"
+        },
+        "notes": {
+          "title": "Catatan"
+        },
+        "paymentDetails": {
+          "title": "Rincian Pembayaran",
+          "subtotal": "Subtotal",
+          "discount": "Diskon",
+          "tax": "Pajak",
+          "total": "Total",
+          "paid": "Sudah Dibayar",
+          "remaining": "Sisa Pembayaran"
+        },
+        "statusDialog": {
+          "title": "Konfirmasi Perubahan Status",
+          "desc1": "Apakah Anda yakin ingin mengubah status menjadi ",
+          "desc2": "?",
+          "cancel": "Batal",
+          "confirm": "Ya, Ubah Status"
+        }
+      },
+      "form": {
+        "createTitle": "Buat Purchase Order",
+        "createSubtitle": "Buat pesanan pembelian baru ke pemasok.",
+        "editTitle": "Edit Purchase Order",
+        "cancelBtn": "Batal",
+        "saveBtn": "Simpan Perubahan",
+        "createBtn": "Buat Purchase Order",
+        "generalInfo": {
+          "title": "Informasi Pesanan",
+          "description": "Informasi umum mengenai purchase order."
+        },
+        "poNumber": "No. PO",
+        "poNumberPlaceholder": "Otomatis",
+        "supplierLabel": "Pemasok",
+        "supplierPlaceholder": "Pilih Pemasok",
+        "expectedDate": "Tanggal Ekspektasi",
+        "expectedDatePlaceholder": "Pilih tanggal",
+        "expectedDateDesc": "Perkiraan barang akan diterima.",
+        "items": {
+          "title": "Item Pesanan",
+          "description": "Daftar barang yang akan dipesan.",
+          "addBtn": "Tambah Item",
+          "product": "Produk",
+          "productPlaceholder": "Pilih Produk",
+          "qty": "Qty",
+          "price": "Harga Satuan",
+          "subtotal": "Subtotal"
+        },
+        "notes": {
+          "title": "Catatan",
+          "optional": "(Opsional)",
+          "placeholder": "Catatan tambahan untuk pemasok..."
+        },
+        "payment": {
+          "title": "Rincian Pembayaran",
+          "subtotal": "Subtotal",
+          "discount": "Diskon (%)",
+          "discountAmount": "Potongan Diskon",
+          "tax": "Pajak (%)",
+          "taxAmount": "Pajak (PPN)",
+          "total": "Total"
+        }
+      },
+      "validation": {
+        "variantRequired": "Product variant wajib dipilih",
+        "quantityMin": "Quantity harus lebih dari 0",
+        "priceMin": "Unit price tidak boleh negatif",
+        "supplierRequired": "Supplier wajib dipilih",
+        "itemsMin": "Minimal 1 item diperlukan",
+        "autoReorderVariantsRequired": "Minimal 1 varian produk diperlukan"
+      }
+    }
   }
 }

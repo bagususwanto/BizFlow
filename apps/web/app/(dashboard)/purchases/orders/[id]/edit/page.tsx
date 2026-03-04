@@ -8,6 +8,7 @@ import { PurchaseOrderForm } from '@/components/purchases/purchase-order-form';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { LoadingState } from '@/components/common/loading-state';
 import { ErrorState } from '@/components/common/error-state';
+import { useTranslations } from 'next-intl';
 
 export default function EditPurchaseOrderPage({
   params,
@@ -15,6 +16,7 @@ export default function EditPurchaseOrderPage({
   params: Promise<{ id: string }>;
 }) {
   const resolvedParams = use(params);
+  const t = useTranslations('purchases.orders');
   const {
     data: purchaseOrder,
     isLoading,
@@ -27,7 +29,7 @@ export default function EditPurchaseOrderPage({
 
   useBreadcrumb(
     `/purchases/orders/${resolvedParams.id}`,
-    purchaseOrder?.orderNumber || 'Detail',
+    purchaseOrder?.orderNumber || t('actions.detail'),
   );
 
   if (isLoading) {
@@ -40,10 +42,7 @@ export default function EditPurchaseOrderPage({
 
   if (isError || !purchaseOrder) {
     return (
-      <ErrorState
-        title="Gagal memuat detail purchase order"
-        onRetry={() => refetch()}
-      />
+      <ErrorState title={t('detail.failedLoad')} onRetry={() => refetch()} />
     );
   }
 
@@ -70,10 +69,10 @@ export default function EditPurchaseOrderPage({
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold tracking-tight">
-          Edit Purchase Order
+          {t('form.editTitle')}
         </h2>
         <p className="text-muted-foreground">
-          Edit detail pesanan pembelian: {purchaseOrder.orderNumber}
+          {t('form.editTitle')}: {purchaseOrder.orderNumber}
         </p>
       </div>
 

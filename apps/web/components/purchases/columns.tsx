@@ -26,6 +26,7 @@ import { useFormatDate, DateFormatters } from '@/hooks';
 interface GetColumnsProps {
   onDelete: (order: PurchaseOrder) => void;
   formatters: DateFormatters;
+  t: (key: string) => string;
 }
 
 const statusBadgeVariant = (status: string) => {
@@ -66,6 +67,7 @@ const paymentBadgeVariant = (status: string) => {
 export const getColumns = ({
   onDelete,
   formatters,
+  t,
 }: GetColumnsProps): ColumnDef<PurchaseOrder>[] => {
   const { formatDate: formatDateShort } = formatters;
 
@@ -94,7 +96,7 @@ export const getColumns = ({
     {
       accessorKey: 'orderNumber',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="No. PO" />
+        <DataTableColumnHeader column={column} title={t('columns.poNumber')} />
       ),
       cell: ({ row }) => (
         <div className="flex flex-col">
@@ -102,31 +104,31 @@ export const getColumns = ({
         </div>
       ),
       meta: {
-        title: 'No. PO',
+        title: t('columns.poNumber'),
       },
     },
     {
       accessorKey: 'createdAt',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Tanggal" />
+        <DataTableColumnHeader column={column} title={t('columns.date')} />
       ),
       cell: ({ row }) => formatDateShort(row.getValue('createdAt')),
       meta: {
-        title: 'Tanggal',
+        title: t('columns.date'),
       },
     },
     {
       accessorKey: 'supplier.name',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Pemasok" />
+        <DataTableColumnHeader column={column} title={t('columns.supplier')} />
       ),
       meta: {
-        title: 'Pemasok',
+        title: t('columns.supplier'),
       },
     },
     {
       accessorKey: 'expectedDate',
-      header: 'Tgl. Ekspektasi',
+      header: t('columns.expectedDate'),
       cell: ({ row }) => {
         const date = row.getValue('expectedDate');
         return date ? formatDateShort(date as string) : '-';
@@ -135,7 +137,7 @@ export const getColumns = ({
     {
       accessorKey: 'total',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Total" />
+        <DataTableColumnHeader column={column} title={t('columns.total')} />
       ),
       cell: ({ row }) => (
         <div className="font-medium">
@@ -143,41 +145,41 @@ export const getColumns = ({
         </div>
       ),
       meta: {
-        title: 'Total',
+        title: t('columns.total'),
       },
     },
     {
       accessorKey: 'status',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Status" />
+        <DataTableColumnHeader column={column} title={t('columns.status')} />
       ),
       cell: ({ row }) => {
         const status = row.getValue('status') as string;
         return (
           <Badge variant={statusBadgeVariant(status) as any}>
-            {status.toUpperCase()}
+            {t(`status.${status}`)}
           </Badge>
         );
       },
       meta: {
-        title: 'Status',
+        title: t('columns.status'),
       },
     },
     {
       accessorKey: 'paymentStatus',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Pembayaran" />
+        <DataTableColumnHeader column={column} title={t('columns.payment')} />
       ),
       cell: ({ row }) => {
         const status = row.getValue('paymentStatus') as string;
         return (
           <Badge variant={paymentBadgeVariant(status) as any}>
-            {status.toUpperCase()}
+            {t(`paymentStatus.${status}`)}
           </Badge>
         );
       },
       meta: {
-        title: 'Pembayaran',
+        title: t('columns.payment'),
       },
     },
     {
@@ -197,14 +199,14 @@ export const getColumns = ({
               <DropdownMenuLabel>Aksi</DropdownMenuLabel>
               <DropdownMenuItem asChild>
                 <Link href={`/purchases/orders/${order.id}`}>
-                  <Eye className="mr-2 h-4 w-4" /> Detail
+                  <Eye className="mr-2 h-4 w-4" /> {t('actions.detail')}
                 </Link>
               </DropdownMenuItem>
               {order.status === 'draft' && (
                 <>
                   <DropdownMenuItem asChild>
                     <Link href={`/purchases/orders/${order.id}/edit`}>
-                      <Edit className="mr-2 h-4 w-4" /> Edit
+                      <Edit className="mr-2 h-4 w-4" /> {t('actions.edit')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -212,7 +214,7 @@ export const getColumns = ({
                     className="text-destructive focus:text-destructive"
                     onClick={() => onDelete(order)}
                   >
-                    <Trash className="mr-2 h-4 w-4" /> Hapus
+                    <Trash className="mr-2 h-4 w-4" /> {t('actions.delete')}
                   </DropdownMenuItem>
                 </>
               )}

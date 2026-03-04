@@ -16,8 +16,10 @@ import { getColumns } from '@/components/purchases/columns';
 import { ErrorState } from '@/components/common/error-state';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 import { useFormatDate } from '@/hooks';
+import { useTranslations } from 'next-intl';
 
 function PurchaseOrdersContent() {
+  const t = useTranslations('purchases.orders');
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -89,10 +91,7 @@ function PurchaseOrdersContent() {
   };
 
   const handleError = () => (
-    <ErrorState
-      title="Gagal memuat data purchase order"
-      onRetry={() => refetch()}
-    />
+    <ErrorState title={t('failedLoad')} onRetry={() => refetch()} />
   );
 
   const columns = useMemo(
@@ -100,8 +99,9 @@ function PurchaseOrdersContent() {
       getColumns({
         onDelete: (order) => setOrderToDelete(order),
         formatters,
+        t: t as any,
       }),
-    [formatters],
+    [formatters, t],
   );
 
   const orders = ordersData?.data || [];
@@ -115,10 +115,10 @@ function PurchaseOrdersContent() {
 
   return (
     <DataListPage
-      title="Purchase Orders"
-      description="Kelola pesanan pembelian barang ke pemasok."
+      title={t('title')}
+      description={t('description')}
       createLink="/purchases/orders/new"
-      createLabel="Buat PO Baru"
+      createLabel={t('createLabel')}
       data={orders}
       columns={columns}
       isLoading={isLoading}
@@ -142,7 +142,7 @@ function PurchaseOrdersContent() {
       // Search & Filters
       search={search}
       onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
-      searchPlaceholder="Cari No. PO atau Pemasok..."
+      searchPlaceholder={t('searchPlaceholder')}
       filterValues={{ status, supplierId: supplierId || 'all' }}
       onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
       onReset={() => router.push(pathname)}
@@ -159,26 +159,26 @@ function PurchaseOrdersContent() {
       filters={[
         {
           key: 'status',
-          label: 'Status',
+          label: t('filter.status'),
           options: [
-            { label: 'Draft', value: 'draft' },
-            { label: 'Ordered', value: 'ordered' },
-            { label: 'Received', value: 'received' },
-            { label: 'Completed', value: 'completed' },
-            { label: 'Cancelled', value: 'cancelled' },
+            { label: t('status.draft'), value: 'draft' },
+            { label: t('status.ordered'), value: 'ordered' },
+            { label: t('status.received'), value: 'received' },
+            { label: t('status.completed'), value: 'completed' },
+            { label: t('status.cancelled'), value: 'cancelled' },
           ],
           width: 'w-full md:w-[150px]',
         },
         {
           key: 'supplierId',
-          label: 'Pemasok',
+          label: t('filter.supplier'),
           type: 'combobox',
           options: suppliers.map((supplier: any) => ({
             label: supplier.name,
             value: supplier.id,
           })),
           width: 'w-full md:w-[250px]',
-          searchPlaceholder: 'Cari pemasok...',
+          searchPlaceholder: t('filter.supplierPlaceholder'),
         },
       ]}
       // Actions
@@ -192,49 +192,57 @@ function PurchaseOrdersContent() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total PO</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                {t('summary.total')}
+              </CardTitle>
               <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{summary.totalOrders}</div>
               <p className="text-xs text-muted-foreground">
-                Semua status pesanan
+                {t('summary.totalDesc')}
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Draft</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                {t('summary.draft')}
+              </CardTitle>
               <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{summary.draftOrders}</div>
               <p className="text-xs text-muted-foreground">
-                Pesanan belum diproses
+                {t('summary.draftDesc')}
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Dipesan</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                {t('summary.ordered')}
+              </CardTitle>
               <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{summary.orderedOrders}</div>
               <p className="text-xs text-muted-foreground">
-                Menunggu pengiriman
+                {t('summary.orderedDesc')}
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Diterima</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                {t('summary.received')}
+              </CardTitle>
               <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{summary.receivedOrders}</div>
               <p className="text-xs text-muted-foreground">
-                Barang sudah diterima
+                {t('summary.receivedDesc')}
               </p>
             </CardContent>
           </Card>
@@ -244,12 +252,12 @@ function PurchaseOrdersContent() {
       <DeleteConfirmDialog
         open={!!orderToDelete}
         onOpenChange={(open) => !open && setOrderToDelete(null)}
-        title="Hapus Purchase Order?"
+        title={t('delete.title')}
         description={
           <>
-            Apakah Anda yakin ingin menghapus Purchase Order{' '}
-            <span className="font-semibold">{orderToDelete?.orderNumber}</span>?
-            Tindakan ini tidak dapat dibatalkan.
+            {t('delete.desc1')}
+            <span className="font-semibold">{orderToDelete?.orderNumber}</span>
+            {t('delete.desc2')}
           </>
         }
         onConfirm={() => {
@@ -260,7 +268,7 @@ function PurchaseOrdersContent() {
           }
         }}
         isDeleting={deleteMutation.isPending}
-        confirmLabel="Hapus"
+        confirmLabel={t('actions.delete')}
       />
     </DataListPage>
   );

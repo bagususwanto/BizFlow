@@ -58,6 +58,7 @@ import {
   useDeletePurchaseOrder,
   useUpdatePurchaseOrderStatus,
 } from '@/hooks/use-purchase-orders';
+import { useTranslations } from 'next-intl';
 
 export default function PurchaseOrderDetailPage({
   params,
@@ -69,6 +70,7 @@ export default function PurchaseOrderDetailPage({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [statusDialogOpen, setStatusDialogOpen] = useState(false);
   const [nextStatus, setNextStatus] = useState<string | null>(null);
+  const t = useTranslations('purchases.orders');
 
   const {
     data: order,
@@ -86,7 +88,7 @@ export default function PurchaseOrderDetailPage({
 
   useBreadcrumb(
     `/purchases/orders/${resolvedParams.id}`,
-    order?.orderNumber || 'Detail',
+    order?.orderNumber || t('actions.detail'),
   );
 
   if (isLoading) {
@@ -99,10 +101,7 @@ export default function PurchaseOrderDetailPage({
 
   if (isError || !order) {
     return (
-      <ErrorState
-        title="Gagal memuat detail purchase order"
-        onRetry={() => refetch()}
-      />
+      <ErrorState title={t('detail.failedLoad')} onRetry={() => refetch()} />
     );
   }
 
@@ -191,11 +190,11 @@ export default function PurchaseOrderDetailPage({
               <span>{formatDateTime(order.createdAt)}</span>
               <span>•</span>
               <Badge variant={statusBadgeVariant(order.status) as any}>
-                {order.status.toUpperCase()}
+                {t(`status.${order.status}`)}
               </Badge>
               <span>•</span>
               <Badge variant={paymentBadgeVariant(order.paymentStatus) as any}>
-                {order.paymentStatus.toUpperCase()}
+                {t(`paymentStatus.${order.paymentStatus}`)}
               </Badge>
             </div>
           </div>
@@ -209,7 +208,7 @@ export default function PurchaseOrderDetailPage({
               window.open(`/purchases/orders/${order.id}/print`, '_blank')
             }
           >
-            <Printer className="mr-2 h-4 w-4" /> Print PO
+            <Printer className="mr-2 h-4 w-4" /> {t('actions.printBtn')}
           </Button>
           {order.status === 'draft' && (
             <>
@@ -219,13 +218,13 @@ export default function PurchaseOrderDetailPage({
                   router.push(`/purchases/orders/${order.id}/edit`)
                 }
               >
-                <Edit className="mr-2 h-4 w-4" /> Edit
+                <Edit className="mr-2 h-4 w-4" /> {t('actions.edit')}
               </Button>
               <Button
                 variant="destructive"
                 onClick={() => setDeleteDialogOpen(true)}
               >
-                <Trash className="mr-2 h-4 w-4" /> Hapus
+                <Trash className="mr-2 h-4 w-4" /> {t('actions.delete')}
               </Button>
               <Button
                 onClick={() => {
@@ -233,7 +232,8 @@ export default function PurchaseOrderDetailPage({
                   setStatusDialogOpen(true);
                 }}
               >
-                <CheckCircle className="mr-2 h-4 w-4" /> Ajukan Approval
+                <CheckCircle className="mr-2 h-4 w-4" />{' '}
+                {t('actions.submitApprovalBtn')}
               </Button>
             </>
           )}
@@ -247,7 +247,7 @@ export default function PurchaseOrderDetailPage({
                   setStatusDialogOpen(true);
                 }}
               >
-                <XCircle className="mr-2 h-4 w-4" /> Tolak PO
+                <XCircle className="mr-2 h-4 w-4" /> {t('actions.rejectBtn')}
               </Button>
               <Button
                 onClick={() => {
@@ -255,7 +255,8 @@ export default function PurchaseOrderDetailPage({
                   setStatusDialogOpen(true);
                 }}
               >
-                <CheckCircle className="mr-2 h-4 w-4" /> Approve PO
+                <CheckCircle className="mr-2 h-4 w-4" />{' '}
+                {t('actions.approveBtn')}
               </Button>
             </>
           )}
@@ -269,7 +270,7 @@ export default function PurchaseOrderDetailPage({
                   setStatusDialogOpen(true);
                 }}
               >
-                <XCircle className="mr-2 h-4 w-4" /> Batalkan
+                <XCircle className="mr-2 h-4 w-4" /> {t('actions.cancelBtn')}
               </Button>
               <Button
                 onClick={() => {
@@ -277,7 +278,7 @@ export default function PurchaseOrderDetailPage({
                   setStatusDialogOpen(true);
                 }}
               >
-                <CheckCircle className="mr-2 h-4 w-4" /> Pesan ke Pemasok
+                <CheckCircle className="mr-2 h-4 w-4" /> {t('actions.orderBtn')}
               </Button>
             </>
           )}
@@ -291,7 +292,7 @@ export default function PurchaseOrderDetailPage({
                   setStatusDialogOpen(true);
                 }}
               >
-                <XCircle className="mr-2 h-4 w-4" /> Batalkan
+                <XCircle className="mr-2 h-4 w-4" /> {t('actions.cancelBtn')}
               </Button>
               <Button
                 onClick={() =>
@@ -300,7 +301,7 @@ export default function PurchaseOrderDetailPage({
                   )
                 }
               >
-                <Package className="mr-2 h-4 w-4" /> Terima Barang
+                <Package className="mr-2 h-4 w-4" /> {t('actions.receiveBtn')}
               </Button>
             </>
           )}
@@ -313,7 +314,8 @@ export default function PurchaseOrderDetailPage({
                   setStatusDialogOpen(true);
                 }}
               >
-                <CheckCircle className="mr-2 h-4 w-4" /> Selesai
+                <CheckCircle className="mr-2 h-4 w-4" />{' '}
+                {t('actions.completeBtn')}
               </Button>
             </>
           )}
@@ -325,7 +327,7 @@ export default function PurchaseOrderDetailPage({
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>Informasi Pemasok</CardTitle>
+              <CardTitle>{t('detail.supplierInfo.title')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-start gap-4">
@@ -359,26 +361,32 @@ export default function PurchaseOrderDetailPage({
 
           <Card>
             <CardHeader>
-              <CardTitle>Informasi Lainnya</CardTitle>
+              <CardTitle>{t('detail.otherInfo.title')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center gap-2 text-sm">
                 <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Tgl. Ekspektasi:</span>
+                <span className="text-muted-foreground">
+                  {t('detail.otherInfo.expectedDate')}
+                </span>
                 <span className="font-medium">
                   {order.expectedDate ? formatDate(order.expectedDate) : '-'}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <Clock className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Dibuat Pada:</span>
+                <span className="text-muted-foreground">
+                  {t('detail.otherInfo.createdAt')}
+                </span>
                 <span className="font-medium">
                   {formatDateTime(order.createdAt)}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <User className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Dibuat Oleh:</span>
+                <span className="text-muted-foreground">
+                  {t('detail.otherInfo.createdBy')}
+                </span>
                 <span className="font-medium">
                   {order.creator?.name || order.createdBy}
                 </span>
@@ -389,7 +397,7 @@ export default function PurchaseOrderDetailPage({
                   <div className="flex items-center gap-2 text-sm">
                     <User className="h-4 w-4 text-muted-foreground" />
                     <span className="text-muted-foreground">
-                      Disetujui Oleh:
+                      {t('detail.otherInfo.approvedBy')}
                     </span>
                     <span className="font-medium">{order.approver.name}</span>
                   </div>
@@ -397,7 +405,7 @@ export default function PurchaseOrderDetailPage({
                     <div className="flex items-center gap-2 text-sm">
                       <Clock className="h-4 w-4 text-muted-foreground" />
                       <span className="text-muted-foreground">
-                        Disetujui Pada:
+                        {t('detail.otherInfo.approvedAt')}
                       </span>
                       <span className="font-medium">
                         {formatDateTime(order.approvedAt)}
@@ -413,16 +421,22 @@ export default function PurchaseOrderDetailPage({
         {/* Middle Section: Items */}
         <Card>
           <CardHeader>
-            <CardTitle>Item Pesanan</CardTitle>
+            <CardTitle>{t('detail.items.title')}</CardTitle>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Produk</TableHead>
-                  <TableHead className="text-right">Qty</TableHead>
-                  <TableHead className="text-right">Harga</TableHead>
-                  <TableHead className="text-right">Total</TableHead>
+                  <TableHead>{t('detail.items.product')}</TableHead>
+                  <TableHead className="text-right">
+                    {t('detail.items.qty')}
+                  </TableHead>
+                  <TableHead className="text-right">
+                    {t('detail.items.price')}
+                  </TableHead>
+                  <TableHead className="text-right">
+                    {t('detail.items.total')}
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -456,7 +470,7 @@ export default function PurchaseOrderDetailPage({
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>Catatan</CardTitle>
+              <CardTitle>{t('detail.notes.title')}</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
@@ -467,33 +481,38 @@ export default function PurchaseOrderDetailPage({
 
           <Card>
             <CardHeader>
-              <CardTitle>Rincian Pembayaran</CardTitle>
+              <CardTitle>{t('detail.paymentDetails.title')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex justify-between text-sm">
-                <span>Subtotal</span>
+                <span>{t('detail.paymentDetails.subtotal')}</span>
                 <span>{formatCurrency(Number(order.subtotal))}</span>
               </div>
               <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Diskon ({Number(order.discountPercent)}%)</span>
+                <span>
+                  {t('detail.paymentDetails.discount')} (
+                  {Number(order.discountPercent)}%)
+                </span>
                 <span>- {formatCurrency(Number(order.discountAmount))}</span>
               </div>
               <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Pajak ({Number(order.taxPercent)}%)</span>
+                <span>
+                  {t('detail.paymentDetails.tax')} ({Number(order.taxPercent)}%)
+                </span>
                 <span>+ {formatCurrency(Number(order.taxAmount))}</span>
               </div>
               <Separator />
               <div className="flex justify-between text-lg font-bold">
-                <span>Total</span>
+                <span>{t('detail.paymentDetails.total')}</span>
                 <span>{formatCurrency(Number(order.total))}</span>
               </div>
               <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Sudah Dibayar</span>
+                <span>{t('detail.paymentDetails.paid')}</span>
                 <span>{formatCurrency(Number(order.paidAmount))}</span>
               </div>
               <Separator />
               <div className="flex justify-between text-sm font-medium text-destructive">
-                <span>Sisa Pembayaran</span>
+                <span>{t('detail.paymentDetails.remaining')}</span>
                 <span>
                   {formatCurrency(
                     Number(order.total) - Number(order.paidAmount),
@@ -508,16 +527,23 @@ export default function PurchaseOrderDetailPage({
       <AlertDialog open={statusDialogOpen} onOpenChange={setStatusDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Konfirmasi Perubahan Status</AlertDialogTitle>
+            <AlertDialogTitle>
+              {t('detail.statusDialog.title')}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Apakah Anda yakin ingin mengubah status menjadi{' '}
-              <span className="font-bold uppercase">{nextStatus}</span>?
+              {t('detail.statusDialog.desc1')}
+              <span className="font-bold uppercase">
+                {t(`status.${nextStatus || 'draft'}`)}
+              </span>
+              {t('detail.statusDialog.desc2')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogCancel>
+              {t('detail.statusDialog.cancel')}
+            </AlertDialogCancel>
             <AlertDialogAction onClick={handleUpdateStatus}>
-              Ya, Ubah Status
+              {t('detail.statusDialog.confirm')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -528,8 +554,14 @@ export default function PurchaseOrderDetailPage({
         onOpenChange={setDeleteDialogOpen}
         onConfirm={handleDelete}
         isDeleting={deleteMutation.isPending}
-        title="Hapus Purchase Order?"
-        description="Apakah Anda yakin ingin menghapus Purchase Order ini? Tindakan ini tidak dapat dibatalkan."
+        title={t('delete.title')}
+        description={
+          <>
+            {t('delete.desc1')}
+            {order?.orderNumber}
+            {t('delete.desc2')}
+          </>
+        }
       />
     </div>
   );

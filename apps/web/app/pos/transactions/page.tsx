@@ -9,8 +9,10 @@ import {
 } from '@/components/pos/transactions/columns';
 import { usePosTransactions } from '@/hooks/use-pos';
 import { useFormatDate } from '@/hooks';
+import { useTranslations } from 'next-intl';
 
 export default function PosTransactionsPage() {
+  const t = useTranslations('pos');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -33,7 +35,7 @@ export default function PosTransactionsPage() {
   };
 
   const formatters = useFormatDate();
-  const columns = useMemo(() => getColumns(formatters), [formatters]);
+  const columns = useMemo(() => getColumns(formatters, t), [formatters, t]);
 
   const handleReset = () => {
     setSearch('');

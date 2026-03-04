@@ -50,49 +50,73 @@ const getStatusLabel = (status: string) => {
 
 export const getColumns = (
   formatters: DateFormatters,
+  formatMessage?: any,
 ): ColumnDef<TransactionItem>[] => {
   const { formatDateTime } = formatters;
+  const t = formatMessage || ((id: string) => id); // Use id if formatting function not provided
+
+  const getStatusLabelText = (status: string) => {
+    switch (status) {
+      case 'paid':
+        return t('transactions.status.paid') || 'Lunas';
+      case 'pending':
+        return t('transactions.status.pending') || 'Belum Lunas';
+      case 'cancelled':
+        return t('transactions.status.cancelled') || 'Dibatalkan';
+      case 'partially_paid':
+        return t('transactions.status.partiallyPaid') || 'Cicilan';
+      default:
+        return status;
+    }
+  };
 
   return [
     {
       accessorKey: 'orderNumber',
-      header: 'No. Order',
+      header: t('transactions.columns.orderNumber') || 'No. Order',
       cell: ({ row }) => (
         <span className="font-medium">{row.original.orderNumber}</span>
       ),
-      meta: { title: 'No. Order' },
+      meta: { title: t('transactions.columns.orderNumber') || 'No. Order' },
     },
     {
       accessorKey: 'createdAt',
-      header: 'Tanggal',
+      header: t('transactions.columns.date') || 'Tanggal',
       cell: ({ row }) => formatDateTime(row.original.createdAt),
-      meta: { title: 'Tanggal' },
+      meta: { title: t('transactions.columns.date') || 'Tanggal' },
     },
     {
       id: 'customerName',
-      header: 'Pelanggan',
-      cell: ({ row }) => row.original.customer?.name || 'Umum',
-      meta: { title: 'Pelanggan' },
+      header: t('transactions.columns.customer') || 'Pelanggan',
+      cell: ({ row }) =>
+        row.original.customer?.name ||
+        t('transactions.columns.generalCustomer') ||
+        'Umum',
+      meta: { title: t('transactions.columns.customer') || 'Pelanggan' },
     },
     {
       accessorKey: 'status',
-      header: 'Status',
+      header: t('transactions.columns.status') || 'Status',
       cell: ({ row }) => (
         <Badge variant={getStatusColor(row.original.status) as any}>
-          {getStatusLabel(row.original.status)}
+          {getStatusLabelText(row.original.status)}
         </Badge>
       ),
-      meta: { title: 'Status' },
+      meta: { title: t('transactions.columns.status') || 'Status' },
     },
     {
       accessorKey: 'grandTotal',
-      header: () => <div className="text-right">Total</div>,
+      header: () => (
+        <div className="text-right">
+          {t('transactions.columns.total') || 'Total'}
+        </div>
+      ),
       cell: ({ row }) => (
         <div className="text-right font-medium">
           {formatCurrency(Number(row.original.grandTotal || 0))}
         </div>
       ),
-      meta: { title: 'Total' },
+      meta: { title: t('transactions.columns.total') || 'Total' },
     },
     {
       id: 'actions',

@@ -3,6 +3,7 @@
 import { cn } from '@bizflow/ui';
 import { usePosCategories } from '@/hooks/use-pos';
 import { Skeleton, Button } from '@bizflow/ui';
+import { useTranslations } from 'next-intl';
 
 interface CategoryFilterProps {
   selectedId: string | undefined;
@@ -11,6 +12,7 @@ interface CategoryFilterProps {
 
 export function CategoryFilter({ selectedId, onSelect }: CategoryFilterProps) {
   const { data: categories, isLoading } = usePosCategories();
+  const t = useTranslations('pos.categories');
 
   if (isLoading) {
     return (
@@ -33,7 +35,7 @@ export function CategoryFilter({ selectedId, onSelect }: CategoryFilterProps) {
           !selectedId ? '' : 'bg-muted text-muted-foreground hover:bg-muted/80',
         )}
       >
-        Semua
+        {t('all')}
       </Button>
 
       {categories?.map((category) => (

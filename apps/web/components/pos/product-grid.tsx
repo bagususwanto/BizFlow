@@ -13,6 +13,7 @@ import { Badge } from '@bizflow/ui';
 import { cn } from '@bizflow/ui';
 import { useBarcodeScanner } from '@/hooks/use-barcode-scanner';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 export interface ProductGridHandle {
   focusSearch: () => void;
@@ -28,6 +29,8 @@ export const ProductGrid = forwardRef<ProductGridHandle, ProductGridProps>(
     const debouncedSearch = useDebounce(search, 300);
     const { addItem } = useCartStore();
     const searchInputRef = useRef<HTMLInputElement>(null);
+    const t = useTranslations('pos.grid');
+    const tCart = useTranslations('pos.cart');
 
     useImperativeHandle(ref, () => ({
       focusSearch: () => {
@@ -86,7 +89,7 @@ export const ProductGrid = forwardRef<ProductGridHandle, ProductGridProps>(
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               ref={searchInputRef}
-              placeholder="Cari produk (Nama, SKU, Barcode)..."
+              placeholder={t('searchPlaceholder')}
               className="pl-9 pr-12"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -121,9 +124,11 @@ export const ProductGrid = forwardRef<ProductGridHandle, ProductGridProps>(
           ) : products.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center text-muted-foreground">
               <Package className="h-12 w-12 mb-2 opacity-50" />
-              <p>Tidak ada produk ditemukan</p>
-              {debouncedSearch && (
+              <p>{t('noProducts')}</p>
+              {debouncedSearch ? (
                 <p className="text-xs">Kata kunci: "{debouncedSearch}"</p>
+              ) : (
+                <p className="text-xs">{t('noProductsDesc')}</p>
               )}
             </div>
           ) : (

@@ -14,6 +14,7 @@ import {
 import { Minus, Plus } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { formatCurrency } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 
 export interface ReturnItem {
   orderItemId: string;
@@ -34,6 +35,7 @@ export function ReturnItemSelector({
   items,
   onChange,
 }: ReturnItemSelectorProps) {
+  const t = useTranslations('pos.returns.selector');
   const [selectedItems, setSelectedItems] = useState<
     Record<string, ReturnItem>
   >({});
@@ -46,7 +48,7 @@ export function ReturnItemSelector({
           orderItemId: item.id,
           quantity: 1,
           maxQuantity: Number(item.quantity), // items from SalesOrder have quantity
-          name: item.variant?.product?.name || item.name || 'Unknown',
+          name: item.variant?.product?.name || item.name || t('unknown'),
           variantName: item.variant?.name,
           price: Number(item.unitPrice),
           reason: '',
@@ -98,12 +100,12 @@ export function ReturnItemSelector({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[50px]">Pilih</TableHead>
-            <TableHead>Produk</TableHead>
-            <TableHead className="text-right">Harga</TableHead>
-            <TableHead className="text-center">Qty Beli</TableHead>
-            <TableHead className="text-center">Qty Return</TableHead>
-            <TableHead>Alasan (Opsional)</TableHead>
+            <TableHead className="w-[50px]">{t('select')}</TableHead>
+            <TableHead>{t('product')}</TableHead>
+            <TableHead className="text-right">{t('price')}</TableHead>
+            <TableHead className="text-center">{t('qtyBought')}</TableHead>
+            <TableHead className="text-center">{t('qtyReturn')}</TableHead>
+            <TableHead>{t('reasonOptional')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -170,7 +172,7 @@ export function ReturnItemSelector({
                 <TableCell>
                   {isSelected && (
                     <Input
-                      placeholder="Contoh: Rusak, Expired"
+                      placeholder={t('reasonPlaceholder')}
                       value={current?.reason || ''}
                       onChange={(e) => updateReason(item.id, e.target.value)}
                       className="h-8"

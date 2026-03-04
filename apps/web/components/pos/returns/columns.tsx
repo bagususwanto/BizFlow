@@ -50,49 +50,70 @@ const getStatusLabel = (status: string) => {
 
 export const getColumns = (
   formatters: DateFormatters,
+  formatMessage?: any,
 ): ColumnDef<ReturnItem>[] => {
   const { formatDateTime } = formatters;
+  const t = formatMessage || ((id: string) => id); // Use id if formatting function not provided
+
+  const getStatusLabelText = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return t('returns.status.pending') || 'Menunggu Approval';
+      case 'approved':
+        return t('returns.status.approved') || 'Disetujui';
+      case 'rejected':
+        return t('returns.status.rejected') || 'Ditolak';
+      case 'completed':
+        return t('returns.status.completed') || 'Selesai';
+      default:
+        return status;
+    }
+  };
 
   return [
     {
       accessorKey: 'returnNumber',
-      header: 'No. Retur',
+      header: t('returns.columns.returnNumber') || 'No. Retur',
       cell: ({ row }) => (
         <span className="font-medium">{row.original.returnNumber}</span>
       ),
-      meta: { title: 'No. Retur' },
+      meta: { title: t('returns.columns.returnNumber') || 'No. Retur' },
     },
     {
       id: 'orderNumber',
-      header: 'No. Order',
+      header: t('returns.columns.orderNumber') || 'No. Order',
       cell: ({ row }) => row.original.order?.orderNumber || '-',
-      meta: { title: 'No. Order' },
+      meta: { title: t('returns.columns.orderNumber') || 'No. Order' },
     },
     {
       accessorKey: 'createdAt',
-      header: 'Tanggal',
+      header: t('returns.columns.date') || 'Tanggal',
       cell: ({ row }) => formatDateTime(row.original.createdAt),
-      meta: { title: 'Tanggal' },
+      meta: { title: t('returns.columns.date') || 'Tanggal' },
     },
     {
       accessorKey: 'status',
-      header: 'Status',
+      header: t('returns.columns.status') || 'Status',
       cell: ({ row }) => (
         <Badge variant={getStatusColor(row.original.status) as any}>
-          {getStatusLabel(row.original.status)}
+          {getStatusLabelText(row.original.status)}
         </Badge>
       ),
-      meta: { title: 'Status' },
+      meta: { title: t('returns.columns.status') || 'Status' },
     },
     {
       accessorKey: 'refundAmount',
-      header: () => <div className="text-right">Total Refund</div>,
+      header: () => (
+        <div className="text-right">
+          {t('returns.columns.totalRefund') || 'Total Refund'}
+        </div>
+      ),
       cell: ({ row }) => (
         <div className="text-right font-medium">
           {formatCurrency(Number(row.original.refundAmount || 0))}
         </div>
       ),
-      meta: { title: 'Total Refund' },
+      meta: { title: t('returns.columns.totalRefund') || 'Total Refund' },
     },
     {
       id: 'actions',

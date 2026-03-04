@@ -37,7 +37,7 @@ export const getColumns = ({
         <Checkbox
           checked={table.getIsAllPageRowsSelected()}
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Pilih semua"
+          aria-label={t('columns.selectAll') || 'Pilih semua'}
           className="translate-y-[2px]"
         />
       ),
@@ -45,7 +45,7 @@ export const getColumns = ({
         <Checkbox
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Pilih baris"
+          aria-label={t('columns.selectRow') || 'Pilih baris'}
           className="translate-y-[2px]"
         />
       ),
@@ -107,11 +107,13 @@ export const getColumns = ({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+              <DropdownMenuLabel>
+                {t('columns.actions.label') || 'Aksi'}
+              </DropdownMenuLabel>
               <DropdownMenuItem asChild>
                 <Link href={`/purchases/goods-receive/${goodsReceive.id}`}>
                   <Eye className="mr-2 h-4 w-4" />
-                  Detail
+                  {t('columns.actions.detail') || 'Detail'}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -120,7 +122,7 @@ export const getColumns = ({
                 onClick={() => onDelete(goodsReceive)}
               >
                 <Trash className="mr-2 h-4 w-4" />
-                Hapus
+                {t('columns.actions.delete') || 'Hapus'}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

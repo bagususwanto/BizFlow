@@ -15,6 +15,7 @@ import { formatCurrency } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 interface HeldTransactionsListProps {
   open: boolean;
@@ -30,6 +31,7 @@ export function HeldTransactionsList({
   onDelete,
 }: HeldTransactionsListProps) {
   const { data: heldTransactions, isLoading } = useHeldTransactions();
+  const t = useTranslations('pos.held');
 
   if (isLoading) return null; // Or skeleton
 
@@ -39,17 +41,15 @@ export function HeldTransactionsList({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-[400px] sm:w-[540px]">
         <SheetHeader>
-          <SheetTitle>Transaksi Tersimpan</SheetTitle>
-          <SheetDescription>
-            Pilih transaksi untuk dilanjutkan atau dihapus.
-          </SheetDescription>
+          <SheetTitle>{t('title')}</SheetTitle>
+          <SheetDescription>{t('description')}</SheetDescription>
         </SheetHeader>
 
         <ScrollArea className="h-[calc(100vh-100px)] mt-4 pr-4">
           <div className="space-y-4">
             {transactions.length === 0 ? (
               <div className="text-center text-muted-foreground py-10">
-                Belum ada transaksi yang disimpan.
+                {t('empty')}
               </div>
             ) : (
               transactions.map((tx: any) => (
@@ -97,8 +97,10 @@ export function HeldTransactionsList({
                   )}
 
                   <div className="text-xs text-muted-foreground">
-                    {tx.items.length} item • {tx.items[0]?.name}
-                    {tx.items.length > 1 && ` + ${tx.items.length - 1} lainnya`}
+                    {t('itemsCount', { count: tx.items.length })} •{' '}
+                    {tx.items[0]?.name}
+                    {tx.items.length > 1 &&
+                      ` ${t('andOthers', { count: tx.items.length - 1 })}`}
                   </div>
 
                   <div className="flex gap-2 pt-2">
@@ -109,14 +111,14 @@ export function HeldTransactionsList({
                       onClick={() => onDelete(tx.id)}
                     >
                       <Trash2 className="h-4 w-4 mr-2" />
-                      Hapus
+                      {t('deleteBtn')}
                     </Button>
                     <Button
                       size="sm"
                       className="flex-1"
                       onClick={() => onResume(tx)}
                     >
-                      Lanjutkan
+                      {t('resumeBtn')}
                       <ArrowRight className="h-4 w-4 ml-2" />
                     </Button>
                   </div>

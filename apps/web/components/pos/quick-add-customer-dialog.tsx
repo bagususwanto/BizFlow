@@ -22,6 +22,7 @@ import {
 import { useState } from 'react';
 import { Loader2, Save } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 // Simplified schema for Quick Add - mostly the same but we might want to enforce fewer things or just reuse
 const formSchema = createCustomerSchema;
@@ -38,6 +39,7 @@ export function QuickAddCustomerDialog({
   onSuccess,
 }: QuickAddCustomerDialogProps) {
   const queryClient = useQueryClient();
+  const t = useTranslations('pos.quickAddCustomer');
 
   const form = useForm<CreateCustomerValues>({
     resolver: zodResolver(formSchema) as any,
@@ -60,7 +62,7 @@ export function QuickAddCustomerDialog({
       return response.data;
     },
     onSuccess: (newCustomer) => {
-      toast.success(`Pelanggan ${newCustomer.name} berhasil ditambahkan`);
+      toast.success(t('success', { name: newCustomer.name }));
       // Invalidate customer list query so it refreshes if needed in background
       queryClient.invalidateQueries({ queryKey: ['customers'] });
 
@@ -68,9 +70,7 @@ export function QuickAddCustomerDialog({
       onSuccess(newCustomer);
     },
     onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Gagal menambahkan pelanggan',
-      );
+      toast.error(error.response?.data?.message || t('failed'));
     },
   });
 
@@ -84,7 +84,7 @@ export function QuickAddCustomerDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Tambah Pelanggan Cepat</DialogTitle>
+          <DialogTitle>{t('title')}</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -95,10 +95,10 @@ export function QuickAddCustomerDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Nama Lengkap <span className="text-destructive">*</span>
+                    {t('fullName')} <span className="text-destructive">*</span>
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="Nama pelanggan" {...field} />
+                    <Input placeholder={t('fullNamePlaceholder')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -110,10 +110,10 @@ export function QuickAddCustomerDialog({
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>No. Telepon</FormLabel>
+                  <FormLabel>{t('phone')}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="08xxxxxxxxxx"
+                      placeholder={t('phonePlaceholder')}
                       {...field}
                       value={field.value || ''}
                     />
@@ -128,10 +128,10 @@ export function QuickAddCustomerDialog({
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>{t('email')}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="nama@email.com"
+                      placeholder={t('emailPlaceholder')}
                       type="email"
                       {...field}
                       value={field.value || ''}
@@ -148,12 +148,12 @@ export function QuickAddCustomerDialog({
                 variant="outline"
                 onClick={() => onOpenChange(false)}
               >
-                Batal
+                {t('cancel')}
               </Button>
               <Button type="submit" disabled={isPending}>
                 {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {!isPending && <Save className="mr-2 h-4 w-4" />}
-                Simpan
+                {isPending ? t('saving') : t('save')}
               </Button>
             </div>
           </form>

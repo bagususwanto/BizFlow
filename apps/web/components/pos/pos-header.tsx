@@ -25,6 +25,7 @@ import { useAuthStore } from '@/stores/auth.store';
 import { Badge } from '@bizflow/ui';
 import { useState, useEffect } from 'react';
 import { useHeldTransactions } from '@/hooks/use-pos';
+import { useTranslations } from 'next-intl';
 
 interface PosHeaderProps {
   onOpenHeldList?: () => void;
@@ -43,6 +44,7 @@ export function PosHeader({
   const [isOnline, setIsOnline] = useState(true);
   const { data: heldTransactions } = useHeldTransactions();
   const heldCount = heldTransactions?.data?.length || 0;
+  const t = useTranslations('pos.header');
 
   useEffect(() => {
     setIsOnline(navigator.onLine);
@@ -69,7 +71,7 @@ export function PosHeader({
           </Button>
         </Link>
         <div className="h-4 w-px bg-border" />
-        <h1 className="text-lg font-semibold">POS Terminal</h1>
+        <h1 className="text-lg font-semibold">{t('terminal')}</h1>
         <Badge
           variant={isOnline ? 'outline' : 'destructive'}
           className="gap-1.5 hidden sm:flex"
@@ -79,7 +81,7 @@ export function PosHeader({
           ) : (
             <WifiOff className="h-3 w-3" />
           )}
-          {isOnline ? 'Online' : 'Offline'}
+          {isOnline ? t('online') : t('offline')}
         </Badge>
       </div>
 
@@ -92,7 +94,7 @@ export function PosHeader({
             onClick={onHelpClick}
           >
             <Keyboard className="h-4 w-4" />
-            <span className="text-xs">Shortcuts (F1)</span>
+            <span className="text-xs">{t('shortcuts')}</span>
           </Button>
         )}
 
@@ -104,7 +106,7 @@ export function PosHeader({
             onClick={onOpenHeldList}
           >
             <Clock className="h-4 w-4" />
-            <span className="hidden sm:inline">Transaksi Tersimpan</span>
+            <span className="hidden sm:inline">{t('heldTransactions')}</span>
             {heldCount > 0 && (
               <Badge className="ml-1 h-5 min-w-5 px-1 py-0 justify-center flex items-center bg-warning hover:bg-warning/90">
                 {heldCount}
@@ -127,18 +129,18 @@ export function PosHeader({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>Menu Kasir</DropdownMenuLabel>
+            <DropdownMenuLabel>{t('cashierMenu')}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <Link href="/pos/transactions">
               <DropdownMenuItem>
                 <History className="mr-2 h-4 w-4" />
-                Riwayat Transaksi
+                {t('transactionHistory')}
               </DropdownMenuItem>
             </Link>
             <Link href="/pos/returns">
               <DropdownMenuItem>
                 <Undo2 className="mr-2 h-4 w-4" />
-                Riwayat Retur
+                {t('returnHistory')}
               </DropdownMenuItem>
             </Link>
             <DropdownMenuSeparator />
@@ -148,7 +150,7 @@ export function PosHeader({
             >
               <DropdownMenuItem className="text-destructive focus:text-destructive">
                 <LogOut className="mr-2 h-4 w-4" />
-                Logout
+                {t('logout')}
               </DropdownMenuItem>
             </Link>
           </DropdownMenuContent>

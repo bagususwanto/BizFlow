@@ -23,6 +23,7 @@ import { ItemDiscountDialog } from './item-discount-dialog';
 import { DiscountDialog } from './discount-dialog';
 import { useHoldTransaction } from '@/hooks/use-pos';
 import { CartItem } from '@/stores/cart.store';
+import { useTranslations } from 'next-intl';
 
 export interface CartSectionHandle {
   openPaymentModal: () => void;
@@ -40,6 +41,7 @@ export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
     discount,
     getSubtotal,
   } = useCartStore();
+  const t = useTranslations('pos.cart');
 
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [isCustomerOpen, setIsCustomerOpen] = useState(false);
@@ -97,7 +99,7 @@ export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
               customer.name
             ) : (
               <span>
-                Pilih Pelanggan{' '}
+                {t('selectCustomer')}{' '}
                 <span className="opacity-50 text-xs ml-1 font-mono font-normal">
                   [F3]
                 </span>
@@ -119,10 +121,8 @@ export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
             <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-4">
               <CreditCard className="h-8 w-8 opacity-50" />
             </div>
-            <p className="font-medium">Keranjang Kosong</p>
-            <p className="text-sm">
-              Pilih produk di sebelah kiri untuk memulai transaksi
-            </p>
+            <p className="font-medium">{t('empty')}</p>
+            <p className="text-sm">{t('emptyDesc')}</p>
           </div>
         ) : (
           <ScrollArea className="h-full">
@@ -245,7 +245,7 @@ export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
       <div className="p-4 border-t bg-background shadow-up">
         <div className="space-y-2 mb-4">
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Subtotal</span>
+            <span className="text-muted-foreground">{t('subtotal')}</span>
             <span>
               {new Intl.NumberFormat('id-ID', {
                 style: 'currency',
@@ -257,7 +257,7 @@ export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
 
           <div className="flex justify-between text-sm items-center h-6">
             <div className="flex items-center gap-2 text-muted-foreground">
-              <span>Diskon</span>
+              <span>{t('discount')}</span>
               <Button
                 variant="ghost"
                 size="icon"
@@ -295,7 +295,7 @@ export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
           </div>
 
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Pajak (11%)</span>
+            <span className="text-muted-foreground">{t('tax')} (11%)</span>
             <span>
               {new Intl.NumberFormat('id-ID', {
                 style: 'currency',
@@ -306,7 +306,7 @@ export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
           </div>
           <Separator />
           <div className="flex justify-between items-end">
-            <span className="font-semibold text-lg">Total</span>
+            <span className="font-semibold text-lg">{t('total')}</span>
             <span className="font-bold text-2xl text-primary">
               {new Intl.NumberFormat('id-ID', {
                 style: 'currency',
@@ -334,7 +334,7 @@ export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
               disabled={items.length === 0}
             >
               <PauseCircle className="h-4 w-4 mr-2" />
-              Simpan
+              {t('hold')}
               <span className="opacity-50 text-xs font-mono font-normal ml-auto">
                 [F9]
               </span>
@@ -346,7 +346,7 @@ export const CartSection = forwardRef<CartSectionHandle>((props, ref) => {
             disabled={items.length === 0}
             onClick={() => setIsPaymentOpen(true)}
           >
-            Bayar
+            {t('pay')}
             <span className="opacity-50 text-sm ml-2 font-normal font-mono">
               [F4]
             </span>

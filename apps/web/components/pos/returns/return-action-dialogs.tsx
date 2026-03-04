@@ -26,6 +26,7 @@ import {
 import { usePosAccounts as useAccounts } from '@/hooks/use-pos';
 import { Loader2 } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 
 // ==========================================
 // Approve Dialog
@@ -43,6 +44,7 @@ export function ApproveReturnDialog({
 }: ApproveDialogProps) {
   const [notes, setNotes] = useState('');
   const { mutate: approve, isPending } = useApprove();
+  const t = useTranslations('pos.returns.dialogs');
 
   const handleConfirm = () => {
     approve({ id, data: { notes } }, { onSuccess: () => onOpenChange(false) });
@@ -52,17 +54,14 @@ export function ApproveReturnDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Setujui Retur?</DialogTitle>
+          <DialogTitle>{t('approveTitle')}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
-          <p className="text-sm text-muted-foreground">
-            Retur akan disetujui dan stok akan ditambahkan kembali ke
-            inventaris.
-          </p>
+          <p className="text-sm text-muted-foreground">{t('approveDesc')}</p>
           <div className="space-y-2">
-            <Label>Catatan (Opsional)</Label>
+            <Label>{t('noteOptional')}</Label>
             <Textarea
-              placeholder="Catatan approval..."
+              placeholder={t('approveNotePlaceholder')}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
             />
@@ -70,11 +69,11 @@ export function ApproveReturnDialog({
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Batal
+            {t('cancel')}
           </Button>
           <Button onClick={handleConfirm} disabled={isPending}>
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Setujui
+            {t('approveBtn')}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -99,6 +98,7 @@ export function RejectReturnDialog({
   const [reason, setReason] = useState('');
   const [notes, setNotes] = useState('');
   const { mutate: reject, isPending } = useReject();
+  const t = useTranslations('pos.returns.dialogs');
 
   const handleConfirm = () => {
     if (!reason) return;
@@ -112,23 +112,23 @@ export function RejectReturnDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Tolak Retur</DialogTitle>
+          <DialogTitle>{t('rejectTitle')}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
             <Label>
-              Alasan Penolakan <span className="text-destructive">*</span>
+              {t('rejectReason')} <span className="text-destructive">*</span>
             </Label>
             <Input
-              placeholder="Contoh: Kondisi fisik barang ..."
+              placeholder={t('rejectReasonPlaceholder')}
               value={reason}
               onChange={(e) => setReason(e.target.value)}
             />
           </div>
           <div className="space-y-2">
-            <Label>Catatan (Opsional)</Label>
+            <Label>{t('noteOptional')}</Label>
             <Textarea
-              placeholder="Tambahan info..."
+              placeholder={t('additionalInfoPlaceholder')}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
             />
@@ -136,7 +136,7 @@ export function RejectReturnDialog({
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Batal
+            {t('cancel')}
           </Button>
           <Button
             variant="destructive"
@@ -144,7 +144,7 @@ export function RejectReturnDialog({
             disabled={isPending || !reason}
           >
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Tolak Retur
+            {t('rejectBtn')}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -174,6 +174,7 @@ export function ProcessRefundDialog({
 
   const { mutate: processRefund, isPending } = useRefund();
   const { data: accountsData } = useAccounts();
+  const t = useTranslations('pos.returns.dialogs');
 
   const accounts = accountsData?.data || [];
 
@@ -189,35 +190,35 @@ export function ProcessRefundDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Proses Refund</DialogTitle>
+          <DialogTitle>{t('processRefundTitle')}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="bg-muted p-3 rounded-md text-center">
             <span className="text-sm text-muted-foreground block mb-1">
-              Total Refund
+              {t('totalRefund')}
             </span>
             <span className="text-2xl font-bold">{formatCurrency(amount)}</span>
           </div>
 
           <div className="space-y-2">
-            <Label>Metode Refund</Label>
+            <Label>{t('refundMethod')}</Label>
             <Select value={method} onValueChange={setMethod}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="cash">Tunai</SelectItem>
-                <SelectItem value="transfer">Transfer Bank</SelectItem>
+                <SelectItem value="cash">{t('cash')}</SelectItem>
+                <SelectItem value="transfer">{t('bankTransfer')}</SelectItem>
                 {/* <SelectItem value="credit">Store Credit</SelectItem> Logic store credit might need customer wallet */}
               </SelectContent>
             </Select>
           </div>
 
           <div className="space-y-2">
-            <Label>Akun Kas/Bank</Label>
+            <Label>{t('account')}</Label>
             <Select value={accountId} onValueChange={setAccountId}>
               <SelectTrigger>
-                <SelectValue placeholder="Pilih akun..." />
+                <SelectValue placeholder={t('selectAccount')} />
               </SelectTrigger>
               <SelectContent>
                 {accounts.map((acc) => (
@@ -230,9 +231,9 @@ export function ProcessRefundDialog({
           </div>
 
           <div className="space-y-2">
-            <Label>Catatan</Label>
+            <Label>{t('note')}</Label>
             <Textarea
-              placeholder="No. Ref / Info transfer..."
+              placeholder={t('refInfoPlaceholder')}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
             />
@@ -240,11 +241,11 @@ export function ProcessRefundDialog({
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Batal
+            {t('cancel')}
           </Button>
           <Button onClick={handleConfirm} disabled={isPending || !accountId}>
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Proses
+            {t('processBtn')}
           </Button>
         </DialogFooter>
       </DialogContent>

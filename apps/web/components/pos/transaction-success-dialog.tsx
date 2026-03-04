@@ -13,6 +13,7 @@ import { formatCurrency } from '@/lib/utils';
 import { PosTransactionResult } from './receipt/receipt-template';
 import { useDefaultPrinter, usePrintTransaction } from '@/hooks/use-printers';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 interface TransactionSuccessDialogProps {
   open: boolean;
@@ -31,6 +32,7 @@ export function TransactionSuccessDialog({
     useDefaultPrinter(transaction?.outlet?.id);
   const { mutate: printTransaction, isPending: isPrinting } =
     usePrintTransaction();
+  const t = useTranslations('pos.transactionSuccess');
 
   if (!transaction) return null;
 
@@ -104,12 +106,16 @@ export function TransactionSuccessDialog({
         });
 
         if (result.success) {
-          toast.success('Struk berhasil dicetak');
+          toast.success(t('printSuccess'));
         } else {
-          toast.error(`Gagal mencetak: ${result.error || 'Unknown error'}`);
+          toast.error(
+            t('printFailed', { error: result.error || 'Unknown error' }),
+          );
         }
       } catch (error: any) {
-        toast.error(`Error: ${error.message || 'Gagal mencetak'}`);
+        toast.error(
+          t('printFailed', { error: error.message || 'Unknown error' }),
+        );
       }
       return;
     }
@@ -144,7 +150,7 @@ export function TransactionSuccessDialog({
             <CheckCircle2 className="h-10 w-10 text-success" />
           </div>
           <DialogTitle className="text-center text-2xl font-bold text-success">
-            Transaksi Berhasil!
+            {t('title')}
           </DialogTitle>
         </DialogHeader>
 
@@ -152,14 +158,16 @@ export function TransactionSuccessDialog({
           <div className="bg-muted/40 p-5 rounded-xl space-y-3 border border-border/50">
             <div className="flex justify-between items-center text-sm">
               <span className="text-muted-foreground font-medium">
-                Total Tagihan
+                {t('totalBill')}
               </span>
               <span className="font-bold text-base text-foreground">
                 {formatCurrency(Number(transaction.total))}
               </span>
             </div>
             <div className="flex justify-between items-center text-sm">
-              <span className="text-muted-foreground font-medium">Bayar</span>
+              <span className="text-muted-foreground font-medium">
+                {t('paidAmount')}
+              </span>
               <span className="font-bold text-base text-foreground">
                 {formatCurrency(Number(transaction.paidAmount))}
               </span>
@@ -168,7 +176,9 @@ export function TransactionSuccessDialog({
               <>
                 <div className="border-t border-dashed border-border my-2" />
                 <div className="flex justify-between items-center">
-                  <span className="text-base font-bold">Kembalian</span>
+                  <span className="text-base font-bold">
+                    {t('changeAmount')}
+                  </span>
                   <span className="text-xl font-bold text-success">
                     {formatCurrency(change)}
                   </span>
@@ -187,14 +197,14 @@ export function TransactionSuccessDialog({
             disabled={isPrinting || isLoadingPrinter}
           >
             <Printer className="h-5 w-5" />
-            {isPrinting ? 'Mencetak...' : 'Cetak Struk'}
+            {isPrinting ? t('printing') : t('printReceipt')}
           </Button>
           <Button
             size="lg"
             className="flex-1 gap-2 h-12 text-base font-semibold"
             onClick={onNewTransaction}
           >
-            Transaksi Baru
+            {t('newTransaction')}
             <ArrowRight className="h-5 w-5" />
           </Button>
         </DialogFooter>

@@ -17,6 +17,7 @@ import { useState, useEffect } from 'react';
 import { useCartStore } from '@/stores/cart.store';
 import { Percent, DollarSign, Trash2, Save } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 interface DiscountDialogProps {
   open: boolean;
@@ -25,6 +26,7 @@ interface DiscountDialogProps {
 
 export function DiscountDialog({ open, onOpenChange }: DiscountDialogProps) {
   const { discount, setDiscount, getSubtotal } = useCartStore();
+  const t = useTranslations('pos.discountDialog');
 
   const [activeTab, setActiveTab] = useState<'percent' | 'fixed'>('percent');
   const [value, setValue] = useState('');
@@ -46,19 +48,19 @@ export function DiscountDialog({ open, onOpenChange }: DiscountDialogProps) {
     const numValue = parseFloat(value);
 
     if (isNaN(numValue) || numValue < 0) {
-      toast.error('Nilai diskon tidak valid');
+      toast.error(t('invalidValue'));
       return;
     }
 
     if (activeTab === 'percent') {
       if (numValue > 100) {
-        toast.error('Persentase tidak boleh lebih dari 100%');
+        toast.error(t('over100'));
         return;
       }
     } else {
       const subtotal = getSubtotal();
       if (numValue > subtotal) {
-        toast.error('Diskon melebihi total belanja');
+        toast.error(t('overSubtotal'));
         return;
       }
     }
@@ -68,20 +70,20 @@ export function DiscountDialog({ open, onOpenChange }: DiscountDialogProps) {
       value: numValue,
     });
     onOpenChange(false);
-    toast.success('Diskon diterapkan');
+    toast.success(t('applied'));
   };
 
   const handleRemove = () => {
     setDiscount(null);
     onOpenChange(false);
-    toast.success('Diskon dihapus');
+    toast.success(t('removed'));
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[400px]">
         <DialogHeader>
-          <DialogTitle>Atur Diskon Transaksi</DialogTitle>
+          <DialogTitle>{t('title')}</DialogTitle>
         </DialogHeader>
 
         <Tabs
@@ -90,8 +92,8 @@ export function DiscountDialog({ open, onOpenChange }: DiscountDialogProps) {
           className="w-full"
         >
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="percent">Persen (%)</TabsTrigger>
-            <TabsTrigger value="fixed">Nominal (Rp)</TabsTrigger>
+            <TabsTrigger value="percent">{t('percent')}</TabsTrigger>
+            <TabsTrigger value="fixed">{t('fixed')}</TabsTrigger>
           </TabsList>
 
           <div className="py-4 space-y-4">
@@ -107,7 +109,9 @@ export function DiscountDialog({ open, onOpenChange }: DiscountDialogProps) {
                 <Input
                   type="number"
                   placeholder={
-                    activeTab === 'percent' ? 'Contoh: 10' : 'Contoh: 50000'
+                    activeTab === 'percent'
+                      ? t('percentPlaceholder')
+                      : t('fixedPlaceholder')
                   }
                   className={activeTab === 'percent' ? 'pl-9' : 'pl-10'}
                   value={value}
@@ -121,9 +125,7 @@ export function DiscountDialog({ open, onOpenChange }: DiscountDialogProps) {
             </div>
 
             <p className="text-sm text-muted-foreground text-center">
-              {activeTab === 'percent'
-                ? 'Masukkan persentase diskon (0-100)'
-                : 'Masukkan nominal potongan harga'}
+              {activeTab === 'percent' ? t('percentDesc') : t('fixedDesc')}
             </p>
           </div>
         </Tabs>
@@ -140,11 +142,11 @@ export function DiscountDialog({ open, onOpenChange }: DiscountDialogProps) {
             </Button>
           )}
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Batal
+            {t('cancel')}
           </Button>
           <Button onClick={handleSave}>
             <Save className="mr-2 h-4 w-4" />
-            Simpan
+            {t('save')}
           </Button>
         </DialogFooter>
       </DialogContent>

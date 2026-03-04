@@ -18,6 +18,7 @@ import { useDebounce } from '@/hooks/use-debounce';
 import { Avatar, AvatarFallback } from '@bizflow/ui';
 
 import { QuickAddCustomerDialog } from './quick-add-customer-dialog';
+import { useTranslations } from 'next-intl';
 
 interface CustomerSelectorProps {
   open: boolean;
@@ -32,6 +33,7 @@ export function CustomerSelector({
   const [search, setSearch] = useState('');
   const [showQuickAdd, setShowQuickAdd] = useState(false);
   const debouncedSearch = useDebounce(search, 300);
+  const t = useTranslations('pos.customerSelector');
 
   const { data: customers = [], isLoading } = useQuery({
     queryKey: ['customers', 'search', debouncedSearch],
@@ -68,13 +70,13 @@ export function CustomerSelector({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Pilih Pelanggan</DialogTitle>
+          <DialogTitle>{t('title')}</DialogTitle>
         </DialogHeader>
 
         <div className="relative">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Cari pelanggan..."
+            placeholder={t('search')}
             className="pl-9"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -93,21 +95,19 @@ export function CustomerSelector({
                 <User className="h-5 w-5 text-muted-foreground" />
               </div>
               <div className="flex-1 text-left">
-                <p className="font-medium">Pelanggan Umum</p>
-                <p className="text-xs text-muted-foreground">
-                  Tanpa data pelanggan
-                </p>
+                <p className="font-medium">{t('generalCustomer')}</p>
+                <p className="text-xs text-muted-foreground">{t('noData')}</p>
               </div>
               {!customer && <Check className="h-4 w-4 text-primary" />}
             </Button>
 
             {isLoading ? (
               <div className="p-4 text-center text-sm text-muted-foreground">
-                Memuat...
+                {t('loading')}
               </div>
             ) : customers.length === 0 ? (
               <div className="p-4 text-center text-sm text-muted-foreground">
-                Tidak ada pelanggan ditemukan
+                {t('notFound')}
               </div>
             ) : (
               customers.map((cust: any) => (
@@ -142,7 +142,7 @@ export function CustomerSelector({
           className="w-full gap-2"
           onClick={() => setShowQuickAdd(true)}
         >
-          <Plus className="h-4 w-4" /> Tambah Pelanggan Baru
+          <Plus className="h-4 w-4" /> {t('addNew')}
         </Button>
       </DialogContent>
 

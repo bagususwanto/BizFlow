@@ -57,8 +57,11 @@ export function GeneralSettingsForm({ settings }: GeneralSettingsFormProps) {
   });
 
   useEffect(() => {
-    if (settings.length > 0) {
-      const values: any = {};
+    if (settings && settings.length > 0) {
+      const values: any = {
+        language: activeLanguage || 'id',
+        session_timeout: 30,
+      };
       settings.forEach((setting) => {
         if (setting.key === 'session_timeout') {
           values[setting.key] = parseInt(setting.value) || 30;

@@ -6,8 +6,10 @@ import { DataListPage } from '@/components/shared/data-list-page';
 import { getColumns, ReturnItem } from '@/components/pos/returns/columns';
 import { useReturns } from '@/hooks/use-returns';
 import { useFormatDate } from '@/hooks';
+import { useTranslations } from 'next-intl';
 
 export default function PosReturnsPage() {
+  const t = useTranslations('pos');
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<string>('all');
   const [page, setPage] = useState(1);
@@ -31,7 +33,7 @@ export default function PosReturnsPage() {
   };
 
   const formatters = useFormatDate();
-  const columns = useMemo(() => getColumns(formatters), [formatters]);
+  const columns = useMemo(() => getColumns(formatters, t), [formatters, t]);
 
   const handleReset = () => {
     setSearch('');
@@ -74,12 +76,24 @@ export default function PosReturnsPage() {
           filters={[
             {
               key: 'status',
-              label: 'Status',
+              label: t('returns.columns.status') || 'Status',
               options: [
-                { label: 'Menunggu Approval', value: 'pending' },
-                { label: 'Disetujui', value: 'approved' },
-                { label: 'Ditolak', value: 'rejected' },
-                { label: 'Selesai', value: 'completed' },
+                {
+                  label: t('returns.status.pending') || 'Menunggu Approval',
+                  value: 'pending',
+                },
+                {
+                  label: t('returns.status.approved') || 'Disetujui',
+                  value: 'approved',
+                },
+                {
+                  label: t('returns.status.rejected') || 'Ditolak',
+                  value: 'rejected',
+                },
+                {
+                  label: t('returns.status.completed') || 'Selesai',
+                  value: 'completed',
+                },
               ],
               width: 'w-full md:w-[200px]',
             },

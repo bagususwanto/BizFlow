@@ -1,4 +1,5 @@
 import { cn } from '@bizflow/ui';
+import { useTranslations } from 'next-intl';
 
 export interface PosTransactionResult {
   id: string;
@@ -36,6 +37,7 @@ export function ReceiptTemplate({
   width = '58mm',
 }: ReceiptTemplateProps) {
   const is58mm = width === '58mm';
+  const t = useTranslations('pos.receipt');
 
   return (
     <div
@@ -61,7 +63,9 @@ export function ReceiptTemplate({
 
       {/* Info */}
       <div className="flex justify-between mb-1 text-[10px]">
-        <span>No: {transaction.orderNumber}</span>
+        <span>
+          {t('no')}: {transaction.orderNumber}
+        </span>
         <span>
           {new Date(transaction.orderDate).toLocaleTimeString([], {
             hour: '2-digit',
@@ -70,7 +74,9 @@ export function ReceiptTemplate({
         </span>
       </div>
       <div className="flex justify-between mb-2 text-[10px]">
-        <span>Kasir: {transaction.cashier?.name || '-'}</span>
+        <span>
+          {t('cashier')}: {transaction.cashier?.name || '-'}
+        </span>
         <span>{new Date(transaction.orderDate).toLocaleDateString()}</span>
       </div>
 
@@ -81,7 +87,7 @@ export function ReceiptTemplate({
         {transaction.items.map((item) => (
           <div key={item.id} className="flex flex-col">
             <div className="font-bold mb-0.5 text-[11px] leading-tight">
-              {(item.productName || 'Item') +
+              {(item.productName || t('item')) +
                 (item.variantName ? ` - ${item.variantName}` : '')}
             </div>
             <div className="flex justify-between pl-0 text-[10px]">
@@ -101,23 +107,23 @@ export function ReceiptTemplate({
       {/* Totals */}
       <div className="space-y-1 text-[11px]">
         <div className="flex justify-between">
-          <span>Subtotal</span>
+          <span>{t('subtotal')}</span>
           <span>{formatNumber(Number(transaction.subtotal))}</span>
         </div>
         {Number(transaction.discountAmount) > 0 && (
           <div className="flex justify-between text-destructive">
-            <span>Diskon</span>
+            <span>{t('discount')}</span>
             <span>-{formatNumber(Number(transaction.discountAmount))}</span>
           </div>
         )}
         {Number(transaction.taxAmount) > 0 && (
           <div className="flex justify-between">
-            <span>Pajak (11%)</span>
+            <span>{t('tax')} (11%)</span>
             <span>{formatNumber(Number(transaction.taxAmount))}</span>
           </div>
         )}
         <div className="flex justify-between font-bold text-[12px] mt-2 pt-1 border-t border-black">
-          <span>TOTAL</span>
+          <span>{t('total')}</span>
           <span>{formatNumber(Number(transaction.total))}</span>
         </div>
       </div>
@@ -130,15 +136,17 @@ export function ReceiptTemplate({
           transaction.payments.map((payment, index) => (
             <div key={index} className="flex justify-between">
               <span className="capitalize">
-                Bayar ({payment.method})
-                {payment.reference && ` Ref: ${payment.reference}`}
+                {t('paidAmount')} ({payment.method})
+                {payment.reference && ` ${t('ref')}: ${payment.reference}`}
               </span>
               <span>{formatNumber(Number(payment.amount))}</span>
             </div>
           ))
         ) : (
           <div className="flex justify-between">
-            <span>Bayar ({transaction.payments?.[0]?.method || '-'})</span>
+            <span>
+              {t('paidAmount')} ({transaction.payments?.[0]?.method || '-'})
+            </span>
             <span>
               {formatNumber(Number(transaction.payments?.[0]?.amount || 0))}
             </span>
@@ -147,7 +155,7 @@ export function ReceiptTemplate({
 
         {Number(transaction.paidAmount) - Number(transaction.total) >= 0 && (
           <div className="flex justify-between font-bold border-t border-dashed border-black pt-1 mt-1">
-            <span>Kembali</span>
+            <span>{t('change')}</span>
             <span>
               {formatNumber(
                 Number(transaction.paidAmount) - Number(transaction.total),
@@ -159,9 +167,9 @@ export function ReceiptTemplate({
 
       {/* Footer */}
       <div className="text-center mt-6">
-        <p className="font-bold text-[11px] mb-1">TERIMA KASIH</p>
+        <p className="font-bold text-[11px] mb-1">{t('thankYou')}</p>
         <p className="text-[10px] text-muted-foreground">
-          Barang yang sudah dibeli tidak dapat ditukar/dikembalikan
+          {t('footerMessage')}
         </p>
       </div>
     </div>

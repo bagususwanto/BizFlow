@@ -16,6 +16,7 @@ import { useState, useEffect } from 'react';
 import { useCartStore, CartItem } from '@/stores/cart.store';
 import { Percent, Trash2, Save } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 interface ItemDiscountDialogProps {
   open: boolean;
@@ -29,6 +30,7 @@ export function ItemDiscountDialog({
   item,
 }: ItemDiscountDialogProps) {
   const { setItemDiscount } = useCartStore();
+  const t = useTranslations('pos.itemDiscountDialog');
 
   const [activeTab, setActiveTab] = useState<'percent' | 'fixed'>('percent');
   const [value, setValue] = useState('');
@@ -61,18 +63,18 @@ export function ItemDiscountDialog({
     const numValue = parseFloat(value);
 
     if (isNaN(numValue) || numValue < 0) {
-      toast.error('Nilai diskon tidak valid');
+      toast.error(t('invalidValue'));
       return;
     }
 
     if (activeTab === 'percent') {
       if (numValue > 100) {
-        toast.error('Persentase tidak boleh lebih dari 100%');
+        toast.error(t('over100'));
         return;
       }
     } else {
       if (numValue > item.price) {
-        toast.error('Diskon melebihi harga satuan item');
+        toast.error(t('overPrice'));
         return;
       }
     }
@@ -82,14 +84,14 @@ export function ItemDiscountDialog({
       value: numValue,
     });
     onOpenChange(false);
-    toast.success('Diskon item diterapkan');
+    toast.success(t('applied'));
   };
 
   const handleRemove = () => {
     if (!item) return;
     setItemDiscount(item.id, null);
     onOpenChange(false);
-    toast.success('Diskon item dihapus');
+    toast.success(t('removed'));
   };
 
   if (!item) return null;
@@ -98,7 +100,7 @@ export function ItemDiscountDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[400px]">
         <DialogHeader>
-          <DialogTitle>Diskon Item: {item.name}</DialogTitle>
+          <DialogTitle>{t('title', { name: item.name })}</DialogTitle>
         </DialogHeader>
 
         <Tabs
@@ -107,8 +109,8 @@ export function ItemDiscountDialog({
           className="w-full"
         >
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="percent">Persen (%)</TabsTrigger>
-            <TabsTrigger value="fixed">Nominal (Rp)</TabsTrigger>
+            <TabsTrigger value="percent">{t('percent')}</TabsTrigger>
+            <TabsTrigger value="fixed">{t('fixed')}</TabsTrigger>
           </TabsList>
 
           <div className="py-4 space-y-4">
@@ -124,7 +126,9 @@ export function ItemDiscountDialog({
                 <Input
                   type="number"
                   placeholder={
-                    activeTab === 'percent' ? 'Contoh: 10' : 'Contoh: 5000'
+                    activeTab === 'percent'
+                      ? t('percentPlaceholder')
+                      : t('fixedPlaceholder')
                   }
                   className={activeTab === 'percent' ? 'pl-9' : 'pl-10'}
                   value={value}
@@ -138,9 +142,7 @@ export function ItemDiscountDialog({
             </div>
 
             <p className="text-sm text-muted-foreground text-center">
-              {activeTab === 'percent'
-                ? 'Masukkan persentase diskon (0-100) per item'
-                : 'Masukkan nominal potongan harga satuan'}
+              {activeTab === 'percent' ? t('percentDesc') : t('fixedDesc')}
             </p>
           </div>
         </Tabs>
@@ -157,11 +159,11 @@ export function ItemDiscountDialog({
             </Button>
           )}
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Batal
+            {t('cancel')}
           </Button>
           <Button onClick={handleSave}>
             <Save className="mr-2 h-4 w-4" />
-            Simpan
+            {t('save')}
           </Button>
         </DialogFooter>
       </DialogContent>

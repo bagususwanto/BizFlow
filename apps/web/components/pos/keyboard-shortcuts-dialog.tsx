@@ -1,31 +1,34 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@bizflow/ui';
 import { Keyboard } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface KeyboardShortcutsDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-const SHORTCUTS = [
-  { key: 'F1', action: 'Bantuan Shortcut Display' },
-  { key: 'F2', action: 'Fokus Cari Produk' },
-  { key: 'F3', action: 'Pilih Pelanggan' },
-  { key: 'F4', action: 'Bayar / Checkout' },
-  { key: 'F9', action: 'Simpan Transaksi (Hold)' },
-  { key: 'Esc', action: 'Batal / Tutup Modal' },
-];
-
 export function KeyboardShortcutsDialog({
   open,
   onOpenChange,
 }: KeyboardShortcutsDialogProps) {
+  const t = useTranslations('pos.keyboardShortcuts');
+
+  const SHORTCUTS = [
+    { key: 'F1', action: t('actions.help') },
+    { key: 'F2', action: t('actions.focusSearch') },
+    { key: 'F3', action: t('actions.selectCustomer') },
+    { key: 'F4', action: t('actions.checkout') },
+    { key: 'F9', action: t('actions.hold') },
+    { key: 'Esc', action: t('actions.cancel') },
+  ];
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Keyboard className="h-5 w-5" />
-            Shortcut Keyboard
+            {t('title')}
           </DialogTitle>
         </DialogHeader>
 
@@ -34,8 +37,12 @@ export function KeyboardShortcutsDialog({
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b bg-muted/50">
-                  <th className="px-4 py-2 text-left font-medium">Tombol</th>
-                  <th className="px-4 py-2 text-left font-medium">Aksi</th>
+                  <th className="px-4 py-2 text-left font-medium">
+                    {t('keyHeader')}
+                  </th>
+                  <th className="px-4 py-2 text-left font-medium">
+                    {t('actionHeader')}
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -58,7 +65,7 @@ export function KeyboardShortcutsDialog({
             </table>
           </div>
           <p className="text-xs text-center text-muted-foreground">
-            Gunakan shortcut ini untuk mempercepat proses transaksi kasir.
+            {t('description')}
           </p>
         </div>
       </DialogContent>

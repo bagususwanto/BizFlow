@@ -23,6 +23,7 @@ import { toast } from 'sonner';
 import { formatCurrency } from '@/lib/utils';
 import { TransactionSuccessDialog } from './transaction-success-dialog';
 import { PosTransactionResult } from './receipt/receipt-template';
+import { useTranslations } from 'next-intl';
 
 interface PaymentModalProps {
   open: boolean;
@@ -36,6 +37,7 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
   const { mutate: createTransaction, isPending } = useCreateTransaction();
   const { data: accountsData } = usePosAccounts();
   const accounts = accountsData?.data || [];
+  const t = useTranslations('pos.payment');
 
   const [method, setMethod] = useState('cash');
   const [cashAmount, setCashAmount] = useState('');
@@ -81,7 +83,7 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
   const handleAddSplitPayment = () => {
     const amount = Number(splitAmount);
     if (!amount || amount <= 0) {
-      toast.error('Jumlah pembayaran tidak valid');
+      toast.error(t('invalidAmount'));
       return;
     }
 
@@ -96,7 +98,7 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
     }
 
     if (!accountId) {
-      toast.error('Akun pembayaran tidak tersedia');
+      toast.error(t('noAccount'));
       return;
     }
 
@@ -124,7 +126,7 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
 
   const handleProcess = () => {
     if (!user?.outlets?.[0]) {
-      toast.error('Outlet tidak ditemukan pada user');
+      toast.error(t('outletNotFound'));
       return;
     }
 
@@ -150,14 +152,16 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
 
     if (isSplitMode) {
       if (totalPaid < total) {
-        toast.error(`Pembayaran kurang ${formatCurrency(remaining)}`);
+        toast.error(
+          t('paymentInsufficient', { amount: formatCurrency(remaining) }),
+        );
         return;
       }
       finalPayments = splitPayments;
     } else {
       // Single payment validation
       if (method === 'cash' && (Number(cashAmount) || 0) < total) {
-        toast.error('Nominal uang kurang dari total bayar');
+        toast.error(t('cashInsufficient'));
         return;
       }
 
@@ -172,7 +176,7 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
       }
 
       if (!accountId) {
-        toast.error('Akun pembayaran tidak tersedia. Hubungi admin.');
+        toast.error(t('accountErrorAdmin'));
         return;
       }
 
@@ -194,7 +198,7 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
       {
         onSuccess: (data) => {
           toast.success(
-            `Transaksi berhasil! Pembayaran: ${formatCurrency(total)}`,
+            t('transactionSuccess', { amount: formatCurrency(total) }),
           );
 
           setLastTransaction(data.data);
@@ -241,14 +245,14 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle className="flex justify-between items-center">
-              <span>Pembayaran</span>
+              <span>{t('title')}</span>
               <Button
                 variant={isSplitMode ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setIsSplitMode(!isSplitMode)}
                 className="mr-6"
               >
-                {isSplitMode ? 'Mode Tunggal' : 'Bayar Split'}
+                {isSplitMode ? t('singleMode') : t('splitMode')}
               </Button>
             </DialogTitle>
           </DialogHeader>
@@ -256,7 +260,7 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
           <div className="grid gap-6 py-4">
             <div className="flex flex-col items-center justify-center space-y-2 bg-muted/20 p-4 rounded-lg">
               <span className="text-sm text-muted-foreground">
-                Total Tagihan
+                {t('totalBill')}
               </span>
               <span className="text-4xl font-bold text-primary">
                 {formatCurrency(total)}
@@ -298,7 +302,7 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
                     ))}
 
                     <div className="border-t pt-2 flex justify-between font-bold">
-                      <span>Total Dibayar:</span>
+                      <span>{t('totalPaid')}</span>
                       <span
                         className={
                           totalPaid >= total ? 'text-success' : 'text-primary'
@@ -309,7 +313,7 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
                     </div>
                     {totalPaid > total && (
                       <div className="flex justify-between text-muted-foreground">
-                        <span>Kembalian:</span>
+                        <span>{t('changeAmount')}</span>
                         <span>{formatCurrency(totalPaid - total)}</span>
                       </div>
                     )}
@@ -319,7 +323,7 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
                 {remaining > 0 ? (
                   <div className="border p-4 rounded-md space-y-3 bg-muted/10">
                     <div className="text-sm font-medium mb-2">
-                      Tambah Pembayaran ({formatCurrency(remaining)})
+                      {t('addPayment')} ({formatCurrency(remaining)})
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <select
@@ -327,15 +331,19 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
                         value={splitMethod}
                         onChange={(e) => setSplitMethod(e.target.value)}
                       >
-                        <option value="cash">Tunai</option>
-                        <option value="qris">QRIS</option>
-                        <option value="transfer">Transfer</option>
-                        <option value="credit">Kartu Kredit</option>
-                        <option value="debit">Kartu Debit</option>
+                        <option value="cash">{t('splitMethods.cash')}</option>
+                        <option value="qris">{t('splitMethods.qris')}</option>
+                        <option value="transfer">
+                          {t('splitMethods.transfer')}
+                        </option>
+                        <option value="credit">
+                          {t('splitMethods.credit')}
+                        </option>
+                        <option value="debit">{t('splitMethods.debit')}</option>
                       </select>
                       <Input
                         type="number"
-                        placeholder="Nominal..."
+                        placeholder={t('amountPlaceholder')}
                         value={splitAmount}
                         onChange={(e) => setSplitAmount(e.target.value)}
                         onFocus={() => {
@@ -348,7 +356,7 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
                       splitMethod === 'qris' ||
                       splitMethod.includes('card')) && (
                       <Input
-                        placeholder="Referensi / No. Kartu (Opsional)..."
+                        placeholder={t('referencePlaceholder')}
                         value={splitReference}
                         onChange={(e) => setSplitReference(e.target.value)}
                       />
@@ -358,12 +366,12 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
                       className="w-full"
                       variant="secondary"
                     >
-                      Tambah Pembayaran
+                      {t('addPaymentBtn')}
                     </Button>
                   </div>
                 ) : (
                   <div className="text-center p-4 text-success font-medium bg-success/10 rounded-md">
-                    Pembayaran Lunas
+                    {t('paymentFullyPaid')}
                   </div>
                 )}
               </div>
@@ -376,25 +384,27 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
               >
                 <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="cash">
-                    <Banknote className="mr-2 h-4 w-4" /> Tunai
+                    <Banknote className="mr-2 h-4 w-4" />{' '}
+                    {t('splitMethods.cash')}
                   </TabsTrigger>
                   <TabsTrigger value="qris">
-                    <QrCode className="mr-2 h-4 w-4" /> QRIS
+                    <QrCode className="mr-2 h-4 w-4" /> {t('splitMethods.qris')}
                   </TabsTrigger>
                   <TabsTrigger value="transfer">
-                    <CreditCard className="mr-2 h-4 w-4" /> Transfer
+                    <CreditCard className="mr-2 h-4 w-4" />{' '}
+                    {t('splitMethods.transfer')}
                   </TabsTrigger>
                 </TabsList>
 
                 <div className="mt-4 space-y-4">
                   <TabsContent value="cash" className="space-y-4">
                     <div className="grid gap-2">
-                      <Label>Nominal Uang</Label>
+                      <Label>{t('cashAmountLabel')}</Label>
                       <Input
                         type="number"
                         value={cashAmount}
                         onChange={(e) => setCashAmount(e.target.value)}
-                        placeholder="Masukkan jumlah uang..."
+                        placeholder={t('insertMoneyPlaceholder')}
                         className="text-lg"
                         autoFocus
                       />
@@ -415,7 +425,7 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
 
                     {Number(cashAmount) > 0 && (
                       <div className="flex justify-between items-center bg-muted p-3 rounded-md">
-                        <span className="font-medium">Kembalian</span>
+                        <span className="font-medium">{t('changeLabel')}</span>
                         <span
                           className={`text-lg font-bold ${change < 0 ? 'text-destructive' : 'text-success'}`}
                         >
@@ -435,15 +445,15 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
                           className="w-full h-full object-contain"
                         />
                       </div>
-                      <p className="font-bold text-center">SCAN QRIS</p>
+                      <p className="font-bold text-center">{t('scanQris')}</p>
                       <p className="text-center text-sm text-muted-foreground mt-1">
-                        Scan QR di atas untuk pembayaran
+                        {t('scanQrisDesc')}
                       </p>
                     </div>
                     <div className="grid gap-2">
-                      <Label>Referensi (Opsional)</Label>
+                      <Label>{t('referenceOptional')}</Label>
                       <Input
-                        placeholder="No. Ref / Approval Code"
+                        placeholder={t('refPlaceholder')}
                         value={reference}
                         onChange={(e) => setReference(e.target.value)}
                       />
@@ -452,17 +462,17 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
 
                   <TabsContent value="transfer" className="space-y-4">
                     <div className="grid gap-2">
-                      <Label>Referensi / Bukti Transfer (Opsional)</Label>
+                      <Label>{t('transferRefOptional')}</Label>
                       <Input
-                        placeholder="Masukkan nomor referensi..."
+                        placeholder={t('insertRefPlaceholder')}
                         value={reference}
                         onChange={(e) => setReference(e.target.value)}
                       />
                     </div>
                     <div className="grid gap-2">
-                      <Label>Catatan (Opsional)</Label>
+                      <Label>{t('noteOptional')}</Label>
                       <Input
-                        placeholder="Catatan tambahan..."
+                        placeholder={t('additionalNotePlaceholder')}
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
                       />
@@ -475,8 +485,10 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
 
           <DialogFooter className="sm:justify-between">
             <div className="text-xs text-muted-foreground self-center hidden sm:block">
-              {items.length} item(s) • Pelanggan:{' '}
-              {customer ? customer.name : 'Umum'}
+              {t('summary', {
+                count: items.length,
+                customer: customer ? customer.name : t('generalCustomer'),
+              })}
             </div>
             <div className="flex gap-2 w-full sm:w-auto">
               <Button
@@ -484,7 +496,7 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
                 onClick={() => onOpenChange(false)}
                 className="flex-1 sm:flex-none"
               >
-                Batal
+                {t('cancel')}
               </Button>
               <Button
                 onClick={handleProcess}
@@ -497,7 +509,7 @@ export function PaymentModal({ open, onOpenChange, total }: PaymentModalProps) {
                 }
                 className="flex-1 sm:flex-none min-w-[120px]"
               >
-                {isPending ? 'Memproses...' : 'Bayar'}
+                {isPending ? t('processing') : t('pay')}
               </Button>
             </div>
           </DialogFooter>

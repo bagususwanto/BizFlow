@@ -2135,6 +2135,8 @@
         "confirmBtn": "Delete"
       },
       "columns": {
+        "selectAll": "Select all",
+        "selectRow": "Select row",
         "returnNumber": "Return No.",
         "date": "Date",
         "supplier": "Supplier",
@@ -2142,8 +2144,10 @@
         "status": "Status",
         "actions": {
           "label": "Actions",
-          "detail": "Detail",
-          "delete": "Delete"
+          "detail": "View details",
+          "edit": "Edit",
+          "delete": "Delete",
+          "openMenu": "Open menu"
         }
       },
       "detail": {

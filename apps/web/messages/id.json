@@ -2135,6 +2135,8 @@
         "confirmBtn": "Hapus"
       },
       "columns": {
+        "selectAll": "Pilih semua",
+        "selectRow": "Pilih baris",
         "returnNumber": "No. Return",
         "date": "Tanggal",
         "supplier": "Pemasok",
@@ -2142,8 +2144,10 @@
         "status": "Status",
         "actions": {
           "label": "Aksi",
-          "detail": "Detail",
-          "delete": "Hapus"
+          "detail": "Lihat detail",
+          "edit": "Ubah",
+          "delete": "Hapus",
+          "openMenu": "Buka menu"
         }
       },
       "detail": {

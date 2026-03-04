@@ -30,8 +30,10 @@ import {
 } from '@/components/pos/returns/return-item-selector';
 import { useCreateReturn } from '@/hooks/use-returns';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 export default function CreateReturnPage() {
+  const t = useTranslations('pos.returns.create');
   const [orderNumber, setOrderNumber] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
@@ -68,12 +70,12 @@ export default function CreateReturnPage() {
   const handleSubmit = () => {
     if (!selectedTransaction) return;
     if (returnItems.length === 0) {
-      toast.error('Pilih minimal 1 barang untuk diretur');
+      toast.error(t('errorNoItems') || 'Pilih minimal 1 barang untuk diretur');
       return;
     }
 
     if (!reason) {
-      toast.error('Alasan retur wajib diisi');
+      toast.error(t('errorNoReason') || 'Alasan retur wajib diisi');
       return;
     }
 
@@ -94,7 +96,10 @@ export default function CreateReturnPage() {
 
   return (
     <div className="flex flex-col h-screen bg-muted/10">
-      <PosHeader backHref="/pos/returns" backLabel="Riwayat Retur" />
+      <PosHeader
+        backHref="/pos/returns"
+        backLabel={t('backLabel') || 'Riwayat Retur'}
+      />
 
       <div className="flex-1 p-6 space-y-6 overflow-auto max-w-4xl mx-auto w-full">
         <div className="flex items-center gap-4">
@@ -103,17 +108,24 @@ export default function CreateReturnPage() {
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
-          <h1 className="text-2xl font-bold tracking-tight">Buat Retur Baru</h1>
+          <h1 className="text-2xl font-bold tracking-tight">
+            {t('title') || 'Buat Retur Baru'}
+          </h1>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Cari Transaksi</CardTitle>
+            <CardTitle className="text-base">
+              {t('searchTitle') || 'Cari Transaksi'}
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex gap-2">
               <Input
-                placeholder="Masukkan Nomor Order (Contoh: ORD-...)"
+                placeholder={
+                  t('searchPlaceholder') ||
+                  'Masukkan Nomor Order (Contoh: ORD-...)'
+                }
                 value={orderNumber}
                 onChange={(e) => setOrderNumber(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
@@ -124,7 +136,7 @@ export default function CreateReturnPage() {
                 ) : (
                   <Search className="h-4 w-4" />
                 )}
-                Cari
+                {t('searchBtn') || 'Cari'}
               </Button>
             </div>
 
@@ -133,7 +145,7 @@ export default function CreateReturnPage() {
               <div className="border rounded-md mt-2 divide-y">
                 {searchData.data.data.length === 0 ? (
                   <div className="p-4 text-center text-muted-foreground text-sm">
-                    Transaksi tidak ditemukan.
+                    {t('notFound') || 'Transaksi tidak ditemukan.'}
                   </div>
                 ) : (
                   searchData.data.data.map((trx: any) => (
@@ -151,7 +163,9 @@ export default function CreateReturnPage() {
                             { locale: idLocale },
                           )}
                           {' • '}
-                          {trx.customer?.name || 'Pelanggan Umum'}
+                          {trx.customer?.name ||
+                            t('generalCustomer') ||
+                            'Pelanggan Umum'}
                         </p>
                       </div>
                       <div className="text-right">
@@ -180,21 +194,24 @@ export default function CreateReturnPage() {
               <CardHeader>
                 <CardTitle className="justify-between flex items-center">
                   <span>
-                    Detail Transaksi: {selectedTransaction.orderNumber}
+                    {t('detailTitle') || 'Detail Transaksi:'}{' '}
+                    {selectedTransaction.orderNumber}
                   </span>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setSelectedTransaction(null)}
                   >
-                    Ganti
+                    {t('changeBtn') || 'Ganti'}
                   </Button>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-sm">
                   <div>
-                    <p className="text-muted-foreground">Tanggal</p>
+                    <p className="text-muted-foreground">
+                      {t('date') || 'Tanggal'}
+                    </p>
                     <p className="font-medium">
                       {format(
                         new Date(selectedTransaction.createdAt),
@@ -204,19 +221,27 @@ export default function CreateReturnPage() {
                     </p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Pelanggan</p>
+                    <p className="text-muted-foreground">
+                      {t('customer') || 'Pelanggan'}
+                    </p>
                     <p className="font-medium">
-                      {selectedTransaction.customer?.name || 'Umum'}
+                      {selectedTransaction.customer?.name ||
+                        t('generalCustomer') ||
+                        'Umum'}
                     </p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Kasir</p>
+                    <p className="text-muted-foreground">
+                      {t('cashier') || 'Kasir'}
+                    </p>
                     <p className="font-medium">
                       {selectedTransaction.user?.username || '-'}
                     </p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Total</p>
+                    <p className="text-muted-foreground">
+                      {t('total') || 'Total'}
+                    </p>
                     <p className="font-medium">
                       {formatCurrency(Number(selectedTransaction.total))}
                     </p>
@@ -225,7 +250,9 @@ export default function CreateReturnPage() {
 
                 <Separator className="my-4" />
 
-                <Label className="mb-2 block">Pilih Barang untuk Diretur</Label>
+                <Label className="mb-2 block">
+                  {t('selectItems') || 'Pilih Barang untuk Diretur'}
+                </Label>
                 <ReturnItemSelector
                   items={selectedTransaction.items}
                   onChange={setReturnItems}
@@ -235,52 +262,80 @@ export default function CreateReturnPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Info Pengembalian</CardTitle>
+                <CardTitle>{t('returnInfo') || 'Info Pengembalian'}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Alasan Utama</Label>
+                    <Label>{t('mainReason') || 'Alasan Utama'}</Label>
                     <Select value={reason} onValueChange={setReason}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Pilih alasan retur" />
+                        <SelectValue
+                          placeholder={
+                            t('reasonPlaceholder') || 'Pilih alasan retur'
+                          }
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="defective">
-                          Barang Rusak / Cacat
+                          {t('reasons.defective') || 'Barang Rusak / Cacat'}
                         </SelectItem>
-                        <SelectItem value="wrong_item">Salah Barang</SelectItem>
-                        <SelectItem value="expired">Kadaluarsa</SelectItem>
+                        <SelectItem value="wrong_item">
+                          {t('reasons.wrong_item') || 'Salah Barang'}
+                        </SelectItem>
+                        <SelectItem value="expired">
+                          {t('reasons.expired') || 'Kadaluarsa'}
+                        </SelectItem>
                         <SelectItem value="customer_change">
-                          Berubah Pikiran (Tukar)
+                          {t('reasons.customer_change') ||
+                            'Berubah Pikiran (Tukar)'}
                         </SelectItem>
-                        <SelectItem value="other">Lainnya</SelectItem>
+                        <SelectItem value="other">
+                          {t('reasons.other') || 'Lainnya'}
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label>Metode Refund (Jika disetujui)</Label>
+                    <Label>
+                      {t('refundMethodLabel') ||
+                        'Metode Refund (Jika disetujui)'}
+                    </Label>
                     <Select
                       value={refundMethod}
                       onValueChange={setRefundMethod}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Pilih metode" />
+                        <SelectValue
+                          placeholder={
+                            t('refundMethodPlaceholder') || 'Pilih metode'
+                          }
+                        />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="cash">Tunai</SelectItem>
-                        <SelectItem value="transfer">Transfer Bank</SelectItem>
-                        <SelectItem value="credit">Store Credit</SelectItem>
-                        <SelectItem value="exchange">Tukar Barang</SelectItem>
+                        <SelectItem value="cash">
+                          {t('refundMethods.cash') || 'Tunai'}
+                        </SelectItem>
+                        <SelectItem value="transfer">
+                          {t('refundMethods.transfer') || 'Transfer Bank'}
+                        </SelectItem>
+                        <SelectItem value="credit">
+                          {t('refundMethods.credit') || 'Store Credit'}
+                        </SelectItem>
+                        <SelectItem value="exchange">
+                          {t('refundMethods.exchange') || 'Tukar Barang'}
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Catatan Tambahan</Label>
+                  <Label>{t('notesLabel') || 'Catatan Tambahan'}</Label>
                   <Textarea
-                    placeholder="Keterangan lebih lanjut..."
+                    placeholder={
+                      t('notesPlaceholder') || 'Keterangan lebih lanjut...'
+                    }
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                   />
@@ -288,7 +343,9 @@ export default function CreateReturnPage() {
 
                 <div className="pt-4 flex justify-end gap-2">
                   <Link href="/pos/returns">
-                    <Button variant="outline">Batal</Button>
+                    <Button variant="outline">
+                      {t('cancelBtn') || 'Batal'}
+                    </Button>
                   </Link>
                   <Button
                     onClick={handleSubmit}
@@ -297,7 +354,7 @@ export default function CreateReturnPage() {
                     {isPending && (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     )}
-                    Buat Retur
+                    {t('submitBtn') || 'Buat Retur'}
                   </Button>
                 </div>
               </CardContent>

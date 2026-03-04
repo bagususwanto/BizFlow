@@ -2796,6 +2796,77 @@
         "reasonOptional": "Alasan (Opsional)",
         "reasonPlaceholder": "Contoh: Rusak, Expired",
         "unknown": "Tidak diketahui"
+      },
+      "page": {
+        "title": "Retur Penjualan",
+        "description": "Kelola retur dan pengembalian barang dari pelanggan.",
+        "createLabel": "Buat Retur Baru",
+        "searchPlaceholder": "Cari No. Retur atau Order..."
+      },
+      "create": {
+        "title": "Buat Retur Baru",
+        "backLabel": "Riwayat Retur",
+        "searchTitle": "Cari Transaksi",
+        "searchPlaceholder": "Masukkan Nomor Order (Contoh: ORD-...)",
+        "searchBtn": "Cari",
+        "notFound": "Transaksi tidak ditemukan.",
+        "generalCustomer": "Pelanggan Umum",
+        "detailTitle": "Detail Transaksi:",
+        "changeBtn": "Ganti",
+        "date": "Tanggal",
+        "customer": "Pelanggan",
+        "cashier": "Kasir",
+        "total": "Total",
+        "selectItems": "Pilih Barang untuk Diretur",
+        "returnInfo": "Info Pengembalian",
+        "mainReason": "Alasan Utama",
+        "reasonPlaceholder": "Pilih alasan retur",
+        "reasons": {
+          "defective": "Barang Rusak / Cacat",
+          "wrong_item": "Salah Barang",
+          "expired": "Kadaluarsa",
+          "customer_change": "Berubah Pikiran (Tukar)",
+          "other": "Lainnya"
+        },
+        "refundMethodLabel": "Metode Refund (Jika disetujui)",
+        "refundMethodPlaceholder": "Pilih metode",
+        "refundMethods": {
+          "cash": "Tunai",
+          "transfer": "Transfer Bank",
+          "credit": "Store Credit",
+          "exchange": "Tukar Barang"
+        },
+        "notesLabel": "Catatan Tambahan",
+        "notesPlaceholder": "Keterangan lebih lanjut...",
+        "cancelBtn": "Batal",
+        "submitBtn": "Buat Retur",
+        "errorNoItems": "Pilih minimal 1 barang untuk diretur",
+        "errorNoReason": "Alasan retur wajib diisi"
+      },
+      "detail": {
+        "backLabel": "Riwayat Retur",
+        "notFound": "Retur tidak ditemukan.",
+        "backBtn": "Kembali",
+        "rejectBtn": "Tolak",
+        "approveBtn": "Setujui",
+        "refundBtn": "Proses Refund",
+        "itemsTitle": "Item Retur",
+        "productCol": "Produk",
+        "qtyCol": "Qty",
+        "reasonCol": "Alasan",
+        "unknownProduct": "Unknown",
+        "refundInfoTitle": "Info Refund",
+        "totalRefund": "Total Refund",
+        "refundMethod": "Metode",
+        "sourceTxTitle": "Info Transaksi Asal",
+        "orderNo": "No. Order",
+        "orderDate": "Tanggal Order",
+        "customer": "Pelanggan",
+        "generalCustomer": "Umum",
+        "notesTitle": "Catatan Retur",
+        "noNotes": "Tidak ada catatan",
+        "createdBy": "Dibuat Oleh",
+        "unknownUser": "Unknown"
       }
     },
     "history": {
@@ -2918,6 +2989,10 @@
       "title": "Riwayat Transaksi",
       "description": "Lihat dan kelola riwayat transaksi penjualan POS.",
       "searchPlaceholder": "Cari No. Order..."
+    },
+    "page": {
+      "resumeSuccess": "Transaksi dilanjutkan",
+      "unknownProduct": "Unknown Product"
     }
   }
 }

@@ -28,8 +28,10 @@ import {
   RejectReturnDialog,
   ProcessRefundDialog,
 } from '@/components/pos/returns/return-action-dialogs';
+import { useTranslations } from 'next-intl';
 
 export default function ReturnDetailPage() {
+  const t = useTranslations('pos.returns.detail');
   const { id } = useParams();
   const returnId = Array.isArray(id) ? id[0] : id;
   const { data, isLoading } = useReturnDetail(returnId || '');
@@ -51,11 +53,16 @@ export default function ReturnDetailPage() {
   if (!ret) {
     return (
       <div className="flex bg-muted/10 h-screen flex-col">
-        <PosHeader backHref="/pos/returns" backLabel="Riwayat Retur" />
+        <PosHeader
+          backHref="/pos/returns"
+          backLabel={t('backLabel') || 'Riwayat Retur'}
+        />
         <div className="flex-1 flex items-center justify-center flex-col gap-4">
-          <p className="text-muted-foreground">Retur tidak ditemukan.</p>
+          <p className="text-muted-foreground">
+            {t('notFound') || 'Retur tidak ditemukan.'}
+          </p>
           <Link href="/pos/returns">
-            <Button>Kembali</Button>
+            <Button>{t('backBtn') || 'Kembali'}</Button>
           </Link>
         </div>
       </div>
@@ -79,7 +86,10 @@ export default function ReturnDetailPage() {
 
   return (
     <div className="flex flex-col h-screen bg-muted/10">
-      <PosHeader backHref="/pos/returns" backLabel="Riwayat Retur" />
+      <PosHeader
+        backHref="/pos/returns"
+        backLabel={t('backLabel') || 'Riwayat Retur'}
+      />
 
       <div className="flex-1 p-6 space-y-6 overflow-auto max-w-5xl mx-auto w-full">
         <div className="flex items-center justify-between">
@@ -117,21 +127,21 @@ export default function ReturnDetailPage() {
                   onClick={() => setShowReject(true)}
                 >
                   <X className="mr-2 h-4 w-4" />
-                  Tolak
+                  {t('rejectBtn') || 'Tolak'}
                 </Button>
                 <Button
                   className="bg-success hover:bg-success/90"
                   onClick={() => setShowApprove(true)}
                 >
                   <Check className="mr-2 h-4 w-4" />
-                  Setujui
+                  {t('approveBtn') || 'Setujui'}
                 </Button>
               </>
             )}
             {ret.status === 'approved' && (
               <Button onClick={() => setShowRefund(true)}>
                 <CreditCard className="mr-2 h-4 w-4" />
-                Proses Refund
+                {t('refundBtn') || 'Proses Refund'}
               </Button>
             )}
           </div>
@@ -141,15 +151,17 @@ export default function ReturnDetailPage() {
           <div className="md:col-span-2 space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Item Retur</CardTitle>
+                <CardTitle>{t('itemsTitle') || 'Item Retur'}</CardTitle>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Produk</TableHead>
-                      <TableHead className="text-center">Qty</TableHead>
-                      <TableHead>Alasan</TableHead>
+                      <TableHead>{t('productCol') || 'Produk'}</TableHead>
+                      <TableHead className="text-center">
+                        {t('qtyCol') || 'Qty'}
+                      </TableHead>
+                      <TableHead>{t('reasonCol') || 'Alasan'}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -158,6 +170,7 @@ export default function ReturnDetailPage() {
                         <TableCell>
                           <div className="font-medium">
                             {item.orderItem?.variant?.product?.name ||
+                              t('unknownProduct') ||
                               'Unknown'}
                           </div>
                           <div className="text-xs text-muted-foreground">
@@ -179,12 +192,14 @@ export default function ReturnDetailPage() {
               (status === 'completed' || status === 'approved') && (
                 <Card>
                   <CardHeader>
-                    <CardTitle>Info Refund</CardTitle>
+                    <CardTitle>
+                      {t('refundInfoTitle') || 'Info Refund'}
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex justify-between items-center py-2 border-b">
                       <span className="text-muted-foreground">
-                        Total Refund
+                        {t('totalRefund') || 'Total Refund'}
                       </span>
                       <span className="text-xl font-bold">
                         {formatCurrency(Number(ret.refundAmount))}
@@ -192,7 +207,9 @@ export default function ReturnDetailPage() {
                     </div>
                     {ret.refundMethod && (
                       <div className="flex justify-between items-center py-1">
-                        <span className="text-muted-foreground">Metode</span>
+                        <span className="text-muted-foreground">
+                          {t('refundMethod') || 'Metode'}
+                        </span>
                         <span className="font-medium capitalize">
                           {ret.refundMethod}
                         </span>
@@ -207,17 +224,23 @@ export default function ReturnDetailPage() {
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-base">Info Transaksi Asal</CardTitle>
+                <CardTitle className="text-base">
+                  {t('sourceTxTitle') || 'Info Transaksi Asal'}
+                </CardTitle>
               </CardHeader>
               <CardContent className="text-sm space-y-3">
                 <div>
-                  <p className="text-muted-foreground">No. Order</p>
+                  <p className="text-muted-foreground">
+                    {t('orderNo') || 'No. Order'}
+                  </p>
                   <p className="font-medium text-primary">
                     {ret.order?.orderNumber}
                   </p>
                 </div>
                 <div>
-                  <p className="text-muted-foreground">Tanggal Order</p>
+                  <p className="text-muted-foreground">
+                    {t('orderDate') || 'Tanggal Order'}
+                  </p>
                   <p className="font-medium">
                     {ret.order?.createdAt
                       ? format(new Date(ret.order.createdAt), 'dd MMM yyyy', {
@@ -227,9 +250,13 @@ export default function ReturnDetailPage() {
                   </p>
                 </div>
                 <div>
-                  <p className="text-muted-foreground">Pelanggan</p>
+                  <p className="text-muted-foreground">
+                    {t('customer') || 'Pelanggan'}
+                  </p>
                   <p className="font-medium">
-                    {ret.order?.customer?.name || 'Umum'}
+                    {ret.order?.customer?.name ||
+                      t('generalCustomer') ||
+                      'Umum'}
                   </p>
                 </div>
               </CardContent>
@@ -237,21 +264,25 @@ export default function ReturnDetailPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-base">Catatan Retur</CardTitle>
+                <CardTitle className="text-base">
+                  {t('notesTitle') || 'Catatan Retur'}
+                </CardTitle>
               </CardHeader>
               <CardContent className="text-sm">
                 {ret.notes ? (
                   <p>{ret.notes}</p>
                 ) : (
                   <p className="text-muted-foreground italic">
-                    Tidak ada catatan
+                    {t('noNotes') || 'Tidak ada catatan'}
                   </p>
                 )}
                 <Separator className="my-4" />
                 <div>
-                  <p className="text-muted-foreground mb-1">Dibuat Oleh</p>
+                  <p className="text-muted-foreground mb-1">
+                    {t('createdBy') || 'Dibuat Oleh'}
+                  </p>
                   <p className="font-medium">
-                    {ret.createdBy?.username || 'Unknown'}
+                    {ret.createdBy?.username || t('unknownUser') || 'Unknown'}
                   </p>
                 </div>
               </CardContent>

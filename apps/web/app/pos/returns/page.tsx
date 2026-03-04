@@ -47,10 +47,13 @@ export default function PosReturnsPage() {
 
       <div className="flex-1 p-6 overflow-auto">
         <DataListPage
-          title="Retur Penjualan"
-          description="Kelola retur dan pengembalian barang dari pelanggan."
+          title={t('returns.page.title') || 'Retur Penjualan'}
+          description={
+            t('returns.page.description') ||
+            'Kelola retur dan pengembalian barang dari pelanggan.'
+          }
           createLink="/pos/returns/create"
-          createLabel="Buat Retur Baru"
+          createLabel={t('returns.page.createLabel') || 'Buat Retur Baru'}
           data={returns}
           columns={columns}
           isLoading={isLoading}
@@ -71,7 +74,10 @@ export default function PosReturnsPage() {
             setSearch(v);
             setPage(1);
           }}
-          searchPlaceholder="Cari No. Retur atau Order..."
+          searchPlaceholder={
+            t('returns.page.searchPlaceholder') ||
+            'Cari No. Retur atau Order...'
+          }
           // Filters
           filters={[
             {

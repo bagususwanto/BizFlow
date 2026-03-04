@@ -2796,6 +2796,77 @@
         "reasonOptional": "Reason (Optional)",
         "reasonPlaceholder": "e.g., Broken, Expired",
         "unknown": "Unknown"
+      },
+      "page": {
+        "title": "Sales Returns",
+        "description": "Manage returns and refunds from customers.",
+        "createLabel": "Create New Return",
+        "searchPlaceholder": "Search Return or Order No..."
+      },
+      "create": {
+        "title": "Create New Return",
+        "backLabel": "Returns History",
+        "searchTitle": "Search Transaction",
+        "searchPlaceholder": "Enter Order Number (e.g. ORD-...)",
+        "searchBtn": "Search",
+        "notFound": "Transaction not found.",
+        "generalCustomer": "General Customer",
+        "detailTitle": "Transaction Details:",
+        "changeBtn": "Change",
+        "date": "Date",
+        "customer": "Customer",
+        "cashier": "Cashier",
+        "total": "Total",
+        "selectItems": "Select Items to Return",
+        "returnInfo": "Return Information",
+        "mainReason": "Main Reason",
+        "reasonPlaceholder": "Select return reason",
+        "reasons": {
+          "defective": "Defective / Damaged Item",
+          "wrong_item": "Wrong Item",
+          "expired": "Expired",
+          "customer_change": "Change of Mind (Exchange)",
+          "other": "Other"
+        },
+        "refundMethodLabel": "Refund Method (If approved)",
+        "refundMethodPlaceholder": "Select method",
+        "refundMethods": {
+          "cash": "Cash",
+          "transfer": "Bank Transfer",
+          "credit": "Store Credit",
+          "exchange": "Item Exchange"
+        },
+        "notesLabel": "Additional Notes",
+        "notesPlaceholder": "Further details...",
+        "cancelBtn": "Cancel",
+        "submitBtn": "Create Return",
+        "errorNoItems": "Select at least 1 item to return",
+        "errorNoReason": "Return reason is required"
+      },
+      "detail": {
+        "backLabel": "Returns History",
+        "notFound": "Return not found.",
+        "backBtn": "Back",
+        "rejectBtn": "Reject",
+        "approveBtn": "Approve",
+        "refundBtn": "Process Refund",
+        "itemsTitle": "Returned Items",
+        "productCol": "Product",
+        "qtyCol": "Qty",
+        "reasonCol": "Reason",
+        "unknownProduct": "Unknown",
+        "refundInfoTitle": "Refund Info",
+        "totalRefund": "Total Refund",
+        "refundMethod": "Method",
+        "sourceTxTitle": "Source Transaction",
+        "orderNo": "Order No.",
+        "orderDate": "Order Date",
+        "customer": "Customer",
+        "generalCustomer": "General",
+        "notesTitle": "Return Notes",
+        "noNotes": "No notes provided",
+        "createdBy": "Created By",
+        "unknownUser": "Unknown"
       }
     },
     "history": {
@@ -2918,6 +2989,10 @@
       "title": "Transaction History",
       "description": "View and manage POS sales transaction history.",
       "searchPlaceholder": "Search Order No..."
+    },
+    "page": {
+      "resumeSuccess": "Transaction resumed",
+      "unknownProduct": "Unknown Product"
     }
   }
 }

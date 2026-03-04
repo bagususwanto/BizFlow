@@ -17,8 +17,10 @@ import { KeyboardShortcutsDialog } from '@/components/pos/keyboard-shortcuts-dia
 
 import { useActivePromotions } from '@/hooks/use-promotions';
 import { useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 
 export default function PosPage() {
+  const t = useTranslations('pos.page');
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
     undefined,
   );
@@ -68,7 +70,11 @@ export default function PosPage() {
       id: item.variantId || item.productId,
       productId: item.productId,
       variantId: item.variantId,
-      name: item.productName || item.product?.name || 'Unknown Product', // Backend should return name
+      name:
+        item.productName ||
+        item.product?.name ||
+        t('unknownProduct') ||
+        'Unknown Product', // Backend should return name
       price: Number(item.unitPrice),
       quantity: item.quantity,
       // Optional fields if available
@@ -84,7 +90,7 @@ export default function PosPage() {
     resumeTransaction.mutate(transaction.id, {
       onSuccess: () => {
         setIsHeldListOpen(false);
-        toast.success('Transaksi dilanjutkan');
+        toast.success(t('resumeSuccess') || 'Transaksi dilanjutkan');
       },
       onError: () => {
         // Even if backend fails, we have loaded it.

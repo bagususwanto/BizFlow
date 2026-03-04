@@ -2398,5 +2398,71 @@
         "notesMax": "Catatan maksimal 1000 karakter"
       }
     }
+  },
+  "reports": {
+    "sales": {
+      "title": "Laporan Penjualan",
+      "description": "Analisis penjualan dan performa toko",
+      "export": {
+        "excel": "Excel",
+        "pdf": "PDF",
+        "loading": "Mengunduh laporan...",
+        "success": "Laporan berhasil diunduh",
+        "error": "Gagal mengunduh laporan"
+      },
+      "filters": {
+        "period": {
+          "label": "Periode",
+          "placeholder": "Pilih Periode",
+          "today": "Hari Ini",
+          "week": "Minggu Ini",
+          "month": "Bulan Ini",
+          "custom": "Custom"
+        },
+        "outlet": {
+          "label": "Outlet",
+          "placeholder": "Semua Outlet",
+          "all": "Semua Outlet"
+        },
+        "category": {
+          "label": "Kategori",
+          "placeholder": "Semua Kategori",
+          "all": "Semua Kategori"
+        },
+        "reset": "Reset"
+      },
+      "summary": {
+        "sales": "Total Penjualan",
+        "transactions": "Total Transaksi",
+        "average": "Rata-rata / Tx",
+        "discount": "Total Diskon"
+      },
+      "chart": {
+        "title": "Tren Penjualan",
+        "label": "Penjualan"
+      },
+      "details": {
+        "title": "Detail Transaksi"
+      },
+      "columns": {
+        "orderNumber": "No. Pesanan",
+        "date": "Tanggal",
+        "customer": {
+          "label": "Pelanggan",
+          "general": "Umum"
+        },
+        "outlet": "Outlet",
+        "product": {
+          "label": "Produk",
+          "others": "lainnya"
+        },
+        "status": {
+          "label": "Status Pembayaran",
+          "paid": "Lunas",
+          "unpaid": "Belum Lunas"
+        },
+        "total": "Total"
+      }
+    }
   }
 }

@@ -2398,5 +2398,71 @@
         "notesMax": "Notes maximum 1000 characters"
       }
     }
+  },
+  "reports": {
+    "sales": {
+      "title": "Sales Report",
+      "description": "Sales analysis and store performance",
+      "export": {
+        "excel": "Excel",
+        "pdf": "PDF",
+        "loading": "Downloading report...",
+        "success": "Report downloaded successfully",
+        "error": "Failed to download report"
+      },
+      "filters": {
+        "period": {
+          "label": "Period",
+          "placeholder": "Select Period",
+          "today": "Today",
+          "week": "This Week",
+          "month": "This Month",
+          "custom": "Custom"
+        },
+        "outlet": {
+          "label": "Outlet",
+          "placeholder": "All Outlets",
+          "all": "All Outlets"
+        },
+        "category": {
+          "label": "Category",
+          "placeholder": "All Categories",
+          "all": "All Categories"
+        },
+        "reset": "Reset"
+      },
+      "summary": {
+        "sales": "Total Sales",
+        "transactions": "Total Transactions",
+        "average": "Average / Tx",
+        "discount": "Total Discount"
+      },
+      "chart": {
+        "title": "Sales Trend",
+        "label": "Sales"
+      },
+      "details": {
+        "title": "Transaction Details"
+      },
+      "columns": {
+        "orderNumber": "Order No.",
+        "date": "Date",
+        "customer": {
+          "label": "Customer",
+          "general": "General"
+        },
+        "outlet": "Outlet",
+        "product": {
+          "label": "Product",
+          "others": "others"
+        },
+        "status": {
+          "label": "Payment Status",
+          "paid": "Paid",
+          "unpaid": "Unpaid"
+        },
+        "total": "Total"
+      }
+    }
   }
 }

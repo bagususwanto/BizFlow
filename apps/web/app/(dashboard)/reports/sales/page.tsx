@@ -5,7 +5,7 @@ import { useSalesReport } from '@/hooks/use-sales-report';
 import { useWarehouses } from '@/hooks/use-warehouses'; // Using warehouses as proxy for outlets or create useOutlets
 import { useActiveCategories } from '@/hooks/use-categories';
 import { useActiveOutlets } from '@/hooks/use-outlets';
-import { columns } from './columns';
+import { getColumns } from './columns';
 import { DataListPage } from '@/components/shared/data-list-page'; // Might need custom layout for chart
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import {
@@ -56,8 +56,10 @@ import {
   PaginationPrevious,
   PaginationEllipsis,
 } from '@bizflow/ui';
+import { useTranslations } from 'next-intl';
 
 function SalesReportContent() {
+  const t = useTranslations('reports.sales');
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -128,9 +130,9 @@ function SalesReportContent() {
           format,
         ),
         {
-          loading: 'Mengunduh laporan...',
-          success: 'Laporan berhasil diunduh',
-          error: 'Gagal mengunduh laporan',
+          loading: t('export.loading'),
+          success: t('export.success'),
+          error: t('export.error'),
         },
       );
     } catch (error) {
@@ -153,12 +155,8 @@ function SalesReportContent() {
     <div className="flex flex-col space-y-6">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">
-            Laporan Penjualan
-          </h2>
-          <p className="text-muted-foreground">
-            Analisis penjualan dan performa toko
-          </p>
+          <h2 className="text-3xl font-bold tracking-tight">{t('title')}</h2>
+          <p className="text-muted-foreground">{t('description')}</p>
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -167,7 +165,7 @@ function SalesReportContent() {
             onClick={() => handleExport('excel')}
           >
             <FileSpreadsheet className="mr-2 h-4 w-4" />
-            Excel
+            {t('export.excel')}
           </Button>
           <Button
             variant="outline"
@@ -175,7 +173,7 @@ function SalesReportContent() {
             onClick={() => handleExport('pdf')}
           >
             <FileText className="mr-2 h-4 w-4" />
-            PDF
+            {t('export.pdf')}
           </Button>
         </div>
       </div>
@@ -183,7 +181,9 @@ function SalesReportContent() {
       <Card>
         <CardContent className="p-4 grid gap-4 grid-cols-1 md:grid-cols-4 items-end">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Periode</label>
+            <label className="text-sm font-medium">
+              {t('filters.period.label')}
+            </label>
             <Select
               value={period}
               onValueChange={(v) =>
@@ -196,29 +196,37 @@ function SalesReportContent() {
               }
             >
               <SelectTrigger>
-                <SelectValue placeholder="Pilih Periode" />
+                <SelectValue placeholder={t('filters.period.placeholder')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="today">Hari Ini</SelectItem>
-                <SelectItem value="week">Minggu Ini</SelectItem>
-                <SelectItem value="month">Bulan Ini</SelectItem>
-                <SelectItem value="custom">Custom</SelectItem>
+                <SelectItem value="today">
+                  {t('filters.period.today')}
+                </SelectItem>
+                <SelectItem value="week">{t('filters.period.week')}</SelectItem>
+                <SelectItem value="month">
+                  {t('filters.period.month')}
+                </SelectItem>
+                <SelectItem value="custom">
+                  {t('filters.period.custom')}
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {/* Outlet Filter */}
           <div className="space-y-2">
-            <label className="text-sm font-medium">Outlet</label>
+            <label className="text-sm font-medium">
+              {t('filters.outlet.label')}
+            </label>
             <Select
               value={outletId}
               onValueChange={(v) => updateUrl({ outletId: v, page: 1 })}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Semua Outlet" />
+                <SelectValue placeholder={t('filters.outlet.placeholder')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Semua Outlet</SelectItem>
+                <SelectItem value="all">{t('filters.outlet.all')}</SelectItem>
                 {outlets?.map((outlet) => (
                   <SelectItem key={outlet.id} value={outlet.id}>
                     {outlet.name}
@@ -230,16 +238,18 @@ function SalesReportContent() {
 
           {/* Category Filter */}
           <div className="space-y-2">
-            <label className="text-sm font-medium">Kategori</label>
+            <label className="text-sm font-medium">
+              {t('filters.category.label')}
+            </label>
             <Select
               value={categoryId}
               onValueChange={(v) => updateUrl({ categoryId: v, page: 1 })}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Semua Kategori" />
+                <SelectValue placeholder={t('filters.category.placeholder')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Semua Kategori</SelectItem>
+                <SelectItem value="all">{t('filters.category.all')}</SelectItem>
                 {categories?.map((cat) => (
                   <SelectItem key={cat.id} value={cat.id}>
                     {cat.name}
@@ -256,7 +266,7 @@ function SalesReportContent() {
               onClick={onReset}
               className="w-full md:w-auto"
             >
-              Reset
+              {t('filters.reset')}
               <X className="ml-2 h-4 w-4" />
             </Button>
           )}
@@ -267,7 +277,7 @@ function SalesReportContent() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Total Penjualan
+              {t('summary.sales')}
             </CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -280,7 +290,7 @@ function SalesReportContent() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Total Transaksi
+              {t('summary.transactions')}
             </CardTitle>
             <ShoppingCart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -293,7 +303,7 @@ function SalesReportContent() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Rata-rata / Tx
+              {t('summary.average')}
             </CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -305,7 +315,9 @@ function SalesReportContent() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Diskon</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t('summary.discount')}
+            </CardTitle>
             <Percent className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -319,7 +331,7 @@ function SalesReportContent() {
       {formattedChartData.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Tren Penjualan</CardTitle>
+            <CardTitle>{t('chart.title')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-[300px] w-full">
@@ -345,7 +357,7 @@ function SalesReportContent() {
                   <Legend />
                   <Bar
                     dataKey="total"
-                    name="Penjualan"
+                    name={t('chart.label')}
                     fill="#0ea5e9"
                     radius={[4, 4, 0, 0]}
                   />
@@ -359,11 +371,11 @@ function SalesReportContent() {
       {/* Detailed Table */}
       <div className="rounded-md border bg-card text-card-foreground shadow-sm">
         <div className="p-6 border-b flex justify-between items-center">
-          <h3 className="text-lg font-semibold">Detail Transaksi</h3>
+          <h3 className="text-lg font-semibold">{t('details.title')}</h3>
         </div>
         <div className="p-0">
           <DataTable
-            columns={columns}
+            columns={getColumns(t)}
             data={data?.details || []}
             isLoading={isFetching}
           />

@@ -5,31 +5,32 @@ import { SalesOrder } from '@/services/reports.service';
 import { Badge, formatCurrency, formatDate } from '@bizflow/ui';
 import { BadgeCheck, XCircle, Clock } from 'lucide-react';
 
-export const columns: ColumnDef<SalesOrder>[] = [
+export const getColumns = (t: any): ColumnDef<SalesOrder>[] => [
   {
     accessorKey: 'orderNumber',
-    header: 'No. Pesanan',
+    header: t('columns.orderNumber'),
     cell: ({ row }) => (
       <span className="font-medium">{row.getValue('orderNumber')}</span>
     ),
   },
   {
     accessorKey: 'orderDate',
-    header: 'Tanggal',
+    header: t('columns.date'),
     cell: ({ row }) => formatDate(row.getValue('orderDate')),
   },
   {
     accessorKey: 'customerName',
-    header: 'Pelanggan',
-    cell: ({ row }) => row.getValue('customerName') || 'Umum',
+    header: t('columns.customer.label'),
+    cell: ({ row }) =>
+      row.getValue('customerName') || t('columns.customer.general'),
   },
   {
     accessorKey: 'outletName',
-    header: 'Outlet',
+    header: t('columns.outlet'),
   },
   {
     accessorKey: 'items',
-    header: 'Produk',
+    header: t('columns.product.label'),
     cell: ({ row }) => {
       const items = row.original.items;
       if (!items || items.length === 0) return '-';
@@ -42,7 +43,8 @@ export const columns: ColumnDef<SalesOrder>[] = [
       return (
         <div className="flex flex-col text-sm">
           <span>
-            {firstItem.productName} {count > 1 ? `+${count - 1} lainnya` : ''}
+            {firstItem.productName}{' '}
+            {count > 1 ? `+${count - 1} ${t('columns.product.others')}` : ''}
           </span>
         </div>
       );
@@ -50,7 +52,7 @@ export const columns: ColumnDef<SalesOrder>[] = [
   },
   {
     accessorKey: 'paymentStatus',
-    header: 'Status Pembayaran',
+    header: t('columns.status.label'),
     cell: ({ row }) => {
       const status = row.getValue('paymentStatus') as string;
 
@@ -61,7 +63,7 @@ export const columns: ColumnDef<SalesOrder>[] = [
             className="gap-1 border-green-600 text-green-600 bg-green-50 dark:bg-green-900/20"
           >
             <BadgeCheck className="h-3 w-3" />
-            Lunas
+            {t('columns.status.paid')}
           </Badge>
         );
       }
@@ -70,7 +72,7 @@ export const columns: ColumnDef<SalesOrder>[] = [
         return (
           <Badge variant="destructive" className="gap-1">
             <XCircle className="h-3 w-3" />
-            Belum Lunas
+            {t('columns.status.unpaid')}
           </Badge>
         );
       }
@@ -85,7 +87,7 @@ export const columns: ColumnDef<SalesOrder>[] = [
   },
   {
     accessorKey: 'total',
-    header: () => <div className="text-right">Total</div>,
+    header: () => <div className="text-right">{t('columns.total')}</div>,
     cell: ({ row }) => {
       return (
         <div className="text-right font-medium">

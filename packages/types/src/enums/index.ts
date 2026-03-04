@@ -50,6 +50,7 @@ export enum Module {
   SUPPLIER_PAYMENTS = 'supplier-payments',
   GOODS_RECEIVE = 'goods-receive',
   INVENTORY = 'inventory',
+  STOCK_ADJUSTMENTS = 'stock-adjustments',
   FINANCE = 'finance',
   REPORTS = 'reports',
   SETTINGS = 'settings',
@@ -204,6 +205,14 @@ export const Permission = {
     Create: 'inventory:create',
     Update: 'inventory:update',
     Delete: 'inventory:delete',
+  },
+  StockAdjustments: {
+    Read: 'stock-adjustments:read',
+    Create: 'stock-adjustments:create',
+    Update: 'stock-adjustments:update',
+    Delete: 'stock-adjustments:delete',
+    Approve: 'stock-adjustments:approve',
+    Reject: 'stock-adjustments:reject',
   },
   Finance: {
     Read: 'finance:read',

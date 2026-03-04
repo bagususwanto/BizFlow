@@ -20,6 +20,7 @@ import { PromotionsModule } from './modules/master-data/promotions';
 import { PaymentTermsModule } from './modules/master-data/payment-terms/payment-terms.module';
 
 import { StockModule } from './modules/inventory/stock';
+import { StockAdjustmentsModule } from './modules/inventory/adjustments';
 import { TransactionsModule } from './modules/pos/transactions';
 import { PaymentsModule } from './modules/pos/payments';
 import { ReturnsModule } from './modules/pos/returns';
@@ -65,6 +66,7 @@ import { AppController } from './app.controller';
     PaymentTermsModule,
     // Inventory modules
     StockModule,
+    StockAdjustmentsModule,
     // POS modules
     TransactionsModule,
     PaymentsModule,

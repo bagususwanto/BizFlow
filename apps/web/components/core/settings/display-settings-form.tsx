@@ -137,7 +137,13 @@ export function DisplaySettingsForm({ settings }: DisplaySettingsFormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel required>{t('display.dateFormatLabel')}</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select
+                    onValueChange={(val) => {
+                      field.onChange(val);
+                      setDateFormat(val);
+                    }}
+                    value={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue

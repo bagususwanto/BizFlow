@@ -25,6 +25,7 @@ import {
 } from '@bizflow/ui';
 import { AppSetting } from '@bizflow/types';
 import { useUpdateSettings } from '@/hooks';
+import { useAuthStore } from '@/stores/auth.store';
 import { Save } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
@@ -44,12 +45,13 @@ interface GeneralSettingsFormProps {
 
 export function GeneralSettingsForm({ settings }: GeneralSettingsFormProps) {
   const { mutate: updateSettings, isPending } = useUpdateSettings();
+  const { language: activeLanguage, setLanguage } = useAuthStore();
   const t = useTranslations('settings');
 
   const form = useForm<GeneralSettingsValues>({
     resolver: zodResolver(generalSettingsSchema) as any,
     defaultValues: {
-      language: 'id',
+      language: activeLanguage || 'id',
       session_timeout: 30,
     },
   });
@@ -61,12 +63,14 @@ export function GeneralSettingsForm({ settings }: GeneralSettingsFormProps) {
         if (setting.key === 'session_timeout') {
           values[setting.key] = parseInt(setting.value) || 30;
         } else if (setting.key === 'language') {
-          values[setting.key] = setting.value;
+          // Only use DB language if activeLanguage isn't set, otherwise
+          // activeLanguage takes precedence because it drives the UI.
+          values[setting.key] = activeLanguage || setting.value;
         }
       });
       form.reset(values);
     }
-  }, [settings, form]);
+  }, [settings, form, activeLanguage]);
 
   const onSubmit = (data: GeneralSettingsValues) => {
     const updateData = [
@@ -92,7 +96,16 @@ export function GeneralSettingsForm({ settings }: GeneralSettingsFormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel required>{t('general.languageLabel')}</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select
+                    onValueChange={(val) => {
+                      field.onChange(val);
+                      // Instantly update UI language when select changes
+                      if (val === 'id' || val === 'en') {
+                        setLanguage(val);
+                      }
+                    }}
+                    value={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue

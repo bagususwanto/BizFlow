@@ -22,6 +22,7 @@ import { useFormatDate, DateFormatters } from '@/hooks';
 interface GetColumnsProps {
   onDelete: (ret: PurchaseReturn) => void;
   formatters: DateFormatters;
+  t: (key: string) => string;
 }
 
 const statusBadgeVariant = (status: string) => {
@@ -42,6 +43,7 @@ const statusBadgeVariant = (status: string) => {
 export const getColumns = ({
   onDelete,
   formatters,
+  t,
 }: GetColumnsProps): ColumnDef<PurchaseReturn>[] => {
   const { formatDate } = formatters;
 
@@ -70,7 +72,10 @@ export const getColumns = ({
     {
       accessorKey: 'returnNumber',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="No. Return" />
+        <DataTableColumnHeader
+          column={column}
+          title={t('columns.returnNumber')}
+        />
       ),
       cell: ({ row }) => (
         <div className="flex flex-col">
@@ -84,19 +89,22 @@ export const getColumns = ({
     {
       accessorKey: 'createdAt',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Tanggal" />
+        <DataTableColumnHeader column={column} title={t('columns.date')} />
       ),
       cell: ({ row }) => formatDate(row.getValue('createdAt')),
     },
     {
       id: 'supplier',
-      header: 'Pemasok',
+      header: t('columns.supplier'),
       cell: ({ row }) => row.original.order?.supplier?.name,
     },
     {
       accessorKey: 'returnAmount',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Total Refund" />
+        <DataTableColumnHeader
+          column={column}
+          title={t('columns.totalRefund')}
+        />
       ),
       cell: ({ row }) => (
         <div className="font-medium">
@@ -107,7 +115,7 @@ export const getColumns = ({
     {
       accessorKey: 'status',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Status" />
+        <DataTableColumnHeader column={column} title={t('columns.status')} />
       ),
       cell: ({ row }) => {
         const status = row.getValue('status') as string;
@@ -132,10 +140,12 @@ export const getColumns = ({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+              <DropdownMenuLabel>
+                {t('columns.actions.label')}
+              </DropdownMenuLabel>
               <DropdownMenuItem asChild>
                 <Link href={`/purchases/returns/${ret.id}`}>
-                  <Eye className="mr-2 h-4 w-4" /> Detail
+                  <Eye className="mr-2 h-4 w-4" /> {t('columns.actions.detail')}
                 </Link>
               </DropdownMenuItem>
               {ret.status === 'pending' && (
@@ -152,7 +162,8 @@ export const getColumns = ({
                     className="text-destructive focus:text-destructive"
                     onClick={() => onDelete(ret)}
                   >
-                    <Trash className="mr-2 h-4 w-4" /> Hapus
+                    <Trash className="mr-2 h-4 w-4" />{' '}
+                    {t('columns.actions.delete')}
                   </DropdownMenuItem>
                 </>
               )}

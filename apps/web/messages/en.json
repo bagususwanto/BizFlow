@@ -2083,6 +2083,175 @@
         "warehouseRequired": "Warehouse is required",
         "itemsMin": "At least 1 item is required"
       }
+    },
+    "returns": {
+      "title": "Purchase Returns",
+      "description": "Manage items returned to supplier.",
+      "createLabel": "Create New Return",
+      "failedLoad": "Failed to load purchase return data",
+      "searchPlaceholder": "Search Return No., PO, or Supplier...",
+      "filters": {
+        "status": {
+          "label": "Status",
+          "pending": "Pending",
+          "approved": "Approved",
+          "completed": "Completed",
+          "rejected": "Rejected"
+        },
+        "supplier": {
+          "label": "Supplier",
+          "searchPlaceholder": "Search supplier..."
+        }
+      },
+      "summary": {
+        "total": {
+          "title": "Total Returns",
+          "desc": "All return statuses"
+        },
+        "pending": {
+          "title": "Pending",
+          "desc": "Waiting for approval"
+        },
+        "approved": {
+          "title": "Approved",
+          "desc": "Ready to ship"
+        },
+        "completed": {
+          "title": "Completed",
+          "desc": "Items returned"
+        }
+      },
+      "delete": {
+        "title": "Delete Purchase Return?",
+        "desc1": "Are you sure you want to delete Purchase Return ",
+        "desc2": "? This action cannot be undone.",
+        "confirmBtn": "Delete"
+      },
+      "columns": {
+        "returnNumber": "Return No.",
+        "date": "Date",
+        "supplier": "Supplier",
+        "totalRefund": "Total Refund",
+        "status": "Status",
+        "actions": {
+          "label": "Actions",
+          "detail": "Detail",
+          "delete": "Delete"
+        }
+      },
+      "detail": {
+        "failedLoad": "Failed to load purchase return details",
+        "title": "Detail",
+        "actions": {
+          "print": "Print",
+          "delete": "Delete",
+          "approve": "Approve",
+          "reject": "Reject",
+          "complete": "Complete & Reduce Stock"
+        },
+        "sourceInfo": {
+          "title": "Return Source Information",
+          "order": "Order",
+          "viewPo": "View Purchase Order →",
+          "supplier": "Supplier"
+        },
+        "statusInfo": {
+          "title": "Status & Approval",
+          "createdAt": "Created at:",
+          "createdBy": "Created by:",
+          "rejectedBy": "Rejected by:",
+          "approvedBy": "Approved by:",
+          "rejectedAt": "Rejected at:",
+          "approvedAt": "Approved at:"
+        },
+        "rejectedWarning": {
+          "title": "Return Rejected",
+          "desc": "This return request has been rejected. Stock is not reduced."
+        },
+        "items": {
+          "title": "Returned Items",
+          "product": "Product",
+          "reason": "Reason",
+          "qty": "Return Qty"
+        },
+        "notes": {
+          "title": "Reason & Notes",
+          "reason": "Return Reason:",
+          "additional": "Additional Notes:"
+        },
+        "statusDialog": {
+          "title": "Confirm Status Change",
+          "desc1": "Are you sure you want to change the status to ",
+          "desc2": "?",
+          "warning": "Warning: This action will automatically reduce warehouse stock.",
+          "cancel": "Cancel",
+          "confirm": "Yes, Change Status"
+        },
+        "deleteDialog": {
+          "title": "Delete Purchase Return?",
+          "desc": "Are you sure you want to delete this return request? This action cannot be undone."
+        }
+      },
+      "form": {
+        "createTitle": "Create Purchase Return",
+        "createSubtitle": "Create a new purchase return from a received purchase order.",
+        "selectPo": {
+          "title": "Select Purchase Order",
+          "searchPlaceholder": "Search PO No. or Supplier...",
+          "empty": "No POs available for return (must be Received/Completed status)",
+          "columns": {
+            "poNumber": "PO No.",
+            "supplier": "Supplier",
+            "date": "Date",
+            "status": "Status",
+            "actions": "Actions"
+          },
+          "selectBtn": "Select"
+        },
+        "changePo": "← Change PO",
+        "selectedPo": "Selected PO:",
+        "info": {
+          "title": "Return Information",
+          "returnNumber": "Return No.",
+          "auto": "Automatic",
+          "reason": "Return Reason",
+          "reasonPlaceholder": "Example: Damaged goods, Wrong item, etc.",
+          "notes": "Notes",
+          "notesPlaceholder": "Additional notes..."
+        },
+        "selectItems": {
+          "title": "Select Items from PO",
+          "columns": {
+            "product": "Product",
+            "received": "Received"
+          },
+          "alreadyAdded": "Item is already in the return list"
+        },
+        "returnItems": {
+          "title": "Items to Return",
+          "empty": "No items selected yet. Select items from the PO list above.",
+          "columns": {
+            "product": "Product",
+            "qty": "Return Qty",
+            "reason": "Reason (Optional)"
+          },
+          "reasonPlaceholder": "Dented, etc."
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Create Return"
+        }
+      },
+      "validation": {
+        "variantRequired": "Product variant must be selected",
+        "qtyPositive": "Quantity must be greater than 0",
+        "reasonMax": "Reason maximum 500 characters",
+        "poRequired": "Purchase Order must be selected",
+        "reasonRequired": "Return reason is required",
+        "notesMax": "Notes maximum 1000 characters",
+        "itemsMin": "At least 1 item must be returned",
+        "statusNotesMax": "Notes maximum 500 characters"
+      }
     }
   }
 }

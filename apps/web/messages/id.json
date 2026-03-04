@@ -2083,6 +2083,175 @@
         "warehouseRequired": "Gudang wajib dipilih",
         "itemsMin": "Minimal 1 item diperlukan"
       }
+    },
+    "returns": {
+      "title": "Retur Pembelian",
+      "description": "Kelola pengembalian barang ke pemasok.",
+      "createLabel": "Buat Return Baru",
+      "failedLoad": "Gagal memuat data purchase return",
+      "searchPlaceholder": "Cari No. Return, PO, atau Pemasok...",
+      "filters": {
+        "status": {
+          "label": "Status",
+          "pending": "Pending",
+          "approved": "Approved",
+          "completed": "Completed",
+          "rejected": "Rejected"
+        },
+        "supplier": {
+          "label": "Pemasok",
+          "searchPlaceholder": "Cari pemasok..."
+        }
+      },
+      "summary": {
+        "total": {
+          "title": "Total Return",
+          "desc": "Semua status return"
+        },
+        "pending": {
+          "title": "Pending",
+          "desc": "Menunggu persetujuan"
+        },
+        "approved": {
+          "title": "Disetujui",
+          "desc": "Siap dikirim"
+        },
+        "completed": {
+          "title": "Selesai",
+          "desc": "Barang dikembalikan"
+        }
+      },
+      "delete": {
+        "title": "Hapus Purchase Return?",
+        "desc1": "Apakah Anda yakin ingin menghapus Purchase Return ",
+        "desc2": "? Tindakan ini tidak dapat dibatalkan.",
+        "confirmBtn": "Hapus"
+      },
+      "columns": {
+        "returnNumber": "No. Return",
+        "date": "Tanggal",
+        "supplier": "Pemasok",
+        "totalRefund": "Total Refund",
+        "status": "Status",
+        "actions": {
+          "label": "Aksi",
+          "detail": "Detail",
+          "delete": "Hapus"
+        }
+      },
+      "detail": {
+        "failedLoad": "Gagal memuat detail purchase return",
+        "title": "Detail",
+        "actions": {
+          "print": "Print",
+          "delete": "Hapus",
+          "approve": "Setujui",
+          "reject": "Tolak",
+          "complete": "Selesaikan & Kurangi Stok"
+        },
+        "sourceInfo": {
+          "title": "Informasi Asal Return",
+          "order": "Order",
+          "viewPo": "Lihat Purchase Order →",
+          "supplier": "Pemasok"
+        },
+        "statusInfo": {
+          "title": "Status & Approval",
+          "createdAt": "Dibuat pada:",
+          "createdBy": "Dibuat oleh:",
+          "rejectedBy": "Ditolak oleh:",
+          "approvedBy": "Disetujui oleh:",
+          "rejectedAt": "Ditolak pada:",
+          "approvedAt": "Disetujui pada:"
+        },
+        "rejectedWarning": {
+          "title": "Return Ditolak",
+          "desc": "Permintaan return ini telah ditolak. Stok tidak dikurangi."
+        },
+        "items": {
+          "title": "Item yang Di-return",
+          "product": "Produk",
+          "reason": "Alasan",
+          "qty": "Qty Return"
+        },
+        "notes": {
+          "title": "Catatan & Alasan",
+          "reason": "Alasan Pengembalian:",
+          "additional": "Catatan Tambahan:"
+        },
+        "statusDialog": {
+          "title": "Konfirmasi Perubahan Status",
+          "desc1": "Apakah Anda yakin ingin mengubah status menjadi ",
+          "desc2": "?",
+          "warning": "Peringatan: Tindakan ini akan mengurangi stok barang di gudang secara otomatis.",
+          "cancel": "Batal",
+          "confirm": "Ya, Ubah Status"
+        },
+        "deleteDialog": {
+          "title": "Hapus Purchase Return?",
+          "desc": "Apakah Anda yakin ingin menghapus permintaan return ini? Tindakan ini tidak dapat dibatalkan."
+        }
+      },
+      "form": {
+        "createTitle": "Buat Retur Pembelian",
+        "createSubtitle": "Buat retur pembelian baru dari purchase order yang sudah diterima.",
+        "selectPo": {
+          "title": "Pilih Purchase Order",
+          "searchPlaceholder": "Cari No. PO atau Pemasok...",
+          "empty": "Tidak ada PO yang dapat di-return (harus status Received/Completed)",
+          "columns": {
+            "poNumber": "No. PO",
+            "supplier": "Pemasok",
+            "date": "Tanggal",
+            "status": "Status",
+            "actions": "Aksi"
+          },
+          "selectBtn": "Pilih"
+        },
+        "changePo": "← Ganti PO",
+        "selectedPo": "PO Terpilih:",
+        "info": {
+          "title": "Informasi Return",
+          "returnNumber": "No. Return",
+          "auto": "Otomatis",
+          "reason": "Alasan Return",
+          "reasonPlaceholder": "Contoh: Barang rusak, Salah kirim, dll.",
+          "notes": "Catatan",
+          "notesPlaceholder": "Catatan tambahan..."
+        },
+        "selectItems": {
+          "title": "Pilih Barang dari PO",
+          "columns": {
+            "product": "Produk",
+            "received": "Diterima"
+          },
+          "alreadyAdded": "Item sudah ada di daftar return"
+        },
+        "returnItems": {
+          "title": "Barang yang di-Return",
+          "empty": "Belum ada barang yang dipilih. Pilih barang dari daftar PO di atas.",
+          "columns": {
+            "product": "Produk",
+            "qty": "Qty Return",
+            "reason": "Alasan (Opsional)"
+          },
+          "reasonPlaceholder": "Penyok, dll"
+        },
+        "actions": {
+          "cancel": "Batal",
+          "submit": "Buat Return"
+        }
+      },
+      "validation": {
+        "variantRequired": "Product variant wajib dipilih",
+        "qtyPositive": "Quantity harus lebih dari 0",
+        "reasonMax": "Alasan maksimal 500 karakter",
+        "poRequired": "Purchase Order wajib dipilih",
+        "reasonRequired": "Alasan return wajib diisi",
+        "notesMax": "Catatan maksimal 1000 karakter",
+        "itemsMin": "Minimal 1 item harus di-return",
+        "statusNotesMax": "Catatan maksimal 500 karakter"
+      }
     }
   }
 }

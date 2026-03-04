@@ -58,6 +58,7 @@ import { LoadingState } from '@/components/common/loading-state';
 import { ErrorState } from '@/components/common/error-state';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
+import { useTranslations } from 'next-intl';
 
 export default function PurchaseReturnDetailPage({
   params,
@@ -69,6 +70,7 @@ export default function PurchaseReturnDetailPage({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [statusDialogOpen, setStatusDialogOpen] = useState(false);
   const [nextStatus, setNextStatus] = useState<string | null>(null);
+  const t = useTranslations('purchases.returns.detail');
 
   const {
     data: ret,
@@ -86,7 +88,7 @@ export default function PurchaseReturnDetailPage({
 
   useBreadcrumb(
     `/purchases/returns/${resolvedParams.id}`,
-    ret?.returnNumber || 'Detail',
+    ret?.returnNumber || t('title'),
   );
 
   if (isLoading) {
@@ -98,12 +100,7 @@ export default function PurchaseReturnDetailPage({
   }
 
   if (isError || !ret) {
-    return (
-      <ErrorState
-        title="Gagal memuat detail purchase return"
-        onRetry={() => refetch()}
-      />
-    );
+    return <ErrorState title={t('failedLoad')} onRetry={() => refetch()} />;
   }
 
   const handleDelete = async () => {
@@ -182,7 +179,7 @@ export default function PurchaseReturnDetailPage({
               window.open(`/purchases/returns/${ret.id}/print`, '_blank')
             }
           >
-            <Printer className="mr-2 h-4 w-4" /> Print
+            <Printer className="mr-2 h-4 w-4" /> {t('actions.print')}
           </Button>
 
           {ret.status === 'pending' && (
@@ -191,7 +188,7 @@ export default function PurchaseReturnDetailPage({
                 variant="destructive"
                 onClick={() => setDeleteDialogOpen(true)}
               >
-                <Trash className="mr-2 h-4 w-4" /> Hapus
+                <Trash className="mr-2 h-4 w-4" /> {t('actions.delete')}
               </Button>
               <Button
                 onClick={() => {
@@ -199,7 +196,7 @@ export default function PurchaseReturnDetailPage({
                   setStatusDialogOpen(true);
                 }}
               >
-                <CheckCircle className="mr-2 h-4 w-4" /> Setujui
+                <CheckCircle className="mr-2 h-4 w-4" /> {t('actions.approve')}
               </Button>
             </>
           )}
@@ -213,7 +210,7 @@ export default function PurchaseReturnDetailPage({
                   setStatusDialogOpen(true);
                 }}
               >
-                <XCircle className="mr-2 h-4 w-4" /> Tolak
+                <XCircle className="mr-2 h-4 w-4" /> {t('actions.reject')}
               </Button>
               <Button
                 onClick={() => {
@@ -221,8 +218,7 @@ export default function PurchaseReturnDetailPage({
                   setStatusDialogOpen(true);
                 }}
               >
-                <CheckCircle className="mr-2 h-4 w-4" /> Selesaikan & Kurangi
-                Stok
+                <CheckCircle className="mr-2 h-4 w-4" /> {t('actions.complete')}
               </Button>
             </>
           )}
@@ -234,13 +230,15 @@ export default function PurchaseReturnDetailPage({
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>Informasi Asal Return</CardTitle>
+              <CardTitle>{t('sourceInfo.title')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-start gap-4">
                 <FileText className="mt-1 h-5 w-5 text-muted-foreground" />
                 <div>
-                  <div className="text-sm text-muted-foreground">Order</div>
+                  <div className="text-sm text-muted-foreground">
+                    {t('sourceInfo.order')}
+                  </div>
                   <div className="font-medium">{ret.order?.orderNumber}</div>
                   <Button
                     variant="link"
@@ -249,14 +247,16 @@ export default function PurchaseReturnDetailPage({
                       router.push(`/purchases/orders/${ret.orderId}`)
                     }
                   >
-                    Lihat Purchase Order &rarr;
+                    {t('sourceInfo.viewPo')}
                   </Button>
                 </div>
               </div>
               <div className="flex items-start gap-4 pt-2">
                 <StoreIcon className="mt-1 h-5 w-5 text-muted-foreground" />
                 <div className="space-y-1">
-                  <div className="text-sm text-muted-foreground">Pemasok</div>
+                  <div className="text-sm text-muted-foreground">
+                    {t('sourceInfo.supplier')}
+                  </div>
                   <div className="font-medium">{ret.order?.supplier?.name}</div>
                   {ret.order?.supplier?.address && (
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -285,19 +285,23 @@ export default function PurchaseReturnDetailPage({
 
           <Card>
             <CardHeader>
-              <CardTitle>Status & Approval</CardTitle>
+              <CardTitle>{t('statusInfo.title')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center gap-2 text-sm">
                 <Clock className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Dibuat pada:</span>
+                <span className="text-muted-foreground">
+                  {t('statusInfo.createdAt')}
+                </span>
                 <span className="font-medium text-right flex-1">
                   {formatDateTime(ret.createdAt)}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <User className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Dibuat oleh:</span>
+                <span className="text-muted-foreground">
+                  {t('statusInfo.createdBy')}
+                </span>
                 <span className="font-medium text-right flex-1">
                   {ret.creator?.name || ret.createdBy}
                 </span>
@@ -308,8 +312,8 @@ export default function PurchaseReturnDetailPage({
                   <CheckCircle className="h-4 w-4 text-muted-foreground" />
                   <span className="text-muted-foreground">
                     {ret.status === 'rejected'
-                      ? 'Ditolak oleh:'
-                      : 'Disetujui oleh:'}
+                      ? t('statusInfo.rejectedBy')
+                      : t('statusInfo.approvedBy')}
                   </span>
                   <span className="font-medium text-right flex-1">
                     {ret.approver.name}
@@ -321,8 +325,8 @@ export default function PurchaseReturnDetailPage({
                   <Clock className="h-4 w-4 text-muted-foreground" />
                   <span className="text-muted-foreground">
                     {ret.status === 'rejected'
-                      ? 'Ditolak pada:'
-                      : 'Disetujui pada:'}
+                      ? t('statusInfo.rejectedAt')
+                      : t('statusInfo.approvedAt')}
                   </span>
                   <span className="font-medium text-right flex-1">
                     {formatDateTime(ret.approvedAt)}
@@ -337,25 +341,23 @@ export default function PurchaseReturnDetailPage({
         {ret.status === 'rejected' && (
           <Alert variant="destructive">
             <XCircle className="h-4 w-4" />
-            <AlertTitle>Return Ditolak</AlertTitle>
-            <AlertDescription>
-              Permintaan return ini telah ditolak. Stok tidak dikurangi.
-            </AlertDescription>
+            <AlertTitle>{t('rejectedWarning.title')}</AlertTitle>
+            <AlertDescription>{t('rejectedWarning.desc')}</AlertDescription>
           </Alert>
         )}
 
         {/* Middle Section: Items */}
         <Card>
           <CardHeader>
-            <CardTitle>Item yang Di-return</CardTitle>
+            <CardTitle>{t('items.title')}</CardTitle>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Produk</TableHead>
-                  <TableHead>Alasan</TableHead>
-                  <TableHead className="text-right">Qty Return</TableHead>
+                  <TableHead>{t('items.product')}</TableHead>
+                  <TableHead>{t('items.reason')}</TableHead>
+                  <TableHead className="text-right">{t('items.qty')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -383,19 +385,21 @@ export default function PurchaseReturnDetailPage({
         {/* Bottom Section: Reason & Notes */}
         <Card>
           <CardHeader>
-            <CardTitle>Catatan & Alasan</CardTitle>
+            <CardTitle>{t('notes.title')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
               <div className="mb-1 text-sm font-medium">
-                Alasan Pengembalian:
+                {t('notes.reason')}
               </div>
               <p className="text-sm text-muted-foreground">
                 {ret.reason || '-'}
               </p>
             </div>
             <div>
-              <div className="mb-1 text-sm font-medium">Catatan Tambahan:</div>
+              <div className="mb-1 text-sm font-medium">
+                {t('notes.additional')}
+              </div>
               <p className="text-sm text-muted-foreground">
                 {ret.notes || '-'}
               </p>
@@ -407,22 +411,22 @@ export default function PurchaseReturnDetailPage({
       <AlertDialog open={statusDialogOpen} onOpenChange={setStatusDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Konfirmasi Perubahan Status</AlertDialogTitle>
+            <AlertDialogTitle>{t('statusDialog.title')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Apakah Anda yakin ingin mengubah status menjadi{' '}
-              <span className="font-bold uppercase">{nextStatus}</span>?
+              {t('statusDialog.desc1')}
+              <span className="font-bold uppercase">{nextStatus}</span>
+              {t('statusDialog.desc2')}
               {nextStatus === 'completed' && (
                 <div className="mt-2 text-destructive">
-                  Peringatan: Tindakan ini akan mengurangi stok barang di gudang
-                  secara otomatis.
+                  {t('statusDialog.warning')}
                 </div>
               )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogCancel>{t('statusDialog.cancel')}</AlertDialogCancel>
             <AlertDialogAction onClick={handleUpdateStatus}>
-              Ya, Ubah Status
+              {t('statusDialog.confirm')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -433,8 +437,8 @@ export default function PurchaseReturnDetailPage({
         onOpenChange={setDeleteDialogOpen}
         onConfirm={handleDelete}
         isDeleting={deleteMutation.isPending}
-        title="Hapus Purchase Return?"
-        description="Apakah Anda yakin ingin menghapus permintaan return ini? Tindakan ini tidak dapat dibatalkan."
+        title={t('deleteDialog.title')}
+        description={t('deleteDialog.desc')}
       />
     </div>
   );

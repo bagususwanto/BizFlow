@@ -5,11 +5,11 @@ import { z } from 'zod';
 // ========================================
 
 const purchaseReturnItemSchema = z.object({
-  variantId: z.string().min(1, 'Product variant wajib dipilih'),
-  quantity: z.number().positive('Quantity harus lebih dari 0'),
+  variantId: z.string().min(1, 'purchases.returns.validation.variantRequired'),
+  quantity: z.number().positive('purchases.returns.validation.qtyPositive'),
   reason: z
     .string()
-    .max(500, { message: 'Alasan maksimal 500 karakter' })
+    .max(500, { message: 'purchases.returns.validation.reasonMax' })
     .optional()
     .nullable(),
 });
@@ -18,16 +18,16 @@ export type PurchaseReturnItemValues = z.infer<typeof purchaseReturnItemSchema>;
 
 export const createPurchaseReturnSchema = z.object({
   returnNumber: z.string().optional(),
-  orderId: z.string().min(1, 'Purchase Order wajib dipilih'),
-  reason: z.string().min(1, 'Alasan return wajib diisi'),
+  orderId: z.string().min(1, 'purchases.returns.validation.poRequired'),
+  reason: z.string().min(1, 'purchases.returns.validation.reasonRequired'),
   notes: z
     .string()
-    .max(1000, { message: 'Catatan maksimal 1000 karakter' })
+    .max(1000, { message: 'purchases.returns.validation.notesMax' })
     .optional()
     .nullable(),
   items: z
     .array(purchaseReturnItemSchema)
-    .min(1, 'Minimal 1 item harus di-return'),
+    .min(1, 'purchases.returns.validation.itemsMin'),
 });
 
 export type CreatePurchaseReturnValues = z.infer<
@@ -49,7 +49,7 @@ export const updatePurchaseReturnStatusSchema = z.object({
   status: z.enum(['pending', 'approved', 'rejected', 'completed']),
   notes: z
     .string()
-    .max(500, { message: 'Catatan maksimal 500 karakter' })
+    .max(500, { message: 'purchases.returns.validation.statusNotesMax' })
     .optional()
     .nullable(),
 });

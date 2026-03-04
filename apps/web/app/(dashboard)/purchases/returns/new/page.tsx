@@ -4,19 +4,19 @@ import { Suspense } from 'react';
 import { Loader2 } from 'lucide-react';
 import { PurchaseReturnForm } from '@/components/purchases/returns/purchase-return-form';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
+import { useTranslations } from 'next-intl';
 
 export default function CreatePurchaseReturnPage() {
-  useBreadcrumb('/purchases/returns/new', 'Buat Return');
+  const t = useTranslations('purchases.returns.form');
+  useBreadcrumb('/purchases/returns/new', t('actions.submit'));
 
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold tracking-tight">
-          Buat Retur Pembelian
+          {t('createTitle')}
         </h2>
-        <p className="text-muted-foreground">
-          Buat retur pembelian baru dari purchase order yang sudah diterima.
-        </p>
+        <p className="text-muted-foreground">{t('createSubtitle')}</p>
       </div>
 
       <Suspense

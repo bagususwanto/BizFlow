@@ -48,8 +48,10 @@ import {
 import { toast } from 'sonner';
 
 import { purchaseReturnsService } from '@/services/purchase-returns.service';
+import { useTranslations } from 'next-intl';
 
 export function PurchaseReturnForm() {
+  const t = useTranslations('purchases.returns.form');
   const router = useRouter();
   const createMutation = useCreatePurchaseReturn();
 
@@ -123,7 +125,7 @@ export function PurchaseReturnForm() {
     // Check if item already added
     const exists = fields.find((f) => f.variantId === poItem.variantId);
     if (exists) {
-      toast.error('Item sudah ada di daftar return');
+      toast.error(t('selectItems.alreadyAdded'));
       return;
     }
 
@@ -138,14 +140,14 @@ export function PurchaseReturnForm() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Pilih Purchase Order</CardTitle>
+          <CardTitle>{t('selectPo.title')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex gap-2">
             <div className="relative flex-1">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Cari No. PO atau Pemasok..."
+                placeholder={t('selectPo.searchPlaceholder')}
                 value={poSearch}
                 onChange={(e) => setPoSearch(e.target.value)}
                 className="pl-8"
@@ -157,11 +159,13 @@ export function PurchaseReturnForm() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>No. PO</TableHead>
-                  <TableHead>Pemasok</TableHead>
-                  <TableHead>Tanggal</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="w-[100px]">Aksi</TableHead>
+                  <TableHead>{t('selectPo.columns.poNumber')}</TableHead>
+                  <TableHead>{t('selectPo.columns.supplier')}</TableHead>
+                  <TableHead>{t('selectPo.columns.date')}</TableHead>
+                  <TableHead>{t('selectPo.columns.status')}</TableHead>
+                  <TableHead className="w-[100px]">
+                    {t('selectPo.columns.actions')}
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -174,8 +178,7 @@ export function PurchaseReturnForm() {
                 ) : availablePOs?.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={5} className="h-24 text-center">
-                      Tidak ada PO yang dapat di-return (harus status
-                      Received/Completed)
+                      {t('selectPo.empty')}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -193,7 +196,8 @@ export function PurchaseReturnForm() {
                       </TableCell>
                       <TableCell>
                         <Button size="sm" onClick={() => handleSelectPO(po.id)}>
-                          Pilih <ArrowRight className="ml-2 h-4 w-4" />
+                          {t('selectPo.selectBtn')}{' '}
+                          <ArrowRight className="ml-2 h-4 w-4" />
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -215,10 +219,10 @@ export function PurchaseReturnForm() {
           onClick={() => setSelectedOrderId(null)}
           size="sm"
         >
-          &larr; Ganti PO
+          {t('changePo')}
         </Button>
         <div className="text-sm text-muted-foreground">
-          PO Terpilih:{' '}
+          {t('selectedPo')}{' '}
           <span className="font-medium text-foreground">
             {selectedPO?.orderNumber}
           </span>{' '}
@@ -231,7 +235,7 @@ export function PurchaseReturnForm() {
           <div className="grid gap-6 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Informasi Return</CardTitle>
+                <CardTitle>{t('info.title')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <FormField
@@ -239,10 +243,10 @@ export function PurchaseReturnForm() {
                   name="returnNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel optional>No. Return</FormLabel>
+                      <FormLabel optional>{t('info.returnNumber')}</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Otomatis"
+                          placeholder={t('info.auto')}
                           {...field}
                           value={field.value || ''}
                         />
@@ -257,10 +261,10 @@ export function PurchaseReturnForm() {
                   name="reason"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel required>Alasan Return</FormLabel>
+                      <FormLabel required>{t('info.reason')}</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Contoh: Barang rusak, Salah kirim, dll."
+                          placeholder={t('info.reasonPlaceholder')}
                           {...field}
                         />
                       </FormControl>
@@ -274,10 +278,10 @@ export function PurchaseReturnForm() {
                   name="notes"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel optional>Catatan</FormLabel>
+                      <FormLabel optional>{t('info.notes')}</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Catatan tambahan..."
+                          placeholder={t('info.notesPlaceholder')}
                           {...field}
                           value={field.value || ''}
                         />
@@ -291,7 +295,7 @@ export function PurchaseReturnForm() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Pilih Barang dari PO</CardTitle>
+                <CardTitle>{t('selectItems.title')}</CardTitle>
               </CardHeader>
               <CardContent>
                 {isLoadingPODetails ? (
@@ -303,8 +307,12 @@ export function PurchaseReturnForm() {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Produk</TableHead>
-                          <TableHead className="text-right">Diterima</TableHead>
+                          <TableHead>
+                            {t('selectItems.columns.product')}
+                          </TableHead>
+                          <TableHead className="text-right">
+                            {t('selectItems.columns.received')}
+                          </TableHead>
                           <TableHead className="w-[50px]"></TableHead>
                         </TableRow>
                       </TableHeader>
@@ -356,23 +364,26 @@ export function PurchaseReturnForm() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Barang yang di-Return</CardTitle>
+              <CardTitle>{t('returnItems.title')}</CardTitle>
             </CardHeader>
             <CardContent>
               {fields.length === 0 ? (
                 <div className="py-8 text-center text-muted-foreground">
-                  Belum ada barang yang dipilih. Pilih barang dari daftar PO di
-                  atas.
+                  {t('returnItems.empty')}
                 </div>
               ) : (
                 <div className="rounded-md border">
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Produk</TableHead>
-                        <TableHead className="w-[120px]">Qty Return</TableHead>
+                        <TableHead>
+                          {t('returnItems.columns.product')}
+                        </TableHead>
+                        <TableHead className="w-[120px]">
+                          {t('returnItems.columns.qty')}
+                        </TableHead>
                         <TableHead className="w-[200px]">
-                          Alasan (Opsional)
+                          {t('returnItems.columns.reason')}
                         </TableHead>
                         <TableHead className="w-[50px]"></TableHead>
                       </TableRow>
@@ -422,7 +433,9 @@ export function PurchaseReturnForm() {
                                   <FormItem>
                                     <FormControl>
                                       <Input
-                                        placeholder="Penyok, dll"
+                                        placeholder={t(
+                                          'returnItems.reasonPlaceholder',
+                                        )}
                                         {...field}
                                         value={field.value || ''}
                                       />
@@ -464,7 +477,7 @@ export function PurchaseReturnForm() {
               onClick={() => router.back()}
               disabled={createMutation.isPending}
             >
-              Batal
+              {t('actions.cancel')}
             </Button>
             <Button
               type="submit"
@@ -474,7 +487,7 @@ export function PurchaseReturnForm() {
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
               <Save className="mr-2 h-4 w-4" />
-              Buat Return
+              {t('actions.submit')}
             </Button>
           </div>
         </form>

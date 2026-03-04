@@ -16,8 +16,10 @@ import { getColumns } from '@/components/purchases/returns/columns';
 import { ErrorState } from '@/components/common/error-state';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 import { useFormatDate } from '@/hooks';
+import { useTranslations } from 'next-intl';
 
 function PurchaseReturnsContent() {
+  const t = useTranslations('purchases.returns');
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -89,10 +91,7 @@ function PurchaseReturnsContent() {
   };
 
   const handleError = () => (
-    <ErrorState
-      title="Gagal memuat data purchase return"
-      onRetry={() => refetch()}
-    />
+    <ErrorState title={t('failedLoad')} onRetry={() => refetch()} />
   );
 
   const columns = useMemo(
@@ -100,8 +99,9 @@ function PurchaseReturnsContent() {
       getColumns({
         onDelete: (ret) => setReturnToDelete(ret),
         formatters,
+        t: t as any,
       }),
-    [formatters],
+    [formatters, t],
   );
 
   const returns = returnsData?.data || [];
@@ -115,10 +115,10 @@ function PurchaseReturnsContent() {
 
   return (
     <DataListPage
-      title="Retur Pembelian"
-      description="Kelola pengembalian barang ke pemasok."
+      title={t('title')}
+      description={t('description')}
       createLink="/purchases/returns/new"
-      createLabel="Buat Return Baru"
+      createLabel={t('createLabel')}
       data={returns}
       columns={columns}
       isLoading={isLoading}
@@ -142,7 +142,7 @@ function PurchaseReturnsContent() {
       // Search & Filters
       search={search}
       onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
-      searchPlaceholder="Cari No. Return, PO, atau Pemasok..."
+      searchPlaceholder={t('searchPlaceholder')}
       filterValues={{ status, supplierId: supplierId || 'all' }}
       onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
       onReset={() => router.push(pathname)}
@@ -159,25 +159,25 @@ function PurchaseReturnsContent() {
       filters={[
         {
           key: 'status',
-          label: 'Status',
+          label: t('filters.status.label'),
           options: [
-            { label: 'Pending', value: 'pending' },
-            { label: 'Approved', value: 'approved' },
-            { label: 'Completed', value: 'completed' },
-            { label: 'Rejected', value: 'rejected' },
+            { label: t('filters.status.pending'), value: 'pending' },
+            { label: t('filters.status.approved'), value: 'approved' },
+            { label: t('filters.status.completed'), value: 'completed' },
+            { label: t('filters.status.rejected'), value: 'rejected' },
           ],
           width: 'w-full md:w-[200px]',
         },
         {
           key: 'supplierId',
-          label: 'Pemasok',
+          label: t('filters.supplier.label'),
           type: 'combobox',
           options: suppliers.map((supplier: any) => ({
             label: supplier.name,
             value: supplier.id,
           })),
           width: 'w-full md:w-[250px]',
-          searchPlaceholder: 'Cari pemasok...',
+          searchPlaceholder: t('filters.supplier.searchPlaceholder'),
         },
       ]}
       // Actions
@@ -192,44 +192,52 @@ function PurchaseReturnsContent() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Total Return
+                {t('summary.total.title')}
               </CardTitle>
               <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{summary.totalReturns}</div>
               <p className="text-xs text-muted-foreground">
-                Semua status return
+                {t('summary.total.desc')}
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Pending</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                {t('summary.pending.title')}
+              </CardTitle>
               <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{summary.pendingReturns}</div>
               <p className="text-xs text-muted-foreground">
-                Menunggu persetujuan
+                {t('summary.pending.desc')}
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Disetujui</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                {t('summary.approved.title')}
+              </CardTitle>
               <CheckCircle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
                 {summary.approvedReturns}
               </div>
-              <p className="text-xs text-muted-foreground">Siap dikirim</p>
+              <p className="text-xs text-muted-foreground">
+                {t('summary.approved.desc')}
+              </p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Selesai</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                {t('summary.completed.title')}
+              </CardTitle>
               <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -237,7 +245,7 @@ function PurchaseReturnsContent() {
                 {summary.completedReturns}
               </div>
               <p className="text-xs text-muted-foreground">
-                Barang dikembalikan
+                {t('summary.completed.desc')}
               </p>
             </CardContent>
           </Card>
@@ -247,14 +255,14 @@ function PurchaseReturnsContent() {
       <DeleteConfirmDialog
         open={!!returnToDelete}
         onOpenChange={(open) => !open && setReturnToDelete(null)}
-        title="Hapus Purchase Return?"
+        title={t('delete.title')}
         description={
           <>
-            Apakah Anda yakin ingin menghapus Purchase Return{' '}
+            {t('delete.desc1')}
             <span className="font-semibold">
               {returnToDelete?.returnNumber}
             </span>
-            ? Tindakan ini tidak dapat dibatalkan.
+            {t('delete.desc2')}
           </>
         }
         onConfirm={() => {
@@ -265,7 +273,7 @@ function PurchaseReturnsContent() {
           }
         }}
         isDeleting={deleteMutation.isPending}
-        confirmLabel="Hapus"
+        confirmLabel={t('delete.confirmBtn')}
       />
     </DataListPage>
   );

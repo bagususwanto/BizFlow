@@ -8,6 +8,7 @@ import { ColumnDef, RowSelectionState } from '@tanstack/react-table';
 import { DataTable } from '@/components/ui/data-table';
 import { Checkbox } from '@bizflow/ui';
 import { AutoReorderDialog } from './auto-reorder-dialog';
+import { useTranslations } from 'next-intl';
 
 interface StockAlertItem {
   id: string; // Product ID
@@ -38,17 +39,24 @@ function getStockStatus(current: number, min: number): StockStatus {
 }
 
 function StatusBadge({ status }: { status: StockStatus }) {
+  const t = useTranslations('dashboard');
   switch (status) {
     case 'out_of_stock':
-      return <Badge variant="destructive">Out of Stock</Badge>;
+      return (
+        <Badge variant="destructive">
+          {t('stockAlertsPage.stats.outOfStock')}
+        </Badge>
+      );
     case 'critical':
       return (
-        <Badge className="bg-orange-500 hover:bg-orange-600">Critical</Badge>
+        <Badge className="bg-orange-500 hover:bg-orange-600">
+          {t('stockAlertsPage.stats.criticalStock')}
+        </Badge>
       );
     case 'low':
       return (
         <Badge className="bg-warning hover:bg-warning/90 text-warning-foreground">
-          Low Stock
+          {t('stockAlertsPage.stats.lowStock')}
         </Badge>
       );
   }
@@ -56,6 +64,7 @@ function StatusBadge({ status }: { status: StockStatus }) {
 
 export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
   const router = useRouter();
+  const t = useTranslations('dashboard');
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [autoReorderOpen, setAutoReorderOpen] = useState(false);
 
@@ -86,7 +95,7 @@ export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
       },
       {
         accessorKey: 'status',
-        header: 'Status',
+        header: t('stockAlertsPage.table.status'),
         cell: ({ row }) => {
           const status = getStockStatus(
             row.original.currentStock,
@@ -97,7 +106,7 @@ export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
       },
       {
         accessorKey: 'name',
-        header: 'Produk',
+        header: t('stockAlertsPage.table.product'),
         cell: ({ row }) => (
           <div className="flex flex-col">
             <span className="font-medium">{row.original.name}</span>
@@ -112,12 +121,14 @@ export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
       },
       {
         accessorKey: 'warehouseName',
-        header: 'Gudang',
+        header: t('stockAlertsPage.table.warehouse'),
         cell: ({ row }) => <span>{row.original.warehouseName}</span>,
       },
       {
         accessorKey: 'currentStock',
-        header: () => <div className="text-right">Stok</div>,
+        header: () => (
+          <div className="text-right">{t('stockAlertsPage.table.stock')}</div>
+        ),
         cell: ({ row }) => (
           <div className="text-right">
             <span className="font-medium">{row.original.currentStock}</span>{' '}
@@ -129,14 +140,18 @@ export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
       },
       {
         accessorKey: 'minStock',
-        header: () => <div className="text-right">Min</div>,
+        header: () => (
+          <div className="text-right">{t('stockAlertsPage.table.min')}</div>
+        ),
         cell: ({ row }) => (
           <div className="text-right">{row.original.minStock}</div>
         ),
       },
       {
         id: 'actions',
-        header: () => <div className="text-right">Action</div>,
+        header: () => (
+          <div className="text-right">{t('stockAlertsPage.table.action')}</div>
+        ),
         cell: ({ row }) => (
           <div className="flex justify-end">
             <Button
@@ -150,7 +165,7 @@ export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
               }
             >
               <ShoppingBag className="mr-2 h-4 w-4" />
-              PO
+              {t('stockAlertsPage.table.po')}
             </Button>
           </div>
         ),
@@ -174,7 +189,9 @@ export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
       {selectedCount > 0 && (
         <div className="flex items-center gap-4 rounded-md bg-muted px-4 py-2">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">{selectedCount} Dipilih</span>
+            <span className="text-sm font-medium">
+              {selectedCount} {t('stockAlertsPage.table.selected')}
+            </span>
           </div>
           <Button
             size="sm"
@@ -182,7 +199,7 @@ export function StockAlertTable({ data, isLoading }: StockAlertTableProps) {
             onClick={() => setAutoReorderOpen(true)}
           >
             <RefreshCw className="mr-2 h-4 w-4" />
-            Auto-Reorder
+            {t('stockAlertsPage.table.autoReorder')}
           </Button>
         </div>
       )}

@@ -18,8 +18,10 @@ import {
   SelectValue,
 } from '@bizflow/ui';
 import { RefreshCw } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export default function StockAlertPage() {
+  const t = useTranslations('dashboard');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -58,10 +60,10 @@ export default function StockAlertPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
-            Stock Alert Dashboard
+            {t('stockAlertsPage.title')}
           </h1>
           <p className="text-muted-foreground">
-            Monitor produk dengan stok menipis dan perlu restock.
+            {t('stockAlertsPage.description')}
           </p>
         </div>
         <Button
@@ -73,7 +75,7 @@ export default function StockAlertPage() {
           <RefreshCw
             className={`mr-2 h-4 w-4 ${isRefetching ? 'animate-spin' : ''}`}
           />
-          Refresh
+          {t('refresh')}
         </Button>
       </div>
 
@@ -85,20 +87,24 @@ export default function StockAlertPage() {
       />
 
       <div className="space-y-4">
-        <h2 className="text-lg font-semibold">Daftar Peringatan Stok</h2>
+        <h2 className="text-lg font-semibold">
+          {t('stockAlertsPage.table.title')}
+        </h2>
         <StockAlertTable data={products} isLoading={isLoading} />
 
         {/* Pagination */}
         {meta && (
           <div className="flex flex-col gap-4 pt-4 md:flex-row md:items-center md:justify-between">
             <div className="text-sm text-muted-foreground">
-              Menampilkan {products.length} dari {totalItems} produk
+              {t('stockAlertsPage.table.showing')} {products.length}{' '}
+              {t('stockAlertsPage.table.of')} {totalItems}{' '}
+              {t('stockAlertsPage.table.products')}
             </div>
 
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-muted-foreground hidden sm:block">
-                  Baris per halaman
+                  {t('stockAlertsPage.table.rowsPerPage')}
                 </span>
                 <Select
                   value={pageSize.toString()}
@@ -133,7 +139,8 @@ export default function StockAlertPage() {
                   </PaginationItem>
                   <PaginationItem>
                     <span className="flex h-9 items-center justify-center px-4 text-sm">
-                      Halaman {page} dari {totalPages}
+                      {t('stockAlertsPage.table.page')} {page}{' '}
+                      {t('stockAlertsPage.table.of')} {totalPages}
                     </span>
                   </PaginationItem>
                   <PaginationItem>

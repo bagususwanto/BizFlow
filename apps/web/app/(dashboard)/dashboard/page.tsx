@@ -39,8 +39,10 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { Permission } from '@bizflow/types';
+import { useTranslations } from 'next-intl';
 
 function DashboardSkeleton() {
+  const t = useTranslations('dashboard');
   return (
     <div className="flex flex-col gap-4">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -94,6 +96,7 @@ function DashboardSkeleton() {
 }
 
 export default function DashboardPage() {
+  const t = useTranslations('dashboard');
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -110,10 +113,8 @@ export default function DashboardPage() {
     return (
       <div className="flex flex-1 flex-col items-center justify-center p-4">
         <AlertTriangle className="h-12 w-12 text-destructive mb-4" />
-        <h2 className="text-xl font-bold">Akses Ditolak</h2>
-        <p className="text-muted-foreground">
-          Anda tidak memiliki izin untuk melihat dashboard.
-        </p>
+        <h2 className="text-xl font-bold">{t('accessDenied.title')}</h2>
+        <p className="text-muted-foreground">{t('accessDenied.message')}</p>
       </div>
     );
   }
@@ -122,7 +123,7 @@ export default function DashboardPage() {
     return (
       <div className="flex flex-1 flex-col gap-4 p-4 md:p-8 pt-6">
         <div className="flex items-center justify-between space-y-2">
-          <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+          <h2 className="text-3xl font-bold tracking-tight">{t('title')}</h2>
         </div>
         <DashboardSkeleton />
       </div>
@@ -137,7 +138,7 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-1 flex-col space-y-6">
       <div className="flex items-center justify-between space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+        <h2 className="text-3xl font-bold tracking-tight">{t('title')}</h2>
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
@@ -148,7 +149,7 @@ export default function DashboardPage() {
             <RotateCw
               className={`mr-2 h-4 w-4 ${isRefetching ? 'animate-spin' : ''}`}
             />
-            Refresh
+            {t('refresh')}
           </Button>
         </div>
       </div>
@@ -158,7 +159,7 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Penjualan Hari Ini
+              {t('summary.salesToday')}
             </CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -176,11 +177,12 @@ export default function DashboardPage() {
                   ) : (
                     <ArrowDownRight className="h-3 w-3 mr-1" />
                   )}
-                  {Math.abs(summary.salesChange).toFixed(1)}% dari kemarin
+                  {Math.abs(summary.salesChange).toFixed(1)}%{' '}
+                  {t('summary.fromYesterday')}
                 </span>
               ) : (
                 <span className="text-muted-foreground">
-                  Tidak ada data kemarin
+                  {t('summary.noDataYesterday')}
                 </span>
               )}
             </p>
@@ -191,7 +193,7 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Transaksi Hari Ini
+              {t('summary.transactionsToday')}
             </CardTitle>
             <CreditCard className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -209,11 +211,12 @@ export default function DashboardPage() {
                   ) : (
                     <ArrowDownRight className="h-3 w-3 mr-1" />
                   )}
-                  {Math.abs(summary.transactionChange).toFixed(1)}% dari kemarin
+                  {Math.abs(summary.transactionChange).toFixed(1)}%{' '}
+                  {t('summary.fromYesterday')}
                 </span>
               ) : (
                 <span className="text-muted-foreground">
-                  Tidak ada data kemarin
+                  {t('summary.noDataYesterday')}
                 </span>
               )}
             </p>
@@ -224,7 +227,7 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Rata-rata Transaksi
+              {t('summary.averagePerTransaction')}
             </CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -232,7 +235,9 @@ export default function DashboardPage() {
             <div className="text-2xl font-bold">
               {formatCurrency(summary?.averagePerTransaction || 0)}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">per transaksi</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              {t('summary.perTransaction')}
+            </p>
           </CardContent>
         </Card>
 
@@ -246,7 +251,7 @@ export default function DashboardPage() {
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Stok Menipis / Habis
+              {t('summary.stockAlerts')}
             </CardTitle>
             <Package
               className={`h-4 w-4 ${stockAlerts?.count ? 'text-red-600' : 'text-muted-foreground'}`}
@@ -259,14 +264,14 @@ export default function DashboardPage() {
               {stockAlerts?.count || 0}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              item perlu restock
+              {t('summary.itemsNeedRestock')}
             </p>
             {stockAlerts?.count ? (
               <Link
                 href="/dashboard/stock-alerts"
                 className="text-xs text-red-600 hover:underline mt-2 inline-block"
               >
-                Lihat detail &rarr;
+                {t('summary.viewDetails')} &rarr;
               </Link>
             ) : null}
           </CardContent>
@@ -279,25 +284,25 @@ export default function DashboardPage() {
           <CardHeader>
             <CardTitle className="flex items-center">
               <ShoppingCart className="h-5 w-5 mr-2" />
-              Top Produk Hari Ini
+              {t('topProducts.title')}
             </CardTitle>
-            <CardDescription>
-              5 produk terlaris berdasarkan kuantitas penjualan
-            </CardDescription>
+            <CardDescription>{t('topProducts.description')}</CardDescription>
           </CardHeader>
           <CardContent className="overflow-auto">
             {topProducts.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-[200px] text-muted-foreground">
                 <Box className="h-10 w-10 mb-2 opacity-20" />
-                <p>Belum ada penjualan hari ini</p>
+                <p>{t('topProducts.noSalesToday')}</p>
               </div>
             ) : (
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Produk</TableHead>
-                    <TableHead>SKU</TableHead>
-                    <TableHead className="text-right">Terjual</TableHead>
+                    <TableHead>{t('topProducts.columns.product')}</TableHead>
+                    <TableHead>{t('topProducts.columns.sku')}</TableHead>
+                    <TableHead className="text-right">
+                      {t('topProducts.columns.sold')}
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -326,15 +331,17 @@ export default function DashboardPage() {
           <CardHeader>
             <CardTitle className="flex items-center">
               <Receipt className="h-5 w-5 mr-2" />
-              Transaksi Terakhir
+              {t('recentTransactions.title')}
             </CardTitle>
-            <CardDescription>10 transaksi terbaru</CardDescription>
+            <CardDescription>
+              {t('recentTransactions.description')}
+            </CardDescription>
           </CardHeader>
           <CardContent className="overflow-auto">
             {recentTransactions.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-[200px] text-muted-foreground">
                 <Receipt className="h-10 w-10 mb-2 opacity-20" />
-                <p>Belum ada transaksi</p>
+                <p>{t('recentTransactions.noTransactions')}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -352,7 +359,9 @@ export default function DashboardPage() {
                           hour: '2-digit',
                           minute: '2-digit',
                         })}{' '}
-                        • {tx.customerName || 'Umum'}
+                        •{' '}
+                        {tx.customerName ||
+                          t('recentTransactions.generalCustomer')}
                       </span>
                     </div>
                     <div className="flex flex-col items-end gap-1">
@@ -374,9 +383,9 @@ export default function DashboardPage() {
                         }`}
                       >
                         {tx.paymentStatus === 'paid'
-                          ? 'Lunas'
+                          ? t('recentTransactions.status.paid')
                           : tx.paymentStatus === 'unpaid'
-                            ? 'Belum Lunas'
+                            ? t('recentTransactions.status.unpaid')
                             : tx.paymentStatus}
                       </Badge>
                     </div>
@@ -390,7 +399,7 @@ export default function DashboardPage() {
                   href="/sales/orders"
                   className="text-sm text-primary hover:underline"
                 >
-                  Lihat semua transaksi &rarr;
+                  {t('recentTransactions.viewAll')} &rarr;
                 </Link>
               </div>
             )}

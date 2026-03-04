@@ -17,6 +17,7 @@ import {
   usePreviewAutoReorder,
   useExecuteAutoReorder,
 } from '@/hooks/use-purchase-orders';
+import { useTranslations } from 'next-intl';
 
 interface AutoReorderDialogProps {
   open: boolean;
@@ -31,6 +32,7 @@ export function AutoReorderDialog({
   variantIds,
   onSuccess,
 }: AutoReorderDialogProps) {
+  const t = useTranslations('dashboard');
   const previewMutation = usePreviewAutoReorder();
   const executeMutation = useExecuteAutoReorder();
 
@@ -57,10 +59,11 @@ export function AutoReorderDialog({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <AlertDialogHeader>
-          <AlertDialogTitle>Konfirmasi Auto-Reorder</AlertDialogTitle>
+          <AlertDialogTitle>
+            {t('stockAlertsPage.autoReorder.title')}
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            Sistem akan membuat <strong>Draft Purchase Order</strong> secara
-            otomatis berdasarkan riwayat pembelian terakhir tiap produk.
+            {t('stockAlertsPage.autoReorder.description')}
           </AlertDialogDescription>
         </AlertDialogHeader>
 
@@ -69,7 +72,7 @@ export function AutoReorderDialog({
           <div className="flex items-center justify-center py-8">
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
             <span className="ml-2 text-sm text-muted-foreground">
-              Menganalisis data stok...
+              {t('stockAlertsPage.autoReorder.analyzing')}
             </span>
           </div>
         )}
@@ -80,7 +83,8 @@ export function AutoReorderDialog({
             {preview.groups.length > 0 && (
               <div className="space-y-3">
                 <p className="text-sm font-medium">
-                  {preview.groups.length} Purchase Order akan dibuat:
+                  {preview.groups.length}{' '}
+                  {t('stockAlertsPage.autoReorder.willCreate')}
                 </p>
                 {preview.groups.map((group) => {
                   const subtotal = group.items.reduce(
@@ -100,7 +104,8 @@ export function AutoReorderDialog({
                           </span>
                         </p>
                         <Badge variant="outline">
-                          {group.items.length} item
+                          {group.items.length}{' '}
+                          {t('stockAlertsPage.autoReorder.items')}
                         </Badge>
                       </div>
                       <div className="space-y-1">
@@ -113,14 +118,16 @@ export function AutoReorderDialog({
                               {item.productName} - {item.variantName}
                             </span>
                             <span>
-                              {item.orderQty} unit ×{' '}
+                              {item.orderQty}{' '}
+                              {t('stockAlertsPage.autoReorder.unit')} ×{' '}
                               {formatCurrency(item.unitPrice)}
                             </span>
                           </div>
                         ))}
                       </div>
                       <div className="text-xs text-right font-medium border-t pt-1">
-                        Subtotal: {formatCurrency(subtotal)}
+                        {t('stockAlertsPage.autoReorder.subtotal')}:{' '}
+                        {formatCurrency(subtotal)}
                       </div>
                     </div>
                   );
@@ -130,14 +137,17 @@ export function AutoReorderDialog({
 
             {/* Products with no historical supplier */}
             {preview.noSupplierVariants.length > 0 && (
-              <div className="rounded-md border border-yellow-300 bg-yellow-50 p-3 space-y-1">
-                <div className="flex items-center gap-2 text-sm font-medium text-yellow-800">
+              <div className="rounded-md border border-yellow-300 bg-yellow-50 p-3 space-y-1 dark:bg-yellow-900/20 dark:border-yellow-700/50">
+                <div className="flex items-center gap-2 text-sm font-medium text-yellow-800 dark:text-yellow-500">
                   <AlertCircle className="h-4 w-4" />
-                  {preview.noSupplierVariants.length} varian dilewati (tidak ada
-                  riwayat pemasok):
+                  {preview.noSupplierVariants.length}{' '}
+                  {t('stockAlertsPage.autoReorder.skippedVariants')}
                 </div>
                 {preview.noSupplierVariants.map((v) => (
-                  <p key={v.variantId} className="text-xs text-yellow-700 ml-6">
+                  <p
+                    key={v.variantId}
+                    className="text-xs text-yellow-700 dark:text-yellow-600 ml-6"
+                  >
                     {v.productName} - {v.variantName} ({v.sku})
                   </p>
                 ))}
@@ -146,8 +156,7 @@ export function AutoReorderDialog({
 
             {preview.groups.length === 0 && (
               <div className="text-center py-4 text-muted-foreground text-sm">
-                Tidak ada produk yang dapat di-auto-reorder. Semua varian yang
-                dipilih tidak memiliki riwayat pemasok.
+                {t('stockAlertsPage.autoReorder.noReorderData')}
               </div>
             )}
           </div>
@@ -155,7 +164,7 @@ export function AutoReorderDialog({
 
         <AlertDialogFooter>
           <AlertDialogCancel disabled={executeMutation.isPending}>
-            Batal
+            {t('stockAlertsPage.autoReorder.cancel')}
           </AlertDialogCancel>
           {preview && preview.groups.length > 0 && (
             <Button
@@ -167,7 +176,10 @@ export function AutoReorderDialog({
               ) : (
                 <RefreshCw className="mr-2 h-4 w-4" />
               )}
-              Buat {preview.groups.length} Draft PO
+              {t('stockAlertsPage.autoReorder.execute', {
+                count: preview.groups.length,
+              })}{' '}
+              {t('stockAlertsPage.autoReorder.draftPo')}
             </Button>
           )}
         </AlertDialogFooter>

@@ -2512,5 +2512,89 @@
         "totalValue": "Asset Value"
       }
     }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "refresh": "Refresh",
+    "accessDenied": {
+      "title": "Access Denied",
+      "message": "You do not have permission to view the dashboard."
+    },
+    "summary": {
+      "salesToday": "Sales Today",
+      "transactionsToday": "Transactions Today",
+      "averagePerTransaction": "Average Transaction",
+      "perTransaction": "per transaction",
+      "fromYesterday": "from yesterday",
+      "noDataYesterday": "No data from yesterday",
+      "stockAlerts": "Low / Out of Stock",
+      "itemsNeedRestock": "items need restocking",
+      "viewDetails": "View details"
+    },
+    "topProducts": {
+      "title": "Top Products Today",
+      "description": "Top 5 best-selling products by quantity",
+      "noSalesToday": "No sales today",
+      "columns": {
+        "product": "Product",
+        "sku": "SKU",
+        "sold": "Sold"
+      }
+    },
+    "recentTransactions": {
+      "title": "Recent Transactions",
+      "description": "10 most recent transactions",
+      "noTransactions": "No transactions yet",
+      "viewAll": "View all transactions",
+      "generalCustomer": "General",
+      "status": {
+        "paid": "Paid",
+        "unpaid": "Unpaid"
+      }
+    },
+    "stockAlertsPage": {
+      "title": "Stock Alert Dashboard",
+      "description": "Monitor products with low stock that need restocking.",
+      "stats": {
+        "lowStock": "Low Stock",
+        "criticalStock": "Critical Stock",
+        "outOfStock": "Out of Stock",
+        "lessThanMin": "Stock ≤ Minimum",
+        "lineLowStock": "Stock ≤ Minimum",
+        "lessThanHalfMin": "Stock < 50% Minimum",
+        "zeroStock": "Out of Stock (0)"
+      },
+      "table": {
+        "title": "Stock Alerts List",
+        "status": "Status",
+        "product": "Product",
+        "warehouse": "Warehouse",
+        "stock": "Stock",
+        "min": "Min",
+        "action": "Action",
+        "po": "PO",
+        "showing": "Showing",
+        "of": "of",
+        "products": "products",
+        "rowsPerPage": "Rows per page",
+        "page": "Page",
+        "selected": "Selected",
+        "autoReorder": "Auto-Reorder"
+      },
+      "autoReorder": {
+        "title": "Confirm Auto-Reorder",
+        "description": "The system will automatically create Draft Purchase Orders based on the last purchase history of each product.",
+        "analyzing": "Analyzing stock data...",
+        "willCreate": "Purchase Orders will be created:",
+        "items": "items",
+        "unit": "unit",
+        "subtotal": "Subtotal",
+        "skippedVariants": "variants skipped (no supplier history):",
+        "noReorderData": "No products can be auto-reordered. All selected variants have no supplier history.",
+        "cancel": "Cancel",
+        "execute": "Create",
+        "draftPo": "Draft PO"
+      }
+    }
   }
 }

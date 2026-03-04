@@ -2512,5 +2512,89 @@
         "totalValue": "Nilai Aset"
       }
     }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "refresh": "Refresh",
+    "accessDenied": {
+      "title": "Akses Ditolak",
+      "message": "Anda tidak memiliki izin untuk melihat dashboard."
+    },
+    "summary": {
+      "salesToday": "Penjualan Hari Ini",
+      "transactionsToday": "Transaksi Hari Ini",
+      "averagePerTransaction": "Rata-rata Transaksi",
+      "perTransaction": "per transaksi",
+      "fromYesterday": "dari kemarin",
+      "noDataYesterday": "Tidak ada data kemarin",
+      "stockAlerts": "Stok Menipis / Habis",
+      "itemsNeedRestock": "item perlu restock",
+      "viewDetails": "Lihat detail"
+    },
+    "topProducts": {
+      "title": "Top Produk Hari Ini",
+      "description": "5 produk terlaris berdasarkan kuantitas penjualan",
+      "noSalesToday": "Belum ada penjualan hari ini",
+      "columns": {
+        "product": "Produk",
+        "sku": "SKU",
+        "sold": "Terjual"
+      }
+    },
+    "recentTransactions": {
+      "title": "Transaksi Terakhir",
+      "description": "10 transaksi terbaru",
+      "noTransactions": "Belum ada transaksi",
+      "viewAll": "Lihat semua transaksi",
+      "generalCustomer": "Umum",
+      "status": {
+        "paid": "Lunas",
+        "unpaid": "Belum Lunas"
+      }
+    },
+    "stockAlertsPage": {
+      "title": "Stock Alert Dashboard",
+      "description": "Monitor produk dengan stok menipis dan perlu restock.",
+      "stats": {
+        "lowStock": "Low Stock",
+        "criticalStock": "Critical Stock",
+        "outOfStock": "Out of Stock",
+        "lessThanMin": "Stok ≤ Minimum",
+        "lineLowStock": "Stok ≤ Minimum",
+        "lessThanHalfMin": "Stok < 50% Minimum",
+        "zeroStock": "Stok Habis (0)"
+      },
+      "table": {
+        "title": "Daftar Peringatan Stok",
+        "status": "Status",
+        "product": "Produk",
+        "warehouse": "Gudang",
+        "stock": "Stok",
+        "min": "Min",
+        "action": "Action",
+        "po": "PO",
+        "showing": "Menampilkan",
+        "of": "dari",
+        "products": "produk",
+        "rowsPerPage": "Baris per halaman",
+        "page": "Halaman",
+        "selected": "Dipilih",
+        "autoReorder": "Auto-Reorder"
+      },
+      "autoReorder": {
+        "title": "Konfirmasi Auto-Reorder",
+        "description": "Sistem akan membuat Draft Purchase Order secara otomatis berdasarkan riwayat pembelian terakhir tiap produk.",
+        "analyzing": "Menganalisis data stok...",
+        "willCreate": "Purchase Order akan dibuat:",
+        "items": "item",
+        "unit": "unit",
+        "subtotal": "Subtotal",
+        "skippedVariants": "varian dilewati (tidak ada riwayat pemasok):",
+        "noReorderData": "Tidak ada produk yang dapat di-auto-reorder. Semua varian yang dipilih tidak memiliki riwayat pemasok.",
+        "cancel": "Batal",
+        "execute": "Buat",
+        "draftPo": "Draft PO"
+      }
+    }
   }
 }

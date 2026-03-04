@@ -6,24 +6,26 @@ import { z } from 'zod';
 
 export const createSupplierPaymentSchema = z.object({
   paymentNumber: z.string().optional(),
-  supplierId: z.string().min(1, 'Supplier wajib dipilih'),
+  supplierId: z
+    .string()
+    .min(1, 'purchases.payments.validation.supplierRequired'),
   purchaseOrderId: z.string().optional().nullable(),
-  accountId: z.string().min(1, 'Akun pembayaran wajib dipilih'),
-  paymentDate: z.string().min(1, 'Tanggal pembayaran wajib diisi'),
+  accountId: z.string().min(1, 'purchases.payments.validation.accountRequired'),
+  paymentDate: z.string().min(1, 'purchases.payments.validation.dateRequired'),
   amount: z
     .number()
-    .positive({ message: 'Jumlah pembayaran harus lebih dari 0' }),
+    .positive({ message: 'purchases.payments.validation.amountPositive' }),
   paymentMethod: z.enum(['cash', 'qris', 'transfer', 'credit', 'debit'], {
-    message: 'Metode pembayaran tidak valid',
+    message: 'purchases.payments.validation.methodInvalid',
   }),
   reference: z
     .string()
-    .max(255, { message: 'Referensi maksimal 255 karakter' })
+    .max(255, { message: 'purchases.payments.validation.referenceMax' })
     .optional()
     .nullable(),
   notes: z
     .string()
-    .max(1000, { message: 'Catatan maksimal 1000 karakter' })
+    .max(1000, { message: 'purchases.payments.validation.notesMax' })
     .optional()
     .nullable(),
 });

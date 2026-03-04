@@ -5,19 +5,17 @@ import { Loader2 } from 'lucide-react';
 import { SupplierPaymentForm } from '@/components/purchases/payments/supplier-payment-form';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 
+import { useTranslations } from 'next-intl';
+
 export default function CreateSupplierPaymentPage() {
-  useBreadcrumb('/purchases/payments/new', 'Buat Pembayaran');
+  const t = useTranslations('purchases.payments.create');
+  useBreadcrumb('/purchases/payments/new', t('breadcrumb'));
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">
-          Buat Pembayaran Pemasok
-        </h2>
-        <p className="text-muted-foreground">
-          Catat pembayaran ke pemasok untuk purchase order atau transaksi
-          lainnya.
-        </p>
+        <h2 className="text-2xl font-bold tracking-tight">{t('title')}</h2>
+        <p className="text-muted-foreground">{t('description')}</p>
       </div>
 
       <Suspense

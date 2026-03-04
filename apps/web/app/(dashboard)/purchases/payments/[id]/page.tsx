@@ -46,6 +46,7 @@ import { ErrorState } from '@/components/common/error-state';
 import { useBreadcrumb } from '@/contexts/breadcrumb-context';
 import { useState } from 'react';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
+import { useTranslations } from 'next-intl';
 import {
   useDeleteSupplierPayment,
   useSupplierPayment,
@@ -60,6 +61,7 @@ export default function SupplierPaymentDetailPage({
   const router = useRouter();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const t = useTranslations('purchases.payments.detail');
 
   const {
     data: payment,
@@ -73,7 +75,7 @@ export default function SupplierPaymentDetailPage({
 
   useBreadcrumb(
     `/purchases/payments/${resolvedParams.id}`,
-    payment?.paymentNumber || 'Detail Pembayaran',
+    payment?.paymentNumber || t('title'),
   );
 
   if (isLoading) {
@@ -85,12 +87,7 @@ export default function SupplierPaymentDetailPage({
   }
 
   if (isError || !payment) {
-    return (
-      <ErrorState
-        title="Gagal memuat detail pembayaran"
-        onRetry={() => refetch()}
-      />
-    );
+    return <ErrorState title={t('failedLoad')} onRetry={() => refetch()} />;
   }
 
   const handleDelete = () => {
@@ -131,13 +128,13 @@ export default function SupplierPaymentDetailPage({
               router.push(`/purchases/payments/${payment.id}/edit`)
             }
           >
-            <Edit className="mr-2 h-4 w-4" /> Edit
+            <Edit className="mr-2 h-4 w-4" /> {t('actions.edit')}
           </Button>
           <Button
             variant="destructive"
             onClick={() => setDeleteDialogOpen(true)}
           >
-            <Trash className="mr-2 h-4 w-4" /> Hapus
+            <Trash className="mr-2 h-4 w-4" /> {t('actions.delete')}
           </Button>
         </div>
       </div>
@@ -147,7 +144,7 @@ export default function SupplierPaymentDetailPage({
           {/* Supplier Info */}
           <Card>
             <CardHeader>
-              <CardTitle>Informasi Pemasok</CardTitle>
+              <CardTitle>{t('supplierInfo.title')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-start gap-4">
@@ -183,19 +180,23 @@ export default function SupplierPaymentDetailPage({
           {/* Payment Info */}
           <Card>
             <CardHeader>
-              <CardTitle>Informasi Pembayaran</CardTitle>
+              <CardTitle>{t('paymentInfo.title')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center gap-2 text-sm">
                 <CreditCard className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Metode:</span>
+                <span className="text-muted-foreground">
+                  {t('paymentInfo.method')}
+                </span>
                 <span className="font-medium uppercase">
                   {payment.paymentMethod}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <Building className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Akun:</span>
+                <span className="text-muted-foreground">
+                  {t('paymentInfo.account')}
+                </span>
                 <span className="font-medium">{payment.account?.name}</span>
               </div>
               {payment.account?.bankName && (
@@ -210,7 +211,9 @@ export default function SupplierPaymentDetailPage({
               )}
               <div className="flex items-center gap-2 text-sm">
                 <Hash className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Referensi:</span>
+                <span className="text-muted-foreground">
+                  {t('paymentInfo.reference')}
+                </span>
                 <span className="font-medium">{payment.reference || '-'}</span>
               </div>
             </CardContent>
@@ -221,11 +224,13 @@ export default function SupplierPaymentDetailPage({
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>Catatan & Lainnya</CardTitle>
+              <CardTitle>{t('notesInfo.title')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <span className="text-sm font-medium">Catatan:</span>
+                <span className="text-sm font-medium">
+                  {t('notesInfo.notes')}
+                </span>
                 <p className="text-sm text-muted-foreground mt-1">
                   {payment.notes || '-'}
                 </p>
@@ -233,12 +238,12 @@ export default function SupplierPaymentDetailPage({
               <Separator />
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Clock className="h-4 w-4" />
-                <span>Dibuat pada:</span>
+                <span>{t('notesInfo.createdAt')}</span>
                 <span>{formatDateTime(payment.createdAt)}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <User className="h-4 w-4" />
-                <span>Dibuat oleh:</span>
+                <span>{t('notesInfo.createdBy')}</span>
                 <span>{payment.creator?.name || payment.createdBy}</span>
               </div>
             </CardContent>
@@ -246,12 +251,14 @@ export default function SupplierPaymentDetailPage({
 
           <Card>
             <CardHeader>
-              <CardTitle>Rincian Jumlah</CardTitle>
+              <CardTitle>{t('amountInfo.title')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {payment.purchaseOrder && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Purchase Order</span>
+                  <span className="text-muted-foreground">
+                    {t('amountInfo.po')}
+                  </span>
                   <span className="font-medium">
                     {payment.purchaseOrder.orderNumber}
                   </span>
@@ -259,7 +266,7 @@ export default function SupplierPaymentDetailPage({
               )}
               <Separator />
               <div className="flex justify-between text-lg font-bold">
-                <span>Total Bayar</span>
+                <span>{t('amountInfo.totalPaid')}</span>
                 <span>{formatCurrency(Number(payment.amount))}</span>
               </div>
             </CardContent>
@@ -272,8 +279,8 @@ export default function SupplierPaymentDetailPage({
         onOpenChange={setDeleteDialogOpen}
         onConfirm={handleDelete}
         isDeleting={deleteMutation.isPending}
-        title="Hapus Pembayaran?"
-        description="Apakah Anda yakin ingin menghapus pembayaran ini? Tindakan ini tidak dapat dibatalkan."
+        title={t('deleteDialog.title')}
+        description={t('deleteDialog.desc')}
       />
     </div>
   );

@@ -24,11 +24,13 @@ import { useFormatDate, DateFormatters } from '@/hooks';
 interface GetColumnsProps {
   onDelete: (payment: SupplierPayment) => void;
   formatters: DateFormatters;
+  t: (key: string) => string;
 }
 
 export const getColumns = ({
   onDelete,
   formatters,
+  t,
 }: GetColumnsProps): ColumnDef<SupplierPayment>[] => {
   const { formatDate } = formatters;
 
@@ -39,7 +41,7 @@ export const getColumns = ({
         <Checkbox
           checked={table.getIsAllPageRowsSelected()}
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Pilih semua"
+          aria-label={t('columns.selectAll')}
           className="translate-y-[2px]"
         />
       ),
@@ -47,7 +49,7 @@ export const getColumns = ({
         <Checkbox
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Pilih baris"
+          aria-label={t('columns.selectRow')}
           className="translate-y-[2px]"
         />
       ),
@@ -57,7 +59,10 @@ export const getColumns = ({
     {
       accessorKey: 'paymentNumber',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="No. Pembayaran" />
+        <DataTableColumnHeader
+          column={column}
+          title={t('columns.paymentNumber')}
+        />
       ),
       cell: ({ row }) => (
         <div className="font-medium">{row.getValue('paymentNumber')}</div>
@@ -66,29 +71,29 @@ export const getColumns = ({
     {
       accessorKey: 'paymentDate',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Tanggal" />
+        <DataTableColumnHeader column={column} title={t('columns.date')} />
       ),
       cell: ({ row }) => formatDate(row.getValue('paymentDate')),
     },
     {
       id: 'supplier',
-      header: 'Pemasok',
+      header: t('columns.supplier'),
       cell: ({ row }) => row.original.supplier?.name,
     },
     {
       id: 'purchaseOrder',
-      header: 'Ref. PO',
+      header: t('columns.poRef'),
       cell: ({ row }) => row.original.purchaseOrder?.orderNumber,
     },
     {
       id: 'account',
-      header: 'Akun',
+      header: t('columns.account'),
       cell: ({ row }) => row.original.account?.name,
     },
     {
       accessorKey: 'amount',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Jumlah" />
+        <DataTableColumnHeader column={column} title={t('columns.amount')} />
       ),
       cell: ({ row }) => (
         <div className="font-medium">
@@ -98,7 +103,7 @@ export const getColumns = ({
     },
     {
       accessorKey: 'paymentMethod',
-      header: 'Metode',
+      header: t('columns.method'),
       cell: ({ row }) => {
         const method = row.getValue('paymentMethod') as string;
         // Simple mapping or capitalize
@@ -114,20 +119,22 @@ export const getColumns = ({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Buka menu</span>
+                <span className="sr-only">{t('columns.actions.openMenu')}</span>
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+              <DropdownMenuLabel>
+                {t('columns.actions.label')}
+              </DropdownMenuLabel>
               <DropdownMenuItem asChild>
                 <Link href={`/purchases/payments/${payment.id}`}>
-                  <Eye className="mr-2 h-4 w-4" /> Detail
+                  <Eye className="mr-2 h-4 w-4" /> {t('columns.actions.detail')}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href={`/purchases/payments/${payment.id}/edit`}>
-                  <Edit className="mr-2 h-4 w-4" /> Edit
+                  <Edit className="mr-2 h-4 w-4" /> {t('columns.actions.edit')}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -135,7 +142,7 @@ export const getColumns = ({
                 className="text-destructive focus:text-destructive"
                 onClick={() => onDelete(payment)}
               >
-                <Trash className="mr-2 h-4 w-4" /> Hapus
+                <Trash className="mr-2 h-4 w-4" /> {t('columns.actions.delete')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

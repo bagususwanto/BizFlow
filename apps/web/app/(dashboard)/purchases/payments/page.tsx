@@ -17,8 +17,10 @@ import { ErrorState } from '@/components/common/error-state';
 import { DeleteConfirmDialog } from '@/components/shared/delete-confirm-dialog';
 import { formatCurrency } from '@bizflow/ui';
 import { useFormatDate } from '@/hooks';
+import { useTranslations } from 'next-intl';
 
 function SupplierPaymentsContent() {
+  const t = useTranslations('purchases.payments');
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -91,8 +93,9 @@ function SupplierPaymentsContent() {
       getColumns({
         onDelete: (payment) => setPaymentToDelete(payment),
         formatters,
+        t: t as any,
       }),
-    [formatters],
+    [formatters, t],
   );
 
   const payments = paymentsData?.data || [];
@@ -110,10 +113,10 @@ function SupplierPaymentsContent() {
 
   return (
     <DataListPage
-      title="Pembayaran Pemasok"
-      description="Kelola pembayaran utang ke pemasok."
+      title={t('title')}
+      description={t('description')}
       createLink="/purchases/payments/new"
-      createLabel="Buat Pembayaran"
+      createLabel={t('createLabel')}
       data={payments}
       columns={columns}
       isLoading={isLoading}
@@ -137,7 +140,7 @@ function SupplierPaymentsContent() {
       // Search
       search={search}
       onSearchChange={(v) => updateUrl({ search: v, page: 1 })}
-      searchPlaceholder="Cari No. Pembayaran, Pemasok, PO..."
+      searchPlaceholder={t('searchPlaceholder')}
       filterValues={{ supplierId: supplierId || 'all' }}
       onFilterChange={(key, value) => updateUrl({ [key]: value, page: 1 })}
       onReset={() => router.push(pathname)}
@@ -154,14 +157,14 @@ function SupplierPaymentsContent() {
       filters={[
         {
           key: 'supplierId',
-          label: 'Pemasok',
+          label: t('filters.supplier.label'),
           type: 'combobox',
           options: suppliers.map((supplier: any) => ({
             label: supplier.name,
             value: supplier.id,
           })),
           width: 'w-full md:w-[250px]',
-          searchPlaceholder: 'Cari pemasok...',
+          searchPlaceholder: t('filters.supplier.searchPlaceholder'),
         },
       ]}
       // Actions
@@ -175,7 +178,7 @@ function SupplierPaymentsContent() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Total Pembayaran
+              {t('summary.total.title')}
             </CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -184,13 +187,15 @@ function SupplierPaymentsContent() {
               {summary.totalPayments || 0}
             </div>
             <p className="text-xs text-muted-foreground">
-              Transaksi pembayaran
+              {t('summary.total.desc')}
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Keluar</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t('summary.outflow.title')}
+            </CardTitle>
             <Wallet className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -198,7 +203,7 @@ function SupplierPaymentsContent() {
               {formatCurrency(summary.totalAmount || 0)}
             </div>
             <p className="text-xs text-muted-foreground">
-              Total nominal dibayarkan
+              {t('summary.outflow.desc')}
             </p>
           </CardContent>
         </Card>
@@ -207,14 +212,14 @@ function SupplierPaymentsContent() {
       <DeleteConfirmDialog
         open={!!paymentToDelete}
         onOpenChange={(open) => !open && setPaymentToDelete(null)}
-        title="Hapus Pembayaran?"
+        title={t('delete.title')}
         description={
           <>
-            Apakah Anda yakin ingin menghapus Pembayaran{' '}
+            {t('delete.desc1')}
             <span className="font-semibold">
               {paymentToDelete?.paymentNumber}
             </span>
-            ? Tindakan ini akan mengembalikan status pembayaran PO.
+            {t('delete.desc2')}
           </>
         }
         onConfirm={() => {
@@ -225,7 +230,7 @@ function SupplierPaymentsContent() {
           }
         }}
         isDeleting={deleteMutation.isPending}
-        confirmLabel="Hapus"
+        confirmLabel={t('delete.confirmBtn')}
       />
     </DataListPage>
   );

@@ -2252,6 +2252,151 @@
         "itemsMin": "At least 1 item must be returned",
         "statusNotesMax": "Notes maximum 500 characters"
       }
+    },
+    "payments": {
+      "title": "Supplier Payments",
+      "description": "Manage accounts payable payments to suppliers.",
+      "createLabel": "Create Payment",
+      "searchPlaceholder": "Search Payment No., Supplier, PO...",
+      "filters": {
+        "supplier": {
+          "label": "Supplier",
+          "searchPlaceholder": "Search supplier..."
+        }
+      },
+      "summary": {
+        "total": {
+          "title": "Total Payments",
+          "desc": "Payment transactions"
+        },
+        "outflow": {
+          "title": "Total Outflow",
+          "desc": "Total nominal paid"
+        }
+      },
+      "delete": {
+        "title": "Delete Payment?",
+        "desc1": "Are you sure you want to delete Payment ",
+        "desc2": "? This action will revert the PO payment status.",
+        "confirmBtn": "Delete"
+      },
+      "columns": {
+        "selectAll": "Select all",
+        "selectRow": "Select row",
+        "paymentNumber": "Payment No.",
+        "date": "Date",
+        "supplier": "Supplier",
+        "poRef": "PO Ref.",
+        "account": "Account",
+        "amount": "Amount",
+        "method": "Method",
+        "actions": {
+          "label": "Actions",
+          "openMenu": "Open menu",
+          "detail": "Detail",
+          "edit": "Edit",
+          "delete": "Delete"
+        }
+      },
+      "detail": {
+        "failedLoad": "Failed to load payment details",
+        "title": "Payment Detail",
+        "actions": {
+          "edit": "Edit",
+          "delete": "Delete"
+        },
+        "supplierInfo": {
+          "title": "Supplier Information"
+        },
+        "paymentInfo": {
+          "title": "Payment Information",
+          "method": "Method:",
+          "account": "Account:",
+          "reference": "Reference:"
+        },
+        "notesInfo": {
+          "title": "Notes & Others",
+          "notes": "Notes:",
+          "createdAt": "Created at:",
+          "createdBy": "Created by:"
+        },
+        "amountInfo": {
+          "title": "Amount Details",
+          "po": "Purchase Order",
+          "totalPaid": "Total Paid"
+        },
+        "deleteDialog": {
+          "title": "Delete Payment?",
+          "desc": "Are you sure you want to delete this payment? This action cannot be undone."
+        }
+      },
+      "create": {
+        "title": "Create Supplier Payment",
+        "description": "Record payments to suppliers for purchase orders or other transactions.",
+        "breadcrumb": "Create Payment"
+      },
+      "form": {
+        "title": "Payment Information",
+        "paymentNumber": {
+          "label": "Payment No.",
+          "placeholder": "Automatic"
+        },
+        "paymentDate": {
+          "label": "Payment Date",
+          "placeholder": "Select Date"
+        },
+        "supplierId": {
+          "label": "Supplier",
+          "placeholder": "Select supplier"
+        },
+        "purchaseOrderId": {
+          "label": "Purchase Order",
+          "placeholder": "Select PO (Optional)",
+          "placeholderDisabled": "Select Supplier First",
+          "noPO": "-- No PO --",
+          "remaining": "Remaining:"
+        },
+        "accountId": {
+          "label": "Financial Account",
+          "placeholder": "Select payment account"
+        },
+        "paymentMethod": {
+          "label": "Payment Method",
+          "placeholder": "Select method",
+          "options": {
+            "cash": "Cash",
+            "transfer": "Bank Transfer",
+            "cheque": "Cheque / Giro",
+            "qris": "QRIS",
+            "credit_card": "Credit Card"
+          }
+        },
+        "amount": {
+          "label": "Amount to Pay"
+        },
+        "reference": {
+          "label": "Reference / Proof No.",
+          "placeholder": "Example: 123456789"
+        },
+        "notes": {
+          "label": "Notes",
+          "placeholder": "Additional notes..."
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "submitCreate": "Create Payment",
+          "submitUpdate": "Save Changes"
+        }
+      },
+      "validation": {
+        "supplierRequired": "Supplier must be selected",
+        "accountRequired": "Payment account must be selected",
+        "dateRequired": "Payment date is required",
+        "amountPositive": "Payment amount must be greater than 0",
+        "methodInvalid": "Invalid payment method",
+        "referenceMax": "Reference maximum 255 characters",
+        "notesMax": "Notes maximum 1000 characters"
+      }
     }
   }
 }

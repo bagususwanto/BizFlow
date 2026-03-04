@@ -46,12 +46,14 @@ import { useSuppliers } from '@/hooks/use-suppliers';
 import { useAccounts } from '@/hooks/use-accounts';
 import { usePurchaseOrders } from '@/hooks/use-purchase-orders';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 interface SupplierPaymentFormProps {
   initialData?: any;
 }
 
 export function SupplierPaymentForm({ initialData }: SupplierPaymentFormProps) {
+  const t = useTranslations('purchases.payments.form');
   const router = useRouter();
   const createMutation = useCreateSupplierPayment();
   const updateMutation = useUpdateSupplierPayment();
@@ -166,7 +168,7 @@ export function SupplierPaymentForm({ initialData }: SupplierPaymentFormProps) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle>Informasi Pembayaran</CardTitle>
+            <CardTitle>{t('title')}</CardTitle>
           </CardHeader>
           <CardContent className="grid gap-6 md:grid-cols-2">
             {/* Payment Number */}
@@ -175,9 +177,13 @@ export function SupplierPaymentForm({ initialData }: SupplierPaymentFormProps) {
               name="paymentNumber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>No. Pembayaran</FormLabel>
+                  <FormLabel>{t('paymentNumber.label')}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Otomatis" {...field} readOnly />
+                    <Input
+                      placeholder={t('paymentNumber.placeholder')}
+                      {...field}
+                      readOnly
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -190,7 +196,7 @@ export function SupplierPaymentForm({ initialData }: SupplierPaymentFormProps) {
               name="paymentDate"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel required>Tanggal Pembayaran</FormLabel>
+                  <FormLabel required>{t('paymentDate.label')}</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -206,7 +212,7 @@ export function SupplierPaymentForm({ initialData }: SupplierPaymentFormProps) {
                               locale: idLocale,
                             })
                           ) : (
-                            <span>Pilih tanggal</span>
+                            <span>{t('paymentDate.placeholder')}</span>
                           )}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
@@ -239,7 +245,7 @@ export function SupplierPaymentForm({ initialData }: SupplierPaymentFormProps) {
               name="supplierId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required>Pemasok</FormLabel>
+                  <FormLabel required>{t('supplierId.label')}</FormLabel>
                   <Select
                     onValueChange={(val) => {
                       field.onChange(val);
@@ -250,7 +256,9 @@ export function SupplierPaymentForm({ initialData }: SupplierPaymentFormProps) {
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Pilih pemasok" />
+                        <SelectValue
+                          placeholder={t('supplierId.placeholder')}
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -272,7 +280,7 @@ export function SupplierPaymentForm({ initialData }: SupplierPaymentFormProps) {
               name="purchaseOrderId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel optional>Purchase Order</FormLabel>
+                  <FormLabel optional>{t('purchaseOrderId.label')}</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value || undefined}
@@ -283,17 +291,19 @@ export function SupplierPaymentForm({ initialData }: SupplierPaymentFormProps) {
                         <SelectValue
                           placeholder={
                             supplierId
-                              ? 'Pilih PO (Opsional)'
-                              : 'Pilih Pemasok Dulu'
+                              ? t('purchaseOrderId.placeholder')
+                              : t('purchaseOrderId.placeholderDisabled')
                           }
                         />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="unlinked">-- Tanpa PO --</SelectItem>
+                      <SelectItem value="unlinked">
+                        {t('purchaseOrderId.noPO')}
+                      </SelectItem>
                       {availablePOs.map((po) => (
                         <SelectItem key={po.id} value={po.id}>
-                          {po.orderNumber} (Sisa:{' '}
+                          {po.orderNumber} ({t('purchaseOrderId.remaining')}{' '}
                           {Number(po.total) - Number(po.paidAmount || 0)})
                         </SelectItem>
                       ))}
@@ -310,7 +320,7 @@ export function SupplierPaymentForm({ initialData }: SupplierPaymentFormProps) {
               name="accountId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required>Akun Keuangan</FormLabel>
+                  <FormLabel required>{t('accountId.label')}</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -318,11 +328,11 @@ export function SupplierPaymentForm({ initialData }: SupplierPaymentFormProps) {
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Pilih akun bayar" />
+                        <SelectValue placeholder={t('accountId.placeholder')} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {accounts.map((acc) => (
+                      {accounts.map((acc: any) => (
                         <SelectItem key={acc.id} value={acc.id}>
                           {acc.name}
                         </SelectItem>
@@ -340,22 +350,34 @@ export function SupplierPaymentForm({ initialData }: SupplierPaymentFormProps) {
               name="paymentMethod"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required>Metode Pembayaran</FormLabel>
+                  <FormLabel required>{t('paymentMethod.label')}</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Pilih metode" />
+                        <SelectValue
+                          placeholder={t('paymentMethod.placeholder')}
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="cash">Tunai</SelectItem>
-                      <SelectItem value="transfer">Transfer Bank</SelectItem>
-                      <SelectItem value="cheque">Cek / Giro</SelectItem>
-                      <SelectItem value="qris">QRIS</SelectItem>
-                      <SelectItem value="credit_card">Kartu Kredit</SelectItem>
+                      <SelectItem value="cash">
+                        {t('paymentMethod.options.cash')}
+                      </SelectItem>
+                      <SelectItem value="transfer">
+                        {t('paymentMethod.options.transfer')}
+                      </SelectItem>
+                      <SelectItem value="cheque">
+                        {t('paymentMethod.options.cheque')}
+                      </SelectItem>
+                      <SelectItem value="qris">
+                        {t('paymentMethod.options.qris')}
+                      </SelectItem>
+                      <SelectItem value="credit_card">
+                        {t('paymentMethod.options.credit_card')}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -369,7 +391,7 @@ export function SupplierPaymentForm({ initialData }: SupplierPaymentFormProps) {
               name="amount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required>Jumlah Bayar</FormLabel>
+                  <FormLabel required>{t('amount.label')}</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -389,10 +411,10 @@ export function SupplierPaymentForm({ initialData }: SupplierPaymentFormProps) {
               name="reference"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel optional>No. Referensi / Bukti</FormLabel>
+                  <FormLabel optional>{t('reference.label')}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Contoh: 123456789"
+                      placeholder={t('reference.placeholder')}
                       {...field}
                       value={field.value || ''}
                     />
@@ -408,10 +430,10 @@ export function SupplierPaymentForm({ initialData }: SupplierPaymentFormProps) {
               name="notes"
               render={({ field }) => (
                 <FormItem className="md:col-span-2">
-                  <FormLabel optional>Catatan</FormLabel>
+                  <FormLabel optional>{t('notes.label')}</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Catatan tambahan..."
+                      placeholder={t('notes.placeholder')}
                       {...field}
                       value={field.value || ''}
                     />
@@ -430,7 +452,7 @@ export function SupplierPaymentForm({ initialData }: SupplierPaymentFormProps) {
             onClick={() => router.back()}
             disabled={createMutation.isPending || updateMutation.isPending}
           >
-            Batal
+            {t('actions.cancel')}
           </Button>
           <Button
             type="submit"
@@ -442,7 +464,9 @@ export function SupplierPaymentForm({ initialData }: SupplierPaymentFormProps) {
             {!(createMutation.isPending || updateMutation.isPending) && (
               <Save className="mr-2 h-4 w-4" />
             )}
-            {initialData ? 'Simpan Perubahan' : 'Buat Pembayaran'}
+            {initialData
+              ? t('actions.submitUpdate')
+              : t('actions.submitCreate')}
           </Button>
         </div>
       </form>

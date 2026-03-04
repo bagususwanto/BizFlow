@@ -2463,6 +2463,54 @@
         },
         "total": "Total"
       }
+    },
+    "inventory": {
+      "title": "Laporan Stok",
+      "description": "Monitor sisa stok dan nilai aset barang",
+      "export": {
+        "excel": "Excel",
+        "pdf": "PDF",
+        "loading": "Mengunduh laporan...",
+        "success": "Laporan berhasil diunduh",
+        "error": "Gagal mengunduh laporan"
+      },
+      "summary": {
+        "totalSku": "Total Items (SKU)",
+        "totalValue": "Nilai Total Aset",
+        "lowStock": "Stok Menipis",
+        "lowStockSub": "item di bawah stok minimum",
+        "outOfStock": "Stok Habis",
+        "outOfStockSub": "item dengan stok 0"
+      },
+      "filters": {
+        "warehouse": {
+          "label": "Gudang",
+          "placeholder": "Semua Gudang",
+          "all": "Semua Gudang"
+        },
+        "category": {
+          "label": "Kategori",
+          "placeholder": "Semua Kategori",
+          "all": "Semua Kategori"
+        },
+        "lowStockOnly": "Hanya Stok Menipis/Habis",
+        "reset": "Reset"
+      },
+      "details": {
+        "title": "Detail Stok"
+      },
+      "columns": {
+        "product": "Produk",
+        "sku": "SKU",
+        "category": "Kategori",
+        "warehouse": "Gudang",
+        "stock": "Stok",
+        "status": {
+          "outOfStock": "Habis",
+          "lowStock": "Menipis"
+        },
+        "totalValue": "Nilai Aset"
+      }
     }
   }
 }

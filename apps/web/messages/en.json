@@ -2463,6 +2463,54 @@
         },
         "total": "Total"
       }
+    },
+    "inventory": {
+      "title": "Stock Report",
+      "description": "Monitor remaining stock and item asset value",
+      "export": {
+        "excel": "Excel",
+        "pdf": "PDF",
+        "loading": "Downloading report...",
+        "success": "Report downloaded successfully",
+        "error": "Failed to download report"
+      },
+      "summary": {
+        "totalSku": "Total Items (SKU)",
+        "totalValue": "Total Asset Value",
+        "lowStock": "Low Stock",
+        "lowStockSub": "items below minimum stock",
+        "outOfStock": "Out of Stock",
+        "outOfStockSub": "items with 0 stock"
+      },
+      "filters": {
+        "warehouse": {
+          "label": "Warehouse",
+          "placeholder": "All Warehouses",
+          "all": "All Warehouses"
+        },
+        "category": {
+          "label": "Category",
+          "placeholder": "All Categories",
+          "all": "All Categories"
+        },
+        "lowStockOnly": "Low/Out of Stock Only",
+        "reset": "Reset"
+      },
+      "details": {
+        "title": "Stock Details"
+      },
+      "columns": {
+        "product": "Product",
+        "sku": "SKU",
+        "category": "Category",
+        "warehouse": "Warehouse",
+        "stock": "Stock",
+        "status": {
+          "outOfStock": "Out",
+          "lowStock": "Low"
+        },
+        "totalValue": "Asset Value"
+      }
     }
   }
 }

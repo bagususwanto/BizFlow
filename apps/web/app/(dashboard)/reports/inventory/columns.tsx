@@ -5,10 +5,10 @@ import { StockData } from '@/services/reports.service';
 import { Badge, formatCurrency } from '@bizflow/ui';
 import { AlertTriangle, XCircle } from 'lucide-react';
 
-export const columns: ColumnDef<StockData>[] = [
+export const getColumns = (t: any): ColumnDef<StockData>[] => [
   {
     accessorKey: 'productName',
-    header: 'Produk',
+    header: t('columns.product'),
     cell: ({ row }) => (
       <div className="flex flex-col">
         <span className="font-medium">{row.getValue('productName')}</span>
@@ -20,22 +20,22 @@ export const columns: ColumnDef<StockData>[] = [
   },
   {
     accessorKey: 'sku',
-    header: 'SKU',
+    header: t('columns.sku'),
     cell: ({ row }) => (
       <span className="font-mono text-xs">{row.getValue('sku')}</span>
     ),
   },
   {
     accessorKey: 'categoryName',
-    header: 'Kategori',
+    header: t('columns.category'),
   },
   {
     accessorKey: 'warehouseName',
-    header: 'Gudang',
+    header: t('columns.warehouse'),
   },
   {
     accessorKey: 'quantity',
-    header: () => <div className="text-right">Stok</div>,
+    header: () => <div className="text-right">{t('columns.stock')}</div>,
     cell: ({ row }) => {
       const quantity = row.getValue('quantity') as number;
       const minStock = row.original.minStock;
@@ -46,7 +46,7 @@ export const columns: ColumnDef<StockData>[] = [
       if (isOut) {
         badge = (
           <Badge variant="destructive" className="ml-2 h-5 px-1 text-[10px]">
-            Habis
+            {t('columns.status.outOfStock')}
           </Badge>
         );
       } else if (isLow) {
@@ -55,7 +55,7 @@ export const columns: ColumnDef<StockData>[] = [
             variant="outline"
             className="ml-2 h-5 px-1 text-[10px] border-yellow-500 text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20"
           >
-            Menipis
+            {t('columns.status.lowStock')}
           </Badge>
         );
       }
@@ -74,7 +74,7 @@ export const columns: ColumnDef<StockData>[] = [
   },
   {
     accessorKey: 'totalValue',
-    header: () => <div className="text-right">Nilai Aset</div>,
+    header: () => <div className="text-right">{t('columns.totalValue')}</div>,
     cell: ({ row }) => {
       return (
         <div className="text-right font-medium">

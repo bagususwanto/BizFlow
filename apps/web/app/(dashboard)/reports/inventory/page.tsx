@@ -4,8 +4,9 @@ import { Suspense, useState } from 'react';
 import { useStockReport } from '@/hooks/use-stock-report';
 import { useWarehouses } from '@/hooks/use-warehouses';
 import { useActiveCategories } from '@/hooks/use-categories';
-import { columns } from './columns';
+import { getColumns } from './columns';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import {
   Loader2,
   FileSpreadsheet,
@@ -48,6 +49,7 @@ import {
 import { useDebounce } from '@/hooks/use-debounce';
 
 function StockReportContent() {
+  const t = useTranslations('reports.inventory');
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -116,9 +118,9 @@ function StockReportContent() {
           format,
         ),
         {
-          loading: 'Mengunduh laporan...',
-          success: 'Laporan berhasil diunduh',
-          error: 'Gagal mengunduh laporan',
+          loading: t('export.loading'),
+          success: t('export.success'),
+          error: t('export.error'),
         },
       );
     } catch (error) {
@@ -132,10 +134,8 @@ function StockReportContent() {
     <div className="flex flex-col space-y-6">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Laporan Stok</h2>
-          <p className="text-muted-foreground">
-            Monitor sisa stok dan nilai aset barang
-          </p>
+          <h2 className="text-3xl font-bold tracking-tight">{t('title')}</h2>
+          <p className="text-muted-foreground">{t('description')}</p>
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -144,7 +144,7 @@ function StockReportContent() {
             onClick={() => handleExport('excel')}
           >
             <FileSpreadsheet className="mr-2 h-4 w-4" />
-            Excel
+            {t('export.excel')}
           </Button>
           <Button
             variant="outline"
@@ -152,7 +152,7 @@ function StockReportContent() {
             onClick={() => handleExport('pdf')}
           >
             <FileText className="mr-2 h-4 w-4" />
-            PDF
+            {t('export.pdf')}
           </Button>
         </div>
       </div>
@@ -162,7 +162,7 @@ function StockReportContent() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Total Items (SKU)
+              {t('summary.totalSku')}
             </CardTitle>
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -173,7 +173,7 @@ function StockReportContent() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Nilai Total Aset
+              {t('summary.totalValue')}
             </CardTitle>
             <Layers className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -191,7 +191,9 @@ function StockReportContent() {
           }
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Stok Menipis</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t('summary.lowStock')}
+            </CardTitle>
             <AlertTriangle
               className={`h-4 w-4 ${summary?.lowStockCount ? 'text-yellow-600' : 'text-muted-foreground'}`}
             />
@@ -203,7 +205,7 @@ function StockReportContent() {
               {summary?.lowStockCount || 0}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              item di bawah stok minimum
+              {t('summary.lowStockSub')}
             </p>
           </CardContent>
         </Card>
@@ -215,7 +217,9 @@ function StockReportContent() {
           }
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Stok Habis</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t('summary.outOfStock')}
+            </CardTitle>
             <XCircle
               className={`h-4 w-4 ${summary?.outOfStockCount ? 'text-red-600' : 'text-muted-foreground'}`}
             />
@@ -227,7 +231,7 @@ function StockReportContent() {
               {summary?.outOfStockCount || 0}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              item dengan stok 0
+              {t('summary.outOfStockSub')}
             </p>
           </CardContent>
         </Card>
@@ -239,16 +243,22 @@ function StockReportContent() {
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 flex-1 w-full">
             {/* Warehouse Filter */}
             <div className="space-y-2">
-              <label className="text-sm font-medium">Gudang</label>
+              <label className="text-sm font-medium">
+                {t('filters.warehouse.label')}
+              </label>
               <Select
                 value={warehouseId}
                 onValueChange={(v) => updateUrl({ warehouseId: v, page: 1 })}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Semua Gudang" />
+                  <SelectValue
+                    placeholder={t('filters.warehouse.placeholder')}
+                  />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Semua Gudang</SelectItem>
+                  <SelectItem value="all">
+                    {t('filters.warehouse.all')}
+                  </SelectItem>
                   {warehouses?.map((w) => (
                     <SelectItem key={w.id} value={w.id}>
                       {w.name}
@@ -260,16 +270,22 @@ function StockReportContent() {
 
             {/* Category Filter */}
             <div className="space-y-2">
-              <label className="text-sm font-medium">Kategori</label>
+              <label className="text-sm font-medium">
+                {t('filters.category.label')}
+              </label>
               <Select
                 value={categoryId}
                 onValueChange={(v) => updateUrl({ categoryId: v, page: 1 })}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Semua Kategori" />
+                  <SelectValue
+                    placeholder={t('filters.category.placeholder')}
+                  />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Semua Kategori</SelectItem>
+                  <SelectItem value="all">
+                    {t('filters.category.all')}
+                  </SelectItem>
                   {categories?.map((cat) => (
                     <SelectItem key={cat.id} value={cat.id}>
                       {cat.name}
@@ -288,14 +304,14 @@ function StockReportContent() {
                 updateUrl({ lowStockOnly: checked, page: 1 })
               }
             />
-            <Label htmlFor="low-stock">Hanya Stok Menipis/Habis</Label>
+            <Label htmlFor="low-stock">{t('filters.lowStockOnly')}</Label>
             {isFiltered && (
               <Button
                 variant="ghost"
                 onClick={onReset}
                 className="h-8 px-2 lg:px-3 ml-2"
               >
-                Reset
+                {t('filters.reset')}
                 <X className="ml-2 h-4 w-4" />
               </Button>
             )}
@@ -306,11 +322,11 @@ function StockReportContent() {
       {/* Table */}
       <div className="rounded-md border bg-card text-card-foreground shadow-sm">
         <div className="p-6 border-b flex justify-between items-center">
-          <h3 className="text-lg font-semibold">Detail Stok</h3>
+          <h3 className="text-lg font-semibold">{t('details.title')}</h3>
         </div>
         <div className="p-0">
           <DataTable
-            columns={columns}
+            columns={getColumns(t)}
             data={data?.data || []}
             isLoading={isFetching}
           />

@@ -94,11 +94,11 @@ export const getColumns = ({
       ),
     },
     {
-      accessorKey: 'date',
+      accessorKey: 'createdAt',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title={t('columns.date')} />
       ),
-      cell: ({ row }) => formatDate(row.getValue('date')),
+      cell: ({ row }) => formatDate(row.getValue('createdAt')),
     },
     {
       id: 'warehouse',

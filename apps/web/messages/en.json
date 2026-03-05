@@ -1791,6 +1791,7 @@
       "movementTypes": {
         "SALE": "Sale (POS)",
         "PURCHASE": "Purchase",
+        "USAGE": "Usage",
         "TRANSFER_IN": "Transfer In",
         "TRANSFER_OUT": "Transfer Out",
         "ADJUSTMENT": "Adjustment",

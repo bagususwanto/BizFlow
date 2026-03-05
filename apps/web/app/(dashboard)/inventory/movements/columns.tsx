@@ -40,7 +40,7 @@ export function getColumns(
         <DataTableColumnHeader column={column} title={t('columns.type')} />
       ),
       cell: ({ row }) => {
-        const type = row.original.type;
+        const type = String(row.original.type).toUpperCase();
         let color: 'default' | 'secondary' | 'destructive' | 'outline' =
           'default';
         let icon = null;

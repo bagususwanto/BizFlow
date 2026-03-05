@@ -1791,6 +1791,7 @@
       "movementTypes": {
         "SALE": "Penjualan (POS)",
         "PURCHASE": "Pembelian",
+        "USAGE": "Pemakaian",
         "TRANSFER_IN": "Transfer Masuk",
         "TRANSFER_OUT": "Transfer Keluar",
         "ADJUSTMENT": "Adjustment",

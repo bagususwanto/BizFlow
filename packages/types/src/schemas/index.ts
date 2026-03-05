@@ -24,3 +24,4 @@ export * from './supplier-payment';
 export * from './payment-term';
 export * from './stock-adjustment';
 export * from './stock-transfer';
+export * from './stock-opname';

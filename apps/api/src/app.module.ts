@@ -22,6 +22,7 @@ import { PaymentTermsModule } from './modules/master-data/payment-terms/payment-
 import { StockModule } from './modules/inventory/stock';
 import { StockAdjustmentsModule } from './modules/inventory/adjustments';
 import { StockTransfersModule } from './modules/inventory/transfers';
+import { StockOpnameModule } from './modules/inventory/opname';
 import { TransactionsModule } from './modules/pos/transactions';
 import { PaymentsModule } from './modules/pos/payments';
 import { ReturnsModule } from './modules/pos/returns';
@@ -69,6 +70,7 @@ import { AppController } from './app.controller';
     StockModule,
     StockAdjustmentsModule,
     StockTransfersModule,
+    StockOpnameModule,
     // POS modules
     TransactionsModule,
     PaymentsModule,

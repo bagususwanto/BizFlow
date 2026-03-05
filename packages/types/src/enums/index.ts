@@ -52,6 +52,7 @@ export enum Module {
   INVENTORY = 'inventory',
   STOCK_ADJUSTMENTS = 'stock-adjustments',
   STOCK_TRANSFERS = 'stock-transfers',
+  STOCK_OPNAMES = 'stock-opnames',
   FINANCE = 'finance',
   REPORTS = 'reports',
   SETTINGS = 'settings',
@@ -221,6 +222,14 @@ export const Permission = {
     Update: 'stock-transfers:update',
     Delete: 'stock-transfers:delete',
     Approve: 'stock-transfers:approve',
+  },
+  StockOpnames: {
+    Read: 'stock-opnames:read',
+    Create: 'stock-opnames:create',
+    Update: 'stock-opnames:update',
+    Delete: 'stock-opnames:delete',
+    Finalize: 'stock-opnames:finalize',
+    Cancel: 'stock-opnames:cancel',
   },
   Finance: {
     Read: 'finance:read',

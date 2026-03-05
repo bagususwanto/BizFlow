@@ -2770,6 +2770,7 @@
       "itemsMin": "Minimal 1 produk dibutuhkan",
       "variantRequired": "Variant wajib dipilih",
       "reqQtyNonZero": "Jumlah permintaan tidak boleh nol",
+      "receivedQtyNonNegative": "Jumlah yang diterima tidak boleh negatif",
       "itemNotesMax": "Catatan item maksimal 500 karakter",
       "statusRequired": "Status wajib ada",
       "statusNotesMax": "Catatan status maksimal 500 karakter"

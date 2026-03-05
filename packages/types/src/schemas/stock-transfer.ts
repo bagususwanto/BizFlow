@@ -5,15 +5,11 @@ import { z } from 'zod';
 // ========================================
 
 const stockTransferItemSchema = z.object({
-  variantId: z
-    .string()
-    .min(1, 'inventory.transfers.validation.variantRequired'),
-  requestedQty: z
-    .number()
-    .positive('inventory.transfers.validation.requestedQtyPositive'),
+  variantId: z.string().min(1, 'transfers.validation.variantRequired'),
+  requestedQty: z.number().positive('transfers.validation.reqQtyNonZero'),
   notes: z
     .string()
-    .max(500, { message: 'inventory.transfers.validation.itemNotesMax' })
+    .max(500, { message: 'transfers.validation.itemNotesMax' })
     .optional()
     .nullable(),
 });
@@ -25,21 +21,21 @@ export const createStockTransferSchema = z
     transferNumber: z.string().optional(),
     fromWarehouseId: z
       .string()
-      .min(1, 'inventory.transfers.validation.fromWarehouseRequired'),
+      .min(1, 'transfers.validation.fromWarehouseRequired'),
     toWarehouseId: z
       .string()
-      .min(1, 'inventory.transfers.validation.toWarehouseRequired'),
+      .min(1, 'transfers.validation.toWarehouseRequired'),
     notes: z
       .string()
-      .max(1000, { message: 'inventory.transfers.validation.notesMax' })
+      .max(1000, { message: 'transfers.validation.notesMax' })
       .optional()
       .nullable(),
     items: z
       .array(stockTransferItemSchema)
-      .min(1, 'inventory.transfers.validation.itemsMin'),
+      .min(1, 'transfers.validation.itemsMin'),
   })
   .refine((data) => data.fromWarehouseId !== data.toWarehouseId, {
-    message: 'inventory.transfers.validation.warehouseSame',
+    message: 'transfers.validation.sameWarehouse',
     path: ['toWarehouseId'],
   });
 
@@ -50,7 +46,7 @@ export type CreateStockTransferValues = z.infer<
 export const updateStockTransferSchema = z.object({
   notes: z
     .string()
-    .max(1000, { message: 'inventory.transfers.validation.notesMax' })
+    .max(1000, { message: 'transfers.validation.notesMax' })
     .optional()
     .nullable(),
   items: z.array(stockTransferItemSchema).min(1).optional(),
@@ -62,21 +58,19 @@ export type UpdateStockTransferValues = z.infer<
 
 const receivedItemSchema = z.object({
   transferItemId: z.string().min(1),
-  receivedQty: z
-    .number()
-    .min(0, 'inventory.transfers.validation.receivedQtyNonNegative'),
+  receivedQty: z.number().min(0, 'transfers.validation.receivedQtyNonNegative'),
   notes: z.string().max(500).optional().nullable(),
 });
 
 export const updateStockTransferStatusSchema = z.object({
   status: z.enum(['sent', 'received', 'cancelled'], {
     errorMap: () => ({
-      message: 'inventory.transfers.validation.statusRequired',
+      message: 'transfers.validation.statusRequired',
     }),
   }),
   notes: z
     .string()
-    .max(500, { message: 'inventory.transfers.validation.statusNotesMax' })
+    .max(500, { message: 'transfers.validation.statusNotesMax' })
     .optional()
     .nullable(),
   receivedItems: z.array(receivedItemSchema).optional(),

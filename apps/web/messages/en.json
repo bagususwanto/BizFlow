@@ -2770,6 +2770,7 @@
       "itemsMin": "At least one product item is required",
       "variantRequired": "Variant is required",
       "reqQtyNonZero": "Requested quantity cannot be zero",
+      "receivedQtyNonNegative": "Received quantity cannot be negative",
       "itemNotesMax": "Item notes maximum is 500 characters",
       "statusRequired": "Status is required",
       "statusNotesMax": "Status notes maximum is 500 characters"

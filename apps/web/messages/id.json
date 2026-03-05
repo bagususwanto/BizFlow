@@ -2605,6 +2605,175 @@
       "statusNotesMax": "Catatan status maksimal 500 karakter"
     }
   },
+  "transfers": {
+    "title": "Transfer Stok",
+    "description": "Buat dan kelola pergerakan pemindahan stok antar gudang.",
+    "createLabel": "Buat Transfer",
+    "searchPlaceholder": "Cari nomor transfer atau catatan...",
+    "failedLoad": "Gagal memuat daftar transfer stok",
+    "summary": {
+      "total": {
+        "title": "Total Transfer",
+        "desc": "Semua catatan"
+      },
+      "draft": {
+        "title": "Draf",
+        "desc": "Belum dikirim"
+      },
+      "sent": {
+        "title": "Dikirim",
+        "desc": "Dalam perjalanan"
+      },
+      "received": {
+        "title": "Diterima",
+        "desc": "Stok diperbarui"
+      },
+      "cancelled": {
+        "title": "Dibatalkan",
+        "desc": "Transfer dibatalkan"
+      }
+    },
+    "columns": {
+      "selectAll": "Pilih semua",
+      "selectRow": "Pilih baris",
+      "transferNumber": "Nomor",
+      "date": "Tanggal",
+      "fromWarehouse": "Asal",
+      "toWarehouse": "Tujuan",
+      "status": "Status",
+      "createdBy": "Dibuat Oleh",
+      "actions": "Aksi",
+      "viewDetails": "Lihat detail",
+      "edit": "Ubah",
+      "delete": "Hapus"
+    },
+    "filters": {
+      "status": {
+        "label": "Status",
+        "draft": "Draf",
+        "sent": "Dikirim",
+        "received": "Diterima",
+        "cancelled": "Dibatalkan"
+      },
+      "warehouse": {
+        "label": "Gudang",
+        "searchPlaceholder": "Cari gudang..."
+      }
+    },
+    "status": {
+      "draft": "Draf",
+      "sent": "Dikirim",
+      "received": "Diterima",
+      "cancelled": "Dibatalkan"
+    },
+    "actions": {
+      "viewMenu": "Buka menu",
+      "edit": "Edit",
+      "viewDetails": "Lihat Detail",
+      "delete": "Hapus"
+    },
+    "delete": {
+      "title": "Hapus Transfer Stok?",
+      "desc1": "Apakah Anda yakin ingin menghapus transfer ",
+      "desc2": "? Tindakan ini tidak dapat dibatalkan.",
+      "confirmBtn": "Hapus"
+    },
+    "create": {
+      "title": "Buat Transfer Stok",
+      "subtitle": "Catat pengiriman stok baru antar gudang.",
+      "headerTitle": "Detail Transfer",
+      "headerDesc": "Pilih gudang asal dan tujuan.",
+      "itemsTitle": "Item Transfer",
+      "itemsDesc": "Pilih produk yang akan dipindahkan.",
+      "form": {
+        "numberLabel": "Nomor Transfer",
+        "numberPlaceholder": "Kosongkan untuk auto-generate",
+        "fromWarehouseLabel": "Gudang Asal",
+        "toWarehouseLabel": "Gudang Tujuan",
+        "notesLabel": "Catatan Tambahan",
+        "notesPlaceholder": "Tambahkan catatan (opsional)...",
+        "submitDraft": "Simpan Draf",
+        "submitSend": "Kirim Transfer",
+        "searchProduct": "Cari produk untuk ditambahkan..."
+      },
+      "itemsTable": {
+        "sku": "SKU",
+        "productName": "Nama Produk",
+        "stock": "Stok",
+        "reqQty": "Jumlah",
+        "notes": "Catatan Item",
+        "actions": "Aksi"
+      },
+      "messages": {
+        "success": "Transfer stok berhasil dibuat",
+        "error": "Gagal membuat transfer stok"
+      }
+    },
+    "detail": {
+      "title": "Detail Transfer",
+      "subtitle": "Informasi lengkap tentang transfer stok.",
+      "infoTitle": "Informasi",
+      "datesTitle": "Tanggal & Status",
+      "itemsTitle": "Item yang Dipindahkan",
+      "number": "Nomor",
+      "fromWarehouse": "Gudang Asal",
+      "toWarehouse": "Gudang Tujuan",
+      "status": "Status",
+      "notes": "Catatan",
+      "date": "Tanggal",
+      "createdBy": "Dibuat Oleh",
+      "sentBy": "Dikirim Oleh",
+      "sentAt": "Dikirim Pada",
+      "receivedBy": "Diterima Oleh",
+      "receivedAt": "Diterima Pada",
+      "summary": "Ringkasan",
+      "totalItems": "Total Item",
+      "totalReqQty": "Total Kuantitas",
+      "buttons": {
+        "back": "Kembali",
+        "edit": "Edit",
+        "send": "Kirim Sekarang",
+        "receive": "Terima Barang",
+        "cancel": "Batalkan Transfer",
+        "delete": "Hapus"
+      },
+      "dialogs": {
+        "send": {
+          "title": "Kirim Transfer?",
+          "desc": "Tindakan ini akan mengurangi stok dari gudang asal dan status menjadi dikirim.",
+          "confirm": "Kirim"
+        },
+        "receive": {
+          "title": "Terima Transfer?",
+          "desc": "Apakah Anda yakin ingin menerima transfer ini? Stok di gudang tujuan akan diperbarui segera.",
+          "notes": "Catatan Penerimaan (Opsional)",
+          "confirm": "Terima"
+        },
+        "cancel": {
+          "title": "Batalkan Transfer?",
+          "desc": "Apakah Anda yakin ingin membatalkan transfer ini? Stok akan dikembalikan jika barang sudah terkirim.",
+          "notes": "Alasan Pembatalan (Wajib)",
+          "confirm": "Batalkan"
+        }
+      },
+      "messages": {
+        "success": "Status transfer berhasil diperbarui",
+        "error": "Gagal memperbarui status"
+      }
+    },
+    "validation": {
+      "fromWarehouseRequired": "Gudang asal wajib dipilih",
+      "toWarehouseRequired": "Gudang tujuan wajib dipilih",
+      "sameWarehouse": "Gudang asal dan tujuan tidak boleh sama",
+      "notesMax": "Catatan maksimal 1000 karakter",
+      "itemsMin": "Minimal 1 produk dibutuhkan",
+      "variantRequired": "Variant wajib dipilih",
+      "reqQtyNonZero": "Jumlah permintaan tidak boleh nol",
+      "itemNotesMax": "Catatan item maksimal 500 karakter",
+      "statusRequired": "Status wajib ada",
+      "statusNotesMax": "Catatan status maksimal 500 karakter"
+    }
+  },
   "reports": {
     "sales": {
       "title": "Laporan Penjualan",

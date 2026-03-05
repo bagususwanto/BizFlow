@@ -2605,6 +2605,175 @@
       "statusNotesMax": "Status notes maximum is 500 characters"
     }
   },
+  "transfers": {
+    "title": "Stock Transfers",
+    "description": "Create and manage stock transfers across warehouses.",
+    "createLabel": "Create Transfer",
+    "searchPlaceholder": "Search by transfer number or notes...",
+    "failedLoad": "Failed to load stock transfers",
+    "summary": {
+      "total": {
+        "title": "Total Transfers",
+        "desc": "All records"
+      },
+      "draft": {
+        "title": "Drafts",
+        "desc": "Not yet sent"
+      },
+      "sent": {
+        "title": "Sent",
+        "desc": "In transit"
+      },
+      "received": {
+        "title": "Received",
+        "desc": "Stock updated"
+      },
+      "cancelled": {
+        "title": "Cancelled",
+        "desc": "Transfer stopped"
+      }
+    },
+    "columns": {
+      "selectAll": "Select all",
+      "selectRow": "Select row",
+      "transferNumber": "Number",
+      "date": "Date",
+      "fromWarehouse": "Origin",
+      "toWarehouse": "Destination",
+      "status": "Status",
+      "createdBy": "Created By",
+      "actions": "Actions",
+      "viewDetails": "View details",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "filters": {
+      "status": {
+        "label": "Status",
+        "draft": "Draft",
+        "sent": "Sent",
+        "received": "Received",
+        "cancelled": "Cancelled"
+      },
+      "warehouse": {
+        "label": "Warehouse",
+        "searchPlaceholder": "Search warehouse..."
+      }
+    },
+    "status": {
+      "draft": "Draft",
+      "sent": "Sent",
+      "received": "Received",
+      "cancelled": "Cancelled"
+    },
+    "actions": {
+      "viewMenu": "Open menu",
+      "edit": "Edit",
+      "viewDetails": "View Details",
+      "delete": "Delete"
+    },
+    "delete": {
+      "title": "Delete Stock Transfer?",
+      "desc1": "Are you sure you want to delete transfer ",
+      "desc2": "? This action cannot be undone.",
+      "confirmBtn": "Delete"
+    },
+    "create": {
+      "title": "Create Stock Transfer",
+      "subtitle": "Record a new inventory transfer between warehouses.",
+      "headerTitle": "Transfer Details",
+      "headerDesc": "Select source and destination warehouses.",
+      "itemsTitle": "Transfer Items",
+      "itemsDesc": "Select products to transfer.",
+      "form": {
+        "numberLabel": "Transfer Number",
+        "numberPlaceholder": "Leave blank to auto-generate",
+        "fromWarehouseLabel": "Origin Warehouse",
+        "toWarehouseLabel": "Destination Warehouse",
+        "notesLabel": "Notes",
+        "notesPlaceholder": "Add additional notes (optional)...",
+        "submitDraft": "Save as Draft",
+        "submitSend": "Send Transfer",
+        "searchProduct": "Search product to add..."
+      },
+      "itemsTable": {
+        "sku": "SKU",
+        "productName": "Product Name",
+        "stock": "Stock",
+        "reqQty": "Requested",
+        "notes": "Item Notes",
+        "actions": "Actions"
+      },
+      "messages": {
+        "success": "Stock transfer successfully created",
+        "error": "Failed to create stock transfer"
+      }
+    },
+    "detail": {
+      "title": "Transfer Details",
+      "subtitle": "Stock transfer complete information.",
+      "infoTitle": "Information",
+      "datesTitle": "Dates & Approval",
+      "itemsTitle": "Transferred Items",
+      "number": "Number",
+      "fromWarehouse": "Origin",
+      "toWarehouse": "Destination",
+      "status": "Status",
+      "notes": "Notes",
+      "date": "Date",
+      "createdBy": "Created By",
+      "sentBy": "Sent By",
+      "sentAt": "Sent At",
+      "receivedBy": "Received By",
+      "receivedAt": "Received At",
+      "summary": "Summary",
+      "totalItems": "Total Items",
+      "totalReqQty": "Total Requested",
+      "buttons": {
+        "back": "Back",
+        "edit": "Edit",
+        "send": "Send Now",
+        "receive": "Receive",
+        "cancel": "Cancel Transfer",
+        "delete": "Delete"
+      },
+      "dialogs": {
+        "send": {
+          "title": "Send Transfer?",
+          "desc": "This will deduct stock from the origin warehouse and mark it as sent.",
+          "confirm": "Send"
+        },
+        "receive": {
+          "title": "Receive Transfer?",
+          "desc": "Are you sure you want to receive this transfer? Stock at the destination warehouse will be updated immediately.",
+          "notes": "Receiving Notes (Optional)",
+          "confirm": "Receive"
+        },
+        "cancel": {
+          "title": "Cancel Transfer?",
+          "desc": "Are you sure you want to cancel this transfer? Stock will be reverted if already sent.",
+          "notes": "Cancellation Reason (Required)",
+          "confirm": "Cancel Transfer"
+        }
+      },
+      "messages": {
+        "success": "Transfer status successfully updated",
+        "error": "Failed to update status"
+      }
+    },
+    "validation": {
+      "fromWarehouseRequired": "Origin warehouse is required",
+      "toWarehouseRequired": "Destination warehouse is required",
+      "sameWarehouse": "Origin and destination warehouses cannot be the same",
+      "notesMax": "Notes maximum is 1000 characters",
+      "itemsMin": "At least one product item is required",
+      "variantRequired": "Variant is required",
+      "reqQtyNonZero": "Requested quantity cannot be zero",
+      "itemNotesMax": "Item notes maximum is 500 characters",
+      "statusRequired": "Status is required",
+      "statusNotesMax": "Status notes maximum is 500 characters"
+    }
+  },
   "reports": {
     "sales": {
       "title": "Sales Report",

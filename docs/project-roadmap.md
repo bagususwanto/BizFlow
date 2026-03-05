@@ -242,8 +242,8 @@ Referensi: [05-purchase-management.md](file:///Users/bagus/Project/personal/BizF
 | ---------------------------------------- | ------ | -------- |
 | **Adjustments** - Stock correction       | [x]    | High     |
 | **Adjustments** - Approval workflow      | [x]    | Medium   |
-| **Transfers** - Inter-warehouse transfer | [ ]    | Medium   |
-| **Transfers** - Transfer status workflow | [ ]    | Medium   |
+| **Transfers** - Inter-warehouse transfer | [x]    | Medium   |
+| **Transfers** - Transfer status workflow | [x]    | Medium   |
 | **Opname** - Stock counting              | [ ]    | High     |
 | **Opname** - Finalization & adjustment   | [ ]    | High     |
 | Batch/Lot tracking                       | [ ]    | Low      |

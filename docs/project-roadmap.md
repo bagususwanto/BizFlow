@@ -240,8 +240,8 @@ Referensi: [05-purchase-management.md](file:///Users/bagus/Project/personal/BizF
 
 | Task                                     | Status | Priority |
 | ---------------------------------------- | ------ | -------- |
-| **Adjustments** - Stock correction       | [ ]    | High     |
-| **Adjustments** - Approval workflow      | [ ]    | Medium   |
+| **Adjustments** - Stock correction       | [x]    | High     |
+| **Adjustments** - Approval workflow      | [x]    | Medium   |
 | **Transfers** - Inter-warehouse transfer | [ ]    | Medium   |
 | **Transfers** - Transfer status workflow | [ ]    | Medium   |
 | **Opname** - Stock counting              | [ ]    | High     |

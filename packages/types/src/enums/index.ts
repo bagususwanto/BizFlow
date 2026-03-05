@@ -51,6 +51,7 @@ export enum Module {
   GOODS_RECEIVE = 'goods-receive',
   INVENTORY = 'inventory',
   STOCK_ADJUSTMENTS = 'stock-adjustments',
+  STOCK_TRANSFERS = 'stock-transfers',
   FINANCE = 'finance',
   REPORTS = 'reports',
   SETTINGS = 'settings',
@@ -213,6 +214,13 @@ export const Permission = {
     Delete: 'stock-adjustments:delete',
     Approve: 'stock-adjustments:approve',
     Reject: 'stock-adjustments:reject',
+  },
+  StockTransfers: {
+    Read: 'stock-transfers:read',
+    Create: 'stock-transfers:create',
+    Update: 'stock-transfers:update',
+    Delete: 'stock-transfers:delete',
+    Approve: 'stock-transfers:approve',
   },
   Finance: {
     Read: 'finance:read',

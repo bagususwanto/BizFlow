@@ -23,3 +23,4 @@ export * from './purchase-return';
 export * from './supplier-payment';
 export * from './payment-term';
 export * from './stock-adjustment';
+export * from './stock-transfer';

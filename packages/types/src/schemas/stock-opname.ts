@@ -6,13 +6,11 @@ import { z } from 'zod';
 
 export const createStockOpnameSchema = z.object({
   opnameNumber: z.string().optional(),
-  warehouseId: z
-    .string()
-    .min(1, 'inventory.opname.validation.warehouseRequired'),
+  warehouseId: z.string().min(1, 'opname.validation.warehouseRequired'),
   categoryId: z.string().optional().nullable(),
   notes: z
     .string()
-    .max(1000, { message: 'inventory.opname.validation.notesMax' })
+    .max(1000, { message: 'opname.validation.notesMax' })
     .optional()
     .nullable(),
 });
@@ -21,13 +19,11 @@ export type CreateStockOpnameValues = z.infer<typeof createStockOpnameSchema>;
 
 // Schema for updating a single opname item's counted quantity
 const updateStockOpnameItemSchema = z.object({
-  opnameItemId: z.string().min(1, 'inventory.opname.validation.itemIdRequired'),
-  countedQty: z
-    .number()
-    .min(0, 'inventory.opname.validation.countedQtyNonNegative'),
+  opnameItemId: z.string().min(1, 'opname.validation.itemIdRequired'),
+  countedQty: z.number().min(0, 'opname.validation.countedQtyNonNegative'),
   notes: z
     .string()
-    .max(500, { message: 'inventory.opname.validation.itemNotesMax' })
+    .max(500, { message: 'opname.validation.itemNotesMax' })
     .optional()
     .nullable(),
 });
@@ -40,7 +36,7 @@ export type UpdateStockOpnameItemValues = z.infer<
 export const updateStockOpnameItemsSchema = z.object({
   items: z
     .array(updateStockOpnameItemSchema)
-    .min(1, 'inventory.opname.validation.itemsMin'),
+    .min(1, 'opname.validation.itemsMin'),
 });
 
 export type UpdateStockOpnameItemsValues = z.infer<
@@ -51,7 +47,7 @@ export type UpdateStockOpnameItemsValues = z.infer<
 export const finalizeStockOpnameSchema = z.object({
   notes: z
     .string()
-    .max(1000, { message: 'inventory.opname.validation.notesMax' })
+    .max(1000, { message: 'opname.validation.notesMax' })
     .optional()
     .nullable(),
 });
@@ -64,7 +60,7 @@ export type FinalizeStockOpnameValues = z.infer<
 export const cancelStockOpnameSchema = z.object({
   notes: z
     .string()
-    .max(1000, { message: 'inventory.opname.validation.notesMax' })
+    .max(1000, { message: 'opname.validation.notesMax' })
     .optional()
     .nullable(),
 });

@@ -140,8 +140,8 @@ function StockMovementsContent() {
             label: t('columns.product'),
             width: 30,
           },
-          { key: 'variant.name', label: 'Varian', width: 25 },
-          { key: 'variant.sku', label: 'SKU', width: 15 },
+          { key: 'variant.name', label: t('columns.variant'), width: 25 },
+          { key: 'variant.sku', label: t('columns.sku'), width: 15 },
           { key: 'warehouse.name', label: t('columns.warehouse'), width: 20 },
           {
             key: 'quantity',
@@ -150,7 +150,11 @@ function StockMovementsContent() {
             format: (val: any) =>
               `${val} ${movements.find((m) => m.id)?.variant?.product?.unit?.symbol || ''}`.trim(),
           },
-          { key: 'referenceType', label: 'Tipe Referensi', width: 18 },
+          {
+            key: 'referenceType',
+            label: t('columns.referenceType'),
+            width: 18,
+          },
           { key: 'referenceId', label: t('columns.reference'), width: 30 },
           { key: 'notes', label: t('columns.notes'), width: 30 },
         ],
@@ -203,9 +207,13 @@ function StockMovementsContent() {
           {
             key: 'warehouseId',
             label: t('filter.warehouseLabel'),
-            options:
-              warehouses?.map((w) => ({ label: w.name, value: w.id })) || [],
+            type: 'combobox',
+            options: warehouses.map((warehouse: any) => ({
+              label: warehouse.name,
+              value: warehouse.id,
+            })),
             width: 'w-full md:w-[200px]',
+            searchPlaceholder: t('filter.warehouseSearchPlaceholder'),
           },
           {
             key: 'type',

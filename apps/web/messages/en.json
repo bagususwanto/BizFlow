@@ -50,6 +50,7 @@
       "stock": "Stock",
       "movements": "Movements",
       "adjustments": "Adjustments",
+      "opname": "Stock Opname",
       "transfers": "Transfers",
       "stockOpname": "Stock Opname"
     },
@@ -1786,6 +1787,7 @@
       "exportMsg": "Exporting stock movements data...",
       "filter": {
         "warehouseLabel": "Warehouse",
+        "warehouseSearchPlaceholder": "Search warehouse...",
         "typeLabel": "Movement Type"
       },
       "movementTypes": {
@@ -1794,6 +1796,7 @@
         "USAGE": "Usage",
         "TRANSFER_IN": "Transfer In",
         "TRANSFER_OUT": "Transfer Out",
+        "TRANSFER": "Transfer",
         "ADJUSTMENT": "Adjustment",
         "OPNAME": "Stocktake",
         "RETURN": "Return",
@@ -1806,7 +1809,10 @@
         "date": "Date",
         "type": "Type",
         "product": "Product",
+        "variant": "Variant",
+        "sku": "SKU",
         "warehouse": "Warehouse",
+        "referenceType": "Reference Type",
         "reference": "Reference",
         "quantity": "Quantity",
         "notes": "Notes"
@@ -2774,6 +2780,155 @@
       "itemNotesMax": "Item notes maximum is 500 characters",
       "statusRequired": "Status is required",
       "statusNotesMax": "Status notes maximum is 500 characters"
+    }
+  },
+  "opname": {
+    "title": "Stock Opname",
+    "description": "Perform physical stock counts and automatically adjust system quantities.",
+    "createLabel": "Create Opname",
+    "searchPlaceholder": "Search by opname number or notes...",
+    "failedLoad": "Failed to load stock opnames",
+    "summary": {
+      "total": {
+        "title": "Total Opnames",
+        "desc": "All records"
+      },
+      "inProgress": {
+        "title": "In Progress",
+        "desc": "Currently counting"
+      },
+      "finalized": {
+        "title": "Finalized",
+        "desc": "Stock adjusted"
+      },
+      "cancelled": {
+        "title": "Cancelled",
+        "desc": "Opname voided"
+      }
+    },
+    "columns": {
+      "selectAll": "Select all",
+      "selectRow": "Select row",
+      "opnameNumber": "Number",
+      "date": "Date",
+      "warehouse": "Warehouse",
+      "status": "Status",
+      "createdBy": "Created By",
+      "actions": "Actions",
+      "viewDetails": "View details",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "filters": {
+      "status": {
+        "label": "Status",
+        "in_progress": "In Progress",
+        "finalized": "Finalized",
+        "cancelled": "Cancelled"
+      },
+      "warehouse": {
+        "label": "Warehouse",
+        "searchPlaceholder": "Search warehouse..."
+      }
+    },
+    "status": {
+      "in_progress": "In Progress",
+      "finalized": "Finalized",
+      "cancelled": "Cancelled"
+    },
+    "actions": {
+      "viewMenu": "Open menu",
+      "edit": "Edit",
+      "viewDetails": "View Details",
+      "delete": "Delete"
+    },
+    "delete": {
+      "title": "Delete Stock Opname?",
+      "desc1": "Are you sure you want to delete opname ",
+      "desc2": "? This action cannot be undone.",
+      "confirmBtn": "Delete"
+    },
+    "create": {
+      "title": "Create Stock Opname",
+      "subtitle": "Start a new physical stock count for a warehouse.",
+      "headerTitle": "Opname Details",
+      "headerDesc": "Select a warehouse to begin taking stock.",
+      "form": {
+        "numberLabel": "Opname Number",
+        "numberPlaceholder": "Leave blank to auto-generate",
+        "warehouseLabel": "Warehouse",
+        "categoryLabel": "Category (Optional)",
+        "notesLabel": "Notes",
+        "notesPlaceholder": "Add additional notes (optional)...",
+        "submit": "Create Opname"
+      },
+      "messages": {
+        "success": "Stock opname successfully created",
+        "error": "Failed to create stock opname"
+      }
+    },
+    "detail": {
+      "title": "Opname Details",
+      "subtitle": "Stock physical count and reconciliation.",
+      "infoTitle": "Information",
+      "datesTitle": "Dates & Approval",
+      "itemsTitle": "Counted Items",
+      "number": "Number",
+      "warehouse": "Warehouse",
+      "category": "Category",
+      "status": "Status",
+      "notes": "Notes",
+      "date": "Date",
+      "createdBy": "Created By",
+      "finalizedBy": "Finalized By",
+      "finalizedAt": "Finalized At",
+      "cancelledBy": "Cancelled By",
+      "cancelledAt": "Cancelled At",
+      "summary": "Summary",
+      "totalItems": "Total Items",
+      "buttons": {
+        "back": "Back",
+        "edit": "Edit",
+        "finalize": "Finalize",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "saveCount": "Save Count"
+      },
+      "dialogs": {
+        "finalize": {
+          "title": "Finalize Opname?",
+          "desc": "Are you sure you want to finalize this opname? This will automatically adjust system stock for items with quantity differences.",
+          "notes": "Finalization Notes (Optional)",
+          "confirm": "Finalize & Adjust Stock"
+        },
+        "cancel": {
+          "title": "Cancel Opname?",
+          "desc": "Are you sure you want to cancel this opname? No stock adjustments will be made.",
+          "notes": "Cancellation Reason (Optional)",
+          "confirm": "Cancel Opname"
+        }
+      },
+      "itemsTable": {
+        "product": "Product",
+        "sku": "SKU",
+        "systemQty": "System Qty",
+        "countedQty": "Counted Qty",
+        "diffQty": "Diff.",
+        "notes": "Item Notes"
+      },
+      "messages": {
+        "success": "Opname status successfully updated",
+        "error": "Failed to update status",
+        "itemsUpdated": "Counted quantities saved"
+      }
+    },
+    "validation": {
+      "warehouseRequired": "Warehouse is required",
+      "notesMax": "Notes maximum is 1000 characters",
+      "itemIdRequired": "Item ID is required",
+      "countedQtyNonNegative": "Counted quantity cannot be negative",
+      "itemNotesMax": "Item notes maximum is 500 characters",
+      "itemsMin": "At least one item must be updated"
     }
   },
   "reports": {

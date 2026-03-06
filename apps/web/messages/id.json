@@ -51,6 +51,7 @@
       "movements": "Pergerakan",
       "adjustments": "Penyesuaian",
       "transfers": "Pindah Gudang",
+      "opname": "Stock Opname",
       "stockOpname": "Stok Opname"
     },
     "sales": {
@@ -1786,6 +1787,7 @@
       "exportMsg": "Mengekspor data riwayat stok...",
       "filter": {
         "warehouseLabel": "Gudang",
+        "warehouseSearchPlaceholder": "Cari gudang...",
         "typeLabel": "Tipe Pergerakan"
       },
       "movementTypes": {
@@ -1794,6 +1796,7 @@
         "USAGE": "Pemakaian",
         "TRANSFER_IN": "Transfer Masuk",
         "TRANSFER_OUT": "Transfer Keluar",
+        "TRANSFER": "Transfer",
         "ADJUSTMENT": "Adjustment",
         "OPNAME": "Opname",
         "RETURN": "Retur",
@@ -1806,7 +1809,10 @@
         "date": "Tanggal",
         "type": "Tipe",
         "product": "Produk",
+        "variant": "Varian",
+        "sku": "SKU",
         "warehouse": "Gudang",
+        "referenceType": "Tipe Referensi",
         "reference": "Referensi",
         "quantity": "Jumlah",
         "notes": "Catatan"
@@ -2774,6 +2780,155 @@
       "itemNotesMax": "Catatan item maksimal 500 karakter",
       "statusRequired": "Status wajib ada",
       "statusNotesMax": "Catatan status maksimal 500 karakter"
+    }
+  },
+  "opname": {
+    "title": "Stock Opname",
+    "description": "Lakukan perhitungan fisik stok dan sesuaikan kuantitas sistem secara otomatis.",
+    "createLabel": "Buat Opname",
+    "searchPlaceholder": "Cari nomor opname atau catatan...",
+    "failedLoad": "Gagal memuat daftar stock opname",
+    "summary": {
+      "total": {
+        "title": "Total Opname",
+        "desc": "Semua catatan"
+      },
+      "inProgress": {
+        "title": "Sedang Berjalan",
+        "desc": "Sedang dihitung"
+      },
+      "finalized": {
+        "title": "Selesai",
+        "desc": "Stok disesuaikan"
+      },
+      "cancelled": {
+        "title": "Dibatalkan",
+        "desc": "Opname dibatalkan"
+      }
+    },
+    "columns": {
+      "selectAll": "Pilih semua",
+      "selectRow": "Pilih baris",
+      "opnameNumber": "Nomor",
+      "date": "Tanggal",
+      "warehouse": "Gudang",
+      "status": "Status",
+      "createdBy": "Dibuat Oleh",
+      "actions": "Aksi",
+      "viewDetails": "Lihat detail",
+      "edit": "Ubah",
+      "delete": "Hapus"
+    },
+    "filters": {
+      "status": {
+        "label": "Status",
+        "in_progress": "Sedang Berjalan",
+        "finalized": "Selesai",
+        "cancelled": "Dibatalkan"
+      },
+      "warehouse": {
+        "label": "Gudang",
+        "searchPlaceholder": "Cari gudang..."
+      }
+    },
+    "status": {
+      "in_progress": "Berjalan",
+      "finalized": "Selesai",
+      "cancelled": "Dibatalkan"
+    },
+    "actions": {
+      "viewMenu": "Buka menu",
+      "edit": "Edit",
+      "viewDetails": "Lihat Detail",
+      "delete": "Hapus"
+    },
+    "delete": {
+      "title": "Hapus Stock Opname?",
+      "desc1": "Apakah Anda yakin ingin menghapus opname ",
+      "desc2": "? Tindakan ini tidak dapat dibatalkan.",
+      "confirmBtn": "Hapus"
+    },
+    "create": {
+      "title": "Buat Stock Opname",
+      "subtitle": "Mulai perhitungan fisik stok baru untuk gudang.",
+      "headerTitle": "Detail Opname",
+      "headerDesc": "Pilih gudang untuk mulai menghitung stok.",
+      "form": {
+        "numberLabel": "Nomor Opname",
+        "numberPlaceholder": "Kosongkan untuk auto-generate",
+        "warehouseLabel": "Gudang",
+        "categoryLabel": "Kategori (Opsional)",
+        "notesLabel": "Catatan Tambahan",
+        "notesPlaceholder": "Tambahkan catatan (opsional)...",
+        "submit": "Buat Opname"
+      },
+      "messages": {
+        "success": "Stock opname berhasil dibuat",
+        "error": "Gagal membuat stock opname"
+      }
+    },
+    "detail": {
+      "title": "Detail Opname",
+      "subtitle": "Informasi perhitungan fisik dan rekonsiliasi stok.",
+      "infoTitle": "Informasi",
+      "datesTitle": "Tanggal & Status",
+      "itemsTitle": "Item Dihitung",
+      "number": "Nomor",
+      "warehouse": "Gudang",
+      "category": "Kategori",
+      "status": "Status",
+      "notes": "Catatan",
+      "date": "Tanggal",
+      "createdBy": "Dibuat Oleh",
+      "finalizedBy": "Diselesaikan Oleh",
+      "finalizedAt": "Diselesaikan Pada",
+      "cancelledBy": "Dibatalkan Oleh",
+      "cancelledAt": "Dibatalkan Pada",
+      "summary": "Ringkasan",
+      "totalItems": "Total Item",
+      "buttons": {
+        "back": "Kembali",
+        "edit": "Edit",
+        "finalize": "Selesaikan",
+        "cancel": "Batalkan",
+        "delete": "Hapus",
+        "saveCount": "Simpan Hitungan"
+      },
+      "dialogs": {
+        "finalize": {
+          "title": "Selesaikan Opname?",
+          "desc": "Apakah Anda yakin ingin menyelesaikan opname ini? Ini akan otomatis menyesuaikan stok sistem untuk item dengan perbedaan kuantitas.",
+          "notes": "Catatan Penyelesaian (Opsional)",
+          "confirm": "Selesaikan & Sesuaikan Stok"
+        },
+        "cancel": {
+          "title": "Batalkan Opname?",
+          "desc": "Apakah Anda yakin ingin membatalkan opname ini? Tidak akan ada penyesuaian stok yang dilakukan.",
+          "notes": "Alasan Pembatalan (Opsional)",
+          "confirm": "Batalkan Opname"
+        }
+      },
+      "itemsTable": {
+        "product": "Produk",
+        "sku": "SKU",
+        "systemQty": "Qty Sistem",
+        "countedQty": "Qty Dihitung",
+        "diffQty": "Selisih",
+        "notes": "Catatan Item"
+      },
+      "messages": {
+        "success": "Status opname berhasil diperbarui",
+        "error": "Gagal memperbarui status",
+        "itemsUpdated": "Kuantitas yang dihitung berhasil disimpan"
+      }
+    },
+    "validation": {
+      "warehouseRequired": "Gudang wajib dipilih",
+      "notesMax": "Catatan maksimal 1000 karakter",
+      "itemIdRequired": "Item ID wajib ada",
+      "countedQtyNonNegative": "Kuantitas yang dihitung tidak boleh negatif",
+      "itemNotesMax": "Catatan item maksimal 500 karakter",
+      "itemsMin": "Pilih minimal 1 item untuk diubah"
     }
   },
   "reports": {

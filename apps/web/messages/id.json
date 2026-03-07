@@ -18,6 +18,7 @@
     "historyPurchase": "Riwayat Pembelian",
     "day": "Hari",
     "default": "Bawaan",
+    "optional": "Opsional",
     "status": {
       "label": "Status",
       "active": "Aktif",

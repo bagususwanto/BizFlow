@@ -45,24 +45,8 @@ export interface StockOpnameItemDetail {
 }
 
 export interface StockOpnameDetail
-  extends Omit<
-    StockOpname,
-    | 'items'
-    | 'finalizedBy'
-    | 'cancelledBy'
-    | 'creator'
-    | 'warehouse'
-    | 'category'
-  > {
+  extends Omit<StockOpname, 'items' | 'creator' | 'warehouse' | 'category'> {
   creator?: {
-    id: string;
-    name: string;
-  };
-  finalizedBy?: {
-    id: string;
-    name: string;
-  };
-  cancelledBy?: {
     id: string;
     name: string;
   };

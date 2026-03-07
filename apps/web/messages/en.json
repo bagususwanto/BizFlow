@@ -18,6 +18,7 @@
     "historyPurchase": "Purchase History",
     "day": "Days",
     "default": "Default",
+    "optional": "Optional",
     "status": {
       "label": "Status",
       "active": "Active",

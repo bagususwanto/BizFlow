@@ -78,6 +78,8 @@ model User {
   purchaseReturns     PurchaseReturn[] @relation("PurchaseReturnCreator")
   approvedReturns     PurchaseReturn[] @relation("PurchaseReturnApprover")
   supplierPayments    SupplierPayment[]
+  stockOpnames        StockOpname[]    @relation("StockOpnameCreator")
+  finalizedOpnames    StockOpname[]    @relation("StockOpnameFinalizer")
 
   @@index([username])
   @@index([roleId])
@@ -436,8 +438,10 @@ model StockOpname {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
-  warehouse Warehouse         @relation(fields: [warehouseId], references: [id])
-  items     StockOpnameItem[]
+  warehouse    Warehouse         @relation(fields: [warehouseId], references: [id])
+  items        StockOpnameItem[]
+  creator      User              @relation("StockOpnameCreator", fields: [createdBy], references: [id])
+  finalizer    User?             @relation("StockOpnameFinalizer", fields: [finalizedBy], references: [id])
 
   @@index([warehouseId])
   @@index([status])

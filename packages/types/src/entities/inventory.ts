@@ -78,6 +78,8 @@ export interface StockOpname extends BaseEntity {
   // Relations
   warehouse?: Warehouse;
   items?: StockOpnameItem[];
+  creator?: { id: string; name: string };
+  finalizer?: { id: string; name: string };
 }
 
 export interface StockOpnameItem {

@@ -304,7 +304,9 @@ export default function StockOpnameDetailPage() {
                   <span className="text-muted-foreground">
                     {t('finalizedBy')}:
                   </span>
-                  <span>{opname.finalizedBy?.name || '-'}</span>
+                  <span>
+                    {opname.finalizer?.name || opname.finalizedBy || '-'}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">
@@ -321,7 +323,7 @@ export default function StockOpnameDetailPage() {
                   <span className="text-muted-foreground">
                     {t('cancelledBy')}:
                   </span>
-                  <span>{opname.cancelledBy?.name || '-'}</span>
+                  <span>{opname.creator?.name || '-'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">
@@ -379,12 +381,20 @@ export default function StockOpnameDetailPage() {
                   </TableHead>
                   <TableHead className="w-[150px] text-right">
                     {t('itemsTable.countedQty')}
+                    {isEditable && (
+                      <span className="text-destructive ml-1">*</span>
+                    )}
                   </TableHead>
                   <TableHead className="text-right">
                     {t('itemsTable.diffQty')}
                   </TableHead>
                   <TableHead className="w-[200px]">
                     {t('itemsTable.notes')}
+                    {isEditable && (
+                      <span className="text-muted-foreground font-normal ml-1 text-xs">
+                        ({tCommon('optional') || 'Opsional'})
+                      </span>
+                    )}
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -501,7 +511,10 @@ export default function StockOpnameDetailPage() {
           </AlertDialogHeader>
           <div className="py-4">
             <label className="text-sm font-medium mb-1 block">
-              {t('dialogs.finalize.notes')}
+              {t('dialogs.finalize.notes')}{' '}
+              <span className="text-muted-foreground font-normal text-xs">
+                ({tCommon('optional') || 'Opsional'})
+              </span>
             </label>
             <Textarea
               value={finalizeNotes}
@@ -532,7 +545,10 @@ export default function StockOpnameDetailPage() {
           </AlertDialogHeader>
           <div className="py-4">
             <label className="text-sm font-medium mb-1 block">
-              {t('dialogs.cancel.notes')}
+              {t('dialogs.cancel.notes')}{' '}
+              <span className="text-muted-foreground font-normal text-xs">
+                ({tCommon('optional') || 'Opsional'})
+              </span>
             </label>
             <Textarea
               value={cancelNotes}

@@ -95,6 +95,12 @@ export class StockOpnameService {
               items: true,
             },
           },
+          creator: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
         },
         orderBy,
         skip,
@@ -143,6 +149,18 @@ export class StockOpnameService {
       where: { id },
       include: {
         warehouse: true,
+        creator: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        finalizer: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
         items: {
           include: {
             variant: {

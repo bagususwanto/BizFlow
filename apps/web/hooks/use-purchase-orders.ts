@@ -38,8 +38,9 @@ export function useCreatePurchaseOrder() {
   return useMutation({
     mutationFn: (data: CreatePurchaseOrderValues) =>
       purchaseOrdersService.create(data),
-    onSuccess: async () => {
-      toast.success('Purchase Order berhasil dibuat');
+    onSuccess: async (response) => {
+        const message = (response as any).data?.message || 'Purchase Order berhasil dibuat';
+      toast.success(message);
       await queryClient.invalidateQueries({
         queryKey: ['purchase-orders'],
         refetchType: 'all',
@@ -60,8 +61,9 @@ export function useUpdatePurchaseOrder(id: string) {
   return useMutation({
     mutationFn: (data: UpdatePurchaseOrderValues) =>
       purchaseOrdersService.update(id, data),
-    onSuccess: async () => {
-      toast.success('Purchase Order berhasil diperbarui');
+    onSuccess: async (response) => {
+        const message = (response as any).data?.message || 'Purchase Order berhasil diperbarui';
+      toast.success(message);
       await queryClient.invalidateQueries({
         queryKey: ['purchase-orders'],
         refetchType: 'all',
@@ -85,8 +87,9 @@ export function useDeletePurchaseOrder() {
 
   return useMutation({
     mutationFn: (id: string) => purchaseOrdersService.delete(id),
-    onSuccess: async () => {
-      toast.success('Purchase Order berhasil dihapus');
+    onSuccess: async (response) => {
+        const message = (response as any).data?.message || 'Purchase Order berhasil dihapus';
+      toast.success(message);
       await queryClient.invalidateQueries({
         queryKey: ['purchase-orders'],
         refetchType: 'all',
@@ -105,8 +108,9 @@ export function useBulkDeletePurchaseOrders() {
 
   return useMutation({
     mutationFn: (ids: string[]) => purchaseOrdersService.bulkDelete(ids),
-    onSuccess: async () => {
-      toast.success('Purchase Orders berhasil dihapus');
+    onSuccess: async (response) => {
+        const message = (response as any).data?.message || 'Purchase Orders berhasil dihapus';
+      toast.success(message);
       await queryClient.invalidateQueries({
         queryKey: ['purchase-orders'],
         refetchType: 'all',
@@ -126,8 +130,9 @@ export function useUpdatePurchaseOrderStatus(id: string) {
   return useMutation({
     mutationFn: (data: UpdatePurchaseOrderStatusValues) =>
       purchaseOrdersService.updateStatus(id, data),
-    onSuccess: async () => {
-      toast.success('Status Purchase Order berhasil diperbarui');
+    onSuccess: async (response) => {
+        const message = (response as any).data?.message || 'Status Purchase Order berhasil diperbarui';
+      toast.success(message);
       await queryClient.invalidateQueries({
         queryKey: ['purchase-orders'],
         refetchType: 'all',
@@ -161,12 +166,13 @@ export function useExecuteAutoReorder() {
     mutationFn: (variantIds: string[]) =>
       purchaseOrdersService.executeAutoReorder(variantIds),
     onSuccess: async (data) => {
+        const message = (data as any).data?.message || `Auto-Reorder berhasil! ${data.createdOrders} Draft PO dibuat.${
+                  data.skippedVariants > 0
+                    ? ` ${data.skippedVariants} varian dilewati karena tidak ada riwayat pemasok.`
+                    : ''
+                }`;
       toast.success(
-        `Auto-Reorder berhasil! ${data.createdOrders} Draft PO dibuat.${
-          data.skippedVariants > 0
-            ? ` ${data.skippedVariants} varian dilewati karena tidak ada riwayat pemasok.`
-            : ''
-        }`,
+        message,
       );
       await queryClient.invalidateQueries({
         queryKey: ['purchase-orders'],

@@ -40,12 +40,13 @@ export function useCreateSupplierPayment() {
   return useMutation({
     mutationFn: (data: CreateSupplierPaymentValues) =>
       supplierPaymentsService.create(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: supplierPaymentKeys.lists() });
-      toast.success('Pembayaran berhasil dibuat');
+        const message = (response as any).data?.message || 'Pembayaran berhasil dibuat';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Gagal membuat pembayaran');
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -66,12 +67,11 @@ export function useUpdateSupplierPayment() {
       queryClient.invalidateQueries({
         queryKey: supplierPaymentKeys.detail(data.id),
       });
-      toast.success('Pembayaran berhasil diperbarui');
+        const message = (data as any).data?.message || 'Pembayaran berhasil diperbarui';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Gagal memperbarui pembayaran',
-      );
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -81,14 +81,13 @@ export function useDeleteSupplierPayment() {
 
   return useMutation({
     mutationFn: (id: string) => supplierPaymentsService.delete(id),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: supplierPaymentKeys.lists() });
-      toast.success('Pembayaran berhasil dihapus');
+        const message = (response as any).data?.message || 'Pembayaran berhasil dihapus';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Gagal menghapus pembayaran',
-      );
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -98,14 +97,13 @@ export function useBulkDeleteSupplierPayments() {
 
   return useMutation({
     mutationFn: (ids: string[]) => supplierPaymentsService.bulkDelete(ids),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: supplierPaymentKeys.lists() });
-      toast.success('Pembayaran berhasil dihapus');
+        const message = (response as any).data?.message || 'Pembayaran berhasil dihapus';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Gagal menghapus pembayaran',
-      );
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }

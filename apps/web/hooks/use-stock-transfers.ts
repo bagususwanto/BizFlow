@@ -44,14 +44,13 @@ export function useCreateStockTransfer() {
   return useMutation({
     mutationFn: (data: CreateStockTransferValues) =>
       stockTransfersService.create(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: stockTransferKeys.lists() });
-      toast.success('Stock Transfer berhasil dibuat');
+        const message = (response as any).data?.message || 'Stock Transfer berhasil dibuat';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Gagal membuat stock transfer',
-      );
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -72,12 +71,11 @@ export function useUpdateStockTransfer() {
       queryClient.invalidateQueries({
         queryKey: stockTransferKeys.detail(data.id),
       });
-      toast.success('Stock Transfer berhasil diperbarui');
+        const message = (data as any).data?.message || 'Stock Transfer berhasil diperbarui';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Gagal memperbarui stock transfer',
-      );
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -98,10 +96,11 @@ export function useUpdateStockTransferStatus() {
       queryClient.invalidateQueries({
         queryKey: stockTransferKeys.detail(data.id),
       });
-      toast.success('Status Stock Transfer berhasil diperbarui');
+        const message = (data as any).data?.message || 'Status Stock Transfer berhasil diperbarui';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Gagal memperbarui status');
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -111,14 +110,13 @@ export function useDeleteStockTransfer() {
 
   return useMutation({
     mutationFn: (id: string) => stockTransfersService.delete(id),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: stockTransferKeys.lists() });
-      toast.success('Stock Transfer berhasil dihapus');
+        const message = (response as any).data?.message || 'Stock Transfer berhasil dihapus';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Gagal menghapus stock transfer',
-      );
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -128,14 +126,13 @@ export function useBulkDeleteStockTransfers() {
 
   return useMutation({
     mutationFn: (ids: string[]) => stockTransfersService.bulkDelete(ids),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: stockTransferKeys.lists() });
-      toast.success('Stock Transfer berhasil dihapus');
+        const message = (response as any).data?.message || 'Stock Transfer berhasil dihapus';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Gagal menghapus stock transfer',
-      );
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }

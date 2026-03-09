@@ -54,8 +54,9 @@ export function useCreateCategory() {
 
   return useMutation({
     mutationFn: categoriesService.create,
-    onSuccess: () => {
-      toast.success(t('createSuccess'));
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || t('createSuccess');
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['categories'] });
       router.back();
     },
@@ -72,8 +73,9 @@ export function useUpdateCategory(id: string) {
 
   return useMutation({
     mutationFn: (data: any) => categoriesService.update(id, data),
-    onSuccess: () => {
-      toast.success(t('updateSuccess'));
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || t('updateSuccess');
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['categories'] });
       queryClient.invalidateQueries({ queryKey: ['category', id] });
       router.back();

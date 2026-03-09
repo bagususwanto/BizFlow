@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import { authService } from '@/services/auth.service';
 import { useAuthStore } from '@/stores/auth.store';
 import type { LoginRequest, LoginResponse } from '@bizflow/types';
+import { toast } from 'sonner';
 
 export function useLoginMutation() {
   const router = useRouter();
@@ -38,12 +39,8 @@ export function useLogoutMutation() {
       queryClient.clear(); // Clear all queries
       router.push('/login');
     },
-    onError: (error) => {
-      console.error('Logout failed:', error);
-      // Force logout even if API call fails
-      logout();
-      queryClient.clear();
-      router.push('/login');
+    onError: (error: Error) => {
+      toast.error(error.message);
     },
   });
 }

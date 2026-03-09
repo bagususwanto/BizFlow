@@ -75,8 +75,9 @@ export function useCreateWarehouse() {
   return useMutation({
     mutationFn: (data: Parameters<typeof warehousesService.create>[0]) =>
       warehousesService.create(data),
-    onSuccess: () => {
-      toast.success(t('createSuccess'));
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || t('createSuccess');
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['warehouses'] });
     },
     onError: (error: Error) => {
@@ -92,8 +93,9 @@ export function useUpdateWarehouse(id: string) {
   return useMutation({
     mutationFn: (data: Parameters<typeof warehousesService.update>[1]) =>
       warehousesService.update(id, data),
-    onSuccess: () => {
-      toast.success(t('updateSuccess'));
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || t('updateSuccess');
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['warehouses'] });
       queryClient.invalidateQueries({ queryKey: ['warehouse', id] });
     },

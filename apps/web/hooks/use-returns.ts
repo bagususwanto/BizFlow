@@ -33,15 +33,16 @@ export function useCreateReturn() {
     mutationFn: (data: CreateReturnValues) =>
       posReturnsService.createReturn(data),
     onSuccess: (data) => {
-      toast.success('Retur berhasil dibuat');
+        const message = (data as any).data?.message || 'Retur berhasil dibuat';
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['pos', 'returns'] });
       // Redirect to detail page
       if (data?.data?.id) {
         router.push(`/pos/returns/${data.data.id}`);
       }
     },
-    onError: (error: any) => {
-      toast.error(error.message || 'Gagal membuat retur');
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -53,14 +54,15 @@ export function useApproveReturn() {
     mutationFn: ({ id, data }: { id: string; data?: ApproveReturnValues }) =>
       posReturnsService.approveReturn(id, data),
     onSuccess: (_, variables) => {
-      toast.success('Retur disetujui');
+        const message = (_ as any).data?.message || 'Retur disetujui';
+      toast.success(message);
       queryClient.invalidateQueries({
         queryKey: ['pos', 'returns', variables.id],
       });
       queryClient.invalidateQueries({ queryKey: ['pos', 'returns'] });
     },
-    onError: (error: any) => {
-      toast.error(error.message || 'Gagal menyetujui retur');
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -72,14 +74,15 @@ export function useRejectReturn() {
     mutationFn: ({ id, data }: { id: string; data: RejectReturnValues }) =>
       posReturnsService.rejectReturn(id, data),
     onSuccess: (_, variables) => {
-      toast.success('Retur ditolak');
+        const message = (_ as any).data?.message || 'Retur ditolak';
+      toast.success(message);
       queryClient.invalidateQueries({
         queryKey: ['pos', 'returns', variables.id],
       });
       queryClient.invalidateQueries({ queryKey: ['pos', 'returns'] });
     },
-    onError: (error: any) => {
-      toast.error(error.message || 'Gagal menolak retur');
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -96,14 +99,15 @@ export function useProcessRefund() {
       data: ProcessReturnRefundValues;
     }) => posReturnsService.processRefund(id, data),
     onSuccess: (_, variables) => {
-      toast.success('Refund berhasil diproses');
+        const message = (_ as any).data?.message || 'Refund berhasil diproses';
+      toast.success(message);
       queryClient.invalidateQueries({
         queryKey: ['pos', 'returns', variables.id],
       });
       queryClient.invalidateQueries({ queryKey: ['pos', 'returns'] });
     },
-    onError: (error: any) => {
-      toast.error(error.message || 'Gagal memproses refund');
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }

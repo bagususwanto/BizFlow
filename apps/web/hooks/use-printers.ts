@@ -17,8 +17,9 @@ export function usePrinters(params?: QueryPrintersValues) {
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => printersService.delete(id),
-    onSuccess: () => {
-      toast.success('Printer berhasil dihapus');
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || 'Printer berhasil dihapus';
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['printers'] });
     },
     onError: (error: Error) => {
@@ -28,8 +29,9 @@ export function usePrinters(params?: QueryPrintersValues) {
 
   const testPrintMutation = useMutation({
     mutationFn: (id: string) => printersService.testPrint(id),
-    onSuccess: () => {
-      toast.success('Test print berhasil dikirim');
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || 'Test print berhasil dikirim';
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -38,8 +40,9 @@ export function usePrinters(params?: QueryPrintersValues) {
 
   const openDrawerMutation = useMutation({
     mutationFn: (id: string) => printersService.openCashDrawer(id),
-    onSuccess: () => {
-      toast.success('Cash drawer berhasil dibuka');
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || 'Cash drawer berhasil dibuka';
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -49,8 +52,9 @@ export function usePrinters(params?: QueryPrintersValues) {
   const bulkDeleteMutation = useMutation({
     mutationFn: (ids: string[]) => printersService.bulkDelete(ids),
     onSuccess: (data) => {
+        const message = (data as any).data?.message || (data as any).message || 'Printer terpilih berhasil dihapus';
       toast.success(
-        (data as any).message || 'Printer terpilih berhasil dihapus',
+        message,
       );
       queryClient.invalidateQueries({ queryKey: ['printers'] });
     },
@@ -92,12 +96,13 @@ export function useCreatePrinter() {
 
   return useMutation({
     mutationFn: (data: any) => printersService.create(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ['printers'] });
-      toast.success('Printer berhasil dibuat');
+        const message = (response as any).data?.message || 'Printer berhasil dibuat';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(error instanceof Error ? error.message : 'Terjadi kesalahan');
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -107,13 +112,14 @@ export function useUpdatePrinter(id: string) {
 
   return useMutation({
     mutationFn: (data: any) => printersService.update(id, data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ['printers'] });
       queryClient.invalidateQueries({ queryKey: ['printer', id] });
-      toast.success('Printer berhasil diperbarui');
+        const message = (response as any).data?.message || 'Printer berhasil diperbarui';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(error instanceof Error ? error.message : 'Terjadi kesalahan');
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -127,11 +133,12 @@ export function usePrintTransaction() {
       printerId: string;
       transactionId: string;
     }) => printersService.printTransaction(printerId, transactionId),
-    onSuccess: () => {
-      toast.success('Print job berhasil dikirim');
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || 'Print job berhasil dikirim';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(error instanceof Error ? error.message : 'Gagal mencetak');
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }

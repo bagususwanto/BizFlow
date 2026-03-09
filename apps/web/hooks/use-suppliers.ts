@@ -72,8 +72,9 @@ export function useCreateSupplier() {
   return useMutation({
     mutationFn: (data: Parameters<typeof suppliersService.create>[0]) =>
       suppliersService.create(data),
-    onSuccess: () => {
-      toast.success(t('createSuccess'));
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || t('createSuccess');
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['suppliers'] });
     },
     onError: (error: Error) => {
@@ -89,8 +90,9 @@ export function useUpdateSupplier(id: string) {
   return useMutation({
     mutationFn: (data: Parameters<typeof suppliersService.update>[1]) =>
       suppliersService.update(id, data),
-    onSuccess: () => {
-      toast.success(t('updateSuccess'));
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || t('updateSuccess');
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['suppliers'] });
       queryClient.invalidateQueries({ queryKey: ['supplier', id] });
     },

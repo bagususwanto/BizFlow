@@ -73,8 +73,9 @@ export function useCreateProduct() {
 
   return useMutation({
     mutationFn: productsService.create,
-    onSuccess: () => {
-      toast.success('Produk berhasil dibuat');
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || 'Produk berhasil dibuat';
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['products'] });
       router.back();
     },
@@ -90,8 +91,9 @@ export function useUpdateProduct(id: string) {
 
   return useMutation({
     mutationFn: (data: any) => productsService.update(id, data),
-    onSuccess: () => {
-      toast.success('Produk berhasil diperbarui');
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || 'Produk berhasil diperbarui';
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['products'] });
       queryClient.invalidateQueries({ queryKey: ['product', id] });
       router.back();
@@ -162,8 +164,9 @@ export function useCreateVariant(productId: string) {
   return useMutation({
     mutationFn: (data: CreateVariantValues) =>
       productsService.createVariant(productId, data),
-    onSuccess: () => {
-      toast.success('Varian berhasil dibuat');
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || 'Varian berhasil dibuat';
+      toast.success(message);
       queryClient.invalidateQueries({
         queryKey: ['products', productId, 'variants'],
       });
@@ -180,8 +183,9 @@ export function useUpdateVariant(productId: string) {
   return useMutation({
     mutationFn: (data: { id: string; values: UpdateVariantValues }) =>
       productsService.updateVariant(data.id, data.values),
-    onSuccess: () => {
-      toast.success('Varian berhasil diperbarui');
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || 'Varian berhasil diperbarui';
+      toast.success(message);
       queryClient.invalidateQueries({
         queryKey: ['products', productId, 'variants'],
       });
@@ -197,14 +201,15 @@ export function useDeleteVariant(productId: string) {
 
   return useMutation({
     mutationFn: (id: string) => productsService.deleteVariant(id),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({
         queryKey: ['products', productId, 'variants'],
       });
-      toast.success('Varian berhasil dihapus');
+        const message = (response as any).data?.message || 'Varian berhasil dihapus';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Gagal menghapus variant');
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -235,8 +240,9 @@ export function useCreatePriceLevel(productId: string) {
   return useMutation({
     mutationFn: (data: CreatePriceLevelValues) =>
       productsService.createPriceLevel(productId, data),
-    onSuccess: () => {
-      toast.success('Level harga berhasil dibuat');
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || 'Level harga berhasil dibuat';
+      toast.success(message);
       queryClient.invalidateQueries({
         queryKey: ['products', productId, 'price-levels'],
       });
@@ -253,8 +259,9 @@ export function useUpdatePriceLevel(productId: string) {
   return useMutation({
     mutationFn: (data: { id: string; values: UpdatePriceLevelValues }) =>
       productsService.updatePriceLevel(data.id, data.values),
-    onSuccess: () => {
-      toast.success('Level harga berhasil diperbarui');
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || 'Level harga berhasil diperbarui';
+      toast.success(message);
       queryClient.invalidateQueries({
         queryKey: ['products', productId, 'price-levels'],
       });
@@ -270,8 +277,9 @@ export function useDeletePriceLevel(productId: string) {
 
   return useMutation({
     mutationFn: (id: string) => productsService.deletePriceLevel(id),
-    onSuccess: () => {
-      toast.success('Level harga berhasil dihapus');
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || 'Level harga berhasil dihapus';
+      toast.success(message);
       queryClient.invalidateQueries({
         queryKey: ['products', productId, 'price-levels'],
       });

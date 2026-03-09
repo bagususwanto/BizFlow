@@ -19,7 +19,8 @@ export function usePaymentTerms(params?: PaymentTermsQuery) {
   const deleteMutation = useMutation({
     mutationFn: (id: string) => paymentTermsService.delete(id),
     onSuccess: (response: any) => {
-      const message = response.data?.message || 'Payment term berhasil dihapus';
+      const message =
+        (response as any).data?.message || 'Payment term berhasil dihapus';
       toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['payment-terms'] });
     },
@@ -31,7 +32,8 @@ export function usePaymentTerms(params?: PaymentTermsQuery) {
   const bulkDeleteMutation = useMutation({
     mutationFn: (ids: string[]) => paymentTermsService.bulkDelete(ids),
     onSuccess: (response: any) => {
-      const message = response.data?.message || 'Payment term berhasil dihapus';
+      const message =
+        (response as any).data?.message || 'Payment term berhasil dihapus';
       toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['payment-terms'] });
     },
@@ -71,8 +73,9 @@ export function useCreatePaymentTerm() {
   return useMutation({
     mutationFn: (data: Parameters<typeof paymentTermsService.create>[0]) =>
       paymentTermsService.create(data),
-    onSuccess: () => {
-      toast.success(t('createSuccess'));
+    onSuccess: (response) => {
+      const message = (response as any).data?.message || t('createSuccess');
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['payment-terms'] });
     },
     onError: (error: Error) => {
@@ -88,8 +91,9 @@ export function useUpdatePaymentTerm(id: string) {
   return useMutation({
     mutationFn: (data: Parameters<typeof paymentTermsService.update>[1]) =>
       paymentTermsService.update(id, data),
-    onSuccess: () => {
-      toast.success(t('updateSuccess'));
+    onSuccess: (response) => {
+      const message = (response as any).data?.message || t('updateSuccess');
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['payment-terms'] });
       queryClient.invalidateQueries({ queryKey: ['payment-term', id] });
     },

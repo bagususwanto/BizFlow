@@ -89,12 +89,13 @@ export function useCreateOutlet() {
 
   return useMutation({
     mutationFn: (data: any) => outletsService.create(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ['outlets'] });
-      toast.success('Outlet berhasil dibuat');
+        const message = (response as any).data?.message || 'Outlet berhasil dibuat';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(error instanceof Error ? error.message : 'Terjadi kesalahan');
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -104,12 +105,13 @@ export function useUpdateOutlet(id: string) {
 
   return useMutation({
     mutationFn: (data: any) => outletsService.update(id, data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ['outlets'] });
-      toast.success('Outlet berhasil diperbarui');
+        const message = (response as any).data?.message || 'Outlet berhasil diperbarui';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(error instanceof Error ? error.message : 'Terjadi kesalahan');
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }

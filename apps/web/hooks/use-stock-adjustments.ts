@@ -44,14 +44,13 @@ export function useCreateStockAdjustment() {
   return useMutation({
     mutationFn: (data: CreateStockAdjustmentValues) =>
       stockAdjustmentsService.create(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: stockAdjustmentKeys.lists() });
-      toast.success('Stock Adjustment berhasil dibuat');
+        const message = (response as any).data?.message || 'Stock Adjustment berhasil dibuat';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Gagal membuat stock adjustment',
-      );
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -72,12 +71,11 @@ export function useUpdateStockAdjustment() {
       queryClient.invalidateQueries({
         queryKey: stockAdjustmentKeys.detail(data.id),
       });
-      toast.success('Stock Adjustment berhasil diperbarui');
+        const message = (data as any).data?.message || 'Stock Adjustment berhasil diperbarui';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Gagal memperbarui stock adjustment',
-      );
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -98,10 +96,11 @@ export function useUpdateStockAdjustmentStatus() {
       queryClient.invalidateQueries({
         queryKey: stockAdjustmentKeys.detail(data.id),
       });
-      toast.success('Status Stock Adjustment berhasil diperbarui');
+        const message = (data as any).data?.message || 'Status Stock Adjustment berhasil diperbarui';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Gagal memperbarui status');
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -111,14 +110,13 @@ export function useDeleteStockAdjustment() {
 
   return useMutation({
     mutationFn: (id: string) => stockAdjustmentsService.delete(id),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: stockAdjustmentKeys.lists() });
-      toast.success('Stock Adjustment berhasil dihapus');
+        const message = (response as any).data?.message || 'Stock Adjustment berhasil dihapus';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Gagal menghapus stock adjustment',
-      );
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -128,14 +126,13 @@ export function useBulkDeleteStockAdjustments() {
 
   return useMutation({
     mutationFn: (ids: string[]) => stockAdjustmentsService.bulkDelete(ids),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: stockAdjustmentKeys.lists() });
-      toast.success('Stock Adjustment berhasil dihapus');
+        const message = (response as any).data?.message || 'Stock Adjustment berhasil dihapus';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Gagal menghapus stock adjustment',
-      );
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }

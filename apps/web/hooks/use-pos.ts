@@ -49,8 +49,8 @@ export function useCreateTransaction() {
       // toast handled in component
       queryClient.invalidateQueries({ queryKey: ['pos', 'products'] }); // Update stock
     },
-    onError: (error: any) => {
-      toast.error(error.message || 'Gagal membuat transaksi');
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -60,12 +60,13 @@ export function useHoldTransaction() {
 
   return useMutation({
     mutationFn: posTransactionsService.holdTransaction,
-    onSuccess: () => {
-      toast.success('Transaksi berhasil disimpan');
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || 'Transaksi berhasil disimpan';
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['pos', 'held-transactions'] });
     },
-    onError: (error: any) => {
-      toast.error(error.message || 'Gagal menyimpan transaksi');
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -82,12 +83,13 @@ export function useDeleteHeldTransaction() {
 
   return useMutation({
     mutationFn: posTransactionsService.deleteHeldTransaction,
-    onSuccess: () => {
-      toast.success('Transaksi tersimpan dihapus');
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || 'Transaksi tersimpan dihapus';
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['pos', 'held-transactions'] });
     },
-    onError: (error: any) => {
-      toast.error(error.message || 'Gagal menghapus transaksi');
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -96,8 +98,8 @@ export function useCreatePosPayment() {
   return useMutation({
     mutationFn: (data: CreatePaymentPayload) =>
       posPaymentsService.createPayment(data),
-    onError: (error: any) => {
-      toast.error(error.message || 'Pembayaran gagal');
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }

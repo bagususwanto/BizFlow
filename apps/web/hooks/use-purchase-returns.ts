@@ -44,14 +44,13 @@ export function useCreatePurchaseReturn() {
   return useMutation({
     mutationFn: (data: CreatePurchaseReturnValues) =>
       purchaseReturnsService.create(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: purchaseReturnKeys.lists() });
-      toast.success('Purchase Return berhasil dibuat');
+        const message = (response as any).data?.message || 'Purchase Return berhasil dibuat';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Gagal membuat purchase return',
-      );
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -72,12 +71,11 @@ export function useUpdatePurchaseReturn() {
       queryClient.invalidateQueries({
         queryKey: purchaseReturnKeys.detail(data.id),
       });
-      toast.success('Purchase Return berhasil diperbarui');
+        const message = (data as any).data?.message || 'Purchase Return berhasil diperbarui';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Gagal memperbarui purchase return',
-      );
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -98,10 +96,11 @@ export function useUpdatePurchaseReturnStatus() {
       queryClient.invalidateQueries({
         queryKey: purchaseReturnKeys.detail(data.id),
       });
-      toast.success('Status Purchase Return berhasil diperbarui');
+        const message = (data as any).data?.message || 'Status Purchase Return berhasil diperbarui';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Gagal memperbarui status');
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -111,14 +110,13 @@ export function useDeletePurchaseReturn() {
 
   return useMutation({
     mutationFn: (id: string) => purchaseReturnsService.delete(id),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: purchaseReturnKeys.lists() });
-      toast.success('Purchase Return berhasil dihapus');
+        const message = (response as any).data?.message || 'Purchase Return berhasil dihapus';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Gagal menghapus purchase return',
-      );
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -128,14 +126,13 @@ export function useBulkDeletePurchaseReturns() {
 
   return useMutation({
     mutationFn: (ids: string[]) => purchaseReturnsService.bulkDelete(ids),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: purchaseReturnKeys.lists() });
-      toast.success('Purchase Return berhasil dihapus');
+        const message = (response as any).data?.message || 'Purchase Return berhasil dihapus';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Gagal menghapus purchase return',
-      );
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }

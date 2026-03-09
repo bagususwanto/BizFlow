@@ -72,8 +72,9 @@ export function useCreateCustomer() {
   return useMutation({
     mutationFn: (data: Parameters<typeof customersService.create>[0]) =>
       customersService.create(data),
-    onSuccess: () => {
-      toast.success(t('createSuccess'));
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || t('createSuccess');
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['customers'] });
     },
     onError: (error: Error) => {
@@ -89,8 +90,9 @@ export function useUpdateCustomer(id: string) {
   return useMutation({
     mutationFn: (data: Parameters<typeof customersService.update>[1]) =>
       customersService.update(id, data),
-    onSuccess: () => {
-      toast.success(t('updateSuccess'));
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || t('updateSuccess');
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['customers'] });
       queryClient.invalidateQueries({ queryKey: ['customer', id] });
     },

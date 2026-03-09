@@ -36,8 +36,9 @@ export function useCreateGoodsReceive() {
   return useMutation({
     mutationFn: (data: CreateGoodsReceiveValues) =>
       goodsReceiveService.create(data),
-    onSuccess: async () => {
-      toast.success('Penerimaan Barang berhasil dibuat');
+    onSuccess: async (response) => {
+        const message = (response as any).data?.message || 'Penerimaan Barang berhasil dibuat';
+      toast.success(message);
       await queryClient.invalidateQueries({ queryKey: ['goods-receives'] });
       await queryClient.invalidateQueries({ queryKey: ['purchase-orders'] }); // Invalidate POs as status might change
       router.refresh();
@@ -54,8 +55,9 @@ export function useDeleteGoodsReceive() {
 
   return useMutation({
     mutationFn: (id: string) => goodsReceiveService.delete(id),
-    onSuccess: () => {
-      toast.success('Penerimaan Barang berhasil dihapus');
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || 'Penerimaan Barang berhasil dihapus';
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['goods-receives'] });
       queryClient.invalidateQueries({ queryKey: ['purchase-orders'] });
     },
@@ -70,8 +72,9 @@ export function useBulkDeleteGoodsReceives() {
 
   return useMutation({
     mutationFn: (ids: string[]) => goodsReceiveService.bulkDelete(ids),
-    onSuccess: () => {
-      toast.success('Penerimaan Barang berhasil dihapus');
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || 'Penerimaan Barang berhasil dihapus';
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['goods-receives'] });
       queryClient.invalidateQueries({ queryKey: ['purchase-orders'] });
     },

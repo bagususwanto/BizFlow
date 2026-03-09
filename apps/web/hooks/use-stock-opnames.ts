@@ -45,14 +45,13 @@ export function useCreateStockOpname() {
   return useMutation({
     mutationFn: (data: CreateStockOpnameValues) =>
       stockOpnamesService.create(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: stockOpnameKeys.lists() });
-      toast.success('Stock Opname berhasil dibuat');
+        const message = (response as any).data?.message || 'Stock Opname berhasil dibuat';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Gagal membuat stock opname',
-      );
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -73,12 +72,11 @@ export function useUpdateStockOpnameItems() {
       queryClient.invalidateQueries({
         queryKey: stockOpnameKeys.detail(data.id),
       });
-      toast.success('Item Stock Opname berhasil diperbarui');
+        const message = (data as any).data?.message || 'Item Stock Opname berhasil diperbarui';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Gagal memperbarui item stock opname',
-      );
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -99,12 +97,11 @@ export function useFinalizeStockOpname() {
       queryClient.invalidateQueries({
         queryKey: stockOpnameKeys.detail(data.id),
       });
-      toast.success('Stock Opname berhasil finalisasi');
+        const message = (data as any).data?.message || 'Stock Opname berhasil finalisasi';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Gagal finalisasi stock opname',
-      );
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -120,12 +117,11 @@ export function useCancelStockOpname() {
       queryClient.invalidateQueries({
         queryKey: stockOpnameKeys.detail(data.id),
       });
-      toast.success('Stock Opname berhasil dibatalkan');
+        const message = (data as any).data?.message || 'Stock Opname berhasil dibatalkan';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Gagal membatalkan stock opname',
-      );
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -135,14 +131,13 @@ export function useDeleteStockOpname() {
 
   return useMutation({
     mutationFn: (id: string) => stockOpnamesService.delete(id),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: stockOpnameKeys.lists() });
-      toast.success('Stock Opname berhasil dihapus');
+        const message = (response as any).data?.message || 'Stock Opname berhasil dihapus';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Gagal menghapus stock opname',
-      );
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }
@@ -152,14 +147,13 @@ export function useBulkDeleteStockOpnames() {
 
   return useMutation({
     mutationFn: (ids: string[]) => stockOpnamesService.bulkDelete(ids),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: stockOpnameKeys.lists() });
-      toast.success('Stock Opname berhasil dihapus');
+        const message = (response as any).data?.message || 'Stock Opname berhasil dihapus';
+      toast.success(message);
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Gagal menghapus stock opname',
-      );
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 }

@@ -72,8 +72,9 @@ export function useCreateUnit() {
   return useMutation({
     mutationFn: (data: Parameters<typeof unitsService.create>[0]) =>
       unitsService.create(data),
-    onSuccess: () => {
-      toast.success(t('createSuccess'));
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || t('createSuccess');
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['units'] });
     },
     onError: (error: Error) => {
@@ -89,8 +90,9 @@ export function useUpdateUnit(id: string) {
   return useMutation({
     mutationFn: (data: Parameters<typeof unitsService.update>[1]) =>
       unitsService.update(id, data),
-    onSuccess: () => {
-      toast.success(t('updateSuccess'));
+    onSuccess: (response) => {
+        const message = (response as any).data?.message || t('updateSuccess');
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['units'] });
       queryClient.invalidateQueries({ queryKey: ['unit', id] });
     },

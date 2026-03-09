@@ -39,7 +39,8 @@ export const useUpdateSettings = () => {
     mutationFn: (data: UpdateSettingsValues) =>
       settingsService.updateBatch(data),
     onSuccess: (data, variables) => {
-      toast.success(data.message || 'Pengaturan berhasil diperbarui');
+        const message = (data as any).data?.message || data.message || 'Pengaturan berhasil diperbarui';
+      toast.success(message);
 
       // If language was updated, sync it with the global auth store immediately
       const langUpdate = variables.settings?.find((s) => s.key === 'language');
@@ -57,10 +58,8 @@ export const useUpdateSettings = () => {
 
       queryClient.invalidateQueries({ queryKey: ['settings'] });
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Gagal memperbarui pengaturan',
-      );
+    onError: (error: Error) => {
+        toast.error(error.message);
     },
   });
 };

@@ -114,7 +114,7 @@ export class PromotionsService {
     });
 
     if (!promotion) {
-      throw new NotFoundException('Promo tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Promo"}`);
     }
 
     return successResponse(promotion);
@@ -131,7 +131,7 @@ export class PromotionsService {
       });
 
       if (existing) {
-        throw new ConflictException(`Kode promo '${dto.code}' sudah digunakan`);
+        throw new ConflictException(`messages.error.conflict|{"name": "Kode promo ${dto.code}"}`);
       }
     }
 
@@ -171,7 +171,7 @@ export class PromotionsService {
     });
 
     if (!existing) {
-      throw new NotFoundException('Promo tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Promo"}`);
     }
 
     // Validate code uniqueness if changing
@@ -181,7 +181,7 @@ export class PromotionsService {
       });
 
       if (existingCode) {
-        throw new ConflictException(`Kode promo '${dto.code}' sudah digunakan`);
+        throw new ConflictException(`messages.error.conflict|{"name": "Kode promo ${dto.code}"}`);
       }
     }
 
@@ -228,7 +228,7 @@ export class PromotionsService {
     });
 
     if (!promotion) {
-      throw new NotFoundException('Promo tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Promo"}`);
     }
 
     if (promotion.isActive) {
@@ -239,7 +239,7 @@ export class PromotionsService {
       });
 
       return successResponse({
-        message: `Promo '${promotion.name}' berhasil dinonaktifkan`,
+        message: `messages.success.deactivated|{"name": "${promotion.name}"}`,
       });
     }
 
@@ -249,7 +249,7 @@ export class PromotionsService {
     });
 
     return successResponse({
-      message: `Promo '${promotion.name}' berhasil dihapus permanen`,
+      message: `messages.success.deletedPermanent|{"name": "${promotion.name}"}`,
     });
   }
 

@@ -192,7 +192,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('User tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "User"}`);
     }
 
     return successResponse({
@@ -219,7 +219,7 @@ export class UsersService {
     });
 
     if (existingUsername) {
-      throw new ConflictException(`Username '${dto.username}' sudah digunakan`);
+      throw new ConflictException(`messages.error.conflict|{"name": "Username ${dto.username}"}`);
     }
 
     // Check if email already exists (if provided)
@@ -229,7 +229,7 @@ export class UsersService {
       });
 
       if (existingEmail) {
-        throw new ConflictException(`Email '${dto.email}' sudah digunakan`);
+        throw new ConflictException(`messages.error.conflict|{"name": "Email ${dto.email}"}`);
       }
     }
 
@@ -239,7 +239,7 @@ export class UsersService {
     });
 
     if (!role) {
-      throw new BadRequestException('Role tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Role"}`);
     }
 
     // Hash password
@@ -307,7 +307,7 @@ export class UsersService {
     });
 
     if (!existing) {
-      throw new NotFoundException('User tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "User"}`);
     }
 
     // Check email uniqueness if changing email
@@ -317,7 +317,7 @@ export class UsersService {
       });
 
       if (existingEmail) {
-        throw new ConflictException(`Email '${dto.email}' sudah digunakan`);
+        throw new ConflictException(`messages.error.conflict|{"name": "Email ${dto.email}"}`);
       }
     }
 
@@ -328,7 +328,7 @@ export class UsersService {
       });
 
       if (!role) {
-        throw new BadRequestException('Role tidak ditemukan');
+        throw new NotFoundException(`messages.error.notFound|{"name": "Role"}`);
       }
     }
 
@@ -408,7 +408,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('User tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "User"}`);
     }
 
     // Prevent self-deactivation
@@ -445,7 +445,7 @@ export class UsersService {
       });
 
       return successResponse({
-        message: `User '${user.username}' berhasil dinonaktifkan`,
+        message: `messages.success.deactivated|{"name": "${user.username}"}`,
         isHardDelete: false,
       });
     }
@@ -455,7 +455,7 @@ export class UsersService {
 
     if (usageCount > 0) {
       throw new ConflictException(
-        `User '${user.username}' tidak dapat dihapus permanen karena memiliki ${usageCount} riwayat aktivitas/transaksi. Hanya bisa dinonaktifkan.`,
+        `messages.error.cannotDeleteHasTransactions|{"name": "${user.username}"}`,
       );
     }
 
@@ -472,7 +472,7 @@ export class UsersService {
     });
 
     return successResponse({
-      message: `User '${user.username}' berhasil dihapus permanen`,
+      message: `messages.success.deletedPermanent|{"name": "${user.username}"}`,
     });
   }
 
@@ -489,7 +489,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('User tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "User"}`);
     }
 
     // Hash new password
@@ -501,7 +501,7 @@ export class UsersService {
     });
 
     return successResponse({
-      message: `Password user '${user.username}' berhasil direset`,
+      message: `messages.success.updated|{"name": "Password user ${user.username}"}`,
     });
   }
 
@@ -514,7 +514,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('User tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "User"}`);
     }
 
     // If user has PIN and currentPin is provided, verify it
@@ -534,7 +534,7 @@ export class UsersService {
     });
 
     return successResponse({
-      message: `PIN user '${user.username}' berhasil diubah`,
+      message: `messages.success.updated|{"name": "PIN user ${user.username}"}`,
     });
   }
 
@@ -556,7 +556,7 @@ export class UsersService {
     });
 
     if (users.length !== ids.length) {
-      throw new NotFoundException('Beberapa user tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Beberapa user"}`);
     }
 
     // Prevent self-deactivation

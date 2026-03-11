@@ -53,7 +53,7 @@ export class ReturnsService {
     });
 
     if (!order) {
-      throw new NotFoundException('Order tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Order"}`);
     }
 
     // Validate all order items exist and quantities are valid
@@ -64,7 +64,7 @@ export class ReturnsService {
 
       if (!orderItem) {
         throw new BadRequestException(
-          `Order item ${returnItem.orderItemId} tidak ditemukan`,
+          `messages.error.notFound|{"name": "Order item"}`,
         );
       }
 
@@ -322,7 +322,7 @@ export class ReturnsService {
     });
 
     if (!salesReturn) {
-      throw new NotFoundException('Return tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Return"}`);
     }
 
     return successResponse({
@@ -376,7 +376,7 @@ export class ReturnsService {
     });
 
     if (!salesReturn) {
-      throw new NotFoundException('Return tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Return"}`);
     }
 
     if (salesReturn.status !== 'approved') {
@@ -391,7 +391,7 @@ export class ReturnsService {
     });
 
     if (!account) {
-      throw new NotFoundException('Akun refund tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Akun refund"}`);
     }
 
     // Generate payment number for refund
@@ -455,7 +455,7 @@ export class ReturnsService {
     });
 
     if (!salesReturn) {
-      throw new NotFoundException('Return tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Return"}`);
     }
 
     if (salesReturn.status !== 'pending') {
@@ -500,7 +500,7 @@ export class ReturnsService {
     });
 
     if (!salesReturn) {
-      throw new NotFoundException('Return tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Return"}`);
     }
 
     if (salesReturn.status !== 'pending') {

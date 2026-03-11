@@ -1,0 +1,21 @@
+{
+  "success": {
+    "deleted": "Successfully deleted {name}.",
+    "deactivated": "Successfully deactivated {name}.",
+    "deletedPermanent": "Successfully permanently deleted {name}.",
+    "created": "Successfully created {name}.",
+    "updated": "Successfully updated {name}.",
+    "orderUpdated": "Successfully updated order."
+  },
+  "error": {
+    "notFound": "{name} not found.",
+    "conflict": "{name} cannot be processed due to a conflict.",
+    "cannotDeleteHasTransactions": "{name} cannot be permanently deleted because it has transaction history. It can only be deactivated.",
+    "cannotDeleteHasChildren": "{name} cannot be permanently deleted because it has {count} sub-categories. Please delete sub-categories first.",
+    "cannotDeleteHasProducts": "{name} cannot be permanently deleted because it has {count} products. It can only be deactivated.",
+    "cannotDeleteInUse": "{name} cannot be deleted because it is currently in use.",
+    "creditLimitExceeded": "Insufficient credit limit. Available: {available}, Transaction: {amount}.",
+    "validation": "Validation failed.",
+    "internal": "Internal server error."
+  }
+}

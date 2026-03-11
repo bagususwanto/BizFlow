@@ -10,6 +10,8 @@ import type { Response } from 'express';
 import type { ApiResponse, ApiError, ApiErrorCode } from '@bizflow/types';
 import { ApiErrorCodes } from '@bizflow/types';
 import { ZodValidationException } from 'nestjs-zod';
+import { I18nContext } from 'nestjs-i18n';
+import { makeZodI18nMap } from 'zod-i18n-map';
 
 /**
  * Map HTTP status codes to API error codes
@@ -46,56 +48,62 @@ export class HttpExceptionFilter implements ExceptionFilter {
     let errorMessage: string;
     let errorDetails: Record<string, string[]> | undefined;
 
+    // Get I18nContext
+    const i18n = I18nContext.current();
+
     // Handle ZodValidationException (from nestjs-zod)
     if (exception instanceof ZodValidationException) {
-      const zodError = exception.getZodError() as {
+      const zodError = (
+        exception as unknown as ZodValidationException
+      ).getZodError() as {
         issues?: Array<any>;
       };
-      errorMessage = 'Validation failed';
+
+      errorMessage = i18n
+        ? i18n.t('messages.error.validation')
+        : 'Validation failed';
       errorDetails = {};
 
-      // Get language from header, default to 'en'
-      const acceptLanguage =
-        ctx.getRequest().headers['accept-language'] || 'en';
-      const lang = acceptLanguage.split(',')[0].split('-')[0]; // Extract primary language code (e.g., 'id' from 'id-ID')
+      if (i18n) {
+        // Create the error map using nestjs-i18n translation function
+        try {
+          const errorMap = makeZodI18nMap({ t: i18n.t as any, ns: 'zod' });
 
-      // We will initialize i18next here for simplicity, though ideally it should be a provider
-      const i18next = require('i18next');
-      const { makeZodI18nMap } = require('zod-i18n-map');
+          if (zodError?.issues) {
+            for (const issue of zodError.issues) {
+              const field = issue.path.join('.') || 'root';
+              if (!errorDetails[field]) {
+                errorDetails[field] = [];
+              }
 
-      // Ensure it's initialized (since this is sync, we do a basic init if not already done)
-      if (!i18next.isInitialized) {
-        i18next.init({
-          lng: 'en',
-          fallbackLng: 'en',
-          resources: {
-            en: { zod: require('../../i18n/en.json') },
-            id: { zod: require('../../i18n/id.json') },
-          },
-        });
-      }
+              // Translate the issue using the error map
+              const translatedMessage = errorMap(issue, {
+                data: {},
+                defaultError: issue.message,
+              }).message;
 
-      // Change language based on request
-      i18next.changeLanguage(lang);
-
-      // Create the error map for this specific request's language
-      const errorMap = makeZodI18nMap({ t: i18next.t, ns: 'zod' });
-
-      if (zodError?.issues) {
-        for (const issue of zodError.issues) {
-          const field = issue.path.join('.') || 'root';
-          if (!errorDetails[field]) {
-            errorDetails[field] = [];
+              errorDetails[field].push(translatedMessage);
+            }
           }
-
-          // Translate the issue using the error map
-          const translatedMessage = errorMap(issue, {
-            data: {},
-            defaultError: issue.message,
-            parsedType: 'unknown' as any,
-          }).message;
-
-          errorDetails[field].push(translatedMessage);
+        } catch (_e) {
+          // Fallback if translation service is unavailable in this context
+          if (zodError?.issues) {
+            for (const issue of zodError.issues) {
+              const field = issue.path.join('.') || 'root';
+              if (!errorDetails[field]) errorDetails[field] = [];
+              errorDetails[field].push(issue.message);
+            }
+          }
+        }
+      } else {
+        if (zodError?.issues) {
+          for (const issue of zodError.issues) {
+            const field = issue.path.join('.') || 'root';
+            if (!errorDetails[field]) {
+              errorDetails[field] = [];
+            }
+            errorDetails[field].push(issue.message);
+          }
         }
       }
     } else if (typeof exceptionResponse === 'string') {
@@ -107,10 +115,39 @@ export class HttpExceptionFilter implements ExceptionFilter {
       // Handle class-validator style errors
       if (Array.isArray(responseObj.message)) {
         errorDetails = { validation: responseObj.message as string[] };
-        errorMessage = 'Validation failed';
+        errorMessage = i18n
+          ? i18n.t('messages.error.validation')
+          : 'Validation failed';
       }
     } else {
       errorMessage = exception.message;
+    }
+
+    // Attempt to translate errorMessage if it is a structured key
+    if (
+      i18n &&
+      typeof errorMessage === 'string' &&
+      errorMessage.startsWith('messages.')
+    ) {
+      const parts = errorMessage.split('|');
+      const messageKey = parts[0];
+      let parsedArgs: Record<string, unknown> = {};
+
+      if (parts.length > 1) {
+        try {
+          parsedArgs = JSON.parse(parts[1]);
+        } catch (e) {
+          // ignore
+        }
+      }
+
+      // nestjs-i18n expects { args: { key: value } } format for interpolation
+      const translated = i18n.t(messageKey as any, {
+        args: parsedArgs,
+      }) as string;
+      if (translated !== messageKey) {
+        errorMessage = translated;
+      }
     }
 
     const errorCode = getErrorCode(status);
@@ -147,7 +184,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
 
     const status = HttpStatus.INTERNAL_SERVER_ERROR;
-    const errorMessage = 'Internal server error';
+    const i18n = I18nContext.current();
+    const errorMessage = i18n
+      ? i18n.t('messages.error.internal')
+      : 'Internal server error';
 
     this.logger.error(
       'Unhandled exception',

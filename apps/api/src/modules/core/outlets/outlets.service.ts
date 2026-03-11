@@ -153,7 +153,7 @@ export class OutletsService {
     });
 
     if (!outlet) {
-      throw new NotFoundException('Outlet tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Outlet"}`);
     }
 
     return successResponse({
@@ -230,7 +230,7 @@ export class OutletsService {
     });
 
     if (existingCode) {
-      throw new ConflictException(`Kode outlet '${code}' sudah digunakan`);
+      throw new ConflictException(`messages.error.conflict|{"name": "Kode outlet ${code}"}`);
     }
 
     const outlet = await this.prisma.outlet.create({
@@ -263,7 +263,7 @@ export class OutletsService {
     });
 
     if (!existing) {
-      throw new NotFoundException('Outlet tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Outlet"}`);
     }
 
     // Check code uniqueness if changing code
@@ -274,7 +274,7 @@ export class OutletsService {
 
       if (existingCode) {
         throw new ConflictException(
-          `Kode outlet '${dto.code}' sudah digunakan`,
+          `messages.error.conflict|{"name": "Kode outlet ${dto.code}"}`,
         );
       }
     }
@@ -315,7 +315,7 @@ export class OutletsService {
     });
 
     if (!outlet) {
-      throw new NotFoundException('Outlet tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Outlet"}`);
     }
 
     // Logic:
@@ -329,7 +329,7 @@ export class OutletsService {
       });
 
       return successResponse({
-        message: `Outlet '${outlet.name}' berhasil dinonaktifkan`,
+        message: `messages.success.deactivated|{"name": "${outlet.name}"}`,
       });
     }
 
@@ -337,7 +337,7 @@ export class OutletsService {
     // BUT we must check for data integrity.
     if (outlet._count.salesOrders > 0) {
       throw new ConflictException(
-        `Outlet '${outlet.name}' tidak dapat dihapus permanen karena memiliki ${outlet._count.salesOrders} riwayat transaksi. Hanya bisa dinonaktifkan.`,
+        `Outlet '${outlet.name}' messages.error.cannotDeleteHasTransactions|{"name": "${outlet.name}"}`,
       );
     }
 
@@ -355,7 +355,7 @@ export class OutletsService {
     });
 
     return successResponse({
-      message: `Outlet '${outlet.name}' berhasil dihapus permanen`,
+      message: `messages.success.deletedPermanent|{"name": "${outlet.name}"}`,
     });
   }
 
@@ -374,7 +374,7 @@ export class OutletsService {
     });
 
     if (outlets.length !== ids.length) {
-      throw new NotFoundException('Beberapa outlet tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Beberapa outlet"}`);
     }
 
     let hardDeleteCount = 0;

@@ -223,7 +223,7 @@ export class TransactionsService {
     });
 
     if (!outlet) {
-      throw new NotFoundException('Outlet tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Outlet"}`);
     }
 
     // Validate customer if provided
@@ -233,7 +233,7 @@ export class TransactionsService {
       });
 
       if (!customer) {
-        throw new NotFoundException('Customer tidak ditemukan');
+        throw new NotFoundException(`messages.error.notFound|{"name": "Customer"}`);
       }
     }
 
@@ -251,7 +251,7 @@ export class TransactionsService {
     });
 
     if (variants.length !== variantIds.length) {
-      throw new BadRequestException('Beberapa produk tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Beberapa produk"}`);
     }
 
     // Get warehouse ID for stock operations
@@ -657,7 +657,7 @@ export class TransactionsService {
     });
 
     if (!order) {
-      throw new NotFoundException('Transaksi tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Transaksi"}`);
     }
 
     return successResponse({

@@ -128,7 +128,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('User tidak ditemukan');
+      throw new UnauthorizedException(`messages.error.notFound|{"name": "User"}`);
     }
 
     if (!user.isActive) {
@@ -207,7 +207,7 @@ export class AuthService {
 
     this.logger.log(`User ${userId} logged out`);
 
-    return successResponse({ message: 'Logout berhasil' });
+    return successResponse({ message: `messages.success.updated|{"name": "Logout"}` });
   }
 
   async getUsersForPinLogin() {
@@ -236,7 +236,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('User tidak ditemukan');
+      throw new UnauthorizedException(`messages.error.notFound|{"name": "User"}`);
     }
 
     // Verify current password
@@ -260,7 +260,7 @@ export class AuthService {
     this.logger.log(`Password changed for user: ${user.username}`);
 
     return successResponse({
-      message: 'Password berhasil diubah',
+      message: `messages.success.updated|{"name": "Password"}`,
     });
   }
 
@@ -353,7 +353,7 @@ export class AuthService {
     }
 
     if (resetToken.usedAt) {
-      throw new UnauthorizedException('Token sudah digunakan');
+      throw new UnauthorizedException(`messages.error.conflict|{"name": "Token"}`);
     }
 
     if (new Date() > resetToken.expiresAt) {
@@ -383,7 +383,7 @@ export class AuthService {
     }
 
     if (resetToken.usedAt) {
-      throw new UnauthorizedException('Token sudah digunakan');
+      throw new UnauthorizedException(`messages.error.conflict|{"name": "Token"}`);
     }
 
     if (new Date() > resetToken.expiresAt) {
@@ -410,7 +410,7 @@ export class AuthService {
     );
 
     return successResponse({
-      message: 'Password berhasil direset. Silakan login dengan password baru.',
+      message: `messages.success.updated|{"name": "Password"}`,
     });
   }
 

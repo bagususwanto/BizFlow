@@ -1,0 +1,21 @@
+{
+  "success": {
+    "deleted": "{name} berhasil dihapus.",
+    "deactivated": "{name} berhasil dinonaktifkan.",
+    "deletedPermanent": "{name} berhasil dihapus permanen.",
+    "created": "{name} berhasil dibuat.",
+    "updated": "{name} berhasil diperbarui.",
+    "orderUpdated": "Urutan berhasil diperbarui."
+  },
+  "error": {
+    "notFound": "{name} tidak ditemukan.",
+    "conflict": "{name} tidak bisa diproses karena ada konflik.",
+    "cannotDeleteHasTransactions": "{name} tidak dapat dihapus permanen karena sudah memiliki riwayat transaksi. Hanya bisa dinonaktifkan.",
+    "cannotDeleteHasChildren": "{name} tidak dapat dihapus permanen karena memiliki {count} sub-kategori. Hapus sub-kategori terlebih dahulu.",
+    "cannotDeleteHasProducts": "{name} tidak dapat dihapus permanen karena memiliki {count} produk. Hanya bisa dinonaktifkan.",
+    "cannotDeleteInUse": "{name} tidak dapat dihapus karena sedang digunakan.",
+    "creditLimitExceeded": "Credit limit tidak mencukupi. Sisa credit: {available}, Transaksi: {amount}.",
+    "validation": "Validasi gagal.",
+    "internal": "Terjadi kesalahan pada server."
+  }
+}

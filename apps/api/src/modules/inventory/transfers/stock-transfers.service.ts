@@ -152,7 +152,7 @@ export class StockTransfersService {
     });
 
     if (!transfer) {
-      throw new NotFoundException('Stock Transfer tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Stock Transfer"}`);
     }
 
     return successResponse(transfer);
@@ -198,13 +198,13 @@ export class StockTransfersService {
     ]);
 
     if (!fromWarehouse) {
-      throw new NotFoundException('Gudang asal tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Gudang asal"}`);
     }
     if (!fromWarehouse.isActive) {
       throw new BadRequestException('Gudang asal tidak aktif');
     }
     if (!toWarehouse) {
-      throw new NotFoundException('Gudang tujuan tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Gudang tujuan"}`);
     }
     if (!toWarehouse.isActive) {
       throw new BadRequestException('Gudang tujuan tidak aktif');
@@ -219,7 +219,7 @@ export class StockTransfersService {
 
       if (!variant) {
         throw new NotFoundException(
-          `Variant dengan ID '${item.variantId}' tidak ditemukan`,
+          `messages.error.notFound|{"name": "Variant"}`,
         );
       }
 
@@ -240,7 +240,7 @@ export class StockTransfersService {
       });
       if (existing) {
         throw new ConflictException(
-          `Nomor transfer '${transferNumber}' sudah digunakan`,
+          `messages.error.conflict|{"name": "Nomor transfer ${transferNumber}"}`,
         );
       }
     }
@@ -294,7 +294,7 @@ export class StockTransfersService {
     });
 
     if (!existing) {
-      throw new NotFoundException('Stock Transfer tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Stock Transfer"}`);
     }
 
     if (existing.status !== 'draft') {
@@ -315,7 +315,7 @@ export class StockTransfersService {
         });
         if (!variant) {
           throw new NotFoundException(
-            `Variant dengan ID '${item.variantId}' tidak ditemukan`,
+            `messages.error.notFound|{"name": "Variant"}`,
           );
         }
       }
@@ -377,7 +377,7 @@ export class StockTransfersService {
     });
 
     if (!existing) {
-      throw new NotFoundException('Stock Transfer tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Stock Transfer"}`);
     }
 
     // Validate transitions
@@ -603,7 +603,7 @@ export class StockTransfersService {
     });
 
     if (!transfer) {
-      throw new NotFoundException('Stock Transfer tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Stock Transfer"}`);
     }
 
     if (transfer.status !== 'draft') {
@@ -615,7 +615,7 @@ export class StockTransfersService {
     await this.prisma.stockTransfer.delete({ where: { id } });
 
     return successResponse({
-      message: `Stock Transfer '${transfer.transferNumber}' berhasil dihapus`,
+      message: `messages.success.deleted|{"name": "${transfer.transferNumber}"}`,
     });
   }
 
@@ -628,7 +628,7 @@ export class StockTransfersService {
     });
 
     if (transfers.length !== ids.length) {
-      throw new NotFoundException('Beberapa Stock Transfer tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Beberapa Stock Transfer"}`);
     }
 
     let deletedCount = 0;

@@ -186,7 +186,7 @@ export class StockOpnameService {
     });
 
     if (!opname) {
-      throw new NotFoundException('Stock Opname tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Stock Opname"}`);
     }
 
     return successResponse(opname);
@@ -233,7 +233,7 @@ export class StockOpnameService {
     });
 
     if (!warehouse) {
-      throw new NotFoundException('Gudang tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Gudang"}`);
     }
 
     if (!warehouse.isActive) {
@@ -250,7 +250,7 @@ export class StockOpnameService {
       });
       if (existing) {
         throw new ConflictException(
-          `Nomor opname '${opnameNumber}' sudah digunakan`,
+          `messages.error.conflict|{"name": "Nomor opname ${opnameNumber}"}`,
         );
       }
     }
@@ -337,7 +337,7 @@ export class StockOpnameService {
     });
 
     if (!opname) {
-      throw new NotFoundException('Stock Opname tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Stock Opname"}`);
     }
 
     if (opname.status !== 'in_progress') {
@@ -354,7 +354,7 @@ export class StockOpnameService {
 
       if (!existingItem) {
         throw new NotFoundException(
-          `Item opname dengan ID '${item.opnameItemId}' tidak ditemukan`,
+          `messages.error.notFound|{"name": "Item opname"}`,
         );
       }
 
@@ -398,7 +398,7 @@ export class StockOpnameService {
     });
 
     if (!opname) {
-      throw new NotFoundException('Stock Opname tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Stock Opname"}`);
     }
 
     if (opname.status !== 'in_progress') {
@@ -495,7 +495,7 @@ export class StockOpnameService {
     });
 
     if (!opname) {
-      throw new NotFoundException('Stock Opname tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Stock Opname"}`);
     }
 
     if (opname.status !== 'in_progress') {
@@ -524,7 +524,7 @@ export class StockOpnameService {
     });
 
     if (!opname) {
-      throw new NotFoundException('Stock Opname tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Stock Opname"}`);
     }
 
     if (!['in_progress', 'cancelled'].includes(opname.status)) {
@@ -536,7 +536,7 @@ export class StockOpnameService {
     await this.prisma.stockOpname.delete({ where: { id } });
 
     return successResponse({
-      message: `Stock Opname '${opname.opnameNumber}' berhasil dihapus`,
+      message: `messages.success.deleted|{"name": "${opname.opnameNumber}"}`,
     });
   }
 
@@ -549,7 +549,7 @@ export class StockOpnameService {
     });
 
     if (opnames.length !== ids.length) {
-      throw new NotFoundException('Beberapa Stock Opname tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Beberapa Stock Opname"}`);
     }
 
     let deletedCount = 0;
@@ -571,7 +571,7 @@ export class StockOpnameService {
     }
     if (skippedCount > 0) {
       messages.push(
-        `${skippedCount} Stock Opname dilewati (status finalized tidak dapat dihapus)`,
+        `messages.error.cannotDeleteInUse|{"name": "${skippedCount} Stock Opname"}`,
       );
     }
 

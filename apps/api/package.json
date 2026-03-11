@@ -30,6 +30,7 @@
     "exceljs": "^4.4.0",
     "i18next": "^25.8.13",
     "multer": "^2.0.2",
+    "nestjs-i18n": "^10.6.0",
     "nestjs-zod": "^5.1.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",

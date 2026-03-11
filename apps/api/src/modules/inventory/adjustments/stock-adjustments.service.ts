@@ -187,7 +187,7 @@ export class StockAdjustmentsService {
     });
 
     if (!adjustment) {
-      throw new NotFoundException('Stock Adjustment tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Stock Adjustment"}`);
     }
 
     return successResponse(adjustment);
@@ -232,7 +232,7 @@ export class StockAdjustmentsService {
     });
 
     if (!warehouse) {
-      throw new NotFoundException('Gudang tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Gudang"}`);
     }
 
     if (!warehouse.isActive) {
@@ -248,7 +248,7 @@ export class StockAdjustmentsService {
 
       if (!variant) {
         throw new NotFoundException(
-          `Variant dengan ID '${item.variantId}' tidak ditemukan`,
+          `messages.error.notFound|{"name": "Variant"}`,
         );
       }
 
@@ -282,7 +282,7 @@ export class StockAdjustmentsService {
       });
       if (existing) {
         throw new ConflictException(
-          `Nomor adjustment '${adjustmentNumber}' sudah digunakan`,
+          `messages.error.conflict|{"name": "Nomor adjustment ${adjustmentNumber}"}`,
         );
       }
     }
@@ -340,7 +340,7 @@ export class StockAdjustmentsService {
     });
 
     if (!existing) {
-      throw new NotFoundException('Stock Adjustment tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Stock Adjustment"}`);
     }
 
     if (existing.status !== 'draft') {
@@ -424,7 +424,7 @@ export class StockAdjustmentsService {
     });
 
     if (!existing) {
-      throw new NotFoundException('Stock Adjustment tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Stock Adjustment"}`);
     }
 
     // Validate status transitions
@@ -546,7 +546,7 @@ export class StockAdjustmentsService {
     });
 
     if (!adjustment) {
-      throw new NotFoundException('Stock Adjustment tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Stock Adjustment"}`);
     }
 
     if (!['draft', 'rejected'].includes(adjustment.status)) {
@@ -558,7 +558,7 @@ export class StockAdjustmentsService {
     await this.prisma.stockAdjustment.delete({ where: { id } });
 
     return successResponse({
-      message: `Stock Adjustment '${adjustment.adjustmentNumber}' berhasil dihapus`,
+      message: `messages.success.deleted|{"name": "${adjustment.adjustmentNumber}"}`,
     });
   }
 
@@ -571,7 +571,7 @@ export class StockAdjustmentsService {
     });
 
     if (adjustments.length !== ids.length) {
-      throw new NotFoundException('Beberapa Stock Adjustment tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Beberapa Stock Adjustment"}`);
     }
 
     let deletedCount = 0;

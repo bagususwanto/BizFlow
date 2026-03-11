@@ -34,7 +34,7 @@ export class PaymentsService {
     });
 
     if (!order) {
-      throw new NotFoundException('Order tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Order"}`);
     }
 
     // Validate account exists
@@ -43,7 +43,7 @@ export class PaymentsService {
     });
 
     if (!account) {
-      throw new NotFoundException('Akun pembayaran tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Akun pembayaran"}`);
     }
 
     // Calculate remaining amount
@@ -278,7 +278,7 @@ export class PaymentsService {
     });
 
     if (!payment) {
-      throw new NotFoundException('Payment tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Payment"}`);
     }
 
     return successResponse({
@@ -321,7 +321,7 @@ export class PaymentsService {
     });
 
     if (!payment) {
-      throw new NotFoundException('Payment tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Payment"}`);
     }
 
     // Validate refund amount
@@ -337,7 +337,7 @@ export class PaymentsService {
     });
 
     if (!account) {
-      throw new NotFoundException('Akun refund tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Akun refund"}`);
     }
 
     // Generate refund payment number
@@ -428,7 +428,7 @@ export class PaymentsService {
     });
 
     if (accounts.length !== accountIds.length) {
-      throw new BadRequestException('Beberapa akun pembayaran tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Beberapa akun pembayaran"}`);
     }
 
     return successResponse({

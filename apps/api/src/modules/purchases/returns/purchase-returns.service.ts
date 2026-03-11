@@ -236,7 +236,7 @@ export class PurchaseReturnsService {
     });
 
     if (!purchaseReturn) {
-      throw new NotFoundException('Purchase Return tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Purchase Return"}`);
     }
 
     return successResponse(purchaseReturn);
@@ -284,7 +284,7 @@ export class PurchaseReturnsService {
     });
 
     if (!purchaseOrder) {
-      throw new NotFoundException('Purchase Order tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Purchase Order"}`);
     }
 
     // Only allow returns for received/completed orders
@@ -302,7 +302,7 @@ export class PurchaseReturnsService {
 
       if (!poItem) {
         throw new BadRequestException(
-          `Variant dengan ID '${returnItem.variantId}' tidak ditemukan di Purchase Order ini`,
+          `messages.error.notFound|{"name": "Variant"}`,
         );
       }
 
@@ -323,7 +323,7 @@ export class PurchaseReturnsService {
       });
       if (existing) {
         throw new ConflictException(
-          `Nomor return '${returnNumber}' sudah digunakan`,
+          `messages.error.conflict|{"name": "Nomor return ${returnNumber}"}`,
         );
       }
     }
@@ -406,7 +406,7 @@ export class PurchaseReturnsService {
     });
 
     if (!existing) {
-      throw new NotFoundException('Purchase Return tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Purchase Return"}`);
     }
 
     if (existing.status !== 'pending') {
@@ -429,7 +429,7 @@ export class PurchaseReturnsService {
 
         if (!poItem) {
           throw new BadRequestException(
-            `Variant dengan ID '${returnItem.variantId}' tidak ditemukan di Purchase Order ini`,
+            `messages.error.notFound|{"name": "Variant"}`,
           );
         }
 
@@ -519,7 +519,7 @@ export class PurchaseReturnsService {
     });
 
     if (!existing) {
-      throw new NotFoundException('Purchase Return tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Purchase Return"}`);
     }
 
     // Validate status transitions
@@ -653,7 +653,7 @@ export class PurchaseReturnsService {
     });
 
     if (!purchaseReturn) {
-      throw new NotFoundException('Purchase Return tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Purchase Return"}`);
     }
 
     if (purchaseReturn.status !== 'pending') {
@@ -667,7 +667,7 @@ export class PurchaseReturnsService {
     });
 
     return successResponse({
-      message: `Purchase Return '${purchaseReturn.returnNumber}' berhasil dihapus`,
+      message: `messages.success.deleted|{"name": "${purchaseReturn.returnNumber}"}`,
     });
   }
 
@@ -680,7 +680,7 @@ export class PurchaseReturnsService {
     });
 
     if (purchaseReturns.length !== ids.length) {
-      throw new NotFoundException('Beberapa Purchase Return tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Beberapa Purchase Return"}`);
     }
 
     let deletedCount = 0;

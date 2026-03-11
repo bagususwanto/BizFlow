@@ -123,7 +123,7 @@ export class PrintersService {
     });
 
     if (!printer) {
-      throw new NotFoundException(`Printer dengan ID '${id}' tidak ditemukan`);
+      throw new NotFoundException(`messages.error.notFound|{"name": "Printer"}`);
     }
 
     return successResponse(printer);
@@ -162,7 +162,7 @@ export class PrintersService {
     });
 
     if (!existing) {
-      throw new NotFoundException(`Printer dengan ID '${id}' tidak ditemukan`);
+      throw new NotFoundException(`messages.error.notFound|{"name": "Printer"}`);
     }
 
     // If setting as default, unset other defaults in same outlet
@@ -199,7 +199,7 @@ export class PrintersService {
     });
 
     if (!existing) {
-      throw new NotFoundException(`Printer dengan ID '${id}' tidak ditemukan`);
+      throw new NotFoundException(`messages.error.notFound|{"name": "Printer"}`);
     }
 
     await this.prisma.printer.delete({
@@ -224,7 +224,7 @@ export class PrintersService {
     });
 
     return successResponse({
-      message: `${result.count} printer berhasil dihapus`,
+      message: `messages.success.deleted|{"name": "${result.count} printer"}`,
       count: result.count,
     });
   }
@@ -291,7 +291,7 @@ export class PrintersService {
     });
 
     if (!printer) {
-      throw new NotFoundException(`Printer dengan ID '${id}' tidak ditemukan`);
+      throw new NotFoundException(`messages.error.notFound|{"name": "Printer"}`);
     }
 
     if (printer.type === 'network' && printer.address) {
@@ -322,7 +322,7 @@ export class PrintersService {
     });
 
     if (!printer) {
-      throw new NotFoundException(`Printer dengan ID '${id}' tidak ditemukan`);
+      throw new NotFoundException(`messages.error.notFound|{"name": "Printer"}`);
     }
 
     if (printer.type === 'network' && printer.address) {
@@ -351,7 +351,7 @@ export class PrintersService {
     });
 
     if (!printer) {
-      throw new NotFoundException('Printer tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Printer"}`);
     }
 
     if (printer.type !== 'network') {
@@ -370,7 +370,7 @@ export class PrintersService {
     const transaction = transactionRes.data;
 
     if (!transaction) {
-      throw new NotFoundException('Transaksi tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Transaksi"}`);
     }
 
     // 3. Build receipt data

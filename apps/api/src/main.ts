@@ -2,9 +2,10 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { join } from 'path';
-
 import { AppModule } from './app.module';
 import { HttpExceptionFilter, AllExceptionsFilter } from './common/filters';
+import { TranslationInterceptor } from './common/interceptors/translation.interceptor';
+import { I18nService } from 'nestjs-i18n';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -31,6 +32,10 @@ async function bootstrap() {
   // Global exception filters (order matters: more specific first)
   app.useGlobalFilters(new AllExceptionsFilter(), new HttpExceptionFilter());
 
+  // Global translation interceptor
+  const i18nService = app.get<I18nService<any>>(I18nService);
+  app.useGlobalInterceptors(new TranslationInterceptor(i18nService));
+
   // Global validation pipe
   app.useGlobalPipes(new ZodValidationPipe());
 
@@ -38,6 +43,7 @@ async function bootstrap() {
   await app.listen(port);
 
   console.log(`🚀 BizFlow API running on http://localhost:${port}/api/v1`);
+  console.log(`🔄 Translation Interceptor initialized!`);
 }
 
 void bootstrap();

@@ -142,7 +142,7 @@ export class UnitsService {
     });
 
     if (!unit) {
-      throw new NotFoundException(`Unit dengan ID ${id} tidak ditemukan`);
+      throw new NotFoundException(`messages.error.notFound|{"name": "Unit"}`);
     }
 
     return successResponse(unit);
@@ -159,8 +159,8 @@ export class UnitsService {
     if (existing) {
       throw new ConflictException(
         existing.name === dto.name
-          ? `Unit dengan nama ${dto.name} sudah ada`
-          : `Unit dengan simbol ${dto.symbol} sudah ada`,
+          ? `messages.error.conflict|{"name": "Unit ${dto.name}"}`
+          : `messages.error.conflict|{"name": "Unit ${dto.symbol}"}`,
       );
     }
 
@@ -171,7 +171,7 @@ export class UnitsService {
       });
 
       if (!baseUnit) {
-        throw new BadRequestException('Unit dasar tidak ditemukan');
+        throw new NotFoundException(`messages.error.notFound|{"name": "Unit dasar"}`);
       }
 
       // Validasi: Base unit tidak boleh punya base unit (max depth 1 level)
@@ -201,7 +201,7 @@ export class UnitsService {
     });
 
     if (!unit) {
-      throw new NotFoundException(`Unit dengan ID ${id} tidak ditemukan`);
+      throw new NotFoundException(`messages.error.notFound|{"name": "Unit"}`);
     }
 
     // Check name uniqueness if changed
@@ -210,7 +210,7 @@ export class UnitsService {
         where: { name: dto.name, id: { not: id } },
       });
       if (existing) {
-        throw new ConflictException(`Unit dengan nama ${dto.name} sudah ada`);
+        throw new ConflictException(`messages.error.conflict|{"name": "Unit ${dto.name}"}`);
       }
     }
 
@@ -221,7 +221,7 @@ export class UnitsService {
       });
       if (existing) {
         throw new ConflictException(
-          `Unit dengan simbol ${dto.symbol} sudah ada`,
+          `messages.error.conflict|{"name": "Unit ${dto.symbol}"}`,
         );
       }
     }
@@ -230,7 +230,7 @@ export class UnitsService {
     if (dto.baseUnitId !== undefined) {
       if (dto.baseUnitId === id) {
         throw new BadRequestException(
-          'Unit tidak bisa menjadi base unitnya sendiri',
+          `messages.error.conflict|{"name": "Unit"}`,
         );
       }
 
@@ -242,7 +242,7 @@ export class UnitsService {
         });
 
         if (!baseUnit) {
-          throw new BadRequestException('Unit dasar tidak ditemukan');
+          throw new NotFoundException(`messages.error.notFound|{"name": "Unit dasar"}`);
         }
 
         if (baseUnit.baseUnitId) {
@@ -272,18 +272,18 @@ export class UnitsService {
     });
 
     if (!unit) {
-      throw new NotFoundException(`Unit dengan ID ${id} tidak ditemukan`);
+      throw new NotFoundException(`messages.error.notFound|{"name": "Unit"}`);
     }
 
     if (unit._count.products > 0) {
       throw new BadRequestException(
-        `Unit '${unit.name}' tidak dapat dihapus karena digunakan oleh ${unit._count.products} produk.`,
+        `messages.error.cannotDeleteInUse|{"name": "${unit.name}"}`,
       );
     }
 
     if (unit._count.derivedUnits > 0) {
       throw new BadRequestException(
-        `Unit '${unit.name}' tidak dapat dihapus karena digunakan sebagai unit dasar (base unit) oleh ${unit._count.derivedUnits} unit lain.`,
+        `messages.error.cannotDeleteInUse|{"name": "${unit.name}"}`,
       );
     }
 
@@ -291,7 +291,7 @@ export class UnitsService {
       where: { id },
     });
 
-    return successResponse('Unit berhasil dihapus permanen');
+    return successResponse({ message: `messages.success.deleted|{"name": "Unit"}` });
   }
 
   async bulkDelete(ids: string[], userId: string) {

@@ -120,7 +120,7 @@ export class PaymentTermsService {
     });
 
     if (!paymentTerm) {
-      throw new NotFoundException('Payment term tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Payment term"}`);
     }
 
     return successResponse(paymentTerm);
@@ -137,7 +137,7 @@ export class PaymentTermsService {
     });
 
     if (existing) {
-      throw new ConflictException(`Payment term '${dto.name}' sudah ada`);
+      throw new ConflictException(`messages.error.conflict|{"name": "Payment term ${dto.name}"}`);
     }
 
     const paymentTerm = await this.prisma.paymentTerm.create({
@@ -164,7 +164,7 @@ export class PaymentTermsService {
     });
 
     if (!existing) {
-      throw new NotFoundException('Payment term tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Payment term"}`);
     }
 
     // Check duplicate name if changing
@@ -173,7 +173,7 @@ export class PaymentTermsService {
         where: { name: dto.name, NOT: { id } },
       });
       if (duplicateName) {
-        throw new ConflictException(`Payment term '${dto.name}' sudah ada`);
+        throw new ConflictException(`messages.error.conflict|{"name": "Payment term ${dto.name}"}`);
       }
     }
 
@@ -200,7 +200,7 @@ export class PaymentTermsService {
     });
 
     if (!paymentTerm) {
-      throw new NotFoundException('Payment term tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Payment term"}`);
     }
 
     if (paymentTerm.isActive) {
@@ -210,7 +210,7 @@ export class PaymentTermsService {
       });
 
       return successResponse({
-        message: `Payment term '${paymentTerm.name}' berhasil dinonaktifkan`,
+        message: `messages.success.deactivated|{"name": "${paymentTerm.name}"}`,
       });
     }
 
@@ -218,7 +218,7 @@ export class PaymentTermsService {
     await this.prisma.paymentTerm.delete({ where: { id } });
 
     return successResponse({
-      message: `Payment term '${paymentTerm.name}' berhasil dihapus permanen`,
+      message: `messages.success.deletedPermanent|{"name": "${paymentTerm.name}"}`,
       isHardDelete: true,
     });
   }
@@ -232,7 +232,7 @@ export class PaymentTermsService {
     });
 
     if (paymentTerms.length !== ids.length) {
-      throw new NotFoundException('Beberapa payment term tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Beberapa payment term"}`);
     }
 
     let hardDeleteCount = 0;

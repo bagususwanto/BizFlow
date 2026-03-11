@@ -169,7 +169,7 @@ export class RolesService {
     });
 
     if (!role) {
-      throw new NotFoundException('Role tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Role"}`);
     }
 
     return successResponse({
@@ -201,7 +201,7 @@ export class RolesService {
     });
 
     if (existing) {
-      throw new ConflictException(`Role dengan nama '${dto.name}' sudah ada`);
+      throw new ConflictException(`messages.error.conflict|{"name": "Role ${dto.name}"}`);
     }
 
     const role = await this.prisma.role.create({
@@ -245,7 +245,7 @@ export class RolesService {
     });
 
     if (!existing) {
-      throw new NotFoundException('Role tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Role"}`);
     }
 
     // Prevent renaming system roles
@@ -263,7 +263,7 @@ export class RolesService {
         where: { name: dto.name },
       });
       if (duplicate) {
-        throw new ConflictException(`Role dengan nama '${dto.name}' sudah ada`);
+        throw new ConflictException(`messages.error.conflict|{"name": "Role ${dto.name}"}`);
       }
     }
 
@@ -322,7 +322,7 @@ export class RolesService {
     });
 
     if (!role) {
-      throw new NotFoundException('Role tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Role"}`);
     }
 
     // Prevent deletion of system roles
@@ -333,7 +333,7 @@ export class RolesService {
     // Prevent deletion if users are assigned
     if (role._count.users > 0) {
       throw new BadRequestException(
-        `Role tidak dapat dihapus karena masih memiliki ${role._count.users} user`,
+        `messages.error.cannotDeleteInUse|{"name": "Role"}`,
       );
     }
 
@@ -347,7 +347,7 @@ export class RolesService {
       where: { id },
     });
 
-    return successResponse({ message: `Role '${role.name}' berhasil dihapus` });
+    return successResponse({ message: `messages.success.deleted|{"name": "${role.name}"}` });
   }
 
   /**
@@ -365,7 +365,7 @@ export class RolesService {
     });
 
     if (roles.length !== ids.length) {
-      throw new NotFoundException('Beberapa role tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Beberapa role"}`);
     }
 
     // 2. Validate interactions
@@ -377,7 +377,7 @@ export class RolesService {
     if (invalidRoles.length > 0) {
       const names = invalidRoles.map((r) => r.name).join(', ');
       throw new BadRequestException(
-        `Role berikut tidak dapat dihapus (System role atau sedang digunakan): ${names}`,
+        `messages.error.cannotDeleteInUse|{"name": "Role"}`,
       );
     }
 
@@ -392,7 +392,7 @@ export class RolesService {
     });
 
     return successResponse({
-      message: `${result.count} role berhasil dihapus`,
+      message: `messages.success.deleted|{"name": "${result.count} role"}`,
     });
   }
 

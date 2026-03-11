@@ -133,7 +133,9 @@ export class CustomersService {
     });
 
     if (!customer) {
-      throw new NotFoundException('Pelanggan tidak ditemukan');
+      throw new NotFoundException(
+        `messages.error.notFound|{"name": "Pelanggan"}`,
+      );
     }
 
     return successResponse(customer);
@@ -180,7 +182,7 @@ export class CustomersService {
       });
       if (existingCode) {
         throw new ConflictException(
-          `Kode customer '${dto.code}' sudah digunakan`,
+          `messages.error.conflict|{"name": "Kode customer ${dto.code}"}`,
         );
       }
     }
@@ -191,7 +193,9 @@ export class CustomersService {
         where: { email: dto.email },
       });
       if (existingEmail) {
-        throw new ConflictException(`Email '${dto.email}' sudah digunakan`);
+        throw new ConflictException(
+          `messages.error.conflict|{"name": "Email ${dto.email}"}`,
+        );
       }
     }
 
@@ -225,7 +229,9 @@ export class CustomersService {
     });
 
     if (!existing) {
-      throw new NotFoundException('Pelanggan tidak ditemukan');
+      throw new NotFoundException(
+        `messages.error.notFound|{"name": "Pelanggan"}`,
+      );
     }
 
     // Check duplicate code if changing
@@ -235,7 +241,7 @@ export class CustomersService {
       });
       if (existingCode) {
         throw new ConflictException(
-          `Kode customer '${dto.code}' sudah digunakan`,
+          `messages.error.conflict|{"name": "Kode customer ${dto.code}"}`,
         );
       }
     }
@@ -246,7 +252,9 @@ export class CustomersService {
         where: { email: dto.email, NOT: { id } },
       });
       if (existingEmail) {
-        throw new ConflictException(`Email '${dto.email}' sudah digunakan`);
+        throw new ConflictException(
+          `messages.error.conflict|{"name": "Email ${dto.email}"}`,
+        );
       }
     }
 
@@ -279,7 +287,9 @@ export class CustomersService {
     });
 
     if (!customer) {
-      throw new NotFoundException('Pelanggan tidak ditemukan');
+      throw new NotFoundException(
+        `messages.error.notFound|{"name": "Pelanggan"}`,
+      );
     }
 
     // Logic:
@@ -293,7 +303,7 @@ export class CustomersService {
       });
 
       return successResponse({
-        message: `Pelanggan '${customer.name}' berhasil dinonaktifkan`,
+        message: `messages.success.deactivated|{"name": "${customer.name}"}`,
       });
     }
 
@@ -302,7 +312,7 @@ export class CustomersService {
 
     if (isUsedInTransactions) {
       throw new ConflictException(
-        `Pelanggan '${customer.name}' tidak dapat dihapus permanen karena sudah memiliki riwayat transaksi. Hanya bisa dinonaktifkan.`,
+        `messages.error.cannotDeleteHasTransactions|{"name": "${customer.name}"}`,
       );
     }
 
@@ -312,7 +322,7 @@ export class CustomersService {
     });
 
     return successResponse({
-      message: `Pelanggan '${customer.name}' berhasil dihapus permanen`,
+      message: `messages.success.deletedPermanent|{"name": "${customer.name}"}`,
       isHardDelete: true,
     });
   }
@@ -337,7 +347,9 @@ export class CustomersService {
     });
 
     if (customers.length !== ids.length) {
-      throw new NotFoundException('Beberapa pelanggan tidak ditemukan');
+      throw new NotFoundException(
+        `messages.error.notFound|{"name": "Beberapa pelanggan"}`,
+      );
     }
 
     let hardDeleteCount = 0;
@@ -395,7 +407,9 @@ export class CustomersService {
     });
 
     if (!customer) {
-      throw new NotFoundException('Pelanggan tidak ditemukan');
+      throw new NotFoundException(
+        `messages.error.notFound|{"name": "Pelanggan"}`,
+      );
     }
 
     // Calculate current balance (Total Unpaid Sales Orders)
@@ -438,7 +452,7 @@ export class CustomersService {
     // Only check if credit limit is set (> 0)
     if (creditLimit > 0 && amount > availableCredit) {
       throw new ConflictException(
-        `Credit limit tidak mencukupi. Sisa credit: ${availableCredit}, Transaksi: ${amount}`,
+        `messages.error.creditLimitExceeded|{"available": "${availableCredit}", "amount": "${amount}"}`,
       );
     }
 

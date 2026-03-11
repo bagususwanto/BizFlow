@@ -232,7 +232,7 @@ export class PurchaseOrdersService {
     });
 
     if (!purchaseOrder) {
-      throw new NotFoundException('Purchase Order tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Purchase Order"}`);
     }
 
     return successResponse(purchaseOrder);
@@ -283,7 +283,7 @@ export class PurchaseOrdersService {
       });
       if (existingOrder) {
         throw new ConflictException(
-          `Nomor PO '${dto.orderNumber}' sudah digunakan`,
+          `messages.error.conflict|{"name": "Nomor PO ${dto.orderNumber}"}`,
         );
       }
     }
@@ -294,7 +294,7 @@ export class PurchaseOrdersService {
     });
 
     if (!supplier) {
-      throw new NotFoundException('Supplier tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Supplier"}`);
     }
 
     // Calculate totals
@@ -380,7 +380,7 @@ export class PurchaseOrdersService {
     });
 
     if (!existing) {
-      throw new NotFoundException('Purchase Order tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Purchase Order"}`);
     }
 
     // Only allow editing draft orders
@@ -397,7 +397,7 @@ export class PurchaseOrdersService {
       });
       if (existingOrder) {
         throw new ConflictException(
-          `Nomor PO '${dto.orderNumber}' sudah digunakan`,
+          `messages.error.conflict|{"name": "Nomor PO ${dto.orderNumber}"}`,
         );
       }
     }
@@ -495,7 +495,7 @@ export class PurchaseOrdersService {
     });
 
     if (!existing) {
-      throw new NotFoundException('Purchase Order tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Purchase Order"}`);
     }
 
     // Validate status transitions
@@ -600,7 +600,7 @@ export class PurchaseOrdersService {
     });
 
     if (!purchaseOrder) {
-      throw new NotFoundException('Purchase Order tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Purchase Order"}`);
     }
 
     // Only allow deleting draft orders
@@ -616,7 +616,7 @@ export class PurchaseOrdersService {
       purchaseOrder._count.payments > 0
     ) {
       throw new ConflictException(
-        'Purchase Order tidak dapat dihapus karena sudah memiliki penerimaan barang atau pembayaran',
+        `messages.error.cannotDeleteHasTransactions|{"name": "Purchase Order"}`,
       );
     }
 
@@ -625,7 +625,7 @@ export class PurchaseOrdersService {
     });
 
     return successResponse({
-      message: `Purchase Order '${purchaseOrder.orderNumber}' berhasil dihapus`,
+      message: `messages.success.deleted|{"name": "${purchaseOrder.orderNumber}"}`,
     });
   }
 
@@ -646,7 +646,7 @@ export class PurchaseOrdersService {
     });
 
     if (purchaseOrders.length !== ids.length) {
-      throw new NotFoundException('Beberapa Purchase Order tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Beberapa Purchase Order"}`);
     }
 
     let deletedCount = 0;

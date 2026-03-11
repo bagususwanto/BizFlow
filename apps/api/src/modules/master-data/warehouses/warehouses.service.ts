@@ -140,7 +140,7 @@ export class WarehousesService {
     });
 
     if (!warehouse) {
-      throw new NotFoundException('Gudang tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Gudang"}`);
     }
 
     return successResponse(warehouse);
@@ -187,7 +187,7 @@ export class WarehousesService {
       });
       if (existingCode) {
         throw new ConflictException(
-          `Kode gudang '${dto.code}' sudah digunakan`,
+          `messages.error.conflict|{"name": "Kode gudang ${dto.code}"}`,
         );
       }
     }
@@ -226,7 +226,7 @@ export class WarehousesService {
     });
 
     if (!existing) {
-      throw new NotFoundException('Gudang tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Gudang"}`);
     }
 
     // Check duplicate code if changing
@@ -236,7 +236,7 @@ export class WarehousesService {
       });
       if (existingCode) {
         throw new ConflictException(
-          `Kode gudang '${dto.code}' sudah digunakan`,
+          `messages.error.conflict|{"name": "Kode gudang ${dto.code}"}`,
         );
       }
     }
@@ -272,13 +272,13 @@ export class WarehousesService {
     });
 
     if (!warehouse) {
-      throw new NotFoundException('Gudang tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Gudang"}`);
     }
 
     // Prevent deleting default warehouse
     if (warehouse.isDefault) {
       throw new ConflictException(
-        `Gudang '${warehouse.name}' adalah gudang default dan tidak dapat dihapus. Ubah gudang lain menjadi default terlebih dahulu.`,
+        `messages.error.cannotDeleteInUse|{"name": "${warehouse.name}"}`,
       );
     }
 
@@ -293,7 +293,7 @@ export class WarehousesService {
       });
 
       return successResponse({
-        message: `Gudang '${warehouse.name}' berhasil dinonaktifkan`,
+        message: `messages.success.deactivated|{"name": "${warehouse.name}"}`,
       });
     }
 
@@ -303,7 +303,7 @@ export class WarehousesService {
 
     if (isUsedInTransactions) {
       throw new ConflictException(
-        `Gudang '${warehouse.name}' tidak dapat dihapus permanen karena sudah memiliki riwayat transaksi. Hanya bisa dinonaktifkan.`,
+        `messages.error.cannotDeleteHasTransactions|{"name": "${warehouse.name}"}`,
       );
     }
 
@@ -313,7 +313,7 @@ export class WarehousesService {
     });
 
     return successResponse({
-      message: `Gudang '${warehouse.name}' berhasil dihapus permanen`,
+      message: `messages.success.deletedPermanent|{"name": "${warehouse.name}"}`,
       isHardDelete: true,
     });
   }
@@ -363,7 +363,7 @@ export class WarehousesService {
     });
 
     if (warehouses.length !== ids.length) {
-      throw new NotFoundException('Beberapa gudang tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Beberapa gudang"}`);
     }
 
     // Check if any is default

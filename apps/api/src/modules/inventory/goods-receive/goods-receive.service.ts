@@ -168,7 +168,7 @@ export class GoodsReceiveService {
     });
 
     if (!goodsReceive) {
-      throw new NotFoundException('Penerimaan Barang tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Penerimaan Barang"}`);
     }
 
     return successResponse(goodsReceive);
@@ -219,7 +219,7 @@ export class GoodsReceiveService {
       });
       if (existing) {
         throw new ConflictException(
-          `Nomor penerimaan '${dto.receiveNumber}' sudah digunakan`,
+          `messages.error.conflict|{"name": "Nomor penerimaan ${dto.receiveNumber}"}`,
         );
       }
     }
@@ -237,7 +237,7 @@ export class GoodsReceiveService {
     });
 
     if (!purchaseOrder) {
-      throw new NotFoundException('Purchase Order tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Purchase Order"}`);
     }
 
     if (
@@ -255,7 +255,7 @@ export class GoodsReceiveService {
     });
 
     if (!warehouse) {
-      throw new NotFoundException('Gudang tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Gudang"}`);
     }
 
     // Validate items
@@ -266,7 +266,7 @@ export class GoodsReceiveService {
 
       if (!poItem) {
         throw new BadRequestException(
-          `Item Purchase Order '${item.purchaseOrderItemId}' tidak ditemukan`,
+          `messages.error.notFound|{"name": "Item Purchase Order"}`,
         );
       }
 
@@ -430,7 +430,7 @@ export class GoodsReceiveService {
     });
 
     if (!goodsReceive) {
-      throw new NotFoundException('Penerimaan Barang tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Penerimaan Barang"}`);
     }
 
     await this.prisma.$transaction(async (tx) => {
@@ -501,7 +501,7 @@ export class GoodsReceiveService {
     });
 
     return successResponse({
-      message: `Penerimaan Barang '${goodsReceive.receiveNumber}' berhasil dihapus`,
+      message: `messages.success.deleted|{"name": "${goodsReceive.receiveNumber}"}`,
     });
   }
 }

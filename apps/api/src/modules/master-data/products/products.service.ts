@@ -253,7 +253,7 @@ export class ProductsService {
     });
 
     if (!product) {
-      throw new NotFoundException('Produk tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Produk"}`);
     }
 
     return successResponse({
@@ -459,7 +459,7 @@ export class ProductsService {
       });
 
       if (existingBarcode) {
-        throw new ConflictException(`Barcode '${dto.barcode}' sudah digunakan`);
+        throw new ConflictException(`messages.error.conflict|{"name": "Barcode ${dto.barcode}"}`);
       }
     }
 
@@ -469,7 +469,7 @@ export class ProductsService {
     });
 
     if (!category) {
-      throw new NotFoundException('Kategori tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Kategori"}`);
     }
 
     // Auto-generate SKU if not provided
@@ -483,7 +483,7 @@ export class ProductsService {
       });
 
       if (existingSku) {
-        throw new ConflictException(`Produk dengan SKU ${dto.sku} sudah ada`);
+        throw new ConflictException(`messages.error.conflict|{"name": "SKU ${dto.sku}"}`);
       }
     }
 
@@ -493,7 +493,7 @@ export class ProductsService {
     });
 
     if (!unit) {
-      throw new NotFoundException('Satuan tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Satuan"}`);
     }
 
     const product = await this.prisma.product.create({
@@ -553,7 +553,7 @@ export class ProductsService {
     });
 
     if (!existing) {
-      throw new NotFoundException('Produk tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Produk"}`);
     }
 
     // Check SKU uniqueness if changing
@@ -563,7 +563,7 @@ export class ProductsService {
       });
 
       if (existingSku) {
-        throw new ConflictException(`SKU '${dto.sku}' sudah digunakan`);
+        throw new ConflictException(`messages.error.conflict|{"name": "SKU ${dto.sku}"}`);
       }
     }
 
@@ -574,7 +574,7 @@ export class ProductsService {
       });
 
       if (existingBarcode) {
-        throw new ConflictException(`Barcode '${dto.barcode}' sudah digunakan`);
+        throw new ConflictException(`messages.error.conflict|{"name": "Barcode ${dto.barcode}"}`);
       }
     }
 
@@ -585,7 +585,7 @@ export class ProductsService {
       });
 
       if (!category) {
-        throw new NotFoundException('Kategori tidak ditemukan');
+        throw new NotFoundException(`messages.error.notFound|{"name": "Kategori"}`);
       }
     }
 
@@ -596,7 +596,7 @@ export class ProductsService {
       });
 
       if (!unit) {
-        throw new NotFoundException('Satuan tidak ditemukan');
+        throw new NotFoundException(`messages.error.notFound|{"name": "Satuan"}`);
       }
     }
 
@@ -704,7 +704,7 @@ export class ProductsService {
     });
 
     if (!product) {
-      throw new NotFoundException('Produk tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Produk"}`);
     }
 
     // Logic:
@@ -718,7 +718,7 @@ export class ProductsService {
       });
 
       return successResponse({
-        message: `Produk '${product.name}' berhasil dinonaktifkan`,
+        message: `messages.success.deactivated|{"name": "${product.name}"}`,
         isHardDelete: false,
       });
     }
@@ -728,7 +728,7 @@ export class ProductsService {
 
     if (isUsedInTransactions) {
       throw new ConflictException(
-        `Produk '${product.name}' tidak dapat dihapus permanen karena sudah digunakan dalam transaksi. Hanya bisa dinonaktifkan.`,
+        `messages.error.cannotDeleteHasTransactions|{"name": "${product.name}"}`,
       );
     }
 
@@ -765,7 +765,7 @@ export class ProductsService {
     });
 
     return successResponse({
-      message: `Produk '${product.name}' berhasil dihapus permanen`,
+      message: `messages.success.deletedPermanent|{"name": "${product.name}"}`,
       isHardDelete: true,
     });
   }
@@ -842,7 +842,7 @@ export class ProductsService {
     });
 
     if (products.length !== ids.length) {
-      throw new NotFoundException('Beberapa produk tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Beberapa produk"}`);
     }
 
     let hardDeleteCount = 0;
@@ -984,7 +984,7 @@ export class ProductsService {
 
     if (!product) {
       throw new NotFoundException(
-        `Produk dengan ID ${productId} tidak ditemukan`,
+        `messages.error.notFound|{"name": "Produk"}`,
       );
     }
 
@@ -1019,7 +1019,7 @@ export class ProductsService {
     });
 
     if (!variant) {
-      throw new NotFoundException(`Variant dengan ID ${id} tidak ditemukan`);
+      throw new NotFoundException(`messages.error.notFound|{"name": "Variant"}`);
     }
 
     return successResponse(variant);
@@ -1035,7 +1035,7 @@ export class ProductsService {
 
     if (!product) {
       throw new NotFoundException(
-        `Produk dengan ID ${productId} tidak ditemukan`,
+        `messages.error.notFound|{"name": "Produk"}`,
       );
     }
 
@@ -1072,7 +1072,7 @@ export class ProductsService {
 
     if (!product) {
       throw new NotFoundException(
-        `Produk dengan ID ${productId} tidak ditemukan`,
+        `messages.error.notFound|{"name": "Produk"}`,
       );
     }
 
@@ -1104,7 +1104,7 @@ export class ProductsService {
     });
 
     if (existingSku) {
-      throw new ConflictException(`Variant SKU ${variantSku} sudah ada`);
+      throw new ConflictException(`messages.error.conflict|{"name": "SKU ${variantSku}"}`);
     }
 
     if (dto.barcode) {
@@ -1113,7 +1113,7 @@ export class ProductsService {
       });
 
       if (existingBarcode) {
-        throw new ConflictException(`Variant barcode ${dto.barcode} sudah ada`);
+        throw new ConflictException(`messages.error.conflict|{"name": "Barcode ${dto.barcode}"}`);
       }
     }
 
@@ -1145,7 +1145,7 @@ export class ProductsService {
     });
 
     if (!existing) {
-      throw new NotFoundException(`Variant dengan ID ${id} tidak ditemukan`);
+      throw new NotFoundException(`messages.error.notFound|{"name": "Variant"}`);
     }
 
     if (dto.sku && dto.sku !== existing.sku) {
@@ -1154,7 +1154,7 @@ export class ProductsService {
       });
 
       if (existingSku) {
-        throw new ConflictException(`Variant SKU ${dto.sku} sudah ada`);
+        throw new ConflictException(`messages.error.conflict|{"name": "SKU ${dto.sku}"}`);
       }
     }
 
@@ -1164,7 +1164,7 @@ export class ProductsService {
       });
 
       if (existingBarcode) {
-        throw new ConflictException(`Variant barcode ${dto.barcode} sudah ada`);
+        throw new ConflictException(`messages.error.conflict|{"name": "Barcode ${dto.barcode}"}`);
       }
     }
 
@@ -1201,7 +1201,7 @@ export class ProductsService {
     });
 
     if (!variant) {
-      throw new NotFoundException(`Variant dengan ID ${id} tidak ditemukan`);
+      throw new NotFoundException(`messages.error.notFound|{"name": "Variant"}`);
     }
 
     // Logic:
@@ -1215,7 +1215,7 @@ export class ProductsService {
       });
 
       return successResponse({
-        message: `Variant '${variant.name}' berhasil dinonaktifkan`,
+        message: `messages.success.deactivated|{"name": "${variant.name}"}`,
         isHardDelete: false,
       });
     }
@@ -1243,7 +1243,7 @@ export class ProductsService {
     });
 
     return successResponse({
-      message: `Variant '${variant.name}' berhasil dihapus permanen`,
+      message: `messages.success.deletedPermanent|{"name": "${variant.name}"}`,
       isHardDelete: true,
     });
   }
@@ -1262,7 +1262,7 @@ export class ProductsService {
     });
 
     if (variants.length !== ids.length) {
-      throw new NotFoundException('Satu atau lebih variant tidak ditemukan  ');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Satu atau lebih variant"}`);
     }
 
     for (const variant of variants) {
@@ -1309,7 +1309,7 @@ export class ProductsService {
 
     if (!product) {
       throw new NotFoundException(
-        `Produk dengan ID ${productId} tidak ditemukan`,
+        `messages.error.notFound|{"name": "Produk"}`,
       );
     }
 
@@ -1340,7 +1340,7 @@ export class ProductsService {
 
     if (!priceLevel) {
       throw new NotFoundException(
-        `Price level dengan ID ${id} tidak ditemukan`,
+        `messages.error.notFound|{"name": "Price level"}`,
       );
     }
 
@@ -1360,7 +1360,7 @@ export class ProductsService {
 
     if (!product) {
       throw new NotFoundException(
-        `Produk dengan ID ${productId} tidak ditemukan`,
+        `messages.error.notFound|{"name": "Produk"}`,
       );
     }
 
@@ -1376,7 +1376,7 @@ export class ProductsService {
 
     if (existingName) {
       throw new ConflictException(
-        `Price level dengan nama "${dto.name}" sudah ada untuk produk ini`,
+        `messages.error.conflict|{"name": "Price level ${dto.name}"}`,
       );
     }
 
@@ -1408,7 +1408,7 @@ export class ProductsService {
 
     if (!existing) {
       throw new NotFoundException(
-        `Price level dengan ID ${id} tidak ditemukan`,
+        `messages.error.notFound|{"name": "Price level"}`,
       );
     }
 
@@ -1425,7 +1425,7 @@ export class ProductsService {
 
       if (existingName) {
         throw new ConflictException(
-          `Price level dengan nama "${dto.name}" sudah ada untuk produk ini`,
+          `messages.error.conflict|{"name": "Price level ${dto.name}"}`,
         );
       }
     }
@@ -1455,7 +1455,7 @@ export class ProductsService {
 
     if (!priceLevel) {
       throw new NotFoundException(
-        `Price level dengan ID ${id} tidak ditemukan`,
+        `messages.error.notFound|{"name": "Price level"}`,
       );
     }
 
@@ -1464,7 +1464,7 @@ export class ProductsService {
     });
 
     return successResponse({
-      message: `Price level "${priceLevel.name}" berhasil dihapus`,
+      message: `messages.success.deleted|{"name": "${priceLevel.name}"}`,
     });
   }
 
@@ -1485,7 +1485,7 @@ export class ProductsService {
     });
 
     return successResponse({
-      message: `${result.count} price level(s) berhasil dihapus`,
+      message: `messages.success.deleted|{"name": "${result.count} price level(s)"}`,
     });
   }
 }

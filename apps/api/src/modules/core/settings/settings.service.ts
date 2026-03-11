@@ -46,7 +46,7 @@ export class SettingsService {
 
     if (!setting) {
       throw new NotFoundException(
-        `Setting dengan key '${key}' tidak ditemukan`,
+        `messages.error.notFound|{"name": "Setting"}`,
       );
     }
 
@@ -72,7 +72,7 @@ export class SettingsService {
 
     if (invalidKeys.length > 0) {
       throw new NotFoundException(
-        `Setting keys tidak ditemukan: ${invalidKeys.map((k) => k.key).join(', ')}`,
+        `messages.error.notFound|{"name": "Setting"}: ${invalidKeys.map((k) => k.key).join(', ')}`,
       );
     }
 

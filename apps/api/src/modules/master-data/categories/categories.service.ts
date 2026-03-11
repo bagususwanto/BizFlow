@@ -183,7 +183,7 @@ export class CategoriesService {
     });
 
     if (!category) {
-      throw new NotFoundException('Kategori tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Kategori"}`);
     }
 
     return successResponse({
@@ -275,7 +275,7 @@ export class CategoriesService {
 
     if (existingName) {
       throw new ConflictException(
-        `Kategori '${dto.name}' sudah ada di level ini`,
+        `messages.error.conflict|{"name": "Kategori ${dto.name}"}`,
       );
     }
 
@@ -286,7 +286,7 @@ export class CategoriesService {
       });
 
       if (!parent) {
-        throw new NotFoundException('Kategori parent tidak ditemukan');
+        throw new NotFoundException(`messages.error.notFound|{"name": "Kategori parent"}`);
       }
     }
 
@@ -318,7 +318,7 @@ export class CategoriesService {
     });
 
     if (!existing) {
-      throw new NotFoundException('Kategori tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Kategori"}`);
     }
 
     // Check name uniqueness if changing name
@@ -334,7 +334,7 @@ export class CategoriesService {
 
       if (existingName) {
         throw new ConflictException(
-          `Kategori '${dto.name}' sudah ada di level ini`,
+          `messages.error.conflict|{"name": "Kategori ${dto.name}"}`,
         );
       }
     }
@@ -363,7 +363,7 @@ export class CategoriesService {
         });
 
         if (!parent) {
-          throw new NotFoundException('Kategori parent tidak ditemukan');
+          throw new NotFoundException(`messages.error.notFound|{"name": "Kategori parent"}`);
         }
       }
     }
@@ -428,7 +428,7 @@ export class CategoriesService {
     });
 
     if (!category) {
-      throw new NotFoundException('Kategori tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Kategori"}`);
     }
 
     // Logic:
@@ -442,7 +442,7 @@ export class CategoriesService {
       });
 
       return successResponse({
-        message: `Kategori '${category.name}' berhasil dinonaktifkan`,
+        message: `messages.success.deactivated|{"name": "${category.name}"}`,
         isHardDelete: false,
       });
     }
@@ -450,13 +450,13 @@ export class CategoriesService {
     // If category is inactive, try hard delete
     if (category._count.children > 0) {
       throw new ConflictException(
-        `Kategori '${category.name}' tidak dapat dihapus permanen karena memiliki ${category._count.children} sub-kategori. Hapus sub-kategori terlebih dahulu.`,
+        `messages.error.cannotDeleteHasChildren|{"name": "${category.name}", "count": "${category._count.children}"}`,
       );
     }
 
     if (category._count.products > 0) {
       throw new ConflictException(
-        `Kategori '${category.name}' tidak dapat dihapus permanen karena memiliki ${category._count.products} produk. Hanya bisa dinonaktifkan.`,
+        `messages.error.cannotDeleteHasProducts|{"name": "${category.name}", "count": "${category._count.products}"}`,
       );
     }
 
@@ -466,7 +466,7 @@ export class CategoriesService {
     });
 
     return successResponse({
-      message: `Kategori '${category.name}' berhasil dihapus permanen`,
+      message: `messages.success.deletedPermanent|{"name": "${category.name}"}`,
     });
   }
 
@@ -485,7 +485,7 @@ export class CategoriesService {
     });
 
     if (categories.length !== ids.length) {
-      throw new NotFoundException('Beberapa kategori tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Beberapa kategori"}`);
     }
 
     let hardDeleteCount = 0;
@@ -547,7 +547,7 @@ export class CategoriesService {
     });
 
     if (!category) {
-      throw new NotFoundException('Kategori tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Kategori"}`);
     }
 
     const oldParentId = category.parentId;
@@ -578,7 +578,7 @@ export class CategoriesService {
       });
 
       if (!parent) {
-        throw new NotFoundException('Kategori parent tidak ditemukan');
+        throw new NotFoundException(`messages.error.notFound|{"name": "Kategori parent"}`);
       }
     }
 
@@ -640,6 +640,6 @@ export class CategoriesService {
       });
     });
 
-    return successResponse({ message: 'Urutan kategori berhasil diperbarui' });
+    return successResponse({ message: `messages.success.orderUpdated` });
   }
 }

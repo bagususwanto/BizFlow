@@ -137,7 +137,9 @@ export class SuppliersService {
     });
 
     if (!supplier) {
-      throw new NotFoundException('Supplier tidak ditemukan');
+      throw new NotFoundException(
+        `messages.error.notFound|{"name": "Supplier"}`,
+      );
     }
 
     return successResponse(supplier);
@@ -184,7 +186,7 @@ export class SuppliersService {
       });
       if (existingCode) {
         throw new ConflictException(
-          `Kode supplier '${dto.code}' sudah digunakan`,
+          `messages.error.conflict|{"name": "Kode supplier ${dto.code}"}`,
         );
       }
     }
@@ -195,7 +197,9 @@ export class SuppliersService {
         where: { email: dto.email },
       });
       if (existingEmail) {
-        throw new ConflictException(`Email '${dto.email}' sudah digunakan`);
+        throw new ConflictException(
+          `messages.error.conflict|{"name": "Email ${dto.email}"}`,
+        );
       }
     }
 
@@ -230,7 +234,9 @@ export class SuppliersService {
     });
 
     if (!existing) {
-      throw new NotFoundException('Supplier tidak ditemukan');
+      throw new NotFoundException(
+        `messages.error.notFound|{"name": "Supplier"}`,
+      );
     }
 
     // Check duplicate code if changing
@@ -240,7 +246,7 @@ export class SuppliersService {
       });
       if (existingCode) {
         throw new ConflictException(
-          `Kode supplier '${dto.code}' sudah digunakan`,
+          `messages.error.conflict|{"name": "Kode supplier ${dto.code}"}`,
         );
       }
     }
@@ -251,7 +257,9 @@ export class SuppliersService {
         where: { email: dto.email, NOT: { id } },
       });
       if (existingEmail) {
-        throw new ConflictException(`Email '${dto.email}' sudah digunakan`);
+        throw new ConflictException(
+          `messages.error.conflict|{"name": "Email ${dto.email}"}`,
+        );
       }
     }
 
@@ -285,7 +293,9 @@ export class SuppliersService {
     });
 
     if (!supplier) {
-      throw new NotFoundException('Supplier tidak ditemukan');
+      throw new NotFoundException(
+        `messages.error.notFound|{"name": "Supplier"}`,
+      );
     }
 
     // Logic:
@@ -299,7 +309,7 @@ export class SuppliersService {
       });
 
       return successResponse({
-        message: `Supplier '${supplier.name}' berhasil dinonaktifkan`,
+        message: `messages.success.deleted|{"name": "Supplier ${supplier.name}"}`,
       });
     }
 
@@ -308,7 +318,7 @@ export class SuppliersService {
 
     if (isUsedInTransactions) {
       throw new ConflictException(
-        `Supplier '${supplier.name}' tidak dapat dihapus permanen karena sudah memiliki riwayat transaksi. Hanya bisa dinonaktifkan.`,
+        `messages.error.conflict|{"name": "Supplier ${supplier.name}"}`,
       );
     }
 
@@ -318,7 +328,7 @@ export class SuppliersService {
     });
 
     return successResponse({
-      message: `Supplier '${supplier.name}' berhasil dihapus permanen`,
+      message: `messages.success.deleted|{"name": "Supplier ${supplier.name}"}`,
       isHardDelete: true,
     });
   }
@@ -343,7 +353,9 @@ export class SuppliersService {
     });
 
     if (suppliers.length !== ids.length) {
-      throw new NotFoundException('Beberapa supplier tidak ditemukan');
+      throw new NotFoundException(
+        `messages.error.notFound|{"name": "Beberapa supplier"}`,
+      );
     }
 
     let hardDeleteCount = 0;

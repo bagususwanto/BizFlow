@@ -192,7 +192,7 @@ export class SupplierPaymentsService {
     });
 
     if (!payment) {
-      throw new NotFoundException('Pembayaran supplier tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Pembayaran supplier"}`);
     }
 
     return successResponse(payment);
@@ -237,7 +237,7 @@ export class SupplierPaymentsService {
     });
 
     if (!supplier) {
-      throw new NotFoundException('Supplier tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Supplier"}`);
     }
 
     // Verify account exists
@@ -246,7 +246,7 @@ export class SupplierPaymentsService {
     });
 
     if (!account) {
-      throw new NotFoundException('Akun pembayaran tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Akun pembayaran"}`);
     }
 
     // Verify purchase order if provided
@@ -257,7 +257,7 @@ export class SupplierPaymentsService {
       });
 
       if (!purchaseOrder) {
-        throw new NotFoundException('Purchase Order tidak ditemukan');
+        throw new NotFoundException(`messages.error.notFound|{"name": "Purchase Order"}`);
       }
 
       if (purchaseOrder.supplierId !== dto.supplierId) {
@@ -286,7 +286,7 @@ export class SupplierPaymentsService {
       });
       if (existing) {
         throw new ConflictException(
-          `Nomor pembayaran '${paymentNumber}' sudah digunakan`,
+          `messages.error.conflict|{"name": "Nomor pembayaran ${paymentNumber}"}`,
         );
       }
     }
@@ -387,7 +387,7 @@ export class SupplierPaymentsService {
     });
 
     if (!existing) {
-      throw new NotFoundException('Pembayaran supplier tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Pembayaran supplier"}`);
     }
 
     // Verify account if changed
@@ -396,7 +396,7 @@ export class SupplierPaymentsService {
         where: { id: dto.accountId },
       });
       if (!account) {
-        throw new NotFoundException('Akun pembayaran tidak ditemukan');
+        throw new NotFoundException(`messages.error.notFound|{"name": "Akun pembayaran"}`);
       }
     }
 
@@ -478,7 +478,7 @@ export class SupplierPaymentsService {
     });
 
     if (!payment) {
-      throw new NotFoundException('Pembayaran supplier tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Pembayaran supplier"}`);
     }
 
     await this.prisma.$transaction(async (tx) => {
@@ -524,7 +524,7 @@ export class SupplierPaymentsService {
     });
 
     return successResponse({
-      message: `Pembayaran '${payment.paymentNumber}' berhasil dihapus`,
+      message: `messages.success.deleted|{"name": "${payment.paymentNumber}"}`,
     });
   }
 
@@ -538,7 +538,7 @@ export class SupplierPaymentsService {
     });
 
     if (payments.length !== ids.length) {
-      throw new NotFoundException('Beberapa pembayaran tidak ditemukan');
+      throw new NotFoundException(`messages.error.notFound|{"name": "Beberapa pembayaran"}`);
     }
 
     let deletedCount = 0;
@@ -589,7 +589,7 @@ export class SupplierPaymentsService {
     }
 
     return successResponse({
-      message: `${deletedCount} pembayaran berhasil dihapus`,
+      message: `messages.success.deleted|{"name": "${deletedCount} pembayaran"}`,
       deletedCount,
     });
   }

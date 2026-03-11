@@ -3663,6 +3663,13 @@
       "totalItemsDesc": "Jumlah produk unik yang memiliki stok",
       "avgValuePerItem": "Rata-rata Nilai / Produk",
       "avgValuePerItemDesc": "Rata-rata nilai untuk setiap produk unik"
+    },
+    "export": {
+      "excel": "Ekspor Excel",
+      "pdf": "Ekspor PDF",
+      "loading": "Mengekspor laporan valuasi...",
+      "success": "Laporan berhasil diekspor",
+      "error": "Gagal mengekspor laporan"
     }
   }
 }

@@ -3695,6 +3695,13 @@
       "totalItemsDesc": "Number of unique products with stock",
       "avgValuePerItem": "Avg. Value / Product",
       "avgValuePerItemDesc": "Average valuation per unique product"
+    },
+    "export": {
+      "excel": "Export Excel",
+      "pdf": "Export PDF",
+      "loading": "Exporting valuation report...",
+      "success": "Report exported successfully",
+      "error": "Failed to export report"
     }
   }
 }

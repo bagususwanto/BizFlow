@@ -3,6 +3,7 @@ import {
   QueryDashboardValues,
   QuerySalesReportValues,
   QueryStockReportValues,
+  QueryStockValuationValues,
   ApiMeta,
   ApiResponse,
 } from '@bizflow/types';
@@ -234,6 +235,25 @@ export class ReportsService {
     const a = document.createElement('a');
     a.href = url;
     a.download = `stock-report.${format === 'excel' ? 'xlsx' : 'pdf'}`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  }
+
+  async exportValuation(
+    params: QueryStockValuationValues,
+    format: 'excel' | 'pdf',
+  ): Promise<void> {
+    const queryString = this.buildQueryString(params);
+    const blob = await apiClient.getBlob(
+      `/reports/export/valuation/${format}?${queryString}`,
+    );
+
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `valuation-report.${format === 'excel' ? 'xlsx' : 'pdf'}`;
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);

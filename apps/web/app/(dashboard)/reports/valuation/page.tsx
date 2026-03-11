@@ -7,8 +7,11 @@ import { useActiveCategories } from '@/hooks/use-categories';
 import { useDebounce } from '@/hooks/use-debounce';
 import { DataListPage } from '@/components/shared/data-list-page';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import { Loader2 } from 'lucide-react';
+import { Loader2, FileSpreadsheet, FileText } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { toast } from 'sonner';
+import { Button } from '@bizflow/ui';
+import { reportsService } from '@/services/reports.service';
 import { ValuationSummary } from './components/valuation-summary';
 import { getColumns } from './columns';
 
@@ -32,7 +35,6 @@ function ValuationContent() {
   const { warehouses } = useWarehouses({ isActive: true });
   const { data: categories } = useActiveCategories();
 
-  // Fetch Valuation Data
   const { data, isLoading, refetch } = useStockValuation({
     page,
     pageSize,
@@ -42,6 +44,32 @@ function ValuationContent() {
     sortBy: sortBy as any,
     sortOrder,
   });
+
+  const handleExport = async (format: 'excel' | 'pdf') => {
+    try {
+      toast.promise(
+        reportsService.exportValuation(
+          {
+            page,
+            pageSize,
+            search: debouncedSearch,
+            warehouseId: warehouseId !== 'all' ? warehouseId : undefined,
+            categoryId: categoryId !== 'all' ? categoryId : undefined,
+            sortBy: sortBy as any,
+            sortOrder,
+          },
+          format,
+        ),
+        {
+          loading: t('export.loading'),
+          success: t('export.success'),
+          error: t('export.error'),
+        },
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleCreateQueryString = useCallback(
     (params: Record<string, string | number | null>) => {
@@ -73,6 +101,26 @@ function ValuationContent() {
     <DataListPage
       title={t('title')}
       description={t('description')}
+      headerAction={
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleExport('excel')}
+          >
+            <FileSpreadsheet className="mr-2 h-4 w-4" />
+            {t('export.excel')}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleExport('pdf')}
+          >
+            <FileText className="mr-2 h-4 w-4" />
+            {t('export.pdf')}
+          </Button>
+        </div>
+      }
       data={(data?.data || []) as any[]}
       columns={getColumns(t as any) as any[]}
       isLoading={isLoading}

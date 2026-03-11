@@ -10,6 +10,7 @@ import { Response } from 'express';
 import { ExportService } from './export.service';
 import { QuerySalesReportDto } from '../sales/dto';
 import { QueryStockReportDto } from '../inventory/dto';
+import { QueryStockValuationDto } from '../../inventory/stock-valuation/dto';
 import { JwtAuthGuard, PermissionsGuard } from '../../../common/guards';
 import { Permissions } from '../../../common/decorators/permissions.decorator';
 import { Permission } from '@bizflow/types';
@@ -73,6 +74,35 @@ export class ExportController {
     res.set({
       'Content-Type': 'application/pdf',
       'Content-Disposition': `attachment; filename="stock-report-${new Date().toISOString().split('T')[0]}.pdf"`,
+    });
+    return new StreamableFile(buffer as any);
+  }
+
+  @Get('valuation/excel')
+  @Permissions(Permission.Reports.Export)
+  async exportValuationExcel(
+    @Query() query: QueryStockValuationDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const buffer = await this.exportService.exportValuationExcel(query);
+    res.set({
+      'Content-Type':
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Disposition': `attachment; filename="valuation-report-${new Date().toISOString().split('T')[0]}.xlsx"`,
+    });
+    return new StreamableFile(buffer as any);
+  }
+
+  @Get('valuation/pdf')
+  @Permissions(Permission.Reports.Export)
+  async exportValuationPdf(
+    @Query() query: QueryStockValuationDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const buffer = await this.exportService.exportValuationPdf(query);
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="valuation-report-${new Date().toISOString().split('T')[0]}.pdf"`,
     });
     return new StreamableFile(buffer as any);
   }

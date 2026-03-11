@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { SalesReportService } from '../sales/sales-report.service';
 import { StockReportService } from '../inventory/stock-report.service';
+import { StockValuationService } from '../../inventory/stock-valuation/stock-valuation.service';
 import { QuerySalesReportValues, QueryStockReportValues } from '@bizflow/types';
+import { QueryStockValuationDto } from '../../inventory/stock-valuation/dto';
 import ExcelJS from 'exceljs';
 import PDFDocument from 'pdfkit';
 import { Readable } from 'stream';
@@ -11,6 +13,7 @@ export class ExportService {
   constructor(
     private readonly salesReportService: SalesReportService,
     private readonly stockReportService: StockReportService,
+    private readonly stockValuationService: StockValuationService,
   ) {}
 
   async exportSalesExcel(query: QuerySalesReportValues) {
@@ -215,6 +218,99 @@ export class ExportService {
         doc.text(`Rp ${item.totalValue.toLocaleString('id-ID')}`, 320, y, {
           width: 80,
         });
+        y += 20;
+      });
+
+      doc.end();
+    });
+  }
+
+  async exportValuationExcel(query: QueryStockValuationDto) {
+    const report = await this.stockValuationService.findAll(query);
+    const summary = await this.stockValuationService.getSummary();
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Stock Valuation');
+
+    // Add headers
+    worksheet.columns = [
+      { header: 'SKU', key: 'sku', width: 15 },
+      { header: 'Product Name', key: 'name', width: 30 },
+      { header: 'Category', key: 'category', width: 20 },
+      { header: 'Warehouse', key: 'warehouseName', width: 20 },
+      { header: 'Quantity', key: 'totalQuantity', width: 12 },
+      { header: 'Avg Cost', key: 'averageCost', width: 15 },
+      { header: 'Total Value', key: 'totalValue', width: 15 },
+    ];
+
+    // Add data
+    report.data.forEach((item) => {
+      worksheet.addRow({
+        sku: item.variant?.sku || '-',
+        name: item.variant?.name || '-',
+        category: item.variant?.product?.category?.name || '-',
+        warehouseName: item.warehouse?.name || '-',
+        totalQuantity: item.totalQty,
+        averageCost: item.avgCost,
+        totalValue: item.totalValue,
+      });
+    });
+
+    // Style headers
+    worksheet.getRow(1).font = { bold: true };
+    worksheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFE0E0E0' },
+    };
+
+    return workbook.xlsx.writeBuffer();
+  }
+
+  async exportValuationPdf(query: QueryStockValuationDto): Promise<Buffer> {
+    const report = await this.stockValuationService.findAll(query);
+    const summary = await this.stockValuationService.getSummary();
+    const summaryData = summary.data || { totalInventoryValue: 0, totalVariants: 0 };
+
+    return new Promise((resolve, reject) => {
+      const doc = new PDFDocument({ margin: 50 });
+      const chunks: Buffer[] = [];
+
+      doc.on('data', (chunk) => chunks.push(chunk));
+      doc.on('end', () => resolve(Buffer.concat(chunks)));
+      doc.on('error', reject);
+
+      // Title
+      doc.fontSize(20).text('Stock Valuation', { align: 'center' });
+      doc.moveDown();
+
+      // Summary
+      doc.fontSize(12).text(`Total Value: Rp ${summaryData.totalInventoryValue.toLocaleString('id-ID')}`);
+      doc.text(`Total Items: ${summaryData.totalVariants}`);
+      doc.moveDown();
+
+      // Table header
+      const tableTop = doc.y;
+      doc.fontSize(10).font('Helvetica-Bold');
+      doc.text('SKU', 50, tableTop, { width: 80 });
+      doc.text('Product', 130, tableTop, { width: 150 });
+      doc.text('Qty', 280, tableTop, { width: 40 });
+      doc.text('Avg Cost', 320, tableTop, { width: 80 });
+      doc.text('Total', 400, tableTop, { width: 80 });
+
+      // Table rows
+      let y = tableTop + 20;
+      doc.font('Helvetica');
+      report.data.forEach((item) => {
+        if (y > 700) {
+          doc.addPage();
+          y = 50;
+        }
+        doc.text(item.variant?.sku || '-', 50, y, { width: 80 });
+        doc.text(item.variant?.name || '-', 130, y, { width: 150 });
+        doc.text(item.totalQty.toString(), 280, y, { width: 40 });
+        doc.text(`Rp ${item.avgCost.toLocaleString('id-ID')}`, 320, y, { width: 80 });
+        doc.text(`Rp ${item.totalValue.toLocaleString('id-ID')}`, 400, y, { width: 80 });
         y += 20;
       });
 

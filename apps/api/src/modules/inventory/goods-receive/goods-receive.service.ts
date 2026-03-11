@@ -13,10 +13,16 @@ import { PrismaService } from '../../../prisma';
 import { successResponse, paginatedResponse } from '../../../common/utils';
 import { Prisma } from '@bizflow/database';
 import { ApiResponse } from '@bizflow/types';
+import { StockLotsService } from '../stock-lots/stock-lots.service';
+import { StockValuationService } from '../stock-valuation/stock-valuation.service';
 
 @Injectable()
 export class GoodsReceiveService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly stockLotsService: StockLotsService,
+    private readonly stockValuationService: StockValuationService,
+  ) {}
 
   /**
    * Get all goods receives with pagination and filter
@@ -381,6 +387,37 @@ export class GoodsReceiveService {
             createdBy: userId,
           },
         });
+
+        // Create/update stock lot if lotNumber provided
+        if (item.lotNumber) {
+          await this.stockLotsService.createInTransaction(tx, {
+            lotNumber: item.lotNumber,
+            variantId: poItem.variantId,
+            warehouseId: dto.warehouseId,
+            receiveId: gr.id,
+            qty: Number(item.receivedQty),
+            expiryDate: item.expiryDate
+              ? new Date(item.expiryDate as string)
+              : null,
+            manufacturingDate: item.manufacturingDate
+              ? new Date(item.manufacturingDate as string)
+              : null,
+            notes: item.notes ?? null,
+            createdBy: userId,
+          });
+        }
+
+        // Update HPP via moving average cost
+        const unitPrice = Number(poItem.unitPrice);
+        if (unitPrice > 0) {
+          await this.stockValuationService.recalculateOnReceive(
+            tx,
+            poItem.variantId,
+            dto.warehouseId,
+            Number(item.receivedQty),
+            unitPrice,
+          );
+        }
       }
 
       // Determine new PO status based on received quantities

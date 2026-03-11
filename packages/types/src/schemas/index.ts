@@ -25,3 +25,5 @@ export * from './payment-term';
 export * from './stock-adjustment';
 export * from './stock-transfer';
 export * from './stock-opname';
+export * from './stock-lot';
+export * from './stock-valuation';

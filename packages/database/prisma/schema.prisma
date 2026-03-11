@@ -250,6 +250,8 @@ model ProductVariant {
   stockTransferItems   StockTransferItem[]
   stockOpnameItems     StockOpnameItem[]
   purchaseReturnItems  PurchaseReturnItem[]
+  stockLots          StockLot[]
+  stockValuations    StockValuation[]
 
   @@index([productId])
   @@index([sku])
@@ -285,6 +287,8 @@ model Warehouse {
   transfersFrom    StockTransfer[]   @relation("TransferFrom")
   transfersTo      StockTransfer[]   @relation("TransferTo")
   goodsReceives    GoodsReceive[]
+  stockLots        StockLot[]
+  stockValuations  StockValuation[]
 }
 
 model Promotion {
@@ -460,6 +464,47 @@ model StockOpnameItem {
   variant ProductVariant @relation(fields: [variantId], references: [id])
 
   @@index([opnameId])
+}
+
+model StockLot {
+  id                String    @id @default(cuid())
+  lotNumber         String
+  variantId         String
+  warehouseId       String
+  receiveId         String?   // reference to GoodsReceive (null for manual lots)
+  initialQty        Decimal
+  remainingQty      Decimal
+  expiryDate        DateTime?
+  manufacturingDate DateTime?
+  notes             String?
+  createdBy         String
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  variant      ProductVariant @relation(fields: [variantId], references: [id])
+  warehouse    Warehouse      @relation(fields: [warehouseId], references: [id])
+  goodsReceive GoodsReceive?  @relation(fields: [receiveId], references: [id])
+
+  @@unique([lotNumber, variantId, warehouseId])
+  @@index([variantId, warehouseId])
+  @@index([expiryDate])
+  @@index([warehouseId])
+}
+
+model StockValuation {
+  id          String   @id @default(cuid())
+  variantId   String
+  warehouseId String
+  avgCost     Decimal  @default(0) // weighted moving average cost (HPP)
+  totalQty    Decimal  @default(0) // current qty in valuation
+  totalValue  Decimal  @default(0) // totalQty * avgCost
+  updatedAt   DateTime @updatedAt
+
+  variant   ProductVariant @relation(fields: [variantId], references: [id])
+  warehouse Warehouse      @relation(fields: [warehouseId], references: [id])
+
+  @@unique([variantId, warehouseId])
+  @@index([warehouseId])
 }
 
 // ========================================
@@ -706,16 +751,20 @@ model GoodsReceive {
   warehouse     Warehouse          @relation(fields: [warehouseId], references: [id])
   items         GoodsReceiveItem[]
   creator       User               @relation(fields: [createdBy], references: [id])
+  stockLots     StockLot[]
 
   @@index([purchaseOrderId])
   @@index([warehouseId])
 }
 
 model GoodsReceiveItem {
-  id                  String  @id @default(cuid())
+  id                  String    @id @default(cuid())
   receiveId           String
   purchaseOrderItemId String
   receivedQty         Decimal
+  lotNumber           String?   // optional batch/lot number
+  expiryDate          DateTime? // optional expiry date
+  manufacturingDate   DateTime? // optional manufacturing date
   notes               String?
 
   receive           GoodsReceive      @relation(fields: [receiveId], references: [id], onDelete: Cascade)

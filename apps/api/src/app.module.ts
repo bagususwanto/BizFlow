@@ -23,6 +23,8 @@ import { StockModule } from './modules/inventory/stock';
 import { StockAdjustmentsModule } from './modules/inventory/adjustments';
 import { StockTransfersModule } from './modules/inventory/transfers';
 import { StockOpnameModule } from './modules/inventory/opname';
+import { StockLotsModule } from './modules/inventory/stock-lots';
+import { StockValuationModule } from './modules/inventory/stock-valuation';
 import { TransactionsModule } from './modules/pos/transactions';
 import { PaymentsModule } from './modules/pos/payments';
 import { ReturnsModule } from './modules/pos/returns';
@@ -71,6 +73,8 @@ import { AppController } from './app.controller';
     StockAdjustmentsModule,
     StockTransfersModule,
     StockOpnameModule,
+    StockLotsModule,
+    StockValuationModule,
     // POS modules
     TransactionsModule,
     PaymentsModule,

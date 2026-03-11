@@ -3664,5 +3664,37 @@
       "resumeSuccess": "Transaction resumed",
       "unknownProduct": "Unknown Product"
     }
+  },
+  "valuation": {
+    "title": "Stock Valuation",
+    "description": "View the total value of your current stock.",
+    "filter": {
+      "searchWarehouse": "Search product, SKU...",
+      "warehouseLabel": "Warehouse",
+      "categoryLabel": "Category"
+    },
+    "emptyState": {
+      "title": "No stock data found",
+      "desc": "Stock data will appear here once there are items in the warehouse."
+    },
+    "columns": {
+      "product": "Product",
+      "sku": "SKU",
+      "category": "Category",
+      "warehouse": "Warehouse",
+      "qty": "Quantity",
+      "avgCost": "Average Cost",
+      "totalValue": "Total Value"
+    },
+    "summary": {
+      "totalValue": "Total Valuation",
+      "totalValueDesc": "Total value of items in stock",
+      "totalStock": "Total Stock",
+      "totalStockDesc": "Total items available",
+      "totalItems": "Total Products",
+      "totalItemsDesc": "Number of unique products with stock",
+      "avgValuePerItem": "Avg. Value / Product",
+      "avgValuePerItemDesc": "Average valuation per unique product"
+    }
   }
 }

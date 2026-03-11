@@ -3632,5 +3632,37 @@
       "resumeSuccess": "Transaksi dilanjutkan",
       "unknownProduct": "Unknown Product"
     }
+  },
+  "valuation": {
+    "title": "Valuasi Stok",
+    "description": "Lihat total nilai persediaan barang Anda saat ini.",
+    "filter": {
+      "searchWarehouse": "Cari produk, SKU...",
+      "warehouseLabel": "Gudang",
+      "categoryLabel": "Kategori"
+    },
+    "emptyState": {
+      "title": "Data stok tidak ditemukan",
+      "desc": "Data stok akan muncul di sini setelah ada barang di gudang."
+    },
+    "columns": {
+      "product": "Produk",
+      "sku": "SKU",
+      "category": "Kategori",
+      "warehouse": "Gudang",
+      "qty": "Kuantitas",
+      "avgCost": "Rata-rata Biaya",
+      "totalValue": "Total Nilai"
+    },
+    "summary": {
+      "totalValue": "Total Valuasi",
+      "totalValueDesc": "Total nilai barang di dalam stok",
+      "totalStock": "Total Stok",
+      "totalStockDesc": "Total kuantitas barang tersedia",
+      "totalItems": "Total Produk",
+      "totalItemsDesc": "Jumlah produk unik yang memiliki stok",
+      "avgValuePerItem": "Rata-rata Nilai / Produk",
+      "avgValuePerItemDesc": "Rata-rata nilai untuk setiap produk unik"
+    }
   }
 }

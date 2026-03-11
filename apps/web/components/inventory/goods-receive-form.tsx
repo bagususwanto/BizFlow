@@ -132,6 +132,9 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
         return {
           purchaseOrderItemId: item.id,
           receivedQty: remaining > 0 ? remaining : 0, // Default to remaining
+          lotNumber: '',
+          expiryDate: null,
+          manufacturingDate: null,
           notes: '',
         };
       });
@@ -326,12 +329,11 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
           </CardHeader>
           <CardContent>
             <div className="rounded-md border">
-              <div className="hidden sm:grid grid-cols-[1fr_100px_100px_100px_1fr] gap-4 items-center p-4 bg-muted/40 text-sm font-medium text-muted-foreground border-b">
+              <div className="hidden sm:grid grid-cols-[1.5fr_1fr_1fr_120px] gap-4 items-center p-4 bg-muted/40 text-sm font-medium text-muted-foreground border-b">
                 <div>{t('form.items.product')}</div>
-                <div className="text-right">{t('form.items.ordered')}</div>
-                <div className="text-right">{t('form.items.received')}</div>
+                <div>{t('form.items.lotNumber')}</div>
+                <div>{t('form.items.expiredAt')}</div>
                 <div className="text-right">{t('form.items.receivingNow')}</div>
-                <div className="pl-4">{t('form.items.itemNotes')}</div>
               </div>
 
               <div className="divide-y sm:divide-y-0">
@@ -355,34 +357,124 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
                   return (
                     <div
                       key={field.id}
-                      className="flex flex-col sm:grid sm:grid-cols-[1fr_100px_100px_100px_1fr] gap-4 p-4 hover:bg-muted/50 transition-colors"
+                      className="flex flex-col sm:grid sm:grid-cols-[1.5fr_1fr_1fr_120px] gap-4 p-4 hover:bg-muted/50 transition-colors border-b last:border-0"
                     >
-                      <div className="flex flex-col">
-                        <span className="font-medium">
-                          {poItem?.variant?.product?.name || 'Loading...'}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          {poItem?.variant?.sku}
-                        </span>
-                        {/* Hidden input for ID is managed by react-hook-form via defaultValues/replace */}
+                      {/* Column 1: Product Info & Notes */}
+                      <div className="flex flex-col space-y-3">
+                        <div className="flex flex-col">
+                          <span className="font-medium">
+                            {poItem?.variant?.product?.name || 'Loading...'}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            {poItem?.variant?.sku} • {t('form.items.ordered')}: {ordered} • {t('form.items.received')}: {received}
+                          </span>
+                        </div>
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.notes`}
+                          render={({ field }) => (
+                            <FormItem className="space-y-0">
+                              <FormControl>
+                                <Input
+                                  className="h-8 text-xs"
+                                  placeholder={t('form.items.notesPlaceholder')}
+                                  {...field}
+                                  value={field.value || ''}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </div>
 
-                      <div className="flex justify-between sm:block text-right">
-                        <span className="sm:hidden text-muted-foreground text-sm">
-                          {t('form.items.ordered')}:
+                      {/* Column 2: Lot/Batch */}
+                      <div className="flex flex-col space-y-3 pt-1">
+                        <span className="sm:hidden text-muted-foreground text-xs font-medium">
+                          {t('form.items.expiryDate')}
                         </span>
-                        <span>{ordered}</span>
+                        
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.expiryDate`}
+                          render={({ field }) => (
+                            <FormItem className="space-y-0 flex flex-col">
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <FormControl>
+                                    <Button
+                                      variant="outline"
+                                      className={cn(
+                                        'w-full h-8 px-3 text-left font-normal text-xs',
+                                        !field.value && 'text-muted-foreground'
+                                      )}
+                                    >
+                                      {field.value ? (
+                                        format(new Date(field.value), 'PP', { locale: id })
+                                      ) : (
+                                        <span>{t('form.items.expiryDatePlaceholder')}</span>
+                                      )}
+                                      <CalendarIcon className="ml-auto h-3 w-3 opacity-50" />
+                                    </Button>
+                                  </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0" align="start">
+                                  <Calendar
+                                    mode="single"
+                                    selected={field.value ? new Date(field.value) : undefined}
+                                    onSelect={field.onChange}
+                                    initialFocus
+                                  />
+                                </PopoverContent>
+                              </Popover>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.manufacturingDate`}
+                          render={({ field }) => (
+                            <FormItem className="space-y-0 flex flex-col pt-1">
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <FormControl>
+                                    <Button
+                                      variant="outline"
+                                      className={cn(
+                                        'w-full h-8 px-3 text-left font-normal text-[11px]',
+                                        !field.value && 'text-muted-foreground'
+                                      )}
+                                    >
+                                      {field.value ? (
+                                        format(new Date(field.value), 'PP', { locale: id })
+                                      ) : (
+                                        <span>{t('form.items.manufacturingDatePlaceholder')}</span>
+                                      )}
+                                      <CalendarIcon className="ml-auto h-3 w-3 opacity-50" />
+                                    </Button>
+                                  </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0" align="start">
+                                  <Calendar
+                                    mode="single"
+                                    selected={field.value ? new Date(field.value) : undefined}
+                                    onSelect={field.onChange}
+                                    disabled={(date) => date > new Date()}
+                                    initialFocus
+                                  />
+                                </PopoverContent>
+                              </Popover>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </div>
 
-                      <div className="flex justify-between sm:block text-right">
-                        <span className="sm:hidden text-muted-foreground text-sm">
-                          {t('form.items.received')}:
-                        </span>
-                        <span>{received}</span>
-                      </div>
-
-                      <div className="flex justify-between sm:block items-center">
-                        <span className="sm:hidden text-muted-foreground text-sm mr-2">
+                      {/* Column 4: Receive Qty */}
+                      <div className="flex flex-col space-y-3 pt-1">
+                        <span className="sm:hidden text-muted-foreground text-xs font-medium">
                           {t('form.items.receive')}
                         </span>
                         <FormField
@@ -404,27 +496,6 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
                                   }
                                 />
                               </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <div className="mt-2 sm:mt-0">
-                        <FormField
-                          control={form.control}
-                          name={`items.${index}.notes`}
-                          render={({ field }) => (
-                            <FormItem className="space-y-0">
-                              <FormControl>
-                                <Input
-                                  className="h-8"
-                                  placeholder={t('form.items.notesPlaceholder')}
-                                  {...field}
-                                  value={field.value || ''}
-                                />
-                              </FormControl>
-                              <FormMessage />
                             </FormItem>
                           )}
                         />

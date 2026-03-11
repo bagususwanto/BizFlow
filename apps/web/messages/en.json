@@ -53,7 +53,8 @@
       "adjustments": "Adjustments",
       "opname": "Stock Opname",
       "transfers": "Transfers",
-      "stockOpname": "Stock Opname"
+      "stockOpname": "Stock Opname",
+      "stockLots": "Batch & Lots"
     },
     "sales": {
       "title": "Sales",
@@ -78,7 +79,8 @@
       "title": "Reports",
       "sales": "Sales",
       "inventory": "Inventory",
-      "finance": "Finance"
+      "finance": "Finance",
+      "stockValuation": "Stock Valuation"
     },
     "settings": {
       "title": "Settings",
@@ -1839,6 +1841,103 @@
           "empty": "No movement history"
         }
       }
+    },
+    "lots": {
+      "title": "Batch & Lots",
+      "description": "Monitor and manage product batches, lots, and expiration dates",
+      "searchPlaceholder": "Search Lot Number, SKU, or Product...",
+      "createLabel": "Create Lot",
+      "summary": {
+        "total": "Total Lots",
+        "totalDesc": "Active stock lots",
+        "expiringSoon": "Expiring Soon",
+        "expiringSoonDesc": "Under 30 days",
+        "expired": "Expired",
+        "expiredDesc": "Past expiration date"
+      },
+      "filter": {
+        "statusLabel": "Status",
+        "warehouseLabel": "Warehouse",
+        "categoryLabel": "Category",
+        "expiryDateLabel": "Expiration"
+      },
+      "status": {
+        "ACTIVE": "Active",
+        "EXPIRED": "Expired",
+        "DEPLETED": "Depleted",
+        "QUARANTINED": "Quarantined"
+      },
+      "columns": {
+        "lotNumber": "Lot/Batch No.",
+        "product": "Product",
+        "sku": "SKU",
+        "warehouse": "Warehouse",
+        "stock": "Stock",
+        "manufacturingDate": "Mfg Date",
+        "expirationDate": "Exp Date",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "actions": {
+        "detail": "View Details",
+        "edit": "Edit",
+        "adjust": "Adjust Stock",
+        "quarantine": "Quarantine"
+      },
+      "create": {
+        "title": "Create Stock Lot",
+        "subtitle": "Manually register a new batch/lot into the system.",
+        "cardTitle": "Lot Information",
+        "cardDesc": "Details of the new batch or lot.",
+        "productLabel": "Product Variant",
+        "productPlaceholder": "Select product variant",
+        "warehouseLabel": "Warehouse",
+        "warehousePlaceholder": "Select warehouse",
+        "lotNumberLabel": "Lot Number",
+        "lotNumberPlaceholder": "e.g., LOT-2023-10-A",
+        "lotNumberDesc": "Leave empty to auto-generate based on product settings.",
+        "qtyLabel": "Initial Quantity",
+        "qtyPlaceholder": "0",
+        "manufacturedAtLabel": "Manufacturing Date",
+        "manufacturedAtPlaceholder": "Select date",
+        "expiredAtLabel": "Expiration Date",
+        "expiredAtPlaceholder": "Select date"
+      },
+      "edit": {
+        "title": "Edit Stock Lot",
+        "subtitle": "Modify batch/lot information.",
+        "cardTitle": "Edit Lot Information",
+        "cardDesc": "Update the details of the selected batch or lot."
+      },
+      "detail": {
+        "title": "Lot Details: {lotNumber}",
+        "failedLoad": "Failed to load lot details",
+        "info": {
+          "title": "Lot Information",
+          "product": "Product:",
+          "sku": "SKU:",
+          "warehouse": "Warehouse:",
+          "initialQty": "Initial Qty:",
+          "currentQty": "Current Qty:",
+          "manufacturedAt": "Mfg Date:",
+          "expiredAt": "Exp Date:",
+          "daysToExpiry": "Days to Expiry:",
+          "status": "Status:",
+          "createdAt": "Created At:"
+        },
+        "movementsTitle": "Lot Movements"
+      },
+      "tabs": {
+        "all": "All Lots",
+        "expiringSoon": "Expiring Soon",
+        "expired": "Expired"
+      },
+      "validation": {
+        "variantRequired": "Product Variant is required",
+        "warehouseRequired": "Warehouse is required",
+        "qtyMin": "Quantity must be greater than 0",
+        "expiredBeforeManufactured": "Expiration date cannot be before manufacturing date"
+      }
     }
   },
   "purchases": {
@@ -2091,6 +2190,12 @@
           "itemNotes": "Item Notes",
           "receive": "Receive:",
           "notesPlaceholder": "Notes...",
+          "lotNumber": "Lot/Batch No.",
+          "lotNumberPlaceholder": "Automatic if empty",
+          "expiredAt": "Expiry Date",
+          "expiredAtPlaceholder": "Select date",
+          "manufacturedAt": "Mfg Date (Optional)",
+          "manufacturedAtPlaceholder": "Select date",
           "empty": "Select a Purchase Order first to view items."
         }
       },
@@ -2639,6 +2744,38 @@
       "cancelled": {
         "title": "Cancelled",
         "desc": "Transfer stopped"
+      }
+    },
+    "valuation": {
+      "title": "Stock Valuation",
+      "description": "Report on Current Stock Valuation / HPP",
+      "emptyState": {
+        "title": "No Valuation Data",
+        "desc": "No stock data found or no price defined for current stock."
+      },
+      "summary": {
+        "totalValue": "Total Valuation",
+        "totalValueDesc": "Total value of all stock items based on average cost",
+        "totalItems": "Total Items",
+        "totalItemsDesc": "Total unique product variants with stock",
+        "totalStock": "Total Stock Qty",
+        "totalStockDesc": "Total quantity across all warehouses",
+        "avgValuePerItem": "Avg Value/Variant",
+        "avgValuePerItemDesc": "Average valuation value per variant"
+      },
+      "filter": {
+        "warehouseLabel": "Warehouse",
+        "searchWarehouse": "Search warehouse...",
+        "categoryLabel": "Category"
+      },
+      "columns": {
+        "product": "Product",
+        "category": "Category",
+        "sku": "SKU",
+        "warehouse": "Warehouse",
+        "qty": "Quantity",
+        "avgCost": "Average Cost",
+        "totalValue": "Total Value"
       }
     },
     "columns": {

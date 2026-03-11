@@ -92,6 +92,10 @@ export const navigationConfig = {
           title: 'inventory.stockOpname',
           url: '/inventory/opname',
         },
+        {
+          title: 'inventory.stockLots',
+          url: '/inventory/lots',
+        },
       ],
     },
     {
@@ -171,6 +175,10 @@ export const navigationConfig = {
         {
           title: 'reports.finance',
           url: '/reports/financial',
+        },
+        {
+          title: 'reports.stockValuation',
+          url: '/reports/valuation',
         },
       ],
     },

@@ -60,6 +60,12 @@ export interface DataListPageProps<TData> {
   // Actions
   createLink?: string;
   createLabel?: string;
+  createButton?: {
+    label: string;
+    href: string;
+    icon?: ReactNode;
+    variant?: 'default' | 'outline' | 'secondary' | 'ghost' | 'link' | 'destructive';
+  };
   onDelete?: (id: string) => void; // Single delete callback (if handling via row action)
   isDeleting?: boolean;
   onBulkDelete?: (ids: string[]) => void;
@@ -111,6 +117,7 @@ export function DataListPage<
   summaryConfig,
   createLink,
   createLabel,
+  createButton,
   onDelete,
   isDeleting,
   onBulkDelete,
@@ -169,11 +176,14 @@ export function DataListPage<
         </div>
         <div className="flex items-center gap-2">
           {headerAction}
-          {createLink && (
-            <Button asChild>
-              <Link href={createLink}>
-                <Plus className="mr-2 h-4 w-4" />
-                {createLabel || tCommon('create')}
+          {(createLink || createButton) && (
+            <Button 
+              asChild 
+              variant={createButton?.variant || 'default'}
+            >
+              <Link href={createButton?.href || createLink || '#'}>
+                {createButton?.icon || <Plus className="mr-2 h-4 w-4" />}
+                {createButton?.label || createLabel || tCommon('create')}
               </Link>
             </Button>
           )}

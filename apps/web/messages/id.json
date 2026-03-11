@@ -53,7 +53,8 @@
       "adjustments": "Penyesuaian",
       "transfers": "Pindah Gudang",
       "opname": "Stock Opname",
-      "stockOpname": "Stok Opname"
+      "stockOpname": "Stok Opname",
+      "stockLots": "Batch & Lot"
     },
     "sales": {
       "title": "Penjualan",
@@ -78,7 +79,8 @@
       "title": "Laporan",
       "sales": "Penjualan",
       "inventory": "Persediaan",
-      "finance": "Keuangan"
+      "finance": "Keuangan",
+      "stockValuation": "Valuasi Stok"
     },
     "settings": {
       "title": "Pengaturan",
@@ -1839,6 +1841,103 @@
           "empty": "Tidak ada riwayat pergerakan"
         }
       }
+    },
+    "lots": {
+      "title": "Batch & Lot",
+      "description": "Monitor dan kelola batch, lot, dan tanggal kedaluwarsa produk",
+      "searchPlaceholder": "Cari No. Lot, SKU, atau Produk...",
+      "createLabel": "Buat Lot",
+      "summary": {
+        "total": "Total Lot",
+        "totalDesc": "Lot stok aktif",
+        "expiringSoon": "Hampir Kedaluwarsa",
+        "expiringSoonDesc": "Dalam 30 hari",
+        "expired": "Kedaluwarsa",
+        "expiredDesc": "Melewati tanggal kedaluwarsa"
+      },
+      "filter": {
+        "statusLabel": "Status",
+        "warehouseLabel": "Gudang",
+        "categoryLabel": "Kategori",
+        "expiryDateLabel": "Kedaluwarsa"
+      },
+      "status": {
+        "ACTIVE": "Aktif",
+        "EXPIRED": "Kedaluwarsa",
+        "DEPLETED": "Habis",
+        "QUARANTINED": "Karantina"
+      },
+      "columns": {
+        "lotNumber": "No. Batch/Lot",
+        "product": "Produk",
+        "sku": "SKU",
+        "warehouse": "Gudang",
+        "stock": "Stok",
+        "manufacturingDate": "Tgl Produksi",
+        "expirationDate": "Tgl Kedaluwarsa",
+        "status": "Status",
+        "actions": "Aksi"
+      },
+      "actions": {
+        "detail": "Lihat Detail",
+        "edit": "Ubah",
+        "adjust": "Sesuaikan Stok",
+        "quarantine": "Karantina"
+      },
+      "create": {
+        "title": "Buat Lot Stok",
+        "subtitle": "Daftarkan batch/lot baru ke dalam sistem secara manual.",
+        "cardTitle": "Informasi Lot",
+        "cardDesc": "Detail batch atau lot baru.",
+        "productLabel": "Varian Produk",
+        "productPlaceholder": "Pilih varian produk",
+        "warehouseLabel": "Gudang",
+        "warehousePlaceholder": "Pilih gudang",
+        "lotNumberLabel": "Nomor Lot",
+        "lotNumberPlaceholder": "Contoh: LOT-2023-10-A",
+        "lotNumberDesc": "Biarkan kosong untuk generate otomatis berdasarkan pengaturan produk.",
+        "qtyLabel": "Kuantitas Awal",
+        "qtyPlaceholder": "0",
+        "manufacturedAtLabel": "Tanggal Produksi",
+        "manufacturedAtPlaceholder": "Pilih tanggal",
+        "expiredAtLabel": "Tanggal Kedaluwarsa",
+        "expiredAtPlaceholder": "Pilih tanggal"
+      },
+      "edit": {
+        "title": "Ubah Lot Stok",
+        "subtitle": "Ubah informasi batch/lot.",
+        "cardTitle": "Edit Informasi Lot",
+        "cardDesc": "Perbarui detail batch atau lot yang dipilih."
+      },
+      "detail": {
+        "title": "Detail Lot: {lotNumber}",
+        "failedLoad": "Gagal memuat detail lot",
+        "info": {
+          "title": "Informasi Lot",
+          "product": "Produk:",
+          "sku": "SKU:",
+          "warehouse": "Gudang:",
+          "initialQty": "Qty Awal:",
+          "currentQty": "Qty Saat Ini:",
+          "manufacturedAt": "Tgl Produksi:",
+          "expiredAt": "Tgl Kedaluwarsa:",
+          "daysToExpiry": "Hari Jt. Tempo:",
+          "status": "Status:",
+          "createdAt": "Dibuat Pada:"
+        },
+        "movementsTitle": "Pergerakan Lot"
+      },
+      "tabs": {
+        "all": "Semua Lot",
+        "expiringSoon": "Hampir Kedaluwarsa",
+        "expired": "Kedaluwarsa"
+      },
+      "validation": {
+        "variantRequired": "Varian Produk wajib diisi",
+        "warehouseRequired": "Gudang wajib diisi",
+        "qtyMin": "Kuantitas harus lebih besar dari 0",
+        "expiredBeforeManufactured": "Tanggal kedaluwarsa tidak boleh kurang dari tanggal produksi"
+      }
     }
   },
   "purchases": {
@@ -2091,6 +2190,12 @@
           "itemNotes": "Catatan Item",
           "receive": "Terima:",
           "notesPlaceholder": "Catatan...",
+          "lotNumber": "No. Batch/Lot",
+          "lotNumberPlaceholder": "Otomatis jika kosong",
+          "expiredAt": "Tgl Kedaluwarsa",
+          "expiredAtPlaceholder": "Pilih tanggal",
+          "manufacturedAt": "Tgl Produksi (Opsional)",
+          "manufacturedAtPlaceholder": "Pilih tanggal",
           "empty": "Pilih Purchase Order terlebih dahulu untuk melihat item."
         }
       },

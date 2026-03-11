@@ -1,3 +1,5 @@
+'use client';
+
 import { useTranslations } from 'next-intl';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';

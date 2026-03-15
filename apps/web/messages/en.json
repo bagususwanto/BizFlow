@@ -2194,8 +2194,12 @@
           "lotNumberPlaceholder": "Automatic if empty",
           "expiredAt": "Expiry Date",
           "expiredAtPlaceholder": "Select date",
+          "expiryDate": "Expiry Date",
+          "expiryDatePlaceholder": "Select date",
           "manufacturedAt": "Mfg Date (Optional)",
           "manufacturedAtPlaceholder": "Select date",
+          "manufacturingDate": "Mfg Date (Optional)",
+          "manufacturingDatePlaceholder": "Select date",
           "empty": "Select a Purchase Order first to view items."
         }
       },

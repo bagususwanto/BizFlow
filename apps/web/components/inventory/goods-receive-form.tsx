@@ -329,10 +329,12 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
           </CardHeader>
           <CardContent>
             <div className="rounded-md border">
-              <div className="hidden sm:grid grid-cols-[1.5fr_1fr_1fr_120px] gap-4 items-center p-4 bg-muted/40 text-sm font-medium text-muted-foreground border-b">
+              {/* Desktop Header */}
+              <div className="hidden sm:grid grid-cols-[1fr_140px_140px_140px_100px] gap-4 items-center p-4 bg-muted/40 text-sm font-medium text-muted-foreground border-b">
                 <div>{t('form.items.product')}</div>
                 <div>{t('form.items.lotNumber')}</div>
                 <div>{t('form.items.expiredAt')}</div>
+                <div>{t('form.items.manufacturedAt')}</div>
                 <div className="text-right">{t('form.items.receivingNow')}</div>
               </div>
 
@@ -357,15 +359,18 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
                   return (
                     <div
                       key={field.id}
-                      className="flex flex-col sm:grid sm:grid-cols-[1.5fr_1fr_1fr_120px] gap-4 p-4 hover:bg-muted/50 transition-colors border-b last:border-0"
+                      className="flex flex-col sm:grid sm:grid-cols-[1fr_140px_140px_140px_100px] gap-4 p-4 hover:bg-muted/50 transition-colors border-b last:border-0"
                     >
                       {/* Column 1: Product Info & Notes */}
                       <div className="flex flex-col space-y-3">
                         <div className="flex flex-col">
-                          <span className="font-medium">
+                          <label className="sm:hidden text-sm font-medium mb-1.5 block">
+                            {t('form.items.product')}
+                          </label>
+                          <span className="font-medium text-sm">
                             {poItem?.variant?.product?.name || 'Loading...'}
                           </span>
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-xs text-muted-foreground mt-0.5">
                             {poItem?.variant?.sku} • {t('form.items.ordered')}: {ordered} • {t('form.items.received')}: {received}
                           </span>
                         </div>
@@ -388,17 +393,39 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
                         />
                       </div>
 
-                      {/* Column 2: Lot/Batch */}
-                      <div className="flex flex-col space-y-3 pt-1">
-                        <span className="sm:hidden text-muted-foreground text-xs font-medium">
-                          {t('form.items.expiryDate')}
-                        </span>
-                        
+                      {/* Other Columns (Grid on mobile) */}
+                      <div className="grid grid-cols-2 gap-4 sm:contents">
+                        {/* Lot/Batch */}
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.lotNumber`}
+                          render={({ field }) => (
+                            <FormItem className="space-y-0">
+                              <label className="sm:hidden text-sm font-medium mb-1.5 block">
+                                {t('form.items.lotNumber')}
+                              </label>
+                              <FormControl>
+                                <Input
+                                  className="h-8 text-xs"
+                                  placeholder={t('form.items.lotNumberPlaceholder')}
+                                  {...field}
+                                  value={field.value || ''}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        {/* Expiry Date */}
                         <FormField
                           control={form.control}
                           name={`items.${index}.expiryDate`}
                           render={({ field }) => (
                             <FormItem className="space-y-0 flex flex-col">
+                              <label className="sm:hidden text-sm font-medium mb-1.5 block">
+                                {t('form.items.expiryDate')}
+                              </label>
                               <Popover>
                                 <PopoverTrigger asChild>
                                   <FormControl>
@@ -432,18 +459,22 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
                           )}
                         />
 
+                        {/* Mfg Date */}
                         <FormField
                           control={form.control}
                           name={`items.${index}.manufacturingDate`}
                           render={({ field }) => (
-                            <FormItem className="space-y-0 flex flex-col pt-1">
+                            <FormItem className="space-y-0 flex flex-col">
+                              <label className="sm:hidden text-sm font-medium mb-1.5 block">
+                                {t('form.items.manufacturedAt')}
+                              </label>
                               <Popover>
                                 <PopoverTrigger asChild>
                                   <FormControl>
                                     <Button
                                       variant="outline"
                                       className={cn(
-                                        'w-full h-8 px-3 text-left font-normal text-[11px]',
+                                        'w-full h-8 px-3 text-left font-normal text-xs',
                                         !field.value && 'text-muted-foreground'
                                       )}
                                     >
@@ -470,18 +501,16 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
                             </FormItem>
                           )}
                         />
-                      </div>
 
-                      {/* Column 4: Receive Qty */}
-                      <div className="flex flex-col space-y-3 pt-1">
-                        <span className="sm:hidden text-muted-foreground text-xs font-medium">
-                          {t('form.items.receive')}
-                        </span>
+                        {/* Receive Qty */}
                         <FormField
                           control={form.control}
                           name={`items.${index}.receivedQty`}
                           render={({ field }) => (
                             <FormItem className="space-y-0">
+                              <label className="sm:hidden text-sm font-medium mb-1.5 block">
+                                {t('form.items.receivingNow')}
+                              </label>
                               <FormControl>
                                 <Input
                                   type="number"
@@ -496,6 +525,7 @@ export function GoodsReceiveForm({ initialData }: GoodsReceiveFormProps) {
                                   }
                                 />
                               </FormControl>
+                              <FormMessage />
                             </FormItem>
                           )}
                         />

@@ -20,43 +20,45 @@ export function getColumns(
   return [
     {
       id: 'product',
-      accessorKey: 'name',
+      accessorFn: (row) => row.variant?.product?.name,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title={t('columns.product')} />
       ),
       cell: ({ row }) => (
-        <span className="font-medium">{row.original.name}</span>
+        <span className="font-medium">{row.original.variant?.product?.name}</span>
       ),
     },
     {
       id: 'sku',
-      accessorKey: 'sku',
+      accessorFn: (row) => row.variant?.sku,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title={t('columns.sku')} />
       ),
       cell: ({ row }) => (
-        <span className="font-mono text-xs">{row.original.sku}</span>
+        <span className="font-mono text-xs">{row.original.variant?.sku}</span>
       ),
     },
     {
       id: 'category',
-      accessorKey: 'category',
+      accessorFn: (row) => row.variant?.product?.category?.name,
       header: t('columns.category'),
       cell: ({ row }) => (
-        <Badge variant="outline">{row.original.category}</Badge>
+        <Badge variant="outline">
+          {row.original.variant?.product?.category?.name || '-'}
+        </Badge>
       ),
     },
     {
       id: 'warehouse',
-      accessorKey: 'warehouseName',
+      accessorFn: (row) => row.warehouse?.name,
       header: t('columns.warehouse'),
       cell: ({ row }) => (
-        <span>{row.original.warehouseName || '-'}</span>
+        <span>{row.original.warehouse?.name || '-'}</span>
       ),
     },
     {
       id: 'qty',
-      accessorKey: 'totalQuantity',
+      accessorKey: 'totalQty',
       header: ({ column }) => (
         <div className="flex justify-end pr-2">
           <DataTableColumnHeader column={column} title={t('columns.qty')} />
@@ -65,14 +67,14 @@ export function getColumns(
       cell: ({ row }) => {
         return (
           <div className="text-right font-medium">
-            {row.original.totalQuantity}
+            {row.original.totalQty}
           </div>
         );
       },
     },
     {
       id: 'avgCost',
-      accessorKey: 'averageCost',
+      accessorKey: 'avgCost',
       header: ({ column }) => (
         <div className="flex justify-end pr-2">
           <DataTableColumnHeader column={column} title={t('columns.avgCost')} />
@@ -80,7 +82,7 @@ export function getColumns(
       ),
       cell: ({ row }) => (
         <div className="text-right text-muted-foreground">
-          {formatCurrency(row.original.averageCost)}
+          {formatCurrency(row.original.avgCost)}
         </div>
       ),
     },

@@ -1,36 +1,52 @@
 import { apiClient } from '@/lib/fetch-client';
 import { buildSearchParams } from '@/lib/utils';
 import {
-  ApiResponse,
   QueryStockValuationValues,
 } from '@bizflow/types';
 
 export interface StockValuationItem {
+  id: string;
   variantId: string;
-  sku: string;
-  name: string;
-  category: string;
-  warehouseId: string | null;
-  warehouseName: string | null;
-  totalQuantity: number;
-  averageCost: number;
+  warehouseId: string;
+  avgCost: number;
+  totalQty: number;
   totalValue: number;
+  updatedAt: string;
+  variant: {
+    id: string;
+    sku: string;
+    name: string;
+    product: {
+      id: string;
+      name: string;
+      sku: string;
+      category: { id: string; name: string } | null;
+      unit: { id: string; name: string; symbol: string } | null;
+    };
+  };
+  warehouse: {
+    id: string;
+    code: string;
+    name: string;
+  };
+}
+
+export interface StockValuationMeta {
+  page: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+}
+
+export interface StockValuationSummary {
+  totalInventoryValue: number;
+  totalVariants: number;
 }
 
 export interface StockValuationResponse {
   data: StockValuationItem[];
-  meta: {
-    page: number;
-    pageSize: number;
-    totalItems: number;
-    totalPages: number;
-  };
-  summary: {
-    totalValue: number;
-    totalItems: number;
-    totalQuantity: number;
-    averageValuePerItem: number;
-  };
+  meta: StockValuationMeta;
+  summary: StockValuationSummary;
 }
 
 class StockValuationService {
@@ -39,10 +55,10 @@ class StockValuationService {
    */
   async getValuation(query: QueryStockValuationValues): Promise<StockValuationResponse> {
     const searchParams = buildSearchParams(query);
-    const response = await apiClient.get<ApiResponse<StockValuationResponse>>(
+    const response = await apiClient.get<StockValuationResponse>(
       `/inventory/stock-valuation?${searchParams}`
     );
-    return response.data!;
+    return response;
   }
 }
 

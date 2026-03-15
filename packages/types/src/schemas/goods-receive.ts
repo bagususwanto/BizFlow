@@ -7,7 +7,7 @@ const goodsReceiveItemSchema = z.object({
   receivedQty: z
     .number()
     .positive('purchases.goodsReceive.validation.quantityMin'),
-  lotNumber: z.string().min(1).optional().nullable(),
+  lotNumber: z.string().optional().nullable(),
   expiryDate: z.string().datetime().or(z.date()).optional().nullable(),
   manufacturingDate: z.string().datetime().or(z.date()).optional().nullable(),
   notes: z.string().optional().nullable(),

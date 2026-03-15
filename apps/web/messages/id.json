@@ -2194,8 +2194,12 @@
           "lotNumberPlaceholder": "Otomatis jika kosong",
           "expiredAt": "Tgl Kedaluwarsa",
           "expiredAtPlaceholder": "Pilih tanggal",
+          "expiryDate": "Tgl Kedaluwarsa",
+          "expiryDatePlaceholder": "Pilih tanggal",
           "manufacturedAt": "Tgl Produksi (Opsional)",
           "manufacturedAtPlaceholder": "Pilih tanggal",
+          "manufacturingDate": "Tgl Produksi (Opsional)",
+          "manufacturingDatePlaceholder": "Pilih tanggal",
           "empty": "Pilih Purchase Order terlebih dahulu untuk melihat item."
         }
       },

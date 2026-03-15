@@ -40,7 +40,7 @@ class StockValuationService {
   async getValuation(query: QueryStockValuationValues): Promise<StockValuationResponse> {
     const searchParams = buildSearchParams(query);
     const response = await apiClient.get<ApiResponse<StockValuationResponse>>(
-      `/inventory/valuation?${searchParams}`
+      `/inventory/stock-valuation?${searchParams}`
     );
     return response.data!;
   }

@@ -171,7 +171,7 @@ function ValuationContent() {
         <ValuationSummary summary={summary} isLoading={isLoading} />
       </div>
 
-      {data?.data.length === 0 && !isLoading && (
+      {data?.data?.length === 0 && !isLoading && (
         <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground border-t">
           <p className="text-lg font-medium">{t('emptyState.title')}</p>
           <p className="text-sm mt-1">{t('emptyState.desc')}</p>

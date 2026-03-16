@@ -59,6 +59,7 @@
     "sales": {
       "title": "Penjualan",
       "orders": "Pesanan",
+      "invoices": "Faktur",
       "returns": "Retur",
       "payments": "Pembayaran"
     },

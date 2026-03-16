@@ -59,6 +59,7 @@
     "sales": {
       "title": "Sales",
       "orders": "Orders",
+      "invoices": "Invoices",
       "returns": "Returns",
       "payments": "Payments"
     },

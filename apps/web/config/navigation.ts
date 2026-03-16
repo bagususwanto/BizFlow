@@ -108,6 +108,10 @@ export const navigationConfig = {
           url: '/sales/orders',
         },
         {
+          title: 'sales.invoices',
+          url: '/sales/invoices',
+        },
+        {
           title: 'sales.returns',
           url: '/sales/returns',
         },

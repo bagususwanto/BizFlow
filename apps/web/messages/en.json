@@ -3073,6 +3073,159 @@
       "itemsMin": "At least one item must be updated"
     }
   },
+  "sales": {
+    "orders": {
+      "title": "Sales Orders",
+      "description": "Manage sales orders from customers.",
+      "createLabel": "Create New SO",
+      "searchPlaceholder": "Search SO Number or Customer...",
+      "failedLoad": "Failed to load sales orders data",
+      "summary": {
+        "total": "Total SOs",
+        "totalDesc": "All order statuses",
+        "draft": "Draft",
+        "draftDesc": "Unprocessed orders",
+        "confirmed": "Confirmed",
+        "confirmedDesc": "Confirmed orders",
+        "completed": "Completed",
+        "completedDesc": "Completed orders"
+      },
+      "filter": {
+        "status": "Status",
+        "customer": "Customer",
+        "customerPlaceholder": "Select customer..."
+      },
+      "status": {
+        "draft": "Draft",
+        "confirmed": "Confirmed",
+        "invoiced": "Invoiced",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      },
+      "paymentStatus": {
+        "unpaid": "Unpaid",
+        "paid": "Paid",
+        "partial": "Partial"
+      },
+      "columns": {
+        "soNumber": "SO No.",
+        "date": "Order Date",
+        "customer": "Customer",
+        "dueDate": "Due Date",
+        "total": "Total",
+        "status": "Status",
+        "payment": "Payment"
+      },
+      "actions": {
+        "detail": "Detail",
+        "edit": "Edit",
+        "delete": "Delete",
+        "printBtn": "Print SO",
+        "confirmBtn": "Confirm SO",
+        "cancelBtn": "Cancel",
+        "invoiceBtn": "Create Invoice",
+        "completeBtn": "Complete"
+      },
+      "delete": {
+        "title": "Delete Sales Order?",
+        "desc1": "Are you sure you want to delete Sales Order ",
+        "desc2": "? This action cannot be undone."
+      },
+      "detail": {
+        "title": "Sales Order Details",
+        "failedLoad": "Failed to load sales order details",
+        "customerInfo": {
+          "title": "Customer Information"
+        },
+        "otherInfo": {
+          "title": "Other Information",
+          "orderDate": "Order Date:",
+          "dueDate": "Due Date:",
+          "createdAt": "Created At:",
+          "createdBy": "Created By:"
+        },
+        "items": {
+          "title": "Order Items",
+          "product": "Product",
+          "qty": "Qty",
+          "price": "Price",
+          "total": "Total"
+        },
+        "notes": {
+          "title": "Notes"
+        },
+        "paymentDetails": {
+          "title": "Payment Details",
+          "subtotal": "Subtotal",
+          "discount": "Discount",
+          "tax": "Tax",
+          "total": "Total",
+          "paid": "Amount Paid",
+          "remaining": "Remaining Payment"
+        },
+        "statusDialog": {
+          "title": "Confirm Status Change",
+          "desc1": "Are you sure you want to change the status to ",
+          "desc2": "?",
+          "cancel": "Cancel",
+          "confirm": "Yes, Change Status"
+        }
+      },
+      "form": {
+        "createTitle": "Create Sales Order",
+        "createSubtitle": "Create a new sales order for a customer.",
+        "editTitle": "Edit Sales Order",
+        "cancelBtn": "Cancel",
+        "saveBtn": "Save Changes",
+        "createBtn": "Create Sales Order",
+        "generalInfo": {
+          "title": "Order Information",
+          "description": "General information about the sales order."
+        },
+        "orderNumber": "SO No.",
+        "orderNumberPlaceholder": "Automatic",
+        "customerLabel": "Customer",
+        "customerPlaceholder": "Select Customer",
+        "orderDate": "Order Date",
+        "orderDatePlaceholder": "Select date",
+        "orderDateDesc": "Date of the order.",
+        "dueDate": "Due Date",
+        "dueDatePlaceholder": "Select date",
+        "dueDateDesc": "Expected payment date.",
+        "items": {
+          "title": "Order Items",
+          "description": "List of items to be sold.",
+          "addBtn": "Add Item",
+          "product": "Product",
+          "productPlaceholder": "Select Product",
+          "qty": "Qty",
+          "price": "Unit Price",
+          "subtotal": "Subtotal"
+        },
+        "notes": {
+          "title": "Notes",
+          "optional": "(Optional)",
+          "placeholder": "Additional notes for the customer..."
+        },
+        "payment": {
+          "title": "Payment Details",
+          "subtotal": "Subtotal",
+          "discount": "Discount (%)",
+          "discountAmount": "Discount Amount",
+          "tax": "Tax (%)",
+          "taxAmount": "Tax (VAT)",
+          "total": "Total"
+        }
+      },
+      "validation": {
+        "variantRequired": "Product variant is required",
+        "quantityMin": "Quantity must be greater than 0",
+        "priceMin": "Unit price cannot be negative",
+        "customerRequired": "Customer is required",
+        "itemsMin": "At least 1 item is required"
+      }
+    }
+  },
   "reports": {
     "sales": {
       "title": "Sales Report",

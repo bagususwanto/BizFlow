@@ -3041,6 +3041,159 @@
       "itemsMin": "Pilih minimal 1 item untuk diubah"
     }
   },
+  "sales": {
+    "orders": {
+      "title": "Sales Order",
+      "description": "Kelola pesanan penjualan ke pelanggan.",
+      "createLabel": "Buat SO Baru",
+      "searchPlaceholder": "Cari No. SO atau Pelanggan...",
+      "failedLoad": "Gagal memuat data sales order",
+      "summary": {
+        "total": "Total SO",
+        "totalDesc": "Semua status pesanan",
+        "draft": "Draft",
+        "draftDesc": "Pesanan belum diproses",
+        "confirmed": "Dikonfirmasi",
+        "confirmedDesc": "Pesanan dikonfirmasi",
+        "completed": "Selesai",
+        "completedDesc": "Pesanan selesai"
+      },
+      "filter": {
+        "status": "Status",
+        "customer": "Pelanggan",
+        "customerPlaceholder": "Cari pelanggan..."
+      },
+      "status": {
+        "draft": "Draft",
+        "confirmed": "Dikonfirmasi",
+        "invoiced": "Ditagih",
+        "completed": "Selesai",
+        "cancelled": "Dibatalkan"
+      },
+      "paymentStatus": {
+        "unpaid": "Belum Dibayar",
+        "paid": "Lunas",
+        "partial": "Sebagian"
+      },
+      "columns": {
+        "soNumber": "No. SO",
+        "date": "Tanggal",
+        "customer": "Pelanggan",
+        "dueDate": "Jatuh Tempo",
+        "total": "Total",
+        "status": "Status",
+        "payment": "Pembayaran"
+      },
+      "actions": {
+        "detail": "Detail",
+        "edit": "Edit",
+        "delete": "Hapus",
+        "printBtn": "Print SO",
+        "confirmBtn": "Konfirmasi SO",
+        "cancelBtn": "Batalkan",
+        "invoiceBtn": "Buat Pasokan/Faktur",
+        "completeBtn": "Selesai"
+      },
+      "delete": {
+        "title": "Hapus Sales Order?",
+        "desc1": "Apakah Anda yakin ingin menghapus Sales Order ",
+        "desc2": "? Tindakan ini tidak dapat dibatalkan."
+      },
+      "detail": {
+        "title": "Detail Sales Order",
+        "failedLoad": "Gagal memuat detail sales order",
+        "customerInfo": {
+          "title": "Informasi Pelanggan"
+        },
+        "otherInfo": {
+          "title": "Informasi Lainnya",
+          "orderDate": "Tanggal Order:",
+          "dueDate": "Jatuh Tempo:",
+          "createdAt": "Dibuat Pada:",
+          "createdBy": "Dibuat Oleh:"
+        },
+        "items": {
+          "title": "Item Pesanan",
+          "product": "Produk",
+          "qty": "Qty",
+          "price": "Harga",
+          "total": "Total"
+        },
+        "notes": {
+          "title": "Catatan"
+        },
+        "paymentDetails": {
+          "title": "Rincian Pembayaran",
+          "subtotal": "Subtotal",
+          "discount": "Diskon",
+          "tax": "Pajak",
+          "total": "Total",
+          "paid": "Sudah Dibayar",
+          "remaining": "Sisa Pembayaran"
+        },
+        "statusDialog": {
+          "title": "Konfirmasi Perubahan Status",
+          "desc1": "Apakah Anda yakin ingin mengubah status menjadi ",
+          "desc2": "?",
+          "cancel": "Batal",
+          "confirm": "Ya, Ubah Status"
+        }
+      },
+      "form": {
+        "createTitle": "Buat Sales Order",
+        "createSubtitle": "Buat pesanan penjualan baru ke pelanggan.",
+        "editTitle": "Edit Sales Order",
+        "cancelBtn": "Batal",
+        "saveBtn": "Simpan Perubahan",
+        "createBtn": "Buat Sales Order",
+        "generalInfo": {
+          "title": "Informasi Pesanan",
+          "description": "Informasi umum mengenai sales order."
+        },
+        "orderNumber": "No. SO",
+        "orderNumberPlaceholder": "Otomatis",
+        "customerLabel": "Pelanggan",
+        "customerPlaceholder": "Pilih Pelanggan",
+        "orderDate": "Tanggal Order",
+        "orderDatePlaceholder": "Pilih tanggal",
+        "orderDateDesc": "Tanggal pembuatan pesanan.",
+        "dueDate": "Jatuh Tempo",
+        "dueDatePlaceholder": "Pilih tanggal",
+        "dueDateDesc": "Batas waktu pembayaran.",
+        "items": {
+          "title": "Item Pesanan",
+          "description": "Daftar barang yang akan dijual.",
+          "addBtn": "Tambah Item",
+          "product": "Produk",
+          "productPlaceholder": "Pilih Produk",
+          "qty": "Qty",
+          "price": "Harga Satuan",
+          "subtotal": "Subtotal"
+        },
+        "notes": {
+          "title": "Catatan",
+          "optional": "(Opsional)",
+          "placeholder": "Catatan tambahan untuk pelanggan..."
+        },
+        "payment": {
+          "title": "Rincian Pembayaran",
+          "subtotal": "Subtotal",
+          "discount": "Diskon (%)",
+          "discountAmount": "Potongan Diskon",
+          "tax": "Pajak (%)",
+          "taxAmount": "Pajak (PPN)",
+          "total": "Total"
+        }
+      },
+      "validation": {
+        "variantRequired": "Variasi produk wajib dipilih",
+        "quantityMin": "Quantity harus lebih dari 0",
+        "priceMin": "Unit price tidak boleh negatif",
+        "customerRequired": "Pelanggan wajib dipilih",
+        "itemsMin": "Minimal 1 item diperlukan"
+      }
+    }
+  },
   "reports": {
     "sales": {
       "title": "Laporan Penjualan",

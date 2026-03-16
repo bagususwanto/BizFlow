@@ -34,6 +34,9 @@ import { PurchaseReturnsModule } from './modules/purchases/returns';
 import { SupplierPaymentsModule } from './modules/purchases/payments';
 import { AccountsModule } from './modules/finance/accounts';
 import { GoodsReceiveModule } from './modules/inventory/goods-receive';
+import { SalesOrdersModule } from './modules/sales/orders';
+import { InvoicesModule } from './modules/sales/invoices';
+import { DeliveryOrdersModule } from './modules/sales/delivery-orders';
 
 import { DashboardReportModule } from './modules/reports/dashboard';
 import { SalesReportModule } from './modules/reports/sales';
@@ -85,6 +88,10 @@ import { AppController } from './app.controller';
     SupplierPaymentsModule,
     // Inventory modules
     GoodsReceiveModule,
+    // Sales modules
+    SalesOrdersModule,
+    InvoicesModule,
+    DeliveryOrdersModule,
     // Finance modules
     AccountsModule,
     // Reports modules

@@ -80,6 +80,8 @@ model User {
   supplierPayments    SupplierPayment[]
   stockOpnames        StockOpname[]    @relation("StockOpnameCreator")
   finalizedOpnames    StockOpname[]    @relation("StockOpnameFinalizer")
+  invoices            Invoice[]        @relation("InvoiceCreator")
+  deliveryOrders      DeliveryOrder[]  @relation("DeliveryOrderCreator")
 
   @@index([username])
   @@index([roleId])
@@ -252,6 +254,8 @@ model ProductVariant {
   purchaseReturnItems  PurchaseReturnItem[]
   stockLots          StockLot[]
   stockValuations    StockValuation[]
+  invoiceItems       InvoiceItem[]
+  deliveryOrderItems DeliveryOrderItem[]
 
   @@index([productId])
   @@index([sku])
@@ -289,6 +293,7 @@ model Warehouse {
   goodsReceives    GoodsReceive[]
   stockLots        StockLot[]
   stockValuations  StockValuation[]
+  deliveryOrders   DeliveryOrder[]
 }
 
 model Promotion {
@@ -527,6 +532,7 @@ model Customer {
 
   salesOrders SalesOrder[]
   payments    Payment[]
+  invoices    Invoice[]
 
   @@index([code])
   @@index([name])
@@ -554,12 +560,14 @@ model SalesOrder {
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
-  customer Customer?        @relation(fields: [customerId], references: [id])
-  user     User             @relation(fields: [userId], references: [id])
-  outlet   Outlet           @relation(fields: [outletId], references: [id])
-  items    SalesOrderItem[]
-  payments Payment[]
-  returns  SalesReturn[]
+  customer        Customer?        @relation(fields: [customerId], references: [id])
+  user            User             @relation(fields: [userId], references: [id])
+  outlet          Outlet           @relation(fields: [outletId], references: [id])
+  items           SalesOrderItem[]
+  payments        Payment[]
+  returns         SalesReturn[]
+  invoices        Invoice[]
+  deliveryOrders  DeliveryOrder[]
 
   @@index([orderNumber])
   @@index([customerId])
@@ -579,9 +587,11 @@ model SalesOrderItem {
   subtotal        Decimal
   notes           String?
 
-  order       SalesOrder       @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  variant     ProductVariant   @relation(fields: [variantId], references: [id])
-  returnItems SalesReturnItem[]
+  order          SalesOrder        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variant        ProductVariant    @relation(fields: [variantId], references: [id])
+  returnItems    SalesReturnItem[]
+  invoiceItems   InvoiceItem[]
+  deliveryItems  DeliveryOrderItem[]
 
   @@index([orderId])
   @@index([variantId])
@@ -622,10 +632,109 @@ model SalesReturnItem {
   @@index([returnId])
 }
 
+model Invoice {
+  id             String    @id @default(cuid())
+  invoiceNumber  String    @unique
+  orderId        String
+  customerId     String?
+  invoiceDate    DateTime  @default(now())
+  dueDate        DateTime?
+  status         String    @default("draft") // draft|sent|partial|paid|cancelled
+  paymentStatus  String    @default("unpaid") // unpaid|partial|paid
+  subtotal       Decimal
+  discountAmount Decimal   @default(0)
+  taxAmount      Decimal   @default(0)
+  total          Decimal
+  paidAmount     Decimal   @default(0)
+  notes          String?
+  createdBy      String
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  order          SalesOrder      @relation(fields: [orderId], references: [id])
+  customer       Customer?       @relation(fields: [customerId], references: [id])
+  items          InvoiceItem[]
+  payments       Payment[]
+  deliveryOrders DeliveryOrder[]
+  creator        User            @relation("InvoiceCreator", fields: [createdBy], references: [id])
+
+  @@index([invoiceNumber])
+  @@index([orderId])
+  @@index([customerId])
+  @@index([status])
+  @@index([invoiceDate])
+}
+
+model InvoiceItem {
+  id             String  @id @default(cuid())
+  invoiceId      String
+  orderItemId    String
+  variantId      String
+  quantity       Decimal
+  unitPrice      Decimal
+  discountAmount Decimal @default(0)
+  subtotal       Decimal
+  notes          String?
+
+  invoice   Invoice        @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  orderItem SalesOrderItem @relation(fields: [orderItemId], references: [id])
+  variant   ProductVariant @relation(fields: [variantId], references: [id])
+
+  @@index([invoiceId])
+  @@index([orderItemId])
+  @@index([variantId])
+}
+
+model DeliveryOrder {
+  id              String    @id @default(cuid())
+  deliveryNumber  String    @unique
+  orderId         String
+  invoiceId       String?
+  warehouseId     String
+  deliveryDate    DateTime  @default(now())
+  status          String    @default("draft") // draft|in_transit|delivered|cancelled
+  shippingAddress String?
+  notes           String?
+  deliveredBy     String?
+  deliveredAt     DateTime?
+  createdBy       String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  order     SalesOrder        @relation(fields: [orderId], references: [id])
+  invoice   Invoice?          @relation(fields: [invoiceId], references: [id])
+  warehouse Warehouse         @relation(fields: [warehouseId], references: [id])
+  items     DeliveryOrderItem[]
+  creator   User              @relation("DeliveryOrderCreator", fields: [createdBy], references: [id])
+
+  @@index([deliveryNumber])
+  @@index([orderId])
+  @@index([warehouseId])
+  @@index([status])
+}
+
+model DeliveryOrderItem {
+  id             String  @id @default(cuid())
+  deliveryId     String
+  orderItemId    String
+  variantId      String
+  quantity       Decimal
+  notes          String?
+
+  delivery  DeliveryOrder  @relation(fields: [deliveryId], references: [id], onDelete: Cascade)
+  orderItem SalesOrderItem @relation(fields: [orderItemId], references: [id])
+  variant   ProductVariant @relation(fields: [variantId], references: [id])
+
+  @@index([deliveryId])
+  @@index([orderItemId])
+  @@index([variantId])
+}
+
 model Payment {
   id            String   @id @default(cuid())
   paymentNumber String   @unique
   orderId       String?
+  invoiceId     String?
   customerId    String?
   accountId     String
   paymentDate   DateTime @default(now())
@@ -636,11 +745,13 @@ model Payment {
   createdAt     DateTime @default(now())
 
   order    SalesOrder? @relation(fields: [orderId], references: [id])
+  invoice  Invoice?    @relation(fields: [invoiceId], references: [id])
   customer Customer?   @relation(fields: [customerId], references: [id])
   account  Account     @relation(fields: [accountId], references: [id])
 
   @@index([paymentNumber])
   @@index([orderId])
+  @@index([invoiceId])
   @@index([paymentDate])
 }
 

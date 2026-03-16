@@ -44,6 +44,9 @@ export enum Module {
   // Business modules
   POS = 'pos',
   SALES = 'sales',
+  SALES_ORDERS = 'sales-orders',
+  INVOICES = 'invoices',
+  DELIVERY_ORDERS = 'delivery-orders',
   PURCHASES = 'purchases',
   PURCHASE_ORDERS = 'purchase-orders',
   PURCHASE_RETURNS = 'purchase-returns',
@@ -169,6 +172,26 @@ export const Permission = {
     Delete: 'sales:delete',
     Export: 'sales:export',
     Refund: 'sales:refund',
+  },
+  SalesOrders: {
+    Read: 'sales-orders:read',
+    Create: 'sales-orders:create',
+    Update: 'sales-orders:update',
+    Delete: 'sales-orders:delete',
+    Confirm: 'sales-orders:confirm',
+    Cancel: 'sales-orders:cancel',
+  },
+  Invoices: {
+    Read: 'invoices:read',
+    Create: 'invoices:create',
+    Update: 'invoices:update',
+    Delete: 'invoices:delete',
+  },
+  DeliveryOrders: {
+    Read: 'delivery-orders:read',
+    Create: 'delivery-orders:create',
+    Update: 'delivery-orders:update',
+    Delete: 'delivery-orders:delete',
   },
   Purchases: {
     Read: 'purchases:read',

@@ -244,11 +244,11 @@ Referensi: [05-purchase-management.md](file:///Users/bagus/Project/personal/BizF
 | **Adjustments** - Approval workflow      | [x]    | Medium   |
 | **Transfers** - Inter-warehouse transfer | [x]    | Medium   |
 | **Transfers** - Transfer status workflow | [x]    | Medium   |
-| **Opname** - Stock counting              | [ ]    | High     |
-| **Opname** - Finalization & adjustment   | [ ]    | High     |
-| Batch/Lot tracking                       | [ ]    | Low      |
-| Expiry date tracking                     | [ ]    | Medium   |
-| Stock valuation (HPP)                    | [ ]    | High     |
+| **Opname** - Stock counting              | [x]    | High     |
+| **Opname** - Finalization & adjustment   | [x]    | High     |
+| Batch/Lot tracking                       | [x]    | Low      |
+| Expiry date tracking                     | [x]    | Medium   |
+| Stock valuation (HPP)                    | [x]    | High     |
 
 **API Endpoints**: `/api/v1/inventory/adjustments/*`, `/api/v1/inventory/transfers/*`, `/api/v1/inventory/opname/*`
 

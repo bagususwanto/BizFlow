@@ -111,6 +111,51 @@ export interface SalesReturnItem {
 }
 
 // ========================================
+// Invoice Entities
+// ========================================
+
+export interface Invoice extends BaseEntity {
+  invoiceNumber: string;
+  orderId: string;
+  customerId?: string | null;
+  invoiceDate: Date;
+  dueDate?: Date | null;
+  status: string;
+  paymentStatus: string;
+
+  subtotal: Decimal;
+  discountAmount: Decimal;
+  taxAmount: Decimal;
+  total: Decimal;
+  paidAmount: Decimal;
+
+  notes?: string | null;
+  createdBy: string;
+
+  // Relations
+  order?: SalesOrder | null;
+  customer?: Customer | null;
+  items?: InvoiceItem[];
+  payments?: Payment[];
+}
+
+export interface InvoiceItem {
+  id: string;
+  invoiceId: string;
+  orderItemId: string;
+  variantId: string;
+  quantity: Decimal;
+  unitPrice: Decimal;
+  discountAmount: Decimal;
+  subtotal: Decimal;
+  notes?: string | null;
+
+  // Relations
+  orderItem?: SalesOrderItem;
+  variant?: ProductVariant;
+}
+
+// ========================================
 // Payment Entity
 // ========================================
 

@@ -3192,6 +3192,115 @@
         "customerRequired": "Pelanggan wajib dipilih",
         "itemsMin": "Minimal 1 item diperlukan"
       }
+    },
+    "invoices": {
+      "title": "Sales Invoice",
+      "description": "Kelola faktur penjualan ke pelanggan.",
+      "createLabel": "Buat Invoice Baru",
+      "searchPlaceholder": "Cari No. Invoice atau Pelanggan...",
+      "failedLoad": "Gagal memuat data invoice",
+      "createTitle": "Buat Sales Invoice",
+      "createDescription": "Buat faktur penjualan baru.",
+      "editTitle": "Edit Sales Invoice",
+      "editDescription": "Ubah faktur penjualan.",
+      "detailTitle": "Detail Sales Invoice",
+      "detailDescription": "Informasi faktur penjualan.",
+      "navigation": {
+        "sales": "Penjualan"
+      },
+      "summary": {
+        "total": "Total Invoice",
+        "totalDesc": "Semua status invoice",
+        "unpaid": "Belum Terbayar (Draft & Dikirim)",
+        "unpaidDesc": "Invoice yang belum dibayar",
+        "partial": "Bayar Sebagian",
+        "partialDesc": "Invoice dibayar sebagian",
+        "paid": "Lunas",
+        "paidDesc": "Invoice lunas"
+      },
+      "filter": {
+        "status": "Status",
+        "paymentStatus": "Status Pembayaran",
+        "customer": "Pelanggan",
+        "customerPlaceholder": "Cari pelanggan..."
+      },
+      "status": {
+        "draft": "Draft",
+        "sent": "Dikirim",
+        "paid": "Lunas",
+        "cancelled": "Dibatalkan"
+      },
+      "paymentStatus": {
+        "unpaid": "Belum Dibayar",
+        "paid": "Lunas",
+        "partial": "Sebagian"
+      },
+      "columns": {
+        "invoiceNumber": "No. Invoice",
+        "date": "Tanggal",
+        "customer": "Pelanggan",
+        "dueDate": "Jatuh Tempo",
+        "total": "Total",
+        "status": "Status",
+        "payment": "Pembayaran"
+      },
+      "actions": {
+        "detail": "Detail",
+        "edit": "Edit",
+        "delete": "Hapus",
+        "receivePayment": "Terima Pembayaran"
+      },
+      "delete": {
+        "title": "Hapus Sales Invoice?",
+        "desc1": "Apakah Anda yakin ingin menghapus Invoice ",
+        "desc2": "? Tindakan ini tidak dapat dibatalkan."
+      },
+      "form": {
+        "cancelBtn": "Batal",
+        "saveBtn": "Simpan Perubahan",
+        "createBtn": "Buat Invoice",
+        "generalInfo": {
+          "title": "Informasi Invoice",
+          "description": "Informasi umum mengenai invoice penjualan."
+        },
+        "invoiceNumber": "No. Invoice",
+        "invoiceNumberPlaceholder": "Otomatis",
+        "salesOrderLabel": "Referensi SO",
+        "salesOrderPlaceholder": "Pilih SO",
+        "salesOrderSearch": "Cari Nomor SO...",
+        "invoiceDate": "Tanggal Invoice",
+        "invoiceDatePlaceholder": "Pilih tanggal",
+        "dueDate": "Jatuh Tempo",
+        "dueDatePlaceholder": "Pilih tanggal jatuh tempo",
+        "items": {
+          "title": "Item Invoice",
+          "description": "Daftar barang dalam faktur (berdasarkan referensi SO).",
+          "empty": "Belum ada item, silakan pilih referensi Sales Order terlebih dahulu.",
+          "product": "Produk",
+          "qty": "Qty",
+          "price": "Harga Satuan",
+          "subtotal": "Subtotal"
+        },
+        "notes": {
+          "title": "Catatan",
+          "optional": "(Opsional)",
+          "placeholder": "Catatan untuk pelanggan..."
+        },
+        "payment": {
+          "title": "Rincian Tagihan",
+          "subtotal": "Subtotal",
+          "discountAmount": "Potongan Diskon",
+          "taxAmount": "Pajak (PPN)",
+          "total": "Total Tagihan"
+        }
+      },
+      "validation": {
+        "orderRequired": "Referensi SO wajib dipilih",
+        "variantRequired": "Variasi produk wajib ada",
+        "orderItemRequired": "Order Item ID wajib ada",
+        "quantityMin": "Quantity harus lebih dari 0",
+        "priceMin": "Unit price tidak boleh negatif"
+      }
     }
   },
   "reports": {

@@ -3224,6 +3224,115 @@
         "customerRequired": "Customer is required",
         "itemsMin": "At least 1 item is required"
       }
+    },
+    "invoices": {
+      "title": "Sales Invoices",
+      "description": "Manage sales invoices to customers.",
+      "createLabel": "Create New Invoice",
+      "searchPlaceholder": "Search Invoice No. or Customer...",
+      "failedLoad": "Failed to load invoice data",
+      "createTitle": "Create Sales Invoice",
+      "createDescription": "Create a new sales invoice.",
+      "editTitle": "Edit Sales Invoice",
+      "editDescription": "Edit sales invoice.",
+      "detailTitle": "Sales Invoice Details",
+      "detailDescription": "Sales invoice information.",
+      "navigation": {
+        "sales": "Sales"
+      },
+      "summary": {
+        "total": "Total Invoices",
+        "totalDesc": "All invoice statuses",
+        "unpaid": "Unpaid (Draft & Sent)",
+        "unpaidDesc": "Invoices not yet paid",
+        "partial": "Partial Payment",
+        "partialDesc": "Partially paid invoices",
+        "paid": "Paid",
+        "paidDesc": "Fully paid invoices"
+      },
+      "filter": {
+        "status": "Status",
+        "paymentStatus": "Payment Status",
+        "customer": "Customer",
+        "customerPlaceholder": "Search customer..."
+      },
+      "status": {
+        "draft": "Draft",
+        "sent": "Sent",
+        "paid": "Paid",
+        "cancelled": "Cancelled"
+      },
+      "paymentStatus": {
+        "unpaid": "Unpaid",
+        "paid": "Paid",
+        "partial": "Partial"
+      },
+      "columns": {
+        "invoiceNumber": "Invoice No.",
+        "date": "Date",
+        "customer": "Customer",
+        "dueDate": "Due Date",
+        "total": "Total",
+        "status": "Status",
+        "payment": "Payment"
+      },
+      "actions": {
+        "detail": "Detail",
+        "edit": "Edit",
+        "delete": "Delete",
+        "receivePayment": "Receive Payment"
+      },
+      "delete": {
+        "title": "Delete Sales Invoice?",
+        "desc1": "Are you sure you want to delete Invoice ",
+        "desc2": "? This action cannot be undone."
+      },
+      "form": {
+        "cancelBtn": "Cancel",
+        "saveBtn": "Save Changes",
+        "createBtn": "Create Invoice",
+        "generalInfo": {
+          "title": "Invoice Information",
+          "description": "General information about the sales invoice."
+        },
+        "invoiceNumber": "Invoice No.",
+        "invoiceNumberPlaceholder": "Automatic",
+        "salesOrderLabel": "SO Reference",
+        "salesOrderPlaceholder": "Select SO",
+        "salesOrderSearch": "Search SO Number...",
+        "invoiceDate": "Invoice Date",
+        "invoiceDatePlaceholder": "Select date",
+        "dueDate": "Due Date",
+        "dueDatePlaceholder": "Select due date",
+        "items": {
+          "title": "Invoice Items",
+          "description": "List of items in the invoice (based on SO reference).",
+          "empty": "No items yet, please select a Sales Order reference first.",
+          "product": "Product",
+          "qty": "Qty",
+          "price": "Unit Price",
+          "subtotal": "Subtotal"
+        },
+        "notes": {
+          "title": "Notes",
+          "optional": "(Optional)",
+          "placeholder": "Notes for customer..."
+        },
+        "payment": {
+          "title": "Billing Details",
+          "subtotal": "Subtotal",
+          "discountAmount": "Discount Amount",
+          "taxAmount": "Tax (VAT)",
+          "total": "Total Billing"
+        }
+      },
+      "validation": {
+        "orderRequired": "SO Reference must be selected",
+        "variantRequired": "Product variant is required",
+        "orderItemRequired": "Order Item ID is required",
+        "quantityMin": "Quantity must be greater than 0",
+        "priceMin": "Unit price cannot be negative"
+      }
     }
   },
   "reports": {

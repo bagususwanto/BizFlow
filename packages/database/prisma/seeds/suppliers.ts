@@ -12,7 +12,6 @@ export async function seedSuppliers(prisma: PrismaClient) {
       email: 'sales@tekmaju.com',
       taxId: '01.234.567.8-123.000',
       isActive: true,
-      paymentTermDays: 30,
       bankName: 'BCA',
       bankAccount: '1234567890',
     },
@@ -28,7 +27,6 @@ export async function seedSuppliers(prisma: PrismaClient) {
       phone: '08123456789',
       email: 'berkah@abadi.com',
       isActive: true,
-      paymentTermDays: 0,
       bankName: 'Mandiri',
       bankAccount: '9876543210',
     },
@@ -44,7 +42,6 @@ export async function seedSuppliers(prisma: PrismaClient) {
       phone: '08567890123',
       email: 'sumber@rezeki.com',
       isActive: false, // Inactive supplier
-      paymentTermDays: 7,
     },
   });
 

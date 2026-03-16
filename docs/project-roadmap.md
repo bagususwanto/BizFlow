@@ -262,7 +262,7 @@ Referensi: [04-sales-management.md](file:///Users/bagus/Project/personal/BizFlow
 
 | Task                            | Status | Priority |
 | ------------------------------- | ------ | -------- |
-| **Orders** - Sales Order        | [ ]    | High     |
+| **Orders** - Sales Order        | [x]    | High     |
 | **Orders** - Invoice            | [ ]    | High     |
 | **Orders** - Delivery Order     | [ ]    | Medium   |
 | **Returns** - Sales Return      | [ ]    | Medium   |

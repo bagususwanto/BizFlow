@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
@@ -58,9 +58,13 @@ export function InvoiceForm({
   isCustomInvoiceNumber = false,
 }: InvoiceFormProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const t = useTranslations('sales.invoices');
   const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
   const [isDueDateOpen, setIsDueDateOpen] = React.useState(false);
+
+  // orderId can be pre-filled from URL query param (e.g. coming from SO detail page)
+  const prefilledOrderId = searchParams.get('orderId') || '';
 
   const createMutation = useCreateSalesInvoice();
   const updateMutation = useUpdateSalesInvoice(initialData?.id || '');
@@ -69,7 +73,7 @@ export function InvoiceForm({
     resolver: zodResolver(createInvoiceSchema),
     defaultValues: {
       invoiceNumber: '',
-      orderId: '',
+      orderId: prefilledOrderId,
       invoiceDate: undefined,
       dueDate: undefined,
       notes: '',
@@ -99,25 +103,26 @@ export function InvoiceForm({
   });
 
   React.useEffect(() => {
-    if (selectedOrder && !initialData?.id && fields.length === 0) {
-      if (selectedOrder.items) {
-        // Clear items first
+    if (selectedOrder && !initialData?.id) {
+      if (selectedOrder.items && selectedOrder.items.length > 0) {
+        // Reset items and populate from SO items
         form.setValue('items', []);
-        
-        // Populate from SO items
-        selectedOrder.items.forEach(item => {
-           append({
-             orderItemId: item.id,
-             variantId: item.variantId,
-             quantity: Number(item.quantity) || 1,
-             unitPrice: Number(item.unitPrice) || 0,
-             discountAmount: Number(item.discountAmount) || 0,
-             notes: item.notes || '',
-           });
+        remove(); // clear all existing field-array entries
+
+        selectedOrder.items.forEach((item: any) => {
+          append({
+            orderItemId: item.id,
+            variantId: item.variantId,
+            quantity: Number(item.quantity) || 1,
+            unitPrice: Number(item.unitPrice) || 0,
+            discountAmount: Number(item.discountAmount) || 0,
+            notes: item.notes || '',
+          });
         });
       }
     }
-  }, [selectedOrder, initialData, append, form, fields.length]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedOrder?.id]);
 
   React.useEffect(() => {
     if ((!initialData || !initialData.invoiceNumber) && !isCustomInvoiceNumber) {
@@ -200,7 +205,7 @@ export function InvoiceForm({
                       }
                       value={field.value || ''}
                       onChange={field.onChange}
-                      disabled={!!initialData?.id} // Only disable if editing existing invoice
+                      disabled={!!initialData?.id || !!prefilledOrderId} // Disable if editing OR pre-filled from SO detail
                       placeholder={t('form.salesOrderPlaceholder')}
                       searchPlaceholder={t('form.salesOrderSearch')}
                     />

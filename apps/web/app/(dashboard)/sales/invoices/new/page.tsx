@@ -30,6 +30,7 @@ export default function CreateSalesInvoicePage() {
           </div>
         }
       >
+        {/* InvoiceForm uses useSearchParams - must be inside Suspense */}
         <CreateSalesInvoiceContent />
       </Suspense>
     </div>

@@ -244,12 +244,11 @@ export default function SalesOrderDetailPage({
                 <XCircle className="mr-2 h-4 w-4" /> {t('actions.cancelBtn')}
               </Button>
               <Button
-                onClick={() => {
-                  setNextStatus('invoiced');
-                  setStatusDialogOpen(true);
-                }}
+                onClick={() =>
+                  router.push(`/sales/invoices/new?orderId=${order.id}`)
+                }
               >
-                <CheckCircle className="mr-2 h-4 w-4" /> {t('actions.invoiceBtn')}
+                <Package className="mr-2 h-4 w-4" /> {t('actions.invoiceBtn')}
               </Button>
             </>
           )}

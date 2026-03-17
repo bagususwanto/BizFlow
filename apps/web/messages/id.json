@@ -3151,8 +3151,8 @@
           "title": "Informasi Pesanan",
           "description": "Informasi umum mengenai sales order."
         },
-        "orderNumber": "No. SO",
-        "orderNumberPlaceholder": "Otomatis",
+        "soNumber": "No. SO",
+        "soNumberPlaceholder": "Otomatis",
         "customerLabel": "Pelanggan",
         "customerPlaceholder": "Pilih Pelanggan",
         "orderDate": "Tanggal Order",

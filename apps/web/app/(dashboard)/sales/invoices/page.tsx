@@ -218,7 +218,7 @@ function SalesInvoicesContent() {
               <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{summary.draftInvoices + summary.sentInvoices}</div>
+              <div className="text-2xl font-bold">{(summary.draftInvoices || 0) + (summary.sentInvoices || 0)}</div>
               <p className="text-xs text-muted-foreground">
                 {t('summary.unpaidDesc')}
               </p>

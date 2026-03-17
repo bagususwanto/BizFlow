@@ -3183,8 +3183,8 @@
           "title": "Order Information",
           "description": "General information about the sales order."
         },
-        "orderNumber": "SO No.",
-        "orderNumberPlaceholder": "Automatic",
+        "soNumber": "SO No.",
+        "soNumberPlaceholder": "Automatic",
         "customerLabel": "Customer",
         "customerPlaceholder": "Select Customer",
         "orderDate": "Order Date",

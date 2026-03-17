@@ -41,10 +41,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@bizflow/ui';
-import {
-  createSalesOrderSchema,
-  CreateSalesOrderValues,
-} from '@bizflow/types';
+import { createSalesOrderSchema, CreateSalesOrderValues } from '@bizflow/types';
 import { salesOrdersService } from '@/services/sales-orders.service';
 import { productsService } from '@/services/products.service';
 import { customersService } from '@/services/customers.service';
@@ -52,6 +49,7 @@ import {
   useCreateSalesOrder,
   useUpdateSalesOrder,
 } from '@/hooks/use-sales-orders';
+import { useActiveOutlets } from '@/hooks/use-outlets';
 import { useTranslations } from 'next-intl';
 import { useAuthStore } from '@/stores/auth.store';
 
@@ -74,9 +72,17 @@ export function SalesOrderForm({
   // Safe to call even without initialData; we just won't call mutate if we don't need it
   const updateMutation = useUpdateSalesOrder(initialData?.id || '');
 
-  // We can try to get outletId from user, fallback to empty string
   const user = useAuthStore((state) => state.user);
-  const userOutletId = (user as any)?.outletId || '';
+  const userOutletIds = user?.outlets || [];
+  const isOwner = user?.role === 'owner';
+
+  // Fetch all active outlets, then filter by user's assigned outlets (unless owner)
+  const { data: activeOutlets } = useActiveOutlets();
+  const outletOptions = (activeOutlets || []).filter(
+    (o) => isOwner || userOutletIds.includes(o.id),
+  );
+
+  const userOutletId = userOutletIds[0] || '';
 
   const form = useForm<z.input<typeof createSalesOrderSchema>>({
     resolver: zodResolver(createSalesOrderSchema),
@@ -113,7 +119,7 @@ export function SalesOrderForm({
     queryKey: ['customers', 'active'],
     queryFn: () => customersService.getAll({ pageSize: 100 }), // adjust if needed
   });
-  
+
   const customers = customersResponse?.data || [];
 
   // Fetch products (variants for transactions)
@@ -155,7 +161,7 @@ export function SalesOrderForm({
 
     // Provide default outletId if missing
     if (!values.outletId) {
-       values.outletId = userOutletId;
+      values.outletId = userOutletId;
     }
 
     const data = {
@@ -175,8 +181,10 @@ export function SalesOrderForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {/* Hidden field for outletId */}
-        <input type="hidden" {...form.register('outletId')} />
+        {/* Hidden field for outletId – rendered only when there's exactly one outlet (no need to choose) */}
+        {outletOptions.length <= 1 && (
+          <input type="hidden" {...form.register('outletId')} />
+        )}
 
         {/* Top Section: General Info */}
         <Card>
@@ -229,6 +237,38 @@ export function SalesOrderForm({
                   </FormItem>
                 )}
               />
+
+              {/* Show outlet selector only when user has access to multiple outlets */}
+              {outletOptions.length > 1 && (
+                <FormField
+                  control={form.control}
+                  name="outletId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('form.outlet')}</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value || ''}
+                        disabled={!!initialData?.id}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder={t('form.outletPlaceholder')} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {outletOptions.map((o) => (
+                            <SelectItem key={o.id} value={o.id}>
+                              {o.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
             </div>
 
             <div className="space-y-4">

@@ -36,7 +36,6 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
         ]);
 
         const appMessages = appMessagesModule.default;
-        console.log('DEBUG: Loaded appMessages.sales.orders.form:', appMessages?.sales?.orders?.form);
         setMessages(appMessages);
 
         await i18next.init({

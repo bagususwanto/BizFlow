@@ -3187,6 +3187,8 @@
         "soNumberPlaceholder": "Automatic",
         "customerLabel": "Customer",
         "customerPlaceholder": "Select Customer",
+        "outlet": "Outlet",
+        "outletPlaceholder": "Select Outlet",
         "orderDate": "Order Date",
         "orderDatePlaceholder": "Select date",
         "orderDateDesc": "Date of the order.",

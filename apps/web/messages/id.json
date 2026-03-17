@@ -3155,6 +3155,8 @@
         "soNumberPlaceholder": "Otomatis",
         "customerLabel": "Pelanggan",
         "customerPlaceholder": "Pilih Pelanggan",
+        "outlet": "Outlet",
+        "outletPlaceholder": "Pilih Outlet",
         "orderDate": "Tanggal Order",
         "orderDatePlaceholder": "Pilih tanggal",
         "orderDateDesc": "Tanggal pembuatan pesanan.",

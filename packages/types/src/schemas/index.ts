@@ -30,3 +30,4 @@ export * from './stock-valuation';
 export * from './sales-order';
 export * from './invoice';
 export * from './delivery-order';
+export * from './customer-payment';

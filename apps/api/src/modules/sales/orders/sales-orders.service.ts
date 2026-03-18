@@ -630,4 +630,151 @@ export class SalesOrdersService {
       skippedCount,
     });
   }
+
+  /**
+   * Get sales history for a specific customer with summary
+   */
+  async findByCustomer(
+    customerId: string,
+    query: {
+      page?: number;
+      pageSize?: number;
+      sortBy?: string;
+      sortOrder?: 'asc' | 'desc';
+      status?: string;
+      paymentStatus?: string;
+      startDate?: string;
+      endDate?: string;
+    },
+  ) {
+    // Verify customer exists
+    const customer = await this.prisma.customer.findUnique({
+      where: { id: customerId },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        email: true,
+        phone: true,
+      },
+    });
+
+    if (!customer) {
+      throw new NotFoundException('Customer tidak ditemukan');
+    }
+
+    const {
+      page = 1,
+      pageSize = 10,
+      sortBy = 'orderDate',
+      sortOrder = 'desc',
+      status,
+      paymentStatus,
+      startDate,
+      endDate,
+    } = query;
+
+    const pageNum = Number(page) || 1;
+    const sizeNum = Number(pageSize) || 10;
+    const skip = (pageNum - 1) * sizeNum;
+
+    const where: any = { customerId };
+
+    if (status) where.status = status;
+    if (paymentStatus) where.paymentStatus = paymentStatus;
+
+    if (startDate || endDate) {
+      where.orderDate = {};
+      if (startDate) where.orderDate.gte = new Date(startDate);
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        where.orderDate.lte = end;
+      }
+    }
+
+    const orderBy: Record<string, 'asc' | 'desc'> = {
+      [sortBy || 'orderDate']: sortOrder || 'desc',
+    };
+
+    const [totalItems, orders, aggregates] = await Promise.all([
+      this.prisma.salesOrder.count({ where }),
+      this.prisma.salesOrder.findMany({
+        where,
+        include: {
+          items: {
+            include: {
+              variant: {
+                include: {
+                  product: { select: { name: true, sku: true } },
+                },
+              },
+            },
+          },
+          invoices: {
+            select: {
+              id: true,
+              invoiceNumber: true,
+              status: true,
+              paymentStatus: true,
+              total: true,
+              paidAmount: true,
+            },
+          },
+          payments: {
+            select: {
+              id: true,
+              paymentNumber: true,
+              amount: true,
+              paymentDate: true,
+              paymentMethod: true,
+            },
+          },
+          returns: {
+            select: {
+              id: true,
+              returnNumber: true,
+              status: true,
+              refundAmount: true,
+            },
+          },
+          _count: {
+            select: { items: true, invoices: true, payments: true },
+          },
+        },
+        orderBy,
+        skip,
+        take: sizeNum,
+      }),
+      this.prisma.salesOrder.aggregate({
+        where: { customerId },
+        _sum: { total: true, paidAmount: true },
+        _count: { id: true },
+      }),
+    ]);
+
+    const totalPages = Math.ceil(totalItems / sizeNum);
+    const totalRevenue = Number(aggregates._sum.total ?? 0);
+    const totalPaid = Number(aggregates._sum.paidAmount ?? 0);
+
+    const summary = {
+      totalOrders: aggregates._count.id,
+      totalRevenue,
+      totalPaid,
+      outstandingBalance: totalRevenue - totalPaid,
+    };
+
+    return {
+      data: orders,
+      customer,
+      meta: {
+        page: pageNum,
+        pageSize: sizeNum,
+        totalItems,
+        totalPages,
+      },
+      summary,
+    };
+  }
 }
+

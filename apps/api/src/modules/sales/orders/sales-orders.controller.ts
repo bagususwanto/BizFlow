@@ -56,6 +56,25 @@ export class SalesOrdersController {
     return { data: { orderNumber } };
   }
 
+  @Get('customer/:customerId/history')
+  @Permissions(Permission.SalesOrders.Read)
+  async findByCustomer(
+    @Param('customerId') customerId: string,
+    @Query()
+    query: {
+      page?: number;
+      pageSize?: number;
+      sortBy?: string;
+      sortOrder?: 'asc' | 'desc';
+      status?: string;
+      paymentStatus?: string;
+      startDate?: string;
+      endDate?: string;
+    },
+  ) {
+    return this.salesOrdersService.findByCustomer(customerId, query);
+  }
+
   @Get(':id')
   @Permissions(Permission.SalesOrders.Read)
   async findById(

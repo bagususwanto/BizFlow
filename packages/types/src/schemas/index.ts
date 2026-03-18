@@ -31,3 +31,4 @@ export * from './sales-order';
 export * from './invoice';
 export * from './delivery-order';
 export * from './customer-payment';
+export * from './sales-return';

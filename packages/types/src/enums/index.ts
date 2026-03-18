@@ -51,6 +51,7 @@ export enum Module {
   PURCHASES = 'purchases',
   PURCHASE_ORDERS = 'purchase-orders',
   PURCHASE_RETURNS = 'purchase-returns',
+  SALES_RETURNS = 'sales-returns',
   SUPPLIER_PAYMENTS = 'supplier-payments',
   GOODS_RECEIVE = 'goods-receive',
   INVENTORY = 'inventory',
@@ -199,6 +200,14 @@ export const Permission = {
     Create: 'customer-payments:create',
     Update: 'customer-payments:update',
     Delete: 'customer-payments:delete',
+  },
+  SalesReturns: {
+    Read: 'sales-returns:read',
+    Create: 'sales-returns:create',
+    Update: 'sales-returns:update',
+    Delete: 'sales-returns:delete',
+    Approve: 'sales-returns:approve',
+    Reject: 'sales-returns:reject',
   },
   Purchases: {
     Read: 'purchases:read',

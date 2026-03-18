@@ -66,6 +66,9 @@ export function InvoiceForm({
   // orderId can be pre-filled from URL query param (e.g. coming from SO detail page)
   const prefilledOrderId = searchParams.get('orderId') || '';
 
+  // Lookup map: variantId -> { name, sku } for displaying item labels
+  const [itemLabels, setItemLabels] = React.useState<Record<string, { name: string; sku: string }>>({});
+
   const createMutation = useCreateSalesInvoice();
   const updateMutation = useUpdateSalesInvoice(initialData?.id || '');
 
@@ -109,7 +112,13 @@ export function InvoiceForm({
         form.setValue('items', []);
         remove(); // clear all existing field-array entries
 
+        // Build lookup map of variantId -> product name & sku
+        const labels: Record<string, { name: string; sku: string }> = {};
         selectedOrder.items.forEach((item: any) => {
+          const productName = item.variant?.product?.name || item.variant?.name || 'Produk';
+          const sku = item.variant?.product?.sku || item.variant?.sku || '';
+          labels[item.variantId] = { name: productName, sku };
+
           append({
             orderItemId: item.id,
             variantId: item.variantId,
@@ -119,6 +128,7 @@ export function InvoiceForm({
             notes: item.notes || '',
           });
         });
+        setItemLabels(labels);
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -350,9 +360,22 @@ export function InvoiceForm({
                     key={field.id}
                     className="flex flex-col sm:grid sm:grid-cols-[1fr_100px_160px_160px_50px] gap-4 p-4 hover:bg-muted/50 transition-colors"
                   >
-                    {/* Product */}
-                    <div className="w-full flex items-center">
-                      <span className="text-sm font-medium">Item from SO (ID: {form.getValues(`items.${index}.variantId`)}...)</span>
+                    {/* Product info */}
+                    <div className="w-full flex flex-col justify-center">
+                      {(() => {
+                        const variantId = form.getValues(`items.${index}.variantId`);
+                        const label = itemLabels[variantId];
+                        return label ? (
+                          <>
+                            <span className="text-sm font-medium">{label.name}</span>
+                            {label.sku && (
+                              <span className="text-xs text-muted-foreground">{label.sku}</span>
+                            )}
+                          </>
+                        ) : (
+                          <span className="text-sm text-muted-foreground italic">Item #{index + 1}</span>
+                        );
+                      })()}
                     </div>
 
                     {/* Qty & Price (Grid on mobile) */}

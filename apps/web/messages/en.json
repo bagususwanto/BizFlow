@@ -3190,7 +3190,7 @@
         },
         "quotationNumber": "Quo No.",
         "quotationNumberPlaceholder": "Automatic",
-        "customerLabel": "Customer (Optional)",
+        "customerLabel": "Customer",
         "customerPlaceholder": "Select Customer",
         "outlet": "Outlet",
         "outletPlaceholder": "Select Outlet",

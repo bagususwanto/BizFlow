@@ -3043,6 +3043,167 @@
     }
   },
   "sales": {
+    "quotations": {
+      "title": "Penawaran Harga",
+      "description": "Kelola penawaran harga (quotation) untuk pelanggan.",
+      "createLabel": "Buat Penawaran",
+      "searchPlaceholder": "Cari No. Penawaran atau Pelanggan...",
+      "failedLoad": "Gagal memuat data penawaran",
+      "summary": {
+        "total": "Total Penawaran",
+        "totalDesc": "Semua status",
+        "draft": "Draf",
+        "draftDesc": "Belum dikirim",
+        "sent": "Terkirim",
+        "sentDesc": "Terkirim ke pelanggan",
+        "accepted": "Disetujui",
+        "acceptedDesc": "Pelanggan setuju",
+        "rejected": "Ditolak",
+        "rejectedDesc": "Pelanggan menolak",
+        "expired": "Kedaluwarsa",
+        "expiredDesc": "Masa berlaku habis"
+      },
+      "filter": {
+        "status": "Status",
+        "customer": "Pelanggan",
+        "customerPlaceholder": "Pilih pelanggan..."
+      },
+      "status": {
+        "draft": "Draf",
+        "sent": "Terkirim",
+        "accepted": "Disetujui",
+        "rejected": "Ditolak",
+        "expired": "Kedaluwarsa"
+      },
+      "columns": {
+        "quotationNumber": "No. Penawaran",
+        "date": "Tanggal",
+        "customer": "Pelanggan",
+        "validUntil": "Berlaku Hingga",
+        "total": "Total",
+        "status": "Status"
+      },
+      "actions": {
+        "detail": "Detail",
+        "edit": "Edit",
+        "delete": "Hapus",
+        "printBtn": "Cetak",
+        "convertBtn": "Konversi ke SO"
+      },
+      "delete": {
+        "title": "Hapus Penawaran?",
+        "desc1": "Apakah Anda yakin ingin menghapus Penawaran ",
+        "desc2": "? Tindakan ini tidak dapat dibatalkan."
+      },
+      "detail": {
+        "title": "Detail Penawaran",
+        "failedLoad": "Gagal memuat detail penawaran",
+        "customerInfo": {
+          "title": "Informasi Pelanggan"
+        },
+        "otherInfo": {
+          "title": "Informasi Lainnya",
+          "quotationDate": "Tanggal Penawaran:",
+          "validUntil": "Berlaku Hingga:",
+          "createdAt": "Dibuat Pada:",
+          "createdBy": "Dibuat Oleh:"
+        },
+        "items": {
+          "title": "Barang Penawaran",
+          "product": "Produk",
+          "qty": "Jml",
+          "price": "Harga",
+          "total": "Total"
+        },
+        "notes": {
+          "title": "Catatan"
+        },
+        "terms": {
+          "title": "Syarat & Ketentuan"
+        },
+        "paymentDetails": {
+          "title": "Rincian Harga",
+          "subtotal": "Subtotal",
+          "discount": "Diskon",
+          "tax": "Pajak",
+          "total": "Total"
+        },
+        "statusDialog": {
+          "title": "Konfirmasi Perubahan Status",
+          "desc1": "Apakah Anda yakin ingin mengubah status menjadi ",
+          "desc2": "?",
+          "cancel": "Batal",
+          "confirm": "Ya, Ubah Status"
+        }
+      },
+      "convert": {
+        "title": "Konversi ke Sales Order",
+        "desc": "Penawaran ini akan dikonversi menjadi Sales Order. Silakan periksa detail berikut sebelum melanjutkan.",
+        "orderDate": "Tanggal Pesanan",
+        "dueDate": "Jatuh Tempo (Opsional)",
+        "notes": "Catatan Tambahan (Opsional)",
+        "confirm": "Konversi ke Sales Order"
+      },
+      "form": {
+        "createTitle": "Buat Penawaran",
+        "createSubtitle": "Buat penawaran harga baru untuk pelanggan.",
+        "editTitle": "Edit Penawaran",
+        "cancelBtn": "Batal",
+        "saveBtn": "Simpan Perbaikan",
+        "createBtn": "Buat Penawaran",
+        "generalInfo": {
+          "title": "Informasi Penawaran",
+          "description": "Informasi umum tentang penawaran harga."
+        },
+        "quotationNumber": "No. Penawaran",
+        "quotationNumberPlaceholder": "Otomatis",
+        "customerLabel": "Pelanggan (Opsional)",
+        "customerPlaceholder": "Pilih Pelanggan",
+        "outlet": "Outlet",
+        "outletPlaceholder": "Pilih Outlet",
+        "quotationDate": "Tanggal Penawaran",
+        "quotationDatePlaceholder": "Pilih tanggal",
+        "quotationDateDesc": "Tanggal penawaran dibuat.",
+        "validUntil": "Berlaku Hingga",
+        "validUntilPlaceholder": "Pilih tanggal",
+        "validUntilDesc": "Masa berlaku penawaran harga.",
+        "items": {
+          "title": "Barang Penawaran",
+          "description": "Daftar barang yang ditawarkan.",
+          "addBtn": "Tambah Barang",
+          "product": "Produk",
+          "productPlaceholder": "Pilih Produk",
+          "qty": "Jml",
+          "price": "Harga Satuan",
+          "subtotal": "Subtotal"
+        },
+        "notes": {
+          "title": "Catatan",
+          "optional": "(Opsional)",
+          "placeholder": "Catatan tambahan..."
+        },
+        "terms": {
+          "title": "Syarat & Ketentuan",
+          "optional": "(Opsional)",
+          "placeholder": "Syarat dan ketentuan penawaran..."
+        },
+        "payment": {
+          "title": "Rincian Harga",
+          "subtotal": "Subtotal",
+          "discount": "Diskon (%)",
+          "discountAmount": "Potongan Harga",
+          "tax": "Pajak (%)",
+          "taxAmount": "Pajak (PPN)",
+          "total": "Total Harga"
+        }
+      },
+      "validation": {
+        "variantRequired": "Produk varian wajib diisi",
+        "quantityMin": "Jumlah harus lebih besar dari 0",
+        "priceMin": "Harga satuan tidak boleh negatif",
+        "itemsMin": "Minimal 1 barang wajib diisi"
+      }
+    },
     "orders": {
       "title": "Sales Order",
       "description": "Kelola pesanan penjualan ke pelanggan.",

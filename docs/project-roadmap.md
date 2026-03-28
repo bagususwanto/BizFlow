@@ -267,7 +267,7 @@ Referensi: [04-sales-management.md](file:///Users/bagus/Project/personal/BizFlow
 | **Orders** - Delivery Order     | [x]    | Medium   |
 | **Returns** - Sales Return      | [x]    | Medium   |
 | **Payments** - Customer Payment | [x]    | High     |
-| Quotation (penawaran harga)     | [ ]    | Low      |
+| Quotation (penawaran harga)     | [x]    | Low      |
 | Sales history per customer      | [x]    | High     |
 
 **API Endpoints**: `/api/v1/sales/orders/*`, `/api/v1/sales/returns/*`, `/api/v1/sales/payments/*`

@@ -3075,6 +3075,167 @@
     }
   },
   "sales": {
+    "quotations": {
+      "title": "Quotations",
+      "description": "Manage sales quotations for customers.",
+      "createLabel": "Create Quotation",
+      "searchPlaceholder": "Search Quotation No. or Customer...",
+      "failedLoad": "Failed to load quotations data",
+      "summary": {
+        "total": "Total Quotations",
+        "totalDesc": "All statuses",
+        "draft": "Draft",
+        "draftDesc": "Not sent",
+        "sent": "Sent",
+        "sentDesc": "Sent to customer",
+        "accepted": "Accepted",
+        "acceptedDesc": "Customer agreed",
+        "rejected": "Rejected",
+        "rejectedDesc": "Customer rejected",
+        "expired": "Expired",
+        "expiredDesc": "No longer valid"
+      },
+      "filter": {
+        "status": "Status",
+        "customer": "Customer",
+        "customerPlaceholder": "Select customer..."
+      },
+      "status": {
+        "draft": "Draft",
+        "sent": "Sent",
+        "accepted": "Accepted",
+        "rejected": "Rejected",
+        "expired": "Expired"
+      },
+      "columns": {
+        "quotationNumber": "Quo. No.",
+        "date": "Date",
+        "customer": "Customer",
+        "validUntil": "Valid Until",
+        "total": "Total",
+        "status": "Status"
+      },
+      "actions": {
+        "detail": "Detail",
+        "edit": "Edit",
+        "delete": "Delete",
+        "printBtn": "Print",
+        "convertBtn": "Convert to SO"
+      },
+      "delete": {
+        "title": "Delete Quotation?",
+        "desc1": "Are you sure you want to delete Quotation ",
+        "desc2": "? This action cannot be undone."
+      },
+      "detail": {
+        "title": "Quotation Details",
+        "failedLoad": "Failed to load quotation details",
+        "customerInfo": {
+          "title": "Customer Information"
+        },
+        "otherInfo": {
+          "title": "Other Information",
+          "quotationDate": "Quotation Date:",
+          "validUntil": "Valid Until:",
+          "createdAt": "Created At:",
+          "createdBy": "Created By:"
+        },
+        "items": {
+          "title": "Quotation Items",
+          "product": "Product",
+          "qty": "Qty",
+          "price": "Price",
+          "total": "Total"
+        },
+        "notes": {
+          "title": "Notes"
+        },
+        "terms": {
+          "title": "Terms & Conditions"
+        },
+        "paymentDetails": {
+          "title": "Pricing Details",
+          "subtotal": "Subtotal",
+          "discount": "Discount",
+          "tax": "Tax",
+          "total": "Total"
+        },
+        "statusDialog": {
+          "title": "Confirm Status Change",
+          "desc1": "Are you sure you want to change the status to ",
+          "desc2": "?",
+          "cancel": "Cancel",
+          "confirm": "Yes, Change Status"
+        }
+      },
+      "convert": {
+        "title": "Convert to Sales Order",
+        "desc": "This quotation will be converted to a Sales Order. Please verify the following details before proceeding.",
+        "orderDate": "Order Date",
+        "dueDate": "Due Date (Optional)",
+        "notes": "Additional Notes (Optional)",
+        "confirm": "Convert to Sales Order"
+      },
+      "form": {
+        "createTitle": "Create Quotation",
+        "createSubtitle": "Create a new quotation for a customer.",
+        "editTitle": "Edit Quotation",
+        "cancelBtn": "Cancel",
+        "saveBtn": "Save Changes",
+        "createBtn": "Create Quotation",
+        "generalInfo": {
+          "title": "Quotation Information",
+          "description": "General information about the quotation."
+        },
+        "quotationNumber": "Quo No.",
+        "quotationNumberPlaceholder": "Automatic",
+        "customerLabel": "Customer (Optional)",
+        "customerPlaceholder": "Select Customer",
+        "outlet": "Outlet",
+        "outletPlaceholder": "Select Outlet",
+        "quotationDate": "Quotation Date",
+        "quotationDatePlaceholder": "Select date",
+        "quotationDateDesc": "Date of the quotation.",
+        "validUntil": "Valid Until",
+        "validUntilPlaceholder": "Select date",
+        "validUntilDesc": "Quotation validity period.",
+        "items": {
+          "title": "Quotation Items",
+          "description": "List of items to be offered.",
+          "addBtn": "Add Item",
+          "product": "Product",
+          "productPlaceholder": "Select Product",
+          "qty": "Qty",
+          "price": "Unit Price",
+          "subtotal": "Subtotal"
+        },
+        "notes": {
+          "title": "Notes",
+          "optional": "(Optional)",
+          "placeholder": "Additional notes..."
+        },
+        "terms": {
+          "title": "Terms & Conditions",
+          "optional": "(Optional)",
+          "placeholder": "Terms and conditions..."
+        },
+        "payment": {
+          "title": "Pricing Details",
+          "subtotal": "Subtotal",
+          "discount": "Discount (%)",
+          "discountAmount": "Discount Amount",
+          "tax": "Tax (%)",
+          "taxAmount": "Tax (VAT)",
+          "total": "Total"
+        }
+      },
+      "validation": {
+        "variantRequired": "Product variant is required",
+        "quantityMin": "Quantity must be greater than 0",
+        "priceMin": "Unit price cannot be negative",
+        "itemsMin": "At least 1 item is required"
+      }
+    },
     "orders": {
       "title": "Sales Orders",
       "description": "Manage sales orders from customers.",

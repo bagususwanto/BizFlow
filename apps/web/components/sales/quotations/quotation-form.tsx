@@ -157,6 +157,7 @@ export function QuotationForm({
 
     const data = {
       ...values,
+      customerId: values.customerId || null,
       discountAmount,
     } as CreateQuotationValues;
 

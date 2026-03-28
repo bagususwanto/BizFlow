@@ -58,6 +58,7 @@
     },
     "sales": {
       "title": "Sales",
+      "quotations": "Quotations",
       "orders": "Orders",
       "invoices": "Invoices",
       "returns": "Returns",

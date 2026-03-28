@@ -58,6 +58,7 @@
     },
     "sales": {
       "title": "Penjualan",
+      "quotations": "Penawaran",
       "orders": "Pesanan",
       "invoices": "Faktur",
       "returns": "Retur",

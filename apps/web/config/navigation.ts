@@ -104,11 +104,11 @@ export const navigationConfig = {
       icon: DollarSign,
       items: [
         {
-          title: 'sales.quotations.title',
+          title: 'sales.quotations',
           url: '/sales/quotations',
         },
         {
-          title: 'sales.orders.title',
+          title: 'sales.orders',
           url: '/sales/orders',
         },
         {

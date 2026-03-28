@@ -39,6 +39,7 @@ import { InvoicesModule } from './modules/sales/invoices';
 import { DeliveryOrdersModule } from './modules/sales/delivery-orders';
 import { CustomerPaymentsModule } from './modules/sales/payments';
 import { SalesReturnsModule } from './modules/sales/returns';
+import { QuotationsModule } from './modules/sales/quotations';
 
 import { DashboardReportModule } from './modules/reports/dashboard';
 import { SalesReportModule } from './modules/reports/sales';
@@ -96,6 +97,7 @@ import { AppController } from './app.controller';
     DeliveryOrdersModule,
     CustomerPaymentsModule,
     SalesReturnsModule,
+    QuotationsModule,
     // Finance modules
     AccountsModule,
     // Reports modules

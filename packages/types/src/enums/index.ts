@@ -45,6 +45,7 @@ export enum Module {
   POS = 'pos',
   SALES = 'sales',
   SALES_ORDERS = 'sales-orders',
+  QUOTATIONS = 'quotations',
   INVOICES = 'invoices',
   DELIVERY_ORDERS = 'delivery-orders',
   CUSTOMER_PAYMENTS = 'customer-payments',
@@ -182,6 +183,14 @@ export const Permission = {
     Delete: 'sales-orders:delete',
     Confirm: 'sales-orders:confirm',
     Cancel: 'sales-orders:cancel',
+  },
+  Quotations: {
+    Read: 'quotations:read',
+    Create: 'quotations:create',
+    Update: 'quotations:update',
+    Delete: 'quotations:delete',
+    Send: 'quotations:send',
+    Convert: 'quotations:convert',
   },
   Invoices: {
     Read: 'invoices:read',

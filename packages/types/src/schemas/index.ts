@@ -32,3 +32,4 @@ export * from './invoice';
 export * from './delivery-order';
 export * from './customer-payment';
 export * from './sales-return';
+export * from './quotation';

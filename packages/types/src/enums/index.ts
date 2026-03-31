@@ -272,6 +272,7 @@ export const Permission = {
     Update: 'stock-transfers:update',
     Delete: 'stock-transfers:delete',
     Approve: 'stock-transfers:approve',
+    Reject: 'stock-transfers:reject',
   },
   StockOpnames: {
     Read: 'stock-opnames:read',
@@ -331,6 +332,11 @@ export enum PermissionAction {
   EXPORT = 'export',
   VOID = 'void',
   REFUND = 'refund',
+  CONFIRM = 'confirm',
+  CANCEL = 'cancel',
+  SEND = 'send',
+  CONVERT = 'convert',
+  FINALIZE = 'finalize',
 }
 
 // Helper array for available actions

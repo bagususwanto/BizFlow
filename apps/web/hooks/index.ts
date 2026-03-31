@@ -29,3 +29,4 @@ export * from './use-format-date';
 export * from './use-units';
 export * from './use-users';
 export * from './use-warehouses';
+export * from './use-customer-payments';

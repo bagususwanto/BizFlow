@@ -3466,6 +3466,137 @@
         "quantityMin": "Quantity harus lebih dari 0",
         "priceMin": "Unit price tidak boleh negatif"
       }
+    },
+    "payments": {
+      "title": "Pembayaran Pelanggan",
+      "description": "Kelola penerimaan pembayaran dari pelanggan.",
+      "createLabel": "Terima Pembayaran",
+      "searchPlaceholder": "Cari No. Pembayaran, Pelanggan, Invoice...",
+      "filters": {
+        "customer": {
+          "label": "Pelanggan",
+          "searchPlaceholder": "Cari pelanggan..."
+        }
+      },
+      "summary": {
+        "total": {
+          "title": "Total Pembayaran",
+          "desc": "Transaksi uang masuk"
+        },
+        "inflow": {
+          "title": "Total Masuk",
+          "desc": "Total nominal diterima"
+        }
+      },
+      "delete": {
+        "title": "Hapus Pembayaran?",
+        "desc1": "Apakah Anda yakin ingin menghapus Pembayaran ",
+        "desc2": "? Tindakan ini akan mengembalikan status pembayaran Invoice.",
+        "confirmBtn": "Hapus"
+      },
+      "columns": {
+        "selectAll": "Pilih semua",
+        "selectRow": "Pilih baris",
+        "paymentNumber": "No. Pembayaran",
+        "date": "Tanggal",
+        "customer": "Pelanggan",
+        "invoiceRef": "Ref. Invoice",
+        "account": "Akun",
+        "amount": "Jumlah",
+        "method": "Metode",
+        "actions": {
+          "label": "Aksi",
+          "openMenu": "Buka menu",
+          "detail": "Detail",
+          "edit": "Edit",
+          "delete": "Hapus"
+        }
+      },
+      "detail": {
+        "failedLoad": "Gagal memuat detail pembayaran",
+        "title": "Detail Pembayaran",
+        "actions": {
+          "edit": "Edit",
+          "delete": "Hapus"
+        },
+        "customerInfo": {
+          "title": "Informasi Pelanggan"
+        },
+        "paymentInfo": {
+          "title": "Informasi Pembayaran",
+          "method": "Metode:",
+          "account": "Akun:",
+          "reference": "Referensi:"
+        },
+        "notesInfo": {
+          "title": "Catatan",
+          "notes": "Catatan:",
+          "createdAt": "Dibuat pada:",
+          "createdBy": "Dibuat oleh:"
+        },
+        "amountInfo": {
+          "title": "Informasi Tagihan",
+          "invoice": "No. Invoice:",
+          "totalPaid": "Total Dibayar:"
+        },
+        "deleteDialog": {
+          "title": "Hapus Pembayaran?",
+          "desc": "Apakah Anda yakin ingin menghapus pembayaran ini? Ini akan membatalkan status bayar pada invoice."
+        }
+      },
+      "form": {
+        "title": "Terima Pembayaran",
+        "paymentNumber": {
+          "label": "No. Pembayaran",
+          "placeholder": "Otomatis"
+        },
+        "paymentDate": {
+          "label": "Tanggal",
+          "placeholder": "Pilih tanggal diterimanya dana"
+        },
+        "customerId": {
+          "label": "Pelanggan",
+          "placeholder": "Pilih pelanggan..."
+        },
+        "invoiceId": {
+          "label": "Referensi Invoice",
+          "placeholder": "Pilih invoice...",
+          "placeholderDisabled": "Pilih pelanggan terlebih dahulu",
+          "noInvoice": "Tanpa Referensi",
+          "remaining": "Sisa bayar: Rp"
+        },
+        "accountId": {
+          "label": "Penerima Dana (Akun Kas/Bank)",
+          "placeholder": "Pilih kas/bank..."
+        },
+        "paymentMethod": {
+          "label": "Metode",
+          "placeholder": "Pilih metode...",
+          "options": {
+            "cash": "Tunai",
+            "transfer": "Transfer Bank",
+            "qris": "QRIS",
+            "credit": "Kartu Kredit",
+            "debit": "Kartu Debit"
+          }
+        },
+        "amount": {
+          "label": "Jumlah Diterima"
+        },
+        "reference": {
+          "label": "Referensi / No. Bukti Transaksi",
+          "placeholder": "Mis. REF/INV-01/1239"
+        },
+        "notes": {
+          "label": "Catatan Tambahan",
+          "placeholder": "Catatan terkait pembayaran..."
+        },
+        "actions": {
+          "cancel": "Batal",
+          "submitCreate": "Simpan",
+          "submitUpdate": "Simpan Perubahan"
+        }
+      }
     }
   },
   "reports": {

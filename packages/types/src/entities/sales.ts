@@ -163,6 +163,7 @@ export interface Payment {
   id: string;
   paymentNumber: string;
   orderId?: string | null;
+  invoiceId?: string | null;
   customerId?: string | null;
   accountId: string;
   paymentDate: Date;

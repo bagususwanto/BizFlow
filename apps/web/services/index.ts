@@ -20,3 +20,4 @@ export * from './units.service';
 export * from './upload.service';
 export * from './users.service';
 export * from './warehouses.service';
+export * from './customer-payments.service';

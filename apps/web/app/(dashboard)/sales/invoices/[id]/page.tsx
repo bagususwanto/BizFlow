@@ -135,7 +135,7 @@ function EditInvoiceContent({ id }: { id: string }) {
               </Button>
               {Number(invoice.total) > Number(invoice.paidAmount) && (
                 <Button
-                  onClick={() => router.push(`/sales/payments/new?invoiceId=${invoice.id}&customerId=${invoice.customerId}`)}
+                  onClick={() => router.push(`/sales/payments/new?invoiceId=${invoice.id}&customerId=${invoice.customerId}&amount=${Number(invoice.total) - Number(invoice.paidAmount)}`)}
                 >
                   <CreditCard className="mr-2 h-4 w-4" /> {t('actions.processPayment')}
                 </Button>

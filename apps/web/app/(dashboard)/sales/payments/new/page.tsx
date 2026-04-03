@@ -13,6 +13,7 @@ export default function NewCustomerPaymentPage({
   const resolvedParams = use(searchParams);
   const invoiceId = resolvedParams?.invoiceId as string;
   const customerId = resolvedParams?.customerId as string;
+  const amount = resolvedParams?.amount ? Number(resolvedParams.amount) : undefined;
   const t = useTranslations('sales.payments');
 
   useBreadcrumb('/sales/payments/new', t('actions.createBtn') || 'Buat Pembayaran');
@@ -31,6 +32,7 @@ export default function NewCustomerPaymentPage({
         initialData={{
           ...(invoiceId ? { invoiceId } : {}),
           ...(customerId ? { customerId } : {}),
+          ...(amount ? { amount } : {}),
         }}
       />
     </div>

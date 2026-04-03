@@ -123,10 +123,13 @@ export function CustomerPaymentForm({ initialData }: CustomerPaymentFormProps) {
       const selectedInvoice = invoiceData.data.find((inv: any) => inv.id === invoiceId);
       if (selectedInvoice) {
         // Auto fill amount with remaining balance (total - paid)
+        // ONLY if currently 0/empty, meaning we're not using a pre-filled amount from URL
+        const currentAmount = form.getValues('amount');
         const total = Number(selectedInvoice.total);
         const paid = Number(selectedInvoice.paidAmount || 0);
         const remaining = total - paid;
-        if (remaining > 0) {
+
+        if (remaining > 0 && (!currentAmount || currentAmount === 0)) {
           form.setValue('amount', remaining);
         }
       }

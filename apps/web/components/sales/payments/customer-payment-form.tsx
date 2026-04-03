@@ -21,11 +21,13 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  CardDescription,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
+  Combobox,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -161,9 +163,11 @@ export function CustomerPaymentForm({ initialData }: CustomerPaymentFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {/* Top Section: General Info */}
         <Card>
           <CardHeader>
-            <CardTitle>{t('title')}</CardTitle>
+            <CardTitle>{t('title') || 'Informasi Utama'}</CardTitle>
+            <CardDescription>Detail pelanggan dan referensi tagihan</CardDescription>
           </CardHeader>
           <CardContent className="grid gap-6 md:grid-cols-2">
             {/* Payment Number */}
@@ -241,29 +245,21 @@ export function CustomerPaymentForm({ initialData }: CustomerPaymentFormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel required>{t('customerId.label')}</FormLabel>
-                  <Select
-                    onValueChange={(val) => {
+                  <Combobox
+                    options={customers.map((customer: any) => ({
+                      label: `${customer.name} (${customer.code})`,
+                      value: customer.id,
+                    }))}
+                    value={field.value || ''}
+                    onChange={(val) => {
                       field.onChange(val);
                       form.setValue('invoiceId', ''); // Reset Invoice
                     }}
-                    defaultValue={field.value || undefined}
+                    placeholder={t('customerId.placeholder') || 'Pilih Pelanggan'}
+                    searchPlaceholder="Cari pelanggan..."
                     disabled={isLoadingCustomers}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          placeholder={t('customerId.placeholder')}
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {customers.map((customer: any) => (
-                        <SelectItem key={customer.id} value={customer.id}>
-                          {customer.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    className="w-full flex"
+                  />
                   <FormMessage />
                 </FormItem>
               )}
@@ -276,39 +272,39 @@ export function CustomerPaymentForm({ initialData }: CustomerPaymentFormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel optional>{t('invoiceId.label')}</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value || undefined}
+                  <Combobox
+                    options={[
+                      { label: t('invoiceId.noInvoice') || 'Tanpa Invoice', value: 'unlinked' },
+                      ...availableInvoices.map((inv: any) => ({
+                        label: `${inv.invoiceNumber} (Sisa: ${Number(inv.total) - Number(inv.paidAmount || 0)})`,
+                        value: inv.id,
+                      }))
+                    ]}
+                    value={field.value || ''}
+                    onChange={field.onChange}
+                    placeholder={
+                      customerId
+                        ? t('invoiceId.placeholder') || 'Pilih Invoice'
+                        : t('invoiceId.placeholderDisabled') || 'Pilih pelanggan terlebih dahulu'
+                    }
+                    searchPlaceholder="Cari referensi invoice..."
                     disabled={!customerId || isLoadingInvoices}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          placeholder={
-                            customerId
-                              ? t('invoiceId.placeholder')
-                              : t('invoiceId.placeholderDisabled')
-                          }
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="unlinked">
-                        {t('invoiceId.noInvoice')}
-                      </SelectItem>
-                      {availableInvoices.map((inv: any) => (
-                        <SelectItem key={inv.id} value={inv.id}>
-                          {inv.invoiceNumber} ({t('invoiceId.remaining')}{' '}
-                          {Number(inv.total) - Number(inv.paidAmount || 0)})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    className="w-full flex whitespace-normal text-left"
+                  />
                   <FormMessage />
                 </FormItem>
               )}
             />
+          </CardContent>
+        </Card>
 
+        {/* Middle Section: Payment Details */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Rincian Pembayaran</CardTitle>
+            <CardDescription>Informasi akun, metode, dan nominal uang</CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-6 md:grid-cols-2">
             {/* Account */}
             <FormField
               control={form.control}
@@ -418,19 +414,27 @@ export function CustomerPaymentForm({ initialData }: CustomerPaymentFormProps) {
                 </FormItem>
               )}
             />
+          </CardContent>
+        </Card>
 
+        {/* Bottom Section: Notes */}
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('notes.label') || 'Catatan'}</CardTitle>
+          </CardHeader>
+          <CardContent>
             {/* Notes */}
             <FormField
               control={form.control}
               name="notes"
               render={({ field }) => (
-                <FormItem className="md:col-span-2">
-                  <FormLabel optional>{t('notes.label')}</FormLabel>
+                <FormItem>
                   <FormControl>
                     <Textarea
                       placeholder={t('notes.placeholder')}
                       {...field}
                       value={field.value || ''}
+                      className="resize-none min-h-[100px]"
                     />
                   </FormControl>
                   <FormMessage />
@@ -440,7 +444,7 @@ export function CustomerPaymentForm({ initialData }: CustomerPaymentFormProps) {
           </CardContent>
         </Card>
 
-        <div className="flex justify-end gap-4">
+        <div className="flex justify-end gap-4 pt-4">
           <Button
             type="button"
             variant="outline"

@@ -37,7 +37,21 @@ function EditQuotationContent({ id }: { id: string }) {
     return <ErrorState onRetry={() => refetch()} />;
   }
 
-  return <QuotationForm initialData={quotation} />;
+  // Transform data for form to ensure numbers are correctly typed
+  const preparedData = {
+    ...quotation,
+    discountPercent: Number(quotation.discountPercent || 0),
+    discountAmount: Number(quotation.discountAmount || 0),
+    taxPercent: Number(quotation.taxPercent || 0),
+    items: (quotation.items || []).map((item: any) => ({
+      variantId: item.variantId,
+      quantity: Number(item.quantity || 0),
+      unitPrice: Number(item.unitPrice || 0),
+      notes: item.notes || '',
+    })),
+  };
+
+  return <QuotationForm initialData={preparedData} />;
 }
 
 export default function EditQuotationPage({

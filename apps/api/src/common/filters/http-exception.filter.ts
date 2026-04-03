@@ -69,8 +69,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
           lng: 'en',
           fallbackLng: 'en',
           resources: {
-            en: { zod: require('../../i18n/en.json') },
-            id: { zod: require('../../i18n/id.json') },
+            en: { zod: require('../../i18n/zod.json') },
+            id: { zod: require('../../i18n/zod.json') },
           },
         });
       }

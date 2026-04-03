@@ -37,18 +37,17 @@ export function useCreateQuotation() {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: (data: CreateQuotationValues) =>
-      quotationsService.create(data),
+    mutationFn: (data: CreateQuotationValues) => quotationsService.create(data),
     onSuccess: async (response) => {
       const message =
         (response as any).data?.message || 'Penawaran Harga berhasil dibuat';
-      toast.success(message);
       await queryClient.invalidateQueries({
         queryKey: ['quotations'],
         refetchType: 'all',
       });
       router.push('/sales/quotations');
       router.refresh();
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -65,8 +64,8 @@ export function useUpdateQuotation(id: string) {
       quotationsService.update(id, data),
     onSuccess: async (response) => {
       const message =
-        (response as any).data?.message || 'Penawaran Harga berhasil diperbarui';
-      toast.success(message);
+        (response as any).data?.message ||
+        'Penawaran Harga berhasil diperbarui';
       await queryClient.invalidateQueries({
         queryKey: ['quotations'],
         refetchType: 'all',
@@ -77,6 +76,7 @@ export function useUpdateQuotation(id: string) {
       });
       router.push('/sales/quotations');
       router.refresh();
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -93,12 +93,12 @@ export function useDeleteQuotation() {
     onSuccess: async (response) => {
       const message =
         (response as any).data?.message || 'Penawaran Harga berhasil dihapus';
-      toast.success(message);
       await queryClient.invalidateQueries({
         queryKey: ['quotations'],
         refetchType: 'all',
       });
       router.refresh();
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -115,12 +115,12 @@ export function useBulkDeleteQuotations() {
     onSuccess: async (response) => {
       const message =
         (response as any).data?.message || 'Penawaran Harga berhasil dihapus';
-      toast.success(message);
       await queryClient.invalidateQueries({
         queryKey: ['quotations'],
         refetchType: 'all',
       });
       router.refresh();
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -136,8 +136,8 @@ export function useUpdateQuotationStatus(id: string) {
       quotationsService.updateStatus(id, data),
     onSuccess: async (response) => {
       const message =
-        (response as any).data?.message || 'Status Penawaran Harga berhasil diperbarui';
-      toast.success(message);
+        (response as any).data?.message ||
+        'Status Penawaran Harga berhasil diperbarui';
       await queryClient.invalidateQueries({
         queryKey: ['quotations'],
         refetchType: 'all',
@@ -146,6 +146,7 @@ export function useUpdateQuotationStatus(id: string) {
         queryKey: ['quotations', id],
         refetchType: 'all',
       });
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -162,9 +163,9 @@ export function useConvertQuotationToSalesOrder(id: string) {
       quotationsService.convertToSalesOrder(id, data),
     onSuccess: async (response) => {
       const message =
-        (response as any).data?.message || 'Berhasil dikonversi menjadi Sales Order';
-      toast.success(message);
-      
+        (response as any).data?.message ||
+        'Berhasil dikonversi menjadi Sales Order';
+
       // Invalidate quotations
       await queryClient.invalidateQueries({
         queryKey: ['quotations'],
@@ -174,15 +175,16 @@ export function useConvertQuotationToSalesOrder(id: string) {
         queryKey: ['quotations', id],
         refetchType: 'all',
       });
-      
+
       // Invalidate sales orders
       await queryClient.invalidateQueries({
         queryKey: ['sales-orders'],
         refetchType: 'all',
       });
-      
+
       router.push('/sales/quotations');
       router.refresh();
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);

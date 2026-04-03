@@ -142,6 +142,28 @@ export function InvoiceForm({
     }
   }, [initialData, isCustomInvoiceNumber, form]);
 
+  // Populate labels from initial data if we are editing an existing invoice
+  React.useEffect(() => {
+    if (initialData?.id && initialData.items && initialData.items.length > 0) {
+      const labels: Record<string, { name: string; sku: string }> = {};
+      initialData.items.forEach((item: any) => {
+        const productName = item.variant?.product?.name || item.variant?.name || 'Produk';
+        const sku = item.variant?.product?.sku || item.variant?.sku || '';
+        // Sometimes the API returns orderItem.variant instead of just variant
+        const variantData = item.variant || item.orderItem?.variant;
+        
+        if (variantData) {
+           const pName = variantData.product?.name || variantData.name || 'Produk';
+           const pSku = variantData.product?.sku || variantData.sku || '';
+           labels[item.variantId] = { name: pName, sku: pSku };
+        } else {
+           labels[item.variantId] = { name: productName, sku };
+        }
+      });
+      setItemLabels((prev) => ({ ...prev, ...labels }));
+    }
+  }, [initialData]);
+
   const items = form.watch('items');
 
   const subtotal = items.reduce((acc, item) => {

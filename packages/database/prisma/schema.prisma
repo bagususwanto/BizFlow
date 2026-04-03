@@ -657,26 +657,30 @@ model SalesOrderItem {
 }
 
 model SalesReturn {
-  id           String    @id @default(cuid())
-  returnNumber String    @unique
-  orderId      String
-  status       String    @default("pending")
-  reason       String
-  refundMethod String?
-  refundAmount Decimal   @default(0)
-  notes        String?
-  approvedBy   String?
-  approvedAt   DateTime?
-  createdBy    String
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id            String    @id @default(cuid())
+  returnNumber  String    @unique
+  orderId       String
+  invoiceId     String?
+  status        String    @default("pending")
+  reason        String
+  refundMethod  String?
+  refundAmount  Decimal   @default(0)
+  returnToStock Boolean   @default(true)
+  notes         String?
+  approvedBy    String?
+  approvedAt    DateTime?
+  createdBy     String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   order    SalesOrder        @relation(fields: [orderId], references: [id])
+  invoice  Invoice?          @relation(fields: [invoiceId], references: [id])
   items    SalesReturnItem[]
   creator  User              @relation("SalesReturnCreator", fields: [createdBy], references: [id])
   approver User?             @relation("SalesReturnApprover", fields: [approvedBy], references: [id])
 
   @@index([orderId])
+  @@index([invoiceId])
   @@index([status])
 }
 
@@ -716,6 +720,7 @@ model Invoice {
   customer       Customer?       @relation(fields: [customerId], references: [id])
   items          InvoiceItem[]
   payments       Payment[]
+  salesReturns   SalesReturn[]
   deliveryOrders DeliveryOrder[]
   creator        User            @relation("InvoiceCreator", fields: [createdBy], references: [id])
 

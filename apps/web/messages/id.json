@@ -3634,6 +3634,138 @@
           "submitUpdate": "Simpan Perubahan"
         }
       }
+    },
+    "returns": {
+      "title": "Retur Penjualan",
+      "description": "Kelola pengembalian barang dari pelanggan.",
+      "createLabel": "Buat Retur",
+      "searchPlaceholder": "Cari No. Retur atau Pelanggan...",
+      "failedLoad": "Gagal memuat data retur",
+      "summary": {
+        "total": {
+          "title": "Total Retur",
+          "desc": "Semua status"
+        },
+        "pending": {
+          "title": "Menunggu",
+          "desc": "Perlu persetujuan"
+        },
+        "approved": {
+          "title": "Disetujui",
+          "desc": "Stok kembali"
+        },
+        "rejected": {
+          "title": "Ditolak",
+          "desc": "Retur ditolak"
+        }
+      },
+      "columns": {
+        "returnNumber": "No. Retur",
+        "date": "Tanggal",
+        "customer": "Pelanggan",
+        "orderNumber": "Ref. Order",
+        "invoiceNumber": "Ref. Invoice",
+        "refundAmount": "Dana Kembali",
+        "status": "Status",
+        "actions": "Aksi"
+      },
+      "status": {
+        "pending": "Menunggu",
+        "approved": "Disetujui",
+        "rejected": "Ditolak",
+        "completed": "Selesai"
+      },
+      "filters": {
+        "status": {
+          "label": "Status",
+          "pending": "Menunggu",
+          "approved": "Disetujui",
+          "rejected": "Ditolak",
+          "completed": "Selesai"
+        },
+        "customer": {
+          "label": "Pelanggan",
+          "searchPlaceholder": "Cari pelanggan..."
+        }
+      },
+      "actions": {
+        "viewMenu": "Buka Menu",
+        "edit": "Edit",
+        "viewDetails": "Lihat Detail",
+        "delete": "Hapus",
+        "approve": "Setujui",
+        "reject": "Tolak"
+      },
+      "delete": {
+        "title": "Hapus Retur Penjualan?",
+        "desc1": "Apakah Anda yakin ingin menghapus Retur ",
+        "desc2": "? Tindakan ini tidak dapat dibatalkan.",
+        "confirmBtn": "Hapus"
+      },
+      "form": {
+        "createTitle": "Buat Retur Penjualan",
+        "createSubtitle": "Buat pencatatan retur dari pelanggan.",
+        "generalInfo": {
+          "title": "Informasi Retur",
+          "description": "Detail referensi dokumen"
+        },
+        "returnNumber": "Nomor Retur",
+        "returnNumberPlaceholder": "Otomatis",
+        "customerLabel": "Pelanggan",
+        "customerPlaceholder": "Pilih Pelanggan",
+        "orderLabel": "Sales Order",
+        "orderPlaceholder": "Pilih Sales Order",
+        "invoiceLabel": "Invoice",
+        "invoicePlaceholder": "Pilih Invoice",
+        "reason": "Alasan Utama",
+        "reasonPlaceholder": "Mis. Barang cacat produksi",
+        "refundMethod": "Metode Pengembalian Dana",
+        "refundMethodPlaceholder": "Pilih metode...",
+        "returnToStock": "Kembalikan ke Stok",
+        "returnToStockDesc": "Tandai jika barang masih layak dijual",
+        "notes": {
+          "title": "Catatan",
+          "optional": "(Opsional)",
+          "placeholder": "Catatan tambahan..."
+        },
+        "items": {
+          "title": "Item Retur",
+          "description": "Pilih barang yang diretur dari pesanan.",
+          "product": "Produk",
+          "maxQty": "Maks",
+          "returnQty": "Qty Retur",
+          "itemReason": "Alasan Item"
+        },
+        "saveBtn": "Simpan Draf",
+        "cancelBtn": "Batal",
+        "createBtn": "Buat Retur"
+      },
+      "detail": {
+        "title": "Detail Retur Penjualan",
+        "infoTitle": "Informasi Retur",
+        "returnDate": "Tanggal Retur:",
+        "approvedBy": "Disetujui Oleh:",
+        "summary": "Ringkasan",
+        "totalItems": "Total Item",
+        "totalRefund": "Total Dana Kembali",
+        "items": {
+          "title": "Barang Diretur"
+        },
+        "dialogs": {
+          "approve": {
+            "title": "Setujui Retur?",
+            "desc": "Stok akan dikembalikan dan tidak bisa dibatalkan.",
+            "notes": "Catatan Persetujuan (Opsional)",
+            "confirm": "Setujui"
+          },
+          "reject": {
+            "title": "Tolak Retur?",
+            "desc": "Retur ini akan ditandai gagal/ditolak.",
+            "notes": "Alasan Penolakan (Opsional)",
+            "confirm": "Tolak"
+          }
+        }
+      }
     }
   },
   "reports": {

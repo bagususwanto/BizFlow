@@ -80,6 +80,20 @@
       }
     }
   },
+  "sales": {
+    "returns": {
+      "validation": {
+        "orderItemRequired": "Item order wajib diisi",
+        "qtyPositive": "Jumlah return harus lebih dari 0",
+        "itemReasonMax": "Alasan item maksimal 500 karakter",
+        "orderRequired": "Sales Order wajib dipilih",
+        "reasonRequired": "Alasan return wajib diisi",
+        "notesMax": "Catatan maksimal 1000 karakter",
+        "statusNotesMax": "Catatan status maksimal 500 karakter",
+        "itemsMin": "Minimal 1 item return harus dipilih"
+      }
+    }
+  },
   "validations": {
     "email": "email",
     "url": "url",

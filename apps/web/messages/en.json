@@ -3666,6 +3666,138 @@
           "submitUpdate": "Save Changes"
         }
       }
+    },
+    "returns": {
+      "title": "Sales Returns",
+      "description": "Manage customer item returns.",
+      "createLabel": "Create Return",
+      "searchPlaceholder": "Search Return No. or Customer...",
+      "failedLoad": "Failed to load return data",
+      "summary": {
+        "total": {
+          "title": "Total Returns",
+          "desc": "All statuses"
+        },
+        "pending": {
+          "title": "Pending",
+          "desc": "Needs approval"
+        },
+        "approved": {
+          "title": "Approved",
+          "desc": "Stock returned"
+        },
+        "rejected": {
+          "title": "Rejected",
+          "desc": "Return rejected"
+        }
+      },
+      "columns": {
+        "returnNumber": "Return No.",
+        "date": "Date",
+        "customer": "Customer",
+        "orderNumber": "Order Ref.",
+        "invoiceNumber": "Invoice Ref.",
+        "refundAmount": "Refund Amount",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "completed": "Completed"
+      },
+      "filters": {
+        "status": {
+          "label": "Status",
+          "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected",
+          "completed": "Completed"
+        },
+        "customer": {
+          "label": "Customer",
+          "searchPlaceholder": "Search customer..."
+        }
+      },
+      "actions": {
+        "viewMenu": "Open Menu",
+        "edit": "Edit",
+        "viewDetails": "View Details",
+        "delete": "Delete",
+        "approve": "Approve",
+        "reject": "Reject"
+      },
+      "delete": {
+        "title": "Delete Sales Return?",
+        "desc1": "Are you sure you want to delete Return ",
+        "desc2": "? This action cannot be undone.",
+        "confirmBtn": "Delete"
+      },
+      "form": {
+        "createTitle": "Create Sales Return",
+        "createSubtitle": "Record a new return from customer.",
+        "generalInfo": {
+          "title": "Return Information",
+          "description": "Reference document details"
+        },
+        "returnNumber": "Return Number",
+        "returnNumberPlaceholder": "Automatic",
+        "customerLabel": "Customer",
+        "customerPlaceholder": "Select Customer",
+        "orderLabel": "Sales Order",
+        "orderPlaceholder": "Select Sales Order",
+        "invoiceLabel": "Invoice",
+        "invoicePlaceholder": "Select Invoice",
+        "reason": "Main Reason",
+        "reasonPlaceholder": "E.g. Manufacturing defect",
+        "refundMethod": "Refund Method",
+        "refundMethodPlaceholder": "Select method...",
+        "returnToStock": "Return to Stock",
+        "returnToStockDesc": "Check if items are still sellable",
+        "notes": {
+          "title": "Notes",
+          "optional": "(Optional)",
+          "placeholder": "Additional notes..."
+        },
+        "items": {
+          "title": "Return Items",
+          "description": "Select items to return from order.",
+          "product": "Product",
+          "maxQty": "Max",
+          "returnQty": "Return Qty",
+          "itemReason": "Item Reason"
+        },
+        "saveBtn": "Save Draft",
+        "cancelBtn": "Cancel",
+        "createBtn": "Create Return"
+      },
+      "detail": {
+        "title": "Sales Return Details",
+        "infoTitle": "Return Information",
+        "returnDate": "Return Date:",
+        "approvedBy": "Approved By:",
+        "summary": "Summary",
+        "totalItems": "Total Items",
+        "totalRefund": "Total Refund Amount",
+        "items": {
+          "title": "Returned Items"
+        },
+        "dialogs": {
+          "approve": {
+            "title": "Approve Return?",
+            "desc": "Stock will be returned and this cannot be undone.",
+            "notes": "Approval Notes (Optional)",
+            "confirm": "Approve"
+          },
+          "reject": {
+            "title": "Reject Return?",
+            "desc": "This return will be marked as rejected.",
+            "notes": "Rejection Reason (Optional)",
+            "confirm": "Reject"
+          }
+        }
+      }
     }
   },
   "reports": {

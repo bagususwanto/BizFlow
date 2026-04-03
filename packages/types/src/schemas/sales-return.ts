@@ -21,11 +21,13 @@ export type SalesReturnItemValues = z.infer<typeof salesReturnItemSchema>;
 export const createSalesReturnSchema = z.object({
   returnNumber: z.string().optional(),
   orderId: z.string().min(1, 'sales.returns.validation.orderRequired'),
+  invoiceId: z.string().optional().nullable(),
   reason: z.string().min(1, 'sales.returns.validation.reasonRequired'),
   refundMethod: z
     .enum(['cash', 'credit', 'transfer', 'exchange'])
     .optional()
     .nullable(),
+  returnToStock: z.boolean().default(true).optional(),
   notes: z
     .string()
     .max(1000, { message: 'sales.returns.validation.notesMax' })

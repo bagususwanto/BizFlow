@@ -222,6 +222,18 @@ export class SalesReturnsService {
       throw new NotFoundException('Sales Order tidak ditemukan');
     }
 
+    if (dto.invoiceId) {
+      const invoice = await this.prisma.invoice.findUnique({
+        where: { id: dto.invoiceId },
+      });
+      if (!invoice) {
+        throw new NotFoundException('Invoice tidak ditemukan');
+      }
+      if (invoice.orderId !== dto.orderId) {
+        throw new BadRequestException('Invoice ini bukan milik Sales Order yang dipilih');
+      }
+    }
+
     // Only allow returns for confirmed/invoiced/completed orders
     if (!['confirmed', 'invoiced', 'completed'].includes(salesOrder.status)) {
       throw new BadRequestException(
@@ -241,9 +253,20 @@ export class SalesReturnsService {
         );
       }
 
-      if (Number(returnItem.quantity) > Number(soItem.quantity)) {
+      const previouslyReturned = await this.prisma.salesReturnItem.aggregate({
+        where: { 
+          orderItemId: returnItem.orderItemId,
+          return: { status: { in: ['approved', 'completed'] } }
+        },
+        _sum: { quantity: true }
+      });
+
+      const existingReturnedQty = previouslyReturned._sum.quantity || 0;
+      const totalRequestedQty = Number(existingReturnedQty) + Number(returnItem.quantity);
+
+      if (totalRequestedQty > Number(soItem.quantity)) {
         throw new BadRequestException(
-          `Quantity return (${returnItem.quantity}) tidak boleh melebihi quantity yang dipesan (${soItem.quantity})`,
+          `Quantity return (${returnItem.quantity}) ditambah retur sebelumnya (${existingReturnedQty}) tidak boleh melebihi quantity yang dipesan (${soItem.quantity}) untuk item ini`,
         );
       }
     }
@@ -278,9 +301,11 @@ export class SalesReturnsService {
       data: {
         returnNumber,
         orderId: dto.orderId,
+        invoiceId: dto.invoiceId,
         reason: dto.reason,
         refundMethod: dto.refundMethod ?? null,
         refundAmount,
+        returnToStock: dto.returnToStock ?? true,
         notes: dto.notes,
         status: 'pending',
         createdBy: userId,
@@ -488,7 +513,7 @@ export class SalesReturnsService {
     }
 
     // When approved: restore stock for each returned item
-    if (dto.status === 'approved') {
+    if (dto.status === 'approved' && existing.returnToStock) {
       for (const item of existing.items) {
         const variantId = item.orderItem.variantId;
 

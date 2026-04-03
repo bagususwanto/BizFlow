@@ -3445,7 +3445,39 @@
         "detail": "Detail",
         "edit": "Edit",
         "delete": "Delete",
-        "receivePayment": "Receive Payment"
+        "receivePayment": "Receive Payment",
+        "print": "Print",
+        "confirm": "Confirm",
+        "cancel": "Cancel",
+        "processPayment": "Process Payment"
+      },
+      "detail": {
+        "customerInfo": "Customer Information",
+        "invoiceInfo": "Invoice Information",
+        "invoiceDate": "Invoice Date:",
+        "dueDate": "Due Date:",
+        "remainingBalance": "Remaining Balance",
+        "items": {
+          "title": "Item Details",
+          "product": "Product",
+          "qty": "Qty",
+          "price": "Price",
+          "subtotal": "Subtotal",
+          "unknown": "Unknown Item"
+        },
+        "notes": "Notes",
+        "payment": {
+          "title": "Total Billing",
+          "subtotal": "Subtotal",
+          "total": "Final Total",
+          "paid": "Total Paid"
+        },
+        "statusDialog": {
+          "title": "Change Invoice Status?",
+          "description": "Are you sure you want to change the invoice status to ",
+          "cancel": "Cancel",
+          "confirm": "Confirm"
+        }
       },
       "delete": {
         "title": "Delete Sales Invoice?",
@@ -3503,6 +3535,9 @@
       "title": "Customer Payments",
       "description": "Manage incoming payments from customers.",
       "createLabel": "Receive Payment",
+      "actions": {
+        "createBtn": "Receive Payment"
+      },
       "searchPlaceholder": "Search Payment No., Customer, Invoice...",
       "filters": {
         "customer": {
@@ -3578,6 +3613,8 @@
       },
       "form": {
         "title": "Receive Payment",
+        "createTitle": "Receive Customer Payment",
+        "createSubtitle": "Record a new payment received from a customer.",
         "paymentNumber": {
           "label": "Payment No.",
           "placeholder": "Automatic"

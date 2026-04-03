@@ -108,7 +108,7 @@ function EditInvoiceContent({ id }: { id: string }) {
               window.open(`/sales/invoices/${invoice.id}/print`, '_blank')
             }
           >
-            <Printer className="mr-2 h-4 w-4" /> Cetak
+            <Printer className="mr-2 h-4 w-4" /> {t('actions.print')}
           </Button>
 
           {invoice.status === 'draft' && (
@@ -118,7 +118,7 @@ function EditInvoiceContent({ id }: { id: string }) {
                 setStatusDialogOpen(true);
               }}
             >
-              <CheckCircle className="mr-2 h-4 w-4" /> Konfirmasi
+              <CheckCircle className="mr-2 h-4 w-4" /> {t('actions.confirm')}
             </Button>
           )}
 
@@ -131,13 +131,13 @@ function EditInvoiceContent({ id }: { id: string }) {
                   setStatusDialogOpen(true);
                 }}
               >
-                <XCircle className="mr-2 h-4 w-4" /> Batalkan
+                <XCircle className="mr-2 h-4 w-4" /> {t('actions.cancel')}
               </Button>
               {Number(invoice.total) > Number(invoice.paidAmount) && (
                 <Button
                   onClick={() => router.push(`/sales/payments/new?invoiceId=${invoice.id}&customerId=${invoice.customerId}`)}
                 >
-                  <CreditCard className="mr-2 h-4 w-4" /> Proses Pembayaran
+                  <CreditCard className="mr-2 h-4 w-4" /> {t('actions.processPayment')}
                 </Button>
               )}
             </>
@@ -152,7 +152,7 @@ function EditInvoiceContent({ id }: { id: string }) {
            <div className="grid gap-6 md:grid-cols-2">
              <Card>
                <CardHeader>
-                 <CardTitle>Informasi Pelanggan</CardTitle>
+                 <CardTitle>{t('detail.customerInfo')}</CardTitle>
                </CardHeader>
                <CardContent className="space-y-4">
                  <div className="flex items-start gap-4">
@@ -186,25 +186,25 @@ function EditInvoiceContent({ id }: { id: string }) {
 
              <Card>
                <CardHeader>
-                 <CardTitle>Informasi Tagihan</CardTitle>
+                 <CardTitle>{t('detail.invoiceInfo')}</CardTitle>
                </CardHeader>
                <CardContent className="space-y-4">
                  <div className="flex items-center gap-2 text-sm">
                    <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-                   <span className="text-muted-foreground">Tanggal Invoice:</span>
+                   <span className="text-muted-foreground">{t('detail.invoiceDate')}</span>
                    <span className="font-medium">
                      {invoice.invoiceDate ? formatDateTime(invoice.invoiceDate).split(',')[0] : '-'}
                    </span>
                  </div>
                  <div className="flex items-center gap-2 text-sm">
                    <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-                   <span className="text-muted-foreground">Jatuh Tempo:</span>
+                   <span className="text-muted-foreground">{t('detail.dueDate')}</span>
                    <span className="font-medium text-destructive">
                      {invoice.dueDate ? formatDateTime(invoice.dueDate).split(',')[0] : '-'}
                    </span>
                  </div>
                  <div className="flex flex-col gap-1 mt-4 p-4 bg-muted/30 rounded-lg border">
-                   <span className="text-sm font-medium text-muted-foreground">Sisa Pembayaran</span>
+                   <span className="text-sm font-medium text-muted-foreground">{t('detail.remainingBalance')}</span>
                    <span className="text-2xl font-bold text-destructive">
                      {formatCurrency(Number(invoice.total) - Number(invoice.paidAmount))}
                    </span>
@@ -215,22 +215,22 @@ function EditInvoiceContent({ id }: { id: string }) {
 
            <Card>
              <CardHeader>
-               <CardTitle>Rincian Item</CardTitle>
+               <CardTitle>{t('detail.items.title')}</CardTitle>
              </CardHeader>
              <CardContent>
                <Table>
                  <TableHeader>
                    <TableRow>
-                     <TableHead>Produk</TableHead>
-                     <TableHead className="text-right">Qty</TableHead>
-                     <TableHead className="text-right">Harga</TableHead>
-                     <TableHead className="text-right">Subtotal</TableHead>
+                     <TableHead>{t('detail.items.product')}</TableHead>
+                     <TableHead className="text-right">{t('detail.items.qty')}</TableHead>
+                     <TableHead className="text-right">{t('detail.items.price')}</TableHead>
+                     <TableHead className="text-right">{t('detail.items.subtotal')}</TableHead>
                    </TableRow>
                  </TableHeader>
                  <TableBody>
                    {invoice.items?.map((item: any) => {
                      const variantData = item.variant || item.orderItem?.variant;
-                     const pName = variantData?.product?.name || variantData?.name || 'Item Tidak Diketahui';
+                     const pName = variantData?.product?.name || variantData?.name || t('detail.items.unknown');
                      const pSku = variantData?.product?.sku || variantData?.sku || '';
 
                      return (
@@ -255,7 +255,7 @@ function EditInvoiceContent({ id }: { id: string }) {
            <div className="grid gap-6 md:grid-cols-2">
              <Card>
                <CardHeader>
-                 <CardTitle>Catatan</CardTitle>
+                 <CardTitle>{t('detail.notes')}</CardTitle>
                </CardHeader>
                <CardContent>
                  <p className="text-sm text-muted-foreground whitespace-pre-wrap">{invoice.notes || '-'}</p>
@@ -264,11 +264,11 @@ function EditInvoiceContent({ id }: { id: string }) {
 
              <Card>
                <CardHeader>
-                 <CardTitle>Total Tagihan</CardTitle>
+                 <CardTitle>{t('detail.payment.title')}</CardTitle>
                </CardHeader>
                <CardContent className="space-y-4">
                  <div className="flex justify-between text-sm items-center">
-                   <span className="text-muted-foreground">Subtotal</span>
+                   <span className="text-muted-foreground">{t('detail.payment.subtotal')}</span>
                    <span className="font-medium">
                      {formatCurrency(
                        invoice.items?.reduce(
@@ -281,11 +281,11 @@ function EditInvoiceContent({ id }: { id: string }) {
                  {/* Asumsi: Invoice tidak memiliki diskon/pajak pada schema basic, jika ada bisa ditambahkan disini */}
                  <Separator />
                  <div className="flex justify-between text-lg font-bold items-center py-2">
-                   <span>Total Akhir</span>
+                   <span>{t('detail.payment.total')}</span>
                    <span>{formatCurrency(Number(invoice.total))}</span>
                  </div>
                  <div className="bg-primary/5 p-3 rounded-md mt-2 flex justify-between items-center text-sm font-medium">
-                   <span>Total Telah Dibayar</span>
+                   <span>{t('detail.payment.paid')}</span>
                    <span className="text-success">{formatCurrency(Number(invoice.paidAmount))}</span>
                  </div>
                </CardContent>
@@ -297,9 +297,9 @@ function EditInvoiceContent({ id }: { id: string }) {
       <AlertDialog open={statusDialogOpen} onOpenChange={setStatusDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Ubah Status Invoice?</AlertDialogTitle>
+            <AlertDialogTitle>{t('detail.statusDialog.title')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Apakah Anda yakin ingin mengubah status invoice menjadi{' '}
+              {t('detail.statusDialog.description')}
               <span className="font-bold uppercase">
                 {nextStatus || 'draft'}
               </span>
@@ -307,9 +307,9 @@ function EditInvoiceContent({ id }: { id: string }) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogCancel>{t('detail.statusDialog.cancel')}</AlertDialogCancel>
             <AlertDialogAction onClick={handleUpdateStatus}>
-              Konfirmasi
+              {t('detail.statusDialog.confirm')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

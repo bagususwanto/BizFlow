@@ -3413,7 +3413,39 @@
         "detail": "Detail",
         "edit": "Edit",
         "delete": "Hapus",
-        "receivePayment": "Terima Pembayaran"
+        "receivePayment": "Terima Pembayaran",
+        "print": "Cetak",
+        "confirm": "Konfirmasi",
+        "cancel": "Batal",
+        "processPayment": "Proses Pembayaran"
+      },
+      "detail": {
+        "customerInfo": "Informasi Pelanggan",
+        "invoiceInfo": "Informasi Tagihan",
+        "invoiceDate": "Tanggal Invoice:",
+        "dueDate": "Jatuh Tempo:",
+        "remainingBalance": "Sisa Pembayaran",
+        "items": {
+          "title": "Rincian Item",
+          "product": "Produk",
+          "qty": "Qty",
+          "price": "Harga",
+          "subtotal": "Subtotal",
+          "unknown": "Item Tidak Diketahui"
+        },
+        "notes": "Catatan",
+        "payment": {
+          "title": "Total Tagihan",
+          "subtotal": "Subtotal",
+          "total": "Total Akhir",
+          "paid": "Total Telah Dibayar"
+        },
+        "statusDialog": {
+          "title": "Ubah Status Invoice?",
+          "description": "Apakah Anda yakin ingin mengubah status invoice menjadi ",
+          "cancel": "Batal",
+          "confirm": "Konfirmasi"
+        }
       },
       "delete": {
         "title": "Hapus Sales Invoice?",
@@ -3471,6 +3503,9 @@
       "title": "Pembayaran Pelanggan",
       "description": "Kelola penerimaan pembayaran dari pelanggan.",
       "createLabel": "Terima Pembayaran",
+      "actions": {
+        "createBtn": "Terima Pembayaran"
+      },
       "searchPlaceholder": "Cari No. Pembayaran, Pelanggan, Invoice...",
       "filters": {
         "customer": {
@@ -3546,6 +3581,8 @@
       },
       "form": {
         "title": "Terima Pembayaran",
+        "createTitle": "Terima Pembayaran Pelanggan",
+        "createSubtitle": "Catat penerimaan pembayaran baru dari pelanggan.",
         "paymentNumber": {
           "label": "No. Pembayaran",
           "placeholder": "Otomatis"

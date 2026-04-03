@@ -18,7 +18,16 @@ import { ApiResponse } from '@bizflow/types';
 
 // === Prisma include helper ===================================================
 const QUOTATION_INCLUDE = {
-  customer: { select: { id: true, code: true, name: true } },
+  customer: {
+    select: {
+      id: true,
+      code: true,
+      name: true,
+      email: true,
+      phone: true,
+      address: true,
+    },
+  },
   user: { select: { id: true, name: true } },
   outlet: { select: { id: true, name: true } },
   items: {

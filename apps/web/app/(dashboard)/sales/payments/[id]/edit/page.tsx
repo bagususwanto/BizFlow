@@ -29,6 +29,7 @@ export default function EditCustomerPaymentPage({
     `/sales/payments/${resolvedParams.id}`,
     payment?.paymentNumber || 'Detail Pembayaran',
   );
+  useBreadcrumb(`/sales/payments/${resolvedParams.id}/edit`, 'Edit Pembayaran');
 
   if (isLoading) {
     return (

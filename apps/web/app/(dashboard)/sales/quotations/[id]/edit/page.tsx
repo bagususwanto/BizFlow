@@ -21,6 +21,8 @@ function EditQuotationContent({ id }: { id: string }) {
   });
 
   const t = useTranslations('sales.quotations');
+  
+  useBreadcrumb(`/sales/quotations/${id}`, quotation?.quotationNumber || t('actions.detail'));
   useBreadcrumb(`/sales/quotations/${id}/edit`, t('form.editTitle'));
 
   if (isLoading) {

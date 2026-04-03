@@ -72,7 +72,10 @@ export const getColumns = ({
     {
       accessorKey: 'quotationNumber',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title={t('columns.quotationNumber')} />
+        <DataTableColumnHeader
+          column={column}
+          title={t('columns.quotationNumber')}
+        />
       ),
       cell: ({ row }) => (
         <div className="flex flex-col">
@@ -167,7 +170,7 @@ export const getColumns = ({
               {['draft'].includes(quotation.status) && (
                 <>
                   <DropdownMenuItem asChild>
-                    <Link href={`/sales/quotations/${quotation.id}`}>
+                    <Link href={`/sales/quotations/${quotation.id}/edit`}>
                       <Edit className="mr-2 h-4 w-4" /> {t('actions.edit')}
                     </Link>
                   </DropdownMenuItem>

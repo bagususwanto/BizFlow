@@ -31,6 +31,7 @@ export default function EditPurchaseOrderPage({
     `/purchases/orders/${resolvedParams.id}`,
     purchaseOrder?.orderNumber || t('actions.detail'),
   );
+  useBreadcrumb(`/purchases/orders/${resolvedParams.id}/edit`, t('form.editTitle'));
 
   if (isLoading) {
     return (

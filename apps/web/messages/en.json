@@ -1334,7 +1334,15 @@
       "name": "Outlet Name",
       "address": "Address",
       "users": "Users",
-      "status": "Status"
+      "status": "Status",
+      "selectAll": "Select all",
+      "selectRow": "Select row"
+    },
+    "common": {
+      "actions": "Actions",
+      "openMenu": "Open menu",
+      "edit": "Edit",
+      "delete": "Delete"
     },
     "delete": {
       "titleActive": "Deactivate Outlet?",
@@ -1655,6 +1663,8 @@
       "statusInactive": "Inactive"
     },
     "columns": {
+      "selectAll": "Select all",
+      "selectRow": "Select row",
       "username": "Username",
       "name": "Full Name",
       "role": "Role",
@@ -1980,6 +1990,8 @@
         "partial": "Partial"
       },
       "columns": {
+        "selectAll": "Select all",
+        "selectRow": "Select row",
         "poNumber": "PO No.",
         "date": "Date",
         "supplier": "Supplier",
@@ -1987,6 +1999,12 @@
         "total": "Total",
         "status": "Status",
         "payment": "Payment"
+      },
+      "common": {
+        "actions": "Actions",
+        "openMenu": "Open menu",
+        "edit": "Edit",
+        "delete": "Delete"
       },
       "actions": {
         "detail": "Detail",
@@ -3109,12 +3127,20 @@
         "expired": "Expired"
       },
       "columns": {
+        "selectAll": "Select all",
+        "selectRow": "Select row",
         "quotationNumber": "Quo. No.",
         "date": "Date",
         "customer": "Customer",
         "validUntil": "Valid Until",
         "total": "Total",
         "status": "Status"
+      },
+      "common": {
+        "actions": "Actions",
+        "openMenu": "Open menu",
+        "edit": "Edit",
+        "delete": "Delete"
       },
       "actions": {
         "detail": "Detail",
@@ -3271,6 +3297,8 @@
         "partial": "Partial"
       },
       "columns": {
+        "selectAll": "Select all",
+        "selectRow": "Select row",
         "soNumber": "SO No.",
         "date": "Order Date",
         "customer": "Customer",
@@ -3278,6 +3306,12 @@
         "total": "Total",
         "status": "Status",
         "payment": "Payment"
+      },
+      "common": {
+        "actions": "Actions",
+        "openMenu": "Open menu",
+        "edit": "Edit",
+        "delete": "Delete"
       },
       "actions": {
         "detail": "Detail",
@@ -3433,6 +3467,8 @@
         "partial": "Partial"
       },
       "columns": {
+        "selectAll": "Select all",
+        "selectRow": "Select row",
         "invoiceNumber": "Invoice No.",
         "date": "Date",
         "customer": "Customer",
@@ -3440,6 +3476,12 @@
         "total": "Total",
         "status": "Status",
         "payment": "Payment"
+      },
+      "common": {
+        "actions": "Actions",
+        "openMenu": "Open menu",
+        "edit": "Edit",
+        "delete": "Delete"
       },
       "actions": {
         "detail": "Detail",

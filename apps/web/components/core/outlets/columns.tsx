@@ -91,7 +91,7 @@ export const getColumns = ({
       const isActive = row.original.isActive;
       return (
         <Badge variant={isActive ? 'default' : 'secondary'}>
-          {isActive ? 'Active' : 'Inactive'}
+          {isActive ? t('columns.active') : t('columns.inactive')}
         </Badge>
       );
     },
@@ -106,16 +106,16 @@ export const getColumns = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Buka menu</span>
+              <span className="sr-only">{t('common.openMenu')}</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+            <DropdownMenuLabel>{t('common.actions')}</DropdownMenuLabel>
             <DropdownMenuItem asChild>
               <Link href={`/settings/outlets/${outlet.id}`}>
                 <Edit className="mr-2 h-4 w-4" />
-                Edit
+                {t('common.edit')}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -124,7 +124,7 @@ export const getColumns = ({
               onClick={() => onDelete(outlet)}
             >
               <Trash2 className="mr-2 h-4 w-4" />
-              Hapus
+              {t('common.delete')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

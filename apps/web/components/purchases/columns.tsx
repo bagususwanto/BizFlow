@@ -78,7 +78,7 @@ export const getColumns = ({
         <Checkbox
           checked={table.getIsAllPageRowsSelected()}
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Pilih semua"
+          aria-label={t('columns.selectAll') || 'Pilih semua'}
           className="translate-y-[2px]"
         />
       ),
@@ -86,7 +86,7 @@ export const getColumns = ({
         <Checkbox
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Pilih baris"
+          aria-label={t('columns.selectRow') || 'Pilih baris'}
           className="translate-y-[2px]"
         />
       ),
@@ -191,12 +191,12 @@ export const getColumns = ({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Buka menu</span>
+                <span className="sr-only">{t('common.openMenu') || 'Buka menu'}</span>
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+              <DropdownMenuLabel>{t('common.actions') || 'Aksi'}</DropdownMenuLabel>
               <DropdownMenuItem asChild>
                 <Link href={`/purchases/orders/${order.id}`}>
                   <Eye className="mr-2 h-4 w-4" /> {t('actions.detail')}

@@ -34,14 +34,14 @@ export const getColumns = ({
       <Checkbox
         checked={table.getIsAllPageRowsSelected()}
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Pilih semua"
+        aria-label={tCommon('selectAll') || 'Pilih semua'}
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Pilih baris"
+        aria-label={tCommon('selectRow') || 'Pilih baris'}
       />
     ),
     enableSorting: false,

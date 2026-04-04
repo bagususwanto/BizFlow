@@ -1334,7 +1334,15 @@
       "name": "Nama Outlet",
       "address": "Alamat",
       "users": "Pengguna",
-      "status": "Status"
+      "status": "Status",
+      "selectAll": "Pilih semua",
+      "selectRow": "Pilih baris"
+    },
+    "common": {
+      "actions": "Aksi",
+      "openMenu": "Buka menu",
+      "edit": "Edit",
+      "delete": "Hapus"
     },
     "delete": {
       "titleActive": "Nonaktifkan Outlet?",
@@ -1655,6 +1663,8 @@
       "statusInactive": "Non-aktif"
     },
     "columns": {
+      "selectAll": "Pilih semua",
+      "selectRow": "Pilih baris",
       "username": "Username",
       "name": "Nama Lengkap",
       "role": "Peran",
@@ -1980,6 +1990,8 @@
         "partial": "Sebagian"
       },
       "columns": {
+        "selectAll": "Pilih semua",
+        "selectRow": "Pilih baris",
         "poNumber": "No. PO",
         "date": "Tanggal",
         "supplier": "Pemasok",
@@ -1987,6 +1999,12 @@
         "total": "Total",
         "status": "Status",
         "payment": "Pembayaran"
+      },
+      "common": {
+        "actions": "Aksi",
+        "openMenu": "Buka menu",
+        "edit": "Edit",
+        "delete": "Hapus"
       },
       "actions": {
         "detail": "Detail",
@@ -3077,12 +3095,20 @@
         "expired": "Kedaluwarsa"
       },
       "columns": {
+        "selectAll": "Pilih semua",
+        "selectRow": "Pilih baris",
         "quotationNumber": "No. Penawaran",
         "date": "Tanggal",
         "customer": "Pelanggan",
         "validUntil": "Berlaku Hingga",
         "total": "Total",
         "status": "Status"
+      },
+      "common": {
+        "actions": "Aksi",
+        "openMenu": "Buka menu",
+        "edit": "Edit",
+        "delete": "Hapus"
       },
       "actions": {
         "detail": "Detail",
@@ -3239,6 +3265,8 @@
         "partial": "Sebagian"
       },
       "columns": {
+        "selectAll": "Pilih semua",
+        "selectRow": "Pilih baris",
         "soNumber": "No. SO",
         "date": "Tanggal",
         "customer": "Pelanggan",
@@ -3246,6 +3274,12 @@
         "total": "Total",
         "status": "Status",
         "payment": "Pembayaran"
+      },
+      "common": {
+        "actions": "Aksi",
+        "openMenu": "Buka menu",
+        "edit": "Edit",
+        "delete": "Hapus"
       },
       "actions": {
         "detail": "Detail",
@@ -3401,6 +3435,8 @@
         "partial": "Sebagian"
       },
       "columns": {
+        "selectAll": "Pilih semua",
+        "selectRow": "Pilih baris",
         "invoiceNumber": "No. Invoice",
         "date": "Tanggal",
         "customer": "Pelanggan",
@@ -3408,6 +3444,12 @@
         "total": "Total",
         "status": "Status",
         "payment": "Pembayaran"
+      },
+      "common": {
+        "actions": "Aksi",
+        "openMenu": "Buka menu",
+        "edit": "Edit",
+        "delete": "Hapus"
       },
       "actions": {
         "detail": "Detail",

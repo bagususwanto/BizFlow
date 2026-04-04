@@ -245,7 +245,7 @@ export function SalesOrderForm({
                   name="outletId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t('form.outlet')}</FormLabel>
+                      <FormLabel required>{t('form.outlet')}</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         value={field.value || ''}
@@ -408,9 +408,18 @@ export function SalesOrderForm({
             <div className="rounded-md border">
               {/* Desktop Header */}
               <div className="hidden sm:grid grid-cols-[1fr_100px_160px_160px_50px] gap-4 items-center p-4 bg-muted/40 text-sm font-medium text-muted-foreground border-b">
-                <div>{t('form.items.product')}</div>
-                <div className="text-right">{t('form.items.qty')}</div>
-                <div className="text-right">{t('form.items.price')}</div>
+                <div>
+                  {t('form.items.product')}
+                  <span className="ml-1 text-destructive font-bold">*</span>
+                </div>
+                <div className="text-right">
+                  {t('form.items.qty')}
+                  <span className="ml-1 text-destructive font-bold">*</span>
+                </div>
+                <div className="text-right">
+                  {t('form.items.price')}
+                  <span className="ml-1 text-destructive font-bold">*</span>
+                </div>
                 <div className="text-right">{t('form.items.subtotal')}</div>
                 <div></div>
               </div>
@@ -428,10 +437,10 @@ export function SalesOrderForm({
                         control={form.control}
                         name={`items.${index}.variantId`}
                         render={({ field }) => (
-                          <FormItem className="space-y-0">
-                            <label className="sm:hidden text-sm font-medium mb-1.5 block">
+                          <FormItem className="space-y-0 text-left">
+                            <FormLabel className="sm:hidden mb-1.5 block" required>
                               {t('form.items.product')}
-                            </label>
+                            </FormLabel>
                             <Combobox
                               options={
                                 products?.map((p) => ({
@@ -469,10 +478,10 @@ export function SalesOrderForm({
                         control={form.control}
                         name={`items.${index}.quantity`}
                         render={({ field }) => (
-                          <FormItem className="space-y-0">
-                            <label className="sm:hidden text-sm font-medium mb-1.5 block">
+                          <FormItem className="space-y-0 text-left">
+                            <FormLabel className="sm:hidden mb-1.5 block" required>
                               {t('form.items.qty')}
-                            </label>
+                            </FormLabel>
                             <FormControl>
                               <Input
                                 type="number"
@@ -495,10 +504,10 @@ export function SalesOrderForm({
                         control={form.control}
                         name={`items.${index}.unitPrice`}
                         render={({ field }) => (
-                          <FormItem className="space-y-0">
-                            <label className="sm:hidden text-sm font-medium mb-1.5 block">
+                          <FormItem className="space-y-0 text-left">
+                            <FormLabel className="sm:hidden mb-1.5 block" required>
                               {t('form.items.price')}
-                            </label>
+                            </FormLabel>
                             <FormControl>
                               <Input
                                 type="number"

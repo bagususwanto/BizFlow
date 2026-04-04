@@ -410,10 +410,10 @@ export function QuotationForm({
                         control={form.control}
                         name={`items.${index}.variantId`}
                         render={({ field }) => (
-                          <FormItem className="space-y-0">
-                            <label className="sm:hidden text-sm font-medium mb-1.5 block">
-                              {t('form.items.product')} <span className="text-destructive">*</span>
-                            </label>
+                          <FormItem className="space-y-0 text-left">
+                            <FormLabel className="sm:hidden mb-1.5 block" required>
+                              {t('form.items.product')}
+                            </FormLabel>
                             <Combobox
                               options={
                                 products?.map((p) => ({
@@ -449,10 +449,10 @@ export function QuotationForm({
                         control={form.control}
                         name={`items.${index}.quantity`}
                         render={({ field }) => (
-                          <FormItem className="space-y-0">
-                            <label className="sm:hidden text-sm font-medium mb-1.5 block">
-                              {t('form.items.qty')} <span className="text-destructive">*</span>
-                            </label>
+                          <FormItem className="space-y-0 text-left">
+                            <FormLabel className="sm:hidden mb-1.5 block" required>
+                              {t('form.items.qty')}
+                            </FormLabel>
                             <FormControl>
                               <Input
                                 type="number"
@@ -475,10 +475,10 @@ export function QuotationForm({
                         control={form.control}
                         name={`items.${index}.unitPrice`}
                         render={({ field }) => (
-                          <FormItem className="space-y-0">
-                            <label className="sm:hidden text-sm font-medium mb-1.5 block">
-                              {t('form.items.price')} <span className="text-destructive">*</span>
-                            </label>
+                          <FormItem className="space-y-0 text-left">
+                            <FormLabel className="sm:hidden mb-1.5 block" required>
+                              {t('form.items.price')}
+                            </FormLabel>
                             <FormControl>
                               <Input
                                 type="number"

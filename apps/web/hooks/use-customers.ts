@@ -72,10 +72,10 @@ export function useCreateCustomer() {
   return useMutation({
     mutationFn: (data: Parameters<typeof customersService.create>[0]) =>
       customersService.create(data),
-    onSuccess: (response) => {
-        const message = (response as any).data?.message || t('createSuccess');
+    onSuccess: async (response) => {
+      const message = (response as any).data?.message || t('createSuccess');
+      await queryClient.invalidateQueries({ queryKey: ['customers'] });
       toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ['customers'] });
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -90,11 +90,11 @@ export function useUpdateCustomer(id: string) {
   return useMutation({
     mutationFn: (data: Parameters<typeof customersService.update>[1]) =>
       customersService.update(id, data),
-    onSuccess: (response) => {
-        const message = (response as any).data?.message || t('updateSuccess');
+    onSuccess: async (response) => {
+      const message = (response as any).data?.message || t('updateSuccess');
+      await queryClient.invalidateQueries({ queryKey: ['customers'] });
+      await queryClient.invalidateQueries({ queryKey: ['customer', id] });
       toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ['customers'] });
-      queryClient.invalidateQueries({ queryKey: ['customer', id] });
     },
     onError: (error: Error) => {
       toast.error(error.message);

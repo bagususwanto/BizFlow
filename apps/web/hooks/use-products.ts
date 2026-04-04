@@ -73,11 +73,11 @@ export function useCreateProduct() {
 
   return useMutation({
     mutationFn: productsService.create,
-    onSuccess: (response) => {
-        const message = (response as any).data?.message || 'Produk berhasil dibuat';
-      toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+    onSuccess: async (response) => {
+      const message = (response as any).data?.message || 'Produk berhasil dibuat';
+      await queryClient.invalidateQueries({ queryKey: ['products'] });
       router.back();
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -91,12 +91,12 @@ export function useUpdateProduct(id: string) {
 
   return useMutation({
     mutationFn: (data: any) => productsService.update(id, data),
-    onSuccess: (response) => {
-        const message = (response as any).data?.message || 'Produk berhasil diperbarui';
-      toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ['products'] });
-      queryClient.invalidateQueries({ queryKey: ['product', id] });
+    onSuccess: async (response) => {
+      const message = (response as any).data?.message || 'Produk berhasil diperbarui';
+      await queryClient.invalidateQueries({ queryKey: ['products'] });
+      await queryClient.invalidateQueries({ queryKey: ['product', id] });
       router.back();
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -109,17 +109,11 @@ export function useDeleteProduct() {
 
   return useMutation({
     mutationFn: productsService.delete,
-    onSuccess: (response) => {
-      // response is ApiResponse<void>, so response.data might be undefined but response.message should be there if we follow standard structure
-      // Actually standard ApiResponse usually has { data, message, meta }
-      // Let's check api-response type if I could, but usually we put message in the top level or data.message
-      // Based on controller, it returns successResponse({ message: ... }) which structures it as data: { message: ... }
-      // So accessing response.data.message should be correct if typed as ApiResponse<any>
-      // But here we typed it as ApiResponse<void>. Let's cast or trust the new return.
+    onSuccess: async (response) => {
       const message =
         (response as any).data?.message || 'Produk berhasil dihapus';
+      await queryClient.invalidateQueries({ queryKey: ['products'] });
       toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ['products'] });
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -132,11 +126,11 @@ export function useBulkDeleteProducts() {
 
   return useMutation({
     mutationFn: productsService.bulkDelete,
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       const message =
         (response as any).data?.message || 'Produk berhasil dinonaktifkan';
+      await queryClient.invalidateQueries({ queryKey: ['products'] });
       toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ['products'] });
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -164,12 +158,12 @@ export function useCreateVariant(productId: string) {
   return useMutation({
     mutationFn: (data: CreateVariantValues) =>
       productsService.createVariant(productId, data),
-    onSuccess: (response) => {
-        const message = (response as any).data?.message || 'Varian berhasil dibuat';
-      toast.success(message);
-      queryClient.invalidateQueries({
+    onSuccess: async (response) => {
+      const message = (response as any).data?.message || 'Varian berhasil dibuat';
+      await queryClient.invalidateQueries({
         queryKey: ['products', productId, 'variants'],
       });
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -183,12 +177,12 @@ export function useUpdateVariant(productId: string) {
   return useMutation({
     mutationFn: (data: { id: string; values: UpdateVariantValues }) =>
       productsService.updateVariant(data.id, data.values),
-    onSuccess: (response) => {
-        const message = (response as any).data?.message || 'Varian berhasil diperbarui';
-      toast.success(message);
-      queryClient.invalidateQueries({
+    onSuccess: async (response) => {
+      const message = (response as any).data?.message || 'Varian berhasil diperbarui';
+      await queryClient.invalidateQueries({
         queryKey: ['products', productId, 'variants'],
       });
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -201,11 +195,11 @@ export function useDeleteVariant(productId: string) {
 
   return useMutation({
     mutationFn: (id: string) => productsService.deleteVariant(id),
-    onSuccess: (response) => {
-      queryClient.invalidateQueries({
+    onSuccess: async (response) => {
+      await queryClient.invalidateQueries({
         queryKey: ['products', productId, 'variants'],
       });
-        const message = (response as any).data?.message || 'Varian berhasil dihapus';
+      const message = (response as any).data?.message || 'Varian berhasil dihapus';
       toast.success(message);
     },
     onError: (error: Error) => {
@@ -240,12 +234,12 @@ export function useCreatePriceLevel(productId: string) {
   return useMutation({
     mutationFn: (data: CreatePriceLevelValues) =>
       productsService.createPriceLevel(productId, data),
-    onSuccess: (response) => {
-        const message = (response as any).data?.message || 'Level harga berhasil dibuat';
-      toast.success(message);
-      queryClient.invalidateQueries({
+    onSuccess: async (response) => {
+      const message = (response as any).data?.message || 'Level harga berhasil dibuat';
+      await queryClient.invalidateQueries({
         queryKey: ['products', productId, 'price-levels'],
       });
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -259,12 +253,12 @@ export function useUpdatePriceLevel(productId: string) {
   return useMutation({
     mutationFn: (data: { id: string; values: UpdatePriceLevelValues }) =>
       productsService.updatePriceLevel(data.id, data.values),
-    onSuccess: (response) => {
-        const message = (response as any).data?.message || 'Level harga berhasil diperbarui';
-      toast.success(message);
-      queryClient.invalidateQueries({
+    onSuccess: async (response) => {
+      const message = (response as any).data?.message || 'Level harga berhasil diperbarui';
+      await queryClient.invalidateQueries({
         queryKey: ['products', productId, 'price-levels'],
       });
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -277,12 +271,12 @@ export function useDeletePriceLevel(productId: string) {
 
   return useMutation({
     mutationFn: (id: string) => productsService.deletePriceLevel(id),
-    onSuccess: (response) => {
-        const message = (response as any).data?.message || 'Level harga berhasil dihapus';
-      toast.success(message);
-      queryClient.invalidateQueries({
+    onSuccess: async (response) => {
+      const message = (response as any).data?.message || 'Level harga berhasil dihapus';
+      await queryClient.invalidateQueries({
         queryKey: ['products', productId, 'price-levels'],
       });
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);

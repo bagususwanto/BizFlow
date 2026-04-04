@@ -40,13 +40,13 @@ export function useCreateSalesOrder() {
       salesOrdersService.create(data),
     onSuccess: async (response) => {
       const message = (response as any).data?.message || 'Sales Order berhasil dibuat';
-      toast.success(message);
       await queryClient.invalidateQueries({
         queryKey: ['sales-orders'],
         refetchType: 'all',
       });
       router.push('/sales/orders');
-      router.refresh(); // Refresh client router cache
+      router.refresh();
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -63,7 +63,6 @@ export function useUpdateSalesOrder(id: string) {
       salesOrdersService.update(id, data),
     onSuccess: async (response) => {
       const message = (response as any).data?.message || 'Sales Order berhasil diperbarui';
-      toast.success(message);
       await queryClient.invalidateQueries({
         queryKey: ['sales-orders'],
         refetchType: 'all',
@@ -73,7 +72,8 @@ export function useUpdateSalesOrder(id: string) {
         refetchType: 'all',
       });
       router.push('/sales/orders');
-      router.refresh(); // Refresh client router cache
+      router.refresh();
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -89,12 +89,12 @@ export function useDeleteSalesOrder() {
     mutationFn: (id: string) => salesOrdersService.delete(id),
     onSuccess: async (response) => {
       const message = (response as any).data?.message || 'Sales Order berhasil dihapus';
-      toast.success(message);
       await queryClient.invalidateQueries({
         queryKey: ['sales-orders'],
         refetchType: 'all',
       });
       router.refresh();
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -110,12 +110,12 @@ export function useBulkDeleteSalesOrders() {
     mutationFn: (ids: string[]) => salesOrdersService.bulkDelete(ids),
     onSuccess: async (response) => {
       const message = (response as any).data?.message || 'Sales Orders berhasil dihapus';
-      toast.success(message);
       await queryClient.invalidateQueries({
         queryKey: ['sales-orders'],
         refetchType: 'all',
       });
       router.refresh();
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -131,7 +131,6 @@ export function useUpdateSalesOrderStatus(id: string) {
       salesOrdersService.updateStatus(id, data),
     onSuccess: async (response) => {
       const message = (response as any).data?.message || 'Status Sales Order berhasil diperbarui';
-      toast.success(message);
       await queryClient.invalidateQueries({
         queryKey: ['sales-orders'],
         refetchType: 'all',
@@ -140,6 +139,7 @@ export function useUpdateSalesOrderStatus(id: string) {
         queryKey: ['sales-orders', id],
         refetchType: 'all',
       });
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);

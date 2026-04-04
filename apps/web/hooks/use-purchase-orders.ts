@@ -39,14 +39,14 @@ export function useCreatePurchaseOrder() {
     mutationFn: (data: CreatePurchaseOrderValues) =>
       purchaseOrdersService.create(data),
     onSuccess: async (response) => {
-        const message = (response as any).data?.message || 'Purchase Order berhasil dibuat';
-      toast.success(message);
+      const message = (response as any).data?.message || 'Purchase Order berhasil dibuat';
       await queryClient.invalidateQueries({
         queryKey: ['purchase-orders'],
         refetchType: 'all',
       });
       router.push('/purchases/orders');
-      router.refresh(); // Refresh client router cache
+      router.refresh();
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -62,8 +62,7 @@ export function useUpdatePurchaseOrder(id: string) {
     mutationFn: (data: UpdatePurchaseOrderValues) =>
       purchaseOrdersService.update(id, data),
     onSuccess: async (response) => {
-        const message = (response as any).data?.message || 'Purchase Order berhasil diperbarui';
-      toast.success(message);
+      const message = (response as any).data?.message || 'Purchase Order berhasil diperbarui';
       await queryClient.invalidateQueries({
         queryKey: ['purchase-orders'],
         refetchType: 'all',
@@ -73,7 +72,8 @@ export function useUpdatePurchaseOrder(id: string) {
         refetchType: 'all',
       });
       router.push('/purchases/orders');
-      router.refresh(); // Refresh client router cache
+      router.refresh();
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -88,13 +88,13 @@ export function useDeletePurchaseOrder() {
   return useMutation({
     mutationFn: (id: string) => purchaseOrdersService.delete(id),
     onSuccess: async (response) => {
-        const message = (response as any).data?.message || 'Purchase Order berhasil dihapus';
-      toast.success(message);
+      const message = (response as any).data?.message || 'Purchase Order berhasil dihapus';
       await queryClient.invalidateQueries({
         queryKey: ['purchase-orders'],
         refetchType: 'all',
       });
       router.refresh();
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -109,13 +109,13 @@ export function useBulkDeletePurchaseOrders() {
   return useMutation({
     mutationFn: (ids: string[]) => purchaseOrdersService.bulkDelete(ids),
     onSuccess: async (response) => {
-        const message = (response as any).data?.message || 'Purchase Orders berhasil dihapus';
-      toast.success(message);
+      const message = (response as any).data?.message || 'Purchase Orders berhasil dihapus';
       await queryClient.invalidateQueries({
         queryKey: ['purchase-orders'],
         refetchType: 'all',
       });
       router.refresh();
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -131,8 +131,7 @@ export function useUpdatePurchaseOrderStatus(id: string) {
     mutationFn: (data: UpdatePurchaseOrderStatusValues) =>
       purchaseOrdersService.updateStatus(id, data),
     onSuccess: async (response) => {
-        const message = (response as any).data?.message || 'Status Purchase Order berhasil diperbarui';
-      toast.success(message);
+      const message = (response as any).data?.message || 'Status Purchase Order berhasil diperbarui';
       await queryClient.invalidateQueries({
         queryKey: ['purchase-orders'],
         refetchType: 'all',
@@ -141,6 +140,7 @@ export function useUpdatePurchaseOrderStatus(id: string) {
         queryKey: ['purchase-orders', id],
         refetchType: 'all',
       });
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -171,14 +171,12 @@ export function useExecuteAutoReorder() {
                     ? ` ${data.skippedVariants} varian dilewati karena tidak ada riwayat pemasok.`
                     : ''
                 }`;
-      toast.success(
-        message,
-      );
       await queryClient.invalidateQueries({
         queryKey: ['purchase-orders'],
         refetchType: 'all',
       });
       router.push('/purchases/orders');
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);

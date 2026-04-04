@@ -40,13 +40,13 @@ export function useCreateSalesInvoice() {
       salesInvoicesService.create(data),
     onSuccess: async (response) => {
       const message = (response as any).data?.message || 'Invoice berhasil dibuat';
-      toast.success(message);
       await queryClient.invalidateQueries({
         queryKey: ['sales-invoices'],
         refetchType: 'all',
       });
       router.push('/sales/invoices');
-      router.refresh(); // Refresh client router cache
+      router.refresh();
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -63,7 +63,6 @@ export function useUpdateSalesInvoice(id: string) {
       salesInvoicesService.update(id, data),
     onSuccess: async (response) => {
       const message = (response as any).data?.message || 'Invoice berhasil diperbarui';
-      toast.success(message);
       await queryClient.invalidateQueries({
         queryKey: ['sales-invoices'],
         refetchType: 'all',
@@ -73,7 +72,8 @@ export function useUpdateSalesInvoice(id: string) {
         refetchType: 'all',
       });
       router.push('/sales/invoices');
-      router.refresh(); // Refresh client router cache
+      router.refresh();
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -89,12 +89,12 @@ export function useDeleteSalesInvoice() {
     mutationFn: (id: string) => salesInvoicesService.delete(id),
     onSuccess: async (response) => {
       const message = (response as any).data?.message || 'Invoice berhasil dihapus';
-      toast.success(message);
       await queryClient.invalidateQueries({
         queryKey: ['sales-invoices'],
         refetchType: 'all',
       });
       router.refresh();
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -110,12 +110,12 @@ export function useBulkDeleteSalesInvoices() {
     mutationFn: (ids: string[]) => salesInvoicesService.bulkDelete(ids),
     onSuccess: async (response) => {
       const message = (response as any).data?.message || 'Invoices berhasil dihapus';
-      toast.success(message);
       await queryClient.invalidateQueries({
         queryKey: ['sales-invoices'],
         refetchType: 'all',
       });
       router.refresh();
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -131,7 +131,6 @@ export function useUpdateSalesInvoiceStatus(id: string) {
       salesInvoicesService.updateStatus(id, data),
     onSuccess: async (response) => {
       const message = (response as any).data?.message || 'Status Invoice berhasil diperbarui';
-      toast.success(message);
       await queryClient.invalidateQueries({
         queryKey: ['sales-invoices'],
         refetchType: 'all',
@@ -140,6 +139,7 @@ export function useUpdateSalesInvoiceStatus(id: string) {
         queryKey: ['sales-invoices', id],
         refetchType: 'all',
       });
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);

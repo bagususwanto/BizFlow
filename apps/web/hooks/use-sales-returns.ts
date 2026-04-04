@@ -44,8 +44,8 @@ export function useCreateSalesReturn() {
   return useMutation({
     mutationFn: (data: CreateSalesReturnValues) =>
       salesReturnsService.create(data),
-    onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: salesReturnKeys.lists() });
+    onSuccess: async (response) => {
+      await queryClient.invalidateQueries({ queryKey: salesReturnKeys.lists() });
       const message =
         (response as any).data?.message || 'Sales Return berhasil dibuat';
       toast.success(message);
@@ -67,10 +67,10 @@ export function useUpdateSalesReturn() {
       id: string;
       data: UpdateSalesReturnValues;
     }) => salesReturnsService.update(id, data),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: salesReturnKeys.lists() });
-      queryClient.invalidateQueries({
-        queryKey: salesReturnKeys.detail(data.id),
+    onSuccess: async (data, variables) => {
+      await queryClient.invalidateQueries({ queryKey: salesReturnKeys.lists() });
+      await queryClient.invalidateQueries({
+        queryKey: salesReturnKeys.detail(variables.id),
       });
       const message =
         (data as any).data?.message || 'Sales Return berhasil diperbarui';
@@ -93,10 +93,10 @@ export function useUpdateSalesReturnStatus() {
       id: string;
       data: UpdateSalesReturnStatusValues;
     }) => salesReturnsService.updateStatus(id, data),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: salesReturnKeys.lists() });
-      queryClient.invalidateQueries({
-        queryKey: salesReturnKeys.detail(data.id),
+    onSuccess: async (data, variables) => {
+      await queryClient.invalidateQueries({ queryKey: salesReturnKeys.lists() });
+      await queryClient.invalidateQueries({
+        queryKey: salesReturnKeys.detail(variables.id),
       });
       const message =
         (data as any).data?.message ||
@@ -114,8 +114,8 @@ export function useDeleteSalesReturn() {
 
   return useMutation({
     mutationFn: (id: string) => salesReturnsService.delete(id),
-    onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: salesReturnKeys.lists() });
+    onSuccess: async (response) => {
+      await queryClient.invalidateQueries({ queryKey: salesReturnKeys.lists() });
       const message =
         (response as any).data?.message || 'Sales Return berhasil dihapus';
       toast.success(message);
@@ -131,8 +131,8 @@ export function useBulkDeleteSalesReturns() {
 
   return useMutation({
     mutationFn: (ids: string[]) => salesReturnsService.bulkDelete(ids),
-    onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: salesReturnKeys.lists() });
+    onSuccess: async (response) => {
+      await queryClient.invalidateQueries({ queryKey: salesReturnKeys.lists() });
       const message =
         (response as any).data?.message || 'Sales Return berhasil dihapus';
       toast.success(message);

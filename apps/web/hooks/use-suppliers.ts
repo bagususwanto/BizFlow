@@ -72,10 +72,10 @@ export function useCreateSupplier() {
   return useMutation({
     mutationFn: (data: Parameters<typeof suppliersService.create>[0]) =>
       suppliersService.create(data),
-    onSuccess: (response) => {
-        const message = (response as any).data?.message || t('createSuccess');
+    onSuccess: async (response) => {
+      const message = (response as any).data?.message || t('createSuccess');
+      await queryClient.invalidateQueries({ queryKey: ['suppliers'] });
       toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ['suppliers'] });
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -90,11 +90,11 @@ export function useUpdateSupplier(id: string) {
   return useMutation({
     mutationFn: (data: Parameters<typeof suppliersService.update>[1]) =>
       suppliersService.update(id, data),
-    onSuccess: (response) => {
-        const message = (response as any).data?.message || t('updateSuccess');
+    onSuccess: async (response) => {
+      const message = (response as any).data?.message || t('updateSuccess');
+      await queryClient.invalidateQueries({ queryKey: ['suppliers'] });
+      await queryClient.invalidateQueries({ queryKey: ['supplier', id] });
       toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ['suppliers'] });
-      queryClient.invalidateQueries({ queryKey: ['supplier', id] });
     },
     onError: (error: Error) => {
       toast.error(error.message);

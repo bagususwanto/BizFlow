@@ -44,9 +44,9 @@ export function useCreatePurchaseReturn() {
   return useMutation({
     mutationFn: (data: CreatePurchaseReturnValues) =>
       purchaseReturnsService.create(data),
-    onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: purchaseReturnKeys.lists() });
-        const message = (response as any).data?.message || 'Purchase Return berhasil dibuat';
+    onSuccess: async (response) => {
+      await queryClient.invalidateQueries({ queryKey: purchaseReturnKeys.lists() });
+      const message = (response as any).data?.message || 'Purchase Return berhasil dibuat';
       toast.success(message);
     },
     onError: (error: Error) => {
@@ -66,12 +66,12 @@ export function useUpdatePurchaseReturn() {
       id: string;
       data: UpdatePurchaseReturnValues;
     }) => purchaseReturnsService.update(id, data),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: purchaseReturnKeys.lists() });
-      queryClient.invalidateQueries({
-        queryKey: purchaseReturnKeys.detail(data.id),
+    onSuccess: async (data, variables) => {
+      await queryClient.invalidateQueries({ queryKey: purchaseReturnKeys.lists() });
+      await queryClient.invalidateQueries({
+        queryKey: purchaseReturnKeys.detail(variables.id),
       });
-        const message = (data as any).data?.message || 'Purchase Return berhasil diperbarui';
+      const message = (data as any).data?.message || 'Purchase Return berhasil diperbarui';
       toast.success(message);
     },
     onError: (error: Error) => {
@@ -91,12 +91,12 @@ export function useUpdatePurchaseReturnStatus() {
       id: string;
       data: UpdatePurchaseReturnStatusValues;
     }) => purchaseReturnsService.updateStatus(id, data),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: purchaseReturnKeys.lists() });
-      queryClient.invalidateQueries({
-        queryKey: purchaseReturnKeys.detail(data.id),
+    onSuccess: async (data, variables) => {
+      await queryClient.invalidateQueries({ queryKey: purchaseReturnKeys.lists() });
+      await queryClient.invalidateQueries({
+        queryKey: purchaseReturnKeys.detail(variables.id),
       });
-        const message = (data as any).data?.message || 'Status Purchase Return berhasil diperbarui';
+      const message = (data as any).data?.message || 'Status Purchase Return berhasil diperbarui';
       toast.success(message);
     },
     onError: (error: Error) => {
@@ -110,9 +110,9 @@ export function useDeletePurchaseReturn() {
 
   return useMutation({
     mutationFn: (id: string) => purchaseReturnsService.delete(id),
-    onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: purchaseReturnKeys.lists() });
-        const message = (response as any).data?.message || 'Purchase Return berhasil dihapus';
+    onSuccess: async (response) => {
+      await queryClient.invalidateQueries({ queryKey: purchaseReturnKeys.lists() });
+      const message = (response as any).data?.message || 'Purchase Return berhasil dihapus';
       toast.success(message);
     },
     onError: (error: Error) => {

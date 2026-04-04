@@ -54,11 +54,11 @@ export function useCreateCategory() {
 
   return useMutation({
     mutationFn: categoriesService.create,
-    onSuccess: (response) => {
-        const message = (response as any).data?.message || t('createSuccess');
-      toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
+    onSuccess: async (response) => {
+      const message = (response as any).data?.message || t('createSuccess');
+      await queryClient.invalidateQueries({ queryKey: ['categories'] });
       router.back();
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -73,12 +73,12 @@ export function useUpdateCategory(id: string) {
 
   return useMutation({
     mutationFn: (data: any) => categoriesService.update(id, data),
-    onSuccess: (response) => {
-        const message = (response as any).data?.message || t('updateSuccess');
-      toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
-      queryClient.invalidateQueries({ queryKey: ['category', id] });
+    onSuccess: async (response) => {
+      const message = (response as any).data?.message || t('updateSuccess');
+      await queryClient.invalidateQueries({ queryKey: ['categories'] });
+      await queryClient.invalidateQueries({ queryKey: ['category', id] });
       router.back();
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -91,12 +91,12 @@ export function useDeleteCategory() {
 
   return useMutation({
     mutationFn: categoriesService.delete,
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       const message =
         (response as any).data?.message ||
         'Kategori berhasil dihapus/dinonaktifkan';
+      await queryClient.invalidateQueries({ queryKey: ['categories'] });
       toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -109,11 +109,11 @@ export function useBulkDeleteCategories() {
 
   return useMutation({
     mutationFn: categoriesService.bulkDelete,
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       const message =
         (response as any).data?.message || 'Kategori berhasil dinonaktifkan';
+      await queryClient.invalidateQueries({ queryKey: ['categories'] });
       toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -134,8 +134,8 @@ export function useReorderCategory() {
       parentId: string | null;
       index: number;
     }) => categoriesService.reorder(id, parentId, index),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
     onError: (error: Error) => {
       toast.error(error.message);

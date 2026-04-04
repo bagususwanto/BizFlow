@@ -17,11 +17,11 @@ export function useUsers(params?: UsersQuery) {
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => usersService.delete(id),
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       const message =
         (response as any).data?.message || 'User berhasil dinonaktifkan';
+      await queryClient.invalidateQueries({ queryKey: ['users'] });
       toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ['users'] });
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -30,11 +30,11 @@ export function useUsers(params?: UsersQuery) {
 
   const bulkDeleteMutation = useMutation({
     mutationFn: (ids: string[]) => usersService.bulkDelete(ids),
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       const message =
         (response as any).data?.message || 'User berhasil dinonaktifkan';
+      await queryClient.invalidateQueries({ queryKey: ['users'] });
       toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ['users'] });
     },
     onError: (error: Error) => {
       toast.error(error.message);

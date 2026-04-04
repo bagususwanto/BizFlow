@@ -17,12 +17,12 @@ export function useOutlets(params?: QueryOutletsValues) {
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => outletsService.delete(id),
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       const message =
         (response as any).data?.message ||
         'Outlet berhasil dinonaktifkan/dihapus';
+      await queryClient.invalidateQueries({ queryKey: ['outlets'] });
       toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ['outlets'] });
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -31,11 +31,11 @@ export function useOutlets(params?: QueryOutletsValues) {
 
   const bulkDeleteMutation = useMutation({
     mutationFn: (ids: string[]) => outletsService.bulkDelete(ids),
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       const message =
         (response as any).data?.message || 'Outlet berhasil dinonaktifkan';
+      await queryClient.invalidateQueries({ queryKey: ['outlets'] });
       toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ['outlets'] });
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -89,9 +89,9 @@ export function useCreateOutlet() {
 
   return useMutation({
     mutationFn: (data: any) => outletsService.create(data),
-    onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: ['outlets'] });
-        const message = (response as any).data?.message || 'Outlet berhasil dibuat';
+    onSuccess: async (response) => {
+      await queryClient.invalidateQueries({ queryKey: ['outlets'] });
+      const message = (response as any).data?.message || 'Outlet berhasil dibuat';
       toast.success(message);
     },
     onError: (error: Error) => {
@@ -105,9 +105,9 @@ export function useUpdateOutlet(id: string) {
 
   return useMutation({
     mutationFn: (data: any) => outletsService.update(id, data),
-    onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: ['outlets'] });
-        const message = (response as any).data?.message || 'Outlet berhasil diperbarui';
+    onSuccess: async (response) => {
+      await queryClient.invalidateQueries({ queryKey: ['outlets'] });
+      const message = (response as any).data?.message || 'Outlet berhasil diperbarui';
       toast.success(message);
     },
     onError: (error: Error) => {

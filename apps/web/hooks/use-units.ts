@@ -72,10 +72,10 @@ export function useCreateUnit() {
   return useMutation({
     mutationFn: (data: Parameters<typeof unitsService.create>[0]) =>
       unitsService.create(data),
-    onSuccess: (response) => {
-        const message = (response as any).data?.message || t('createSuccess');
+    onSuccess: async (response) => {
+      const message = (response as any).data?.message || t('createSuccess');
+      await queryClient.invalidateQueries({ queryKey: ['units'] });
       toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ['units'] });
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -90,11 +90,11 @@ export function useUpdateUnit(id: string) {
   return useMutation({
     mutationFn: (data: Parameters<typeof unitsService.update>[1]) =>
       unitsService.update(id, data),
-    onSuccess: (response) => {
-        const message = (response as any).data?.message || t('updateSuccess');
+    onSuccess: async (response) => {
+      const message = (response as any).data?.message || t('updateSuccess');
+      await queryClient.invalidateQueries({ queryKey: ['units'] });
+      await queryClient.invalidateQueries({ queryKey: ['unit', id] });
       toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ['units'] });
-      queryClient.invalidateQueries({ queryKey: ['unit', id] });
     },
     onError: (error: Error) => {
       toast.error(error.message);

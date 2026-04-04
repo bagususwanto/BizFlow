@@ -40,8 +40,8 @@ export function useCreateCustomerPayment() {
   return useMutation({
     mutationFn: (data: CreateCustomerPaymentValues) =>
       customerPaymentsService.create(data),
-    onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: customerPaymentKeys.lists() });
+    onSuccess: async (response) => {
+      await queryClient.invalidateQueries({ queryKey: customerPaymentKeys.lists() });
       const message = (response as any).data?.message || 'Pembayaran berhasil dibuat';
       toast.success(message);
     },
@@ -62,10 +62,10 @@ export function useUpdateCustomerPayment() {
       id: string;
       data: UpdateCustomerPaymentValues;
     }) => customerPaymentsService.update(id, data),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: customerPaymentKeys.lists() });
-      queryClient.invalidateQueries({
-        queryKey: customerPaymentKeys.detail(data.id),
+    onSuccess: async (data, variables) => {
+      await queryClient.invalidateQueries({ queryKey: customerPaymentKeys.lists() });
+      await queryClient.invalidateQueries({
+        queryKey: customerPaymentKeys.detail(variables.id),
       });
       const message = (data as any).data?.message || 'Pembayaran berhasil diperbarui';
       toast.success(message);
